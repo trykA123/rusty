@@ -120,7 +120,7 @@ Targets are measured with `tracing` spans in every build and checked by a start-
 
 ### Destructive operations
 
-- **Delete goes to the Recycle Bin** (`IFileOperation` with recycle flags). Permanent delete needs **Shift+Del** and a confirmation listing count, total size and the first paths.
+- **Delete goes to the Recycle Bin** (`IFileOperation` with recycle flags). **Shift+Del deletes permanently** after a warning that lists the count, total size and first paths; Enter on the warning is never the default action.
 - **Plan, then act.** Every copy, move, rename or delete builds a plan first: sources, targets, conflicts, totals. Large or risky plans (over 100 items, over 1 GB, anything permanent, anything in a protected location) are shown before they run.
 - **Protected locations** (drive roots, `C:\Windows`, `Program Files`, the user profile root, Rusty's own folders) need a typed confirmation.
 - **Links are never followed when deleting or moving.** Symlinks and junctions are removed as links; recursive operations stop at reparse points.

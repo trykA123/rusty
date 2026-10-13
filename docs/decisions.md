@@ -9,8 +9,8 @@ Newest last. “Proposed” items wait for the owner's review.
 | D3 | 2026-10-13 | Windows testing on the owner's work machine; CI produces a portable `.exe` per push to `main` | Decided |
 | D4 | 2026-10-13 | Plugins are defined now: data-only packages and sandboxed WASM component extensions with permissions; see [plugins.md](plugins.md) | Decided |
 | D5 | 2026-10-13 | Terminal is a provider: Windows Terminal by default, external command templates, embedded ConPTY after v1 | Decided |
-| D6 | 2026-10-13 | One typed command system for shortcuts, palette, menus, drawer, macros and plugins | Proposed |
-| D7 | 2026-10-13 | Delete goes to the Recycle Bin; permanent delete only with Shift+Del and a confirmation; plan-then-act for every file operation | Proposed |
-| D8 | 2026-10-13 | No scripting language in v1; macros are sequences of commands | Proposed |
-| D9 | 2026-10-13 | Global search uses Everything when installed; an own NTFS index comes later | Proposed |
-| D10 | 2026-10-13 | Portable mode when `rusty.toml` sits next to the executable | Proposed |
+| D6 | 2026-10-13 | One typed command system: every action has one name and one implementation (`path.copy`, `files.recycle`); shortcuts, menus, the palette, macros and plugins all call those names | Accepted (explained 2026-10-13; reopen if needed) |
+| D7 | 2026-10-13 | Delete goes to the Recycle Bin. **Shift+Del deletes permanently after a warning** that shows how many items, their total size and the first paths. Every file operation is planned before it runs | Decided |
+| D8 | 2026-10-13 | No scripting language in v1; macros are sequences of commands. **Choose a scripting language after v1** (candidates: Lua/Luau, Rhai, JavaScript via QuickJS) | Decided; language choice open |
+| D9 | 2026-10-13 | Global search uses Everything. If it is missing, Rusty offers to install it through an **Everything plugin** that downloads the official installer from voidtools with a checksum check, only after the user agrees. Bundling terms to confirm with voidtools' licence. Own NTFS index later | Decided |
+| D10 | 2026-10-13 | Portable mode when `rusty.toml` sits next to the executable | Decided |

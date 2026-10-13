@@ -25,7 +25,7 @@ Macros in packages are sequences of built-in commands (`pane.open-tab`, `path.co
 | Column | Per-file data in panels | Image dimensions, audio length, git author |
 | Context action | Items in the file context menu | “Upload to NAS” |
 | File system | A browsable location | SFTP, S3, an archive format |
-| Search source | Results in Ctrl+K | Bookmarks from a notes app |
+| Search source | Results in Ctrl+K | Bookmarks from a notes app; the bundled **Everything** plugin for instant global search |
 | Theme, keymap, icons | Look and keys (packages only) | Total Commander keymap, Nord theme |
 
 Plugins cannot hook into file operations (no “before delete” hooks) and cannot replace built-in safety confirmations.
@@ -86,6 +86,12 @@ Permission scopes are narrow by default: `${selection}`, `${pane}`, a named fold
 - **Development mode:** `rusty --plugin-dev <folder>` loads an unpacked plugin, reloads it on rebuild, and shows its logs in the Activity view.
 - **Testing:** a fake host crate runs plugins in unit tests with chosen permissions and fake files.
 - **Sharing:** a plain folder or archive in v1. A registry (a git repository index with signed releases) can come later.
+
+## First-party plugins
+
+Some features ship as plugins so they can be turned off or replaced:
+
+- **Everything:** global search through voidtools' Everything. When Everything is missing, the plugin offers to install it: it downloads the official installer from voidtools.com, verifies its checksum, and runs it only after the user agrees. Needs the `network` permission for voidtools.com and `process` for the installer.
 
 ## Versioning
 
