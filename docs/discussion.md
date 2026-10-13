@@ -100,7 +100,30 @@ Chosen direction, with these changes (built into the prototype):
 
 ## Open questions
 
-- UI framework: GPUI vs Tauri + Svelte (spike before committing).
-- Global index: Everything SDK dependency vs own MFT/USN indexer (admin rights).
-- Plugin API surface and permissions for v1.
+- Global index: Everything SDK dependency vs own MFT/USN indexer (admin rights). Proposed: Everything first.
 - Distribution: portable .exe only, or also an installer with shell integration (“Open in Rusty”, default folder handler).
+- Code signing for running builds on a corporate machine.
+
+Answered since: UI framework is GPUI (spike pending), Windows testing happens at work, plugins are defined in [plugins.md](plugins.md), and the terminal can be Windows Terminal. See [decisions.md](decisions.md).
+
+## Why Rust, compared with Total Commander
+
+Total Commander is a native Windows app written in Pascal (Delphi; Lazarus/Free Pascal for 64-bit). It is already small and fast, so Rust is not chosen for raw speed alone. What Rust adds:
+
+- **Memory safety without a garbage collector.** No use-after-free, buffer overflows or data races in safe code. That matters most where a file manager handles untrusted input: archive formats, image and document previews, file names and paths.
+- **Safe parallelism.** The compiler rejects data races, so listing, icons, thumbnails, search, hashing and copy jobs can run on all cores without the bugs that usually come with threads. The interface stays responsive while heavy work runs.
+- **Resources that clean themselves up.** File handles, watchers, tasks and processes are released when their owner goes away (`Drop`). Cancelling or closing something cancels its work. This is the main defence against leaks.
+- **Errors that cannot be ignored.** File operations return `Result`; a failed step must be handled, which suits copy, move and delete code where a silent error means data loss.
+- **Types that encode rules.** Path types for long and UNC paths, enums for job states, plans that must be confirmed before they run: invalid states fail to compile instead of failing at a user's desk.
+- **A safe plugin model.** Total Commander's plugins are native DLLs in its own process: powerful, but a buggy plugin can crash it, and every plugin has full access. Rust's mature WebAssembly runtime (wasmtime is written in Rust) makes sandboxed plugins with permissions practical.
+- **The ecosystem:** Microsoft's own `windows` crate for the Win32 and COM APIs, `nucleo` (Helix's fuzzy matcher), `ignore` (ripgrep's walker), `alacritty_terminal`, `gix` for git, `serde`, `tokio`, GPUI from Zed.
+- **Tooling:** Cargo, built-in tests, Clippy, fuzzing for parsers, property tests, cross-compiling from Linux, and reproducible builds with a lockfile.
+- **Portability:** one self-contained executable, and a core that also runs on Linux and macOS if Rusty ever goes there.
+
+Limits to keep in mind:
+
+- Rust does not make I/O faster by itself; speed comes from parallel work, caching and doing less.
+- Windows shell integration (context menus, thumbnails, drag and drop) is COM and needs `unsafe` code, so it stays small, isolated and reviewed.
+- Total Commander has decades of edge cases behind it; Rusty has to earn them with tests.
+- Compile times are longer, and GPUI is younger than Delphi's VCL.
+- An option worth keeping open: running Total Commander's content and lister plugins in a separate helper process, so existing plugins could work without sharing Rusty's memory.
