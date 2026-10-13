@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Commander Directions</title>
+<style>
+  @font-face { font-family: "Hanken"; src: url("fonts/Hanken.ttf"); font-weight: 100 900; }
+  @font-face { font-family: "JetBrains Mono"; src: url("fonts/JetBrainsMono.ttf"); font-weight: 100 800; }
+  @font-face { font-family: "Archivo"; src: url("fonts/Archivo.ttf"); font-weight: 100 900; font-stretch: 62% 125%; }
+  @font-face { font-family: "Bricolage"; src: url("fonts/Bricolage.ttf"); font-weight: 200 800; font-stretch: 75% 100%; }
+  @font-face { font-family: "Google Sans Flex"; src: url("fonts/GoogleSansFlex.ttf"); font-weight: 1 1000; font-stretch: 25% 151%; }
+  :root { color-scheme: light dark; --h-bg: #e6e8ec; --h-text: #1c2230; --h-muted: #5a6273; --h-line: #c9ced8; --h-chip: #f6f7f9; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --h-bg: #101318; --h-text: #e8ebf1; --h-muted: #9aa3b5; --h-line: #2a303b; --h-chip: #191d24; } }
+  :root[data-theme="dark"] { --h-bg: #101318; --h-text: #e8ebf1; --h-muted: #9aa3b5; --h-line: #2a303b; --h-chip: #191d24; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--h-bg); color: var(--h-text); font: 13px/1.4 system-ui, sans-serif; }
+  .harness { display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--h-line); position: sticky; top: 0; background: var(--h-bg); z-index: 50; }
+  .harness h1 { font-size: 13px; margin: 0 6px 0 0; }
+  .g { display: flex; gap: 4px; align-items: center; }
+  .g > span { color: var(--h-muted); margin-right: 4px; }
+  .harness button { font: inherit; color: var(--h-text); background: var(--h-chip); border: 1px solid var(--h-line); border-radius: 6px; padding: 4px 10px; cursor: pointer; }
+  .harness button[aria-pressed="true"] { background: var(--h-text); color: var(--h-bg); border-color: var(--h-text); }
+  .hint { color: var(--h-muted); }
+  .sepbar { width: 1px; height: 18px; background: var(--h-line); margin: 0 4px; }
+  .stage { display: grid; place-items: start center; padding: 24px 16px 48px; overflow: auto; }
+  .frame { position: relative; overflow: hidden; border-radius: 10px; box-shadow: 0 30px 70px -24px rgb(0 0 0 / 0.5), 0 2px 6px rgb(0 0 0 / 0.2); transform-origin: top center; }
+  .frame > .app { position: absolute; inset: 0; }
+</style>
+<link rel="stylesheet" href="shared.css">
+<link rel="stylesheet" href="dir-a.css">
+<link rel="stylesheet" href="dir-b.css">
+<link rel="stylesheet" href="dir-c.css">
+<link rel="stylesheet" href="dir-d.css">
+<link rel="stylesheet" href="dock.css">
+<link rel="stylesheet" href="calm.css">
+</head>
+<body>
+<header class="harness">
+  <h1>File commander · directions</h1>
+  <div class="g" role="group" aria-label="Direction"><span>Direction</span>
+    <button data-dir="A">A</button><button data-dir="B">B</button><button data-dir="C">C</button><button data-dir="D">D</button><button data-dir="E">E</button><button data-dir="F">F</button><button data-dir="G">G</button><button data-dir="H">H</button><span class="sepbar"></span><button data-dir="I">I</button><button data-dir="J">J</button><button data-dir="K">K</button><button data-dir="L">L</button>
+  </div>
+  <div class="g" role="group" aria-label="Window"><span>Window</span>
+    <button data-size="960x640">960×640</button><button data-size="1100x700">1100×700</button><button data-size="1440x900">1440×900</button><button data-size="1280x800">1280×800</button><button data-size="1920x1080">1920×1080</button>
+  </div>
+  <div class="g" role="group" aria-label="Theme"><span>Theme</span>
+    <button data-theme-choice="auto">System</button><button data-theme-choice="light">Light</button><button data-theme-choice="dark">Dark</button>
+  </div>
+  <span class="hint">Click into the window, then: <b>Ctrl+K</b> palette · <b>↑↓ / j k</b> move · <b>Enter</b> open · <b>Backspace</b> up · <b>Tab</b> next pane · <b>Alt+1–3</b> workspaces · <b>Ctrl+`</b> terminal · <b>Ctrl+\</b> split · <b>Ctrl+Shift+C</b> copy path · <b>Space</b> mark · <b>F5</b> copy</span>
+</header>
+<main class="stage"><div class="frame" id="frame"></div></main>
+<script src="engine.js"></script>
+<script src="dir-a.js"></script>
+<script src="dir-b.js"></script>
+<script src="dir-c.js"></script>
+<script src="dir-d.js"></script>
+<script src="dock.js"></script>
+<script src="dir-efgh.js"></script>
+<script src="calm.js"></script>
+<script>
+  const params = new URLSearchParams(location.search);
+  let prefs = {};
+  try { prefs = JSON.parse(localStorage.getItem("fm-picker") || "{}"); } catch {}
+  const cur = { dir: params.get("dir") || prefs.dir || "B", size: params.get("size") || prefs.size || "1440x900", theme: params.get("theme") || prefs.theme || "auto" };
+  if (params.get("ws")) FM.state.ws = Number(params.get("ws"));
+  if (params.get("palette")) { FM.state.palette = { open: true, query: params.get("palette"), sel: 0 }; }
+  const frame = document.getElementById("frame");
+  let root = null;
+  function fit() {
+    const [w, h] = cur.size.split("x").map(Number);
+    frame.style.width = `${w}px`;
+    frame.style.height = `${h}px`;
+    const scale = Math.min(1, (window.innerWidth - 32) / w);
+    frame.style.transform = scale < 1 ? `scale(${scale})` : "";
+    frame.style.marginBottom = scale < 1 ? `${-(1 - scale) * h}px` : "";
+  }
+  function draw() {
+    if (!root) return;
+    DIRECTIONS[cur.dir].render(root);
+    const input = root.querySelector("#palInput");
+    if (input && document.activeElement !== input) { input.focus(); input.setSelectionRange(input.value.length, input.value.length); }
+    if (!FM.state.palette.open && !root.contains(document.activeElement)) root.focus({ preventScroll: true });
+  }
+  function mount() {
+    frame.innerHTML = "";
+    root = document.createElement("div");
+    root.className = `app ${DIRECTIONS[cur.dir].className}`;
+    root.tabIndex = -1;
+    if (cur.theme !== "auto") root.dataset.theme = cur.theme;
+    frame.append(root);
+    DIRECTIONS[cur.dir].onMount?.(root);
+    UI.bind(root);
+    root.addEventListener("keydown", FM.onKey);
+    draw();
+  }
+  function apply() {
+    if (cur.theme === "auto") delete document.documentElement.dataset.theme; else document.documentElement.dataset.theme = cur.theme;
+    for (const b of document.querySelectorAll("[data-dir]")) b.setAttribute("aria-pressed", String(b.dataset.dir === cur.dir));
+    for (const b of document.querySelectorAll("[data-size]")) b.setAttribute("aria-pressed", String(b.dataset.size === cur.size));
+    for (const b of document.querySelectorAll("[data-theme-choice]")) b.setAttribute("aria-pressed", String(b.dataset.themeChoice === cur.theme));
+    try { localStorage.setItem("fm-picker", JSON.stringify(cur)); } catch {}
+    fit();
+  }
+  document.querySelector(".harness").addEventListener("click", (e) => {
+    const b = e.target.closest("button");
+    if (!b) return;
+    if (b.dataset.dir) cur.dir = b.dataset.dir;
+    if (b.dataset.size) cur.size = b.dataset.size;
+    if (b.dataset.themeChoice) cur.theme = b.dataset.themeChoice;
+    apply();
+    mount();
+  });
+  window.addEventListener("resize", fit);
+  FM.subscribe(draw);
+  apply();
+  mount();
+</script>
+</body>
+</html>
