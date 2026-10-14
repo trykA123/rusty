@@ -10,7 +10,7 @@ The repository builds as a Cargo workspace of the eleven crates plus the gallery
 
 Final. Workers never reopen them; a worker that finds one wrong stops and reports.
 
-- Architecture: `docs/architecture.md`; decisions D1–D26 in `docs/decisions.md`; plan rules in `plans/README.md`.
+- Architecture: `docs/architecture.md`; decisions D1–D28 in `docs/decisions.md`; plan rules in `plans/README.md`.
 - Rust **1.99.0**, edition **2024**, resolver 3. Latest stable versions for every tool and crate (D26).
 - `xtask` uses only the standard library and `toml` + `serde` + `serde_json`; no CLI framework.
 - Lints live once in `[workspace.lints]`; every crate has `[lints] workspace = true`. Crate-level `allow` needs a `reason`.
@@ -259,3 +259,4 @@ fn main() {
 - 2026-10-14 — A2 done (patcher, Haiku, medium). The four crates without `forbid` have a `lib.rs` of one newline. A3, A5 and A7 start in parallel, each in its own worktree.
 - 2026-10-14 — A3 done (checker, Sonnet, medium): 19 size tests, all `not yet implemented`. A5 done (checker, Sonnet, medium): 13 tests plus one the orchestrator added (a crate with zero lines counts as 100 %); only the constant test passes. A7 done (patcher, Haiku, medium): `cargo deny check`, `typos`, `taplo check` green. Merged into `p1-workspace`.
 - 2026-10-14 — Before A4 and A6, the orchestrator added `toml` 1.1.8, `serde` 1.0.229 and `serde_json` 1.0.154 to `xtask`, and a `main.rs` dispatcher calling `size::run`, `coverage::run`, `binsize::run` (stubs), so the two parallel Green atoms touch disjoint files.
+- 2026-10-14 — The owner overruled the tiers (D28): Haiku never implements; T1 edits now run on Sonnet 5.5 medium (A10); `rusty-core` Green atoms and the hardest atoms are done by the orchestrator on Opus 5.5 high. A1, A2 and A7 had already run on Haiku; they are config and scaffold, verified by the orchestrator, and stay.

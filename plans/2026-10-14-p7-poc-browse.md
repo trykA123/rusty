@@ -36,9 +36,9 @@ Status: drafting (briefs get exact `Read` ranges when G6 passes) · Branch: `p7-
 | U3 | `primitives` | T2 | ui-builder | high | U2 | headless tests pass |
 | U4 | `gallery` | T2 | ui-builder | medium | U3 | gallery runs; screenshots in both themes |
 | U5 | `file_list` Red | T2 | checker | high | U3 | tests compile, fail |
-| U6 | `file_list` Green | T4 | ui-builder-high | high | U5 | headless tests pass; 100k rows smooth |
+| U6 | `file_list` Green | T4 | orchestrator | high | U5 | headless tests pass; 100k rows smooth |
 | U7 | `pane_chrome`, `fkey_bar`, `status_bar` | T2 | ui-builder | medium | U3 | headless tests pass |
-| U8 | `pane_view` | T4 | ui-builder-high | high | U6, U7 | integration with `fake_fs` passes; stale batches dropped |
+| U8 | `pane_view` | T4 | orchestrator | high | U6, U7 | integration with `fake_fs` passes; stale batches dropped |
 | U9 | `window_view` | T2 | ui-builder | high | U8 | headless + screenshots at 1100 and 1440 px, both themes |
 | U10 | `app_wiring` | T3 | api-builder | xhigh | U9 | start-up test: first frame from session only |
 | U11 | PoC check on Windows | — | orchestrator | — | U10 | CI `.exe`; owner browses the work PC |
