@@ -48,7 +48,7 @@ Final. Workers never reopen them; a worker that finds one wrong stops and report
 | A8 | `xtask-gate` | T3 | api-builder | xhigh | A4, A6, A7 | gate tests pass; `cargo xtask gate` green | done | |
 | A9 | `ci` | T2 | infra-builder | high | A8 | `actionlint` clean | done | |
 | A10 | `dev-docs` | T1 | general-purpose (Sonnet) | medium | A8 | `typos` clean | done | |
-| A11 | review follow-ups in `xtask` | T3 | api-builder | xhigh | A10, A7b | unique temp dirs, tolerant cleanup; coverage paths relative to the repo root | running | |
+| A11 | review follow-ups in `xtask` | T3 | api-builder | xhigh | A10, A7b | unique temp dirs, tolerant cleanup; coverage paths relative to the repo root | done | |
 | G1 | gate | — | orchestrator + reviewer | high | A0–A11, A7b | CI green on both OS, artifact runs, review approved | running | |
 
 A3 and A5 can run in parallel after A2; A4 and A6 in parallel after their Red atoms; A7 in parallel with all of them.
@@ -276,3 +276,4 @@ fn main() {
 - 2026-10-14 — `reviewer` (Opus, high): **approve**, no blocking issues; Done-when trials pass (401-line file, 53-line function, `unwrap`, coverage drop). The orchestrator applied three notes: static CRT for `x86_64-pc-windows-msvc` (a portable `rusty.exe` without the VC++ runtime, D3), no cancelling of CI runs on `main` (every push to `main` gets an exe), and `target/` excluded in `typos.toml`. A11 (Sol) takes the two `xtask` notes. Open for the owner: deny `clippy::expect_used` as well.
 - 2026-10-14 — Owner decisions folded into P1 before merge: product name Ferrite (D29; the binary is now `ferrite`, CI checks `ferrite 0.0.1` and uploads `ferrite-windows-x64-…`), Linux as a secondary target (D30; new `build-linux` job uploads `ferrite-linux-x64-…`), no panics outside tests (D31; `expect_used`, `panic`, `unimplemented` denied, trial in `rusty-core` fails clippy as expected), Lucide for UI icons (D32).
 - 2026-10-14 — At the owner's request: `scripts/install-local.sh` builds an `x86-64-v3` Linux binary into its own target dir and installs `~/.local/bin/ferrite` (shellcheck clean; ran on this PC, prints `ferrite 0.0.1`). CI binaries stay generic `x86-64`.
+- 2026-10-14 — A11 done (api-builder, gpt-6.1-sol, xhigh): temp dirs use pid + an atomic counter and ignore cleanup errors; `crate_line_coverage_in` strips the repo root and `coverage::run` uses it; 101 xtask tests, plain `cargo test` passes twice. Merged with D29–D31: `gate --coverage` green, `xtask` 91.7 %.
