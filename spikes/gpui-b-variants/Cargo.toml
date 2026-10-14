@@ -1,0 +1,13 @@
+[package]
+name = "gpui-b-variants"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[workspace]
+
+[dependencies]
+gpui-kit = "=0.7.3"
+
+[profile.release]
+strip = true
