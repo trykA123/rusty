@@ -1,6 +1,6 @@
 # P2 · GPUI spike
 
-Status: drafting (briefs get exact `Read` ranges when G1 passes) · Branch: `p2-spike` · After: G1
+Status: running · Branch: `p2-spike` · After: G1 (done 2026-10-14)
 
 ## Goal
 
@@ -30,11 +30,11 @@ Find out with numbers whether GPUI with `gpui-kit` can carry Rusty: design B's l
 
 | Atom | Component | Tier | Role | Effort | After | Check | Status |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| S1 | `gpui-kit-notes` | T1 | researcher | medium | G1 | notes answer every question below, with links | blocked |
+| S1 | `gpui-kit-notes` | T1 | researcher | medium | G1 | notes answer every question below, with links | running |
 | S2 | `spike-shell` | T4 | orchestrator | high | S1 | window opens on Linux; screenshot reviewed by orchestrator | blocked |
 | S3 | `spike-list` | T4 | orchestrator | high | S2 | headless test passes; manual scroll smooth | blocked |
 | S4 | `spike-metrics` | T2 | ui-builder | medium | S3 | `spike --metrics` prints valid JSON | blocked |
-| S5 | `fuzzy-bench` | T3 | api-builder | xhigh | G1 | `cargo bench -p fuzzy-bench` prints the table | blocked |
+| S5 | `fuzzy-bench` | T3 | api-builder | xhigh | G1 | `cargo bench -p fuzzy-bench` prints the table | running |
 | S6 | `a11y-probe` | T2 | ui-builder | high | S3 | headless test finds list rows with names | blocked |
 | S7 | Windows run | — | orchestrator | — | S4, S6 | CI job uploads metrics JSON; owner runs on work PC | blocked |
 | G2 | go or no-go | — | orchestrator + owner | — | S1–S7 | `docs/spike/results.md` written; D2 updated | blocked |
@@ -65,3 +65,4 @@ S5 runs in parallel with S1–S4.
   - Linux dev PC for comparison: ~110 ms.
   - Actions for S2–S4: patch GPUI's `get_adapter` (gpui-pre-windows 0.3.9, `directx_devices.rs`) to prefer `EnumAdapterByGpuPreference(DXGI_GPU_PREFERENCE_MINIMUM_POWER)` unless the window's monitor is driven by another adapter, and offer it upstream; break down the ~170 ms before the run callback and the ~130 ms to the first frame; test start from the tray (hot) on Windows. The warm target (≤ 150 ms) is not met on Windows yet; revisit it with the owner after these fixes.
 
+- 2026-10-14 — G1 passed; P2 starts. The spike branch `spike/gpui-b-variants` (`52f997a`, worktree `.crew/rusty-gpui-b-variants`) holds variant 1 in `spikes/gpui-b-variants/` (2,417 lines, own workspace, `gpui-kit = "=0.7.3"`). S1 (researcher, Haiku, read-only, medium) and S5 (api-builder, gpt-6.1-sol, xhigh) start in parallel. S2 and S3 are the orchestrator's (D28).
