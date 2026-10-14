@@ -44,7 +44,7 @@ Final. Workers never reopen them; a worker that finds one wrong stops and report
 | A5 | `xtask-coverage`, `xtask-binsize` Red | T2 | checker | medium | A2 | tests compile and fail | done | |
 | A6 | `xtask-coverage`, `xtask-binsize` Green | T3 | api-builder | xhigh | A5 | `cargo nextest run -p xtask coverage binsize` passes | done | |
 | A7 | `tool-configs` | T1 | patcher | medium | A2 | `cargo deny check`; `typos` | done | |
-| A7b | `xtask` coverage to its floor | T3 | api-builder | xhigh | A4, A6 | `cargo xtask coverage` shows `xtask` ≥ 85 % without exclusions | running | |
+| A7b | `xtask` coverage to its floor | T3 | api-builder | xhigh | A4, A6 | `cargo xtask coverage` shows `xtask` ≥ 85 % without exclusions | done | |
 | A8 | `xtask-gate` | T3 | api-builder | xhigh | A4, A6, A7 | gate tests pass; `cargo xtask gate` green | running | |
 | A9 | `ci` | T2 | infra-builder | high | A8 | `actionlint` clean | blocked | |
 | A10 | `dev-docs` | T1 | patcher | medium | A8 | `typos` clean | blocked | |
@@ -264,3 +264,4 @@ fn main() {
 - 2026-10-14 — A6 done (api-builder, gpt-6.1-sol, xhigh): 14 tests pass; `binsize` and `coverage` wired. Without rustup, `cargo llvm-cov` needs `LLVM_COV=/usr/bin/llvm-cov LLVM_PROFDATA=/usr/bin/llvm-profdata` locally. Open: `xtask` measured 42 % against its 85 % floor (without the `size` tests); the untested parts are the thin `run.rs` shells and `main.rs`. To settle before A8.
 - 2026-10-14 — A4 done (api-builder, gpt-6.1-sol, xhigh): 19 size tests pass; `cargo xtask size` exits 0 and flags a 401-line probe. With all 33 tests, `xtask` coverage is 45 %: the `run.rs` shells and `main.rs` are untested, and the lexer (`count.rs`, 64 %) and exception errors (72 %) have untested branches. New atom A7b (Sol) raises it to the 85 % floor with tests, not exclusions; G1 now lists A7b. A8 runs in parallel; its coverage step is expected red until A7b lands.
 - 2026-10-14 — A8 merged (api-builder, gpt-6.1-sol, xhigh): 5 gate tests pass; `cargo xtask gate` green in 3 s; `--bogus` exits 2. A8 stays `running` until `cargo xtask gate --coverage` is green, which waits on A7b.
+- 2026-10-14 — A7b done (api-builder, gpt-6.1-sol, xhigh): 46 tests added, no lexer bug, `xtask` 91 % on its own branch. After merging with A8, `gate --coverage` gave 84.3 % because `gate/run.rs` is untested. A8 retry (same tier, failure output in the brief) adds those tests.
