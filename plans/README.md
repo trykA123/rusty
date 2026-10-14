@@ -17,7 +17,7 @@ Each plan ends in a gate. The next plan starts only after that gate passes.
 | P7 | [PoC 1: Browse](2026-10-14-p7-poc-browse.md) | Components and gallery; a window with two panes that browse real folders; session restore | G7: **PoC 1** |
 | P8 | [PoC 2: Operate](2026-10-14-p8-poc-operate.md) | Plans, job journal, copy, move, Recycle Bin, Shift+Del, progress and cancel | G8: **PoC 2** |
 
-P1 is ready to run. P2–P8 list their components, atoms and decided design; each plan's briefs get their exact `Read` line ranges when the previous gate passes, because the code they point at does not exist yet.
+P1 is done (G1, 2026-10-14). P2 is running. P2–P8 list their components, atoms and decided design; each plan's briefs get their exact `Read` line ranges when the previous gate passes, because the code they point at does not exist yet.
 
 The rest of Alpha (workspaces, drive bar, context menu, Explorer clipboard and so on) is planned after PoC 2, from the roadmap.
 

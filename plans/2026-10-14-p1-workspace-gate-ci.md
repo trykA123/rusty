@@ -1,6 +1,6 @@
 # P1 · Workspace, gate and CI
 
-Status: running · Repo: `<repo>` · Branch: `p1-workspace` · Started: 2026-10-14
+Status: done · Repo: `<repo>` · Branch: `p1-workspace` · Started: 2026-10-14
 
 ## Goal
 
@@ -49,7 +49,7 @@ Final. Workers never reopen them; a worker that finds one wrong stops and report
 | A9 | `ci` | T2 | infra-builder | high | A8 | `actionlint` clean | done | |
 | A10 | `dev-docs` | T1 | general-purpose (Sonnet) | medium | A8 | `typos` clean | done | |
 | A11 | review follow-ups in `xtask` | T3 | api-builder | xhigh | A10, A7b | unique temp dirs, tolerant cleanup; coverage paths relative to the repo root | done | |
-| G1 | gate | — | orchestrator + reviewer | high | A0–A11, A7b | CI green on both OS, artifact runs, review approved | running | |
+| G1 | gate | — | orchestrator + reviewer | high | A0–A11, A7b | CI green on both OS, artifact runs, review approved | done | |
 
 A3 and A5 can run in parallel after A2; A4 and A6 in parallel after their Red atoms; A7 in parallel with all of them.
 
@@ -278,3 +278,4 @@ fn main() {
 - 2026-10-14 — At the owner's request: `scripts/install-local.sh` builds an `x86-64-v3` Linux binary into its own target dir and installs `~/.local/bin/ferrite` (shellcheck clean; ran on this PC, prints `ferrite 0.0.1`). CI binaries stay generic `x86-64`.
 - 2026-10-14 — A11 done (api-builder, gpt-6.1-sol, xhigh): temp dirs use pid + an atomic counter and ignore cleanup errors; `crate_line_coverage_in` strips the repo root and `coverage::run` uses it; 101 xtask tests, plain `cargo test` passes twice. Merged with D29–D31: `gate --coverage` green, `xtask` 91.7 %.
 - 2026-10-14 — G1 CI run 3 (`38616613151`, `c7ab4a6`): all four jobs green. `ferrite.exe` (212 KB) imports only `KERNEL32.dll`, `ntdll.dll` and an `api-ms-win-core` set, so the static CRT works and no VC++ runtime is needed; the Linux artifact runs on CachyOS and prints `ferrite 0.0.1`. Remaining for G1: the owner runs `ferrite.exe` on the work PC (step 3), then merge.
+- 2026-10-14 — G1 done and merged to `main`: local gate green, CI green on all four jobs, `reviewer` approved, review notes applied (A11 and the static CRT). Step 3 (the owner runs `ferrite.exe` on the work PC) moves to 2026-10-15 with the owner's consent; CI already ran the exe on `windows-latest` and its imports are system DLLs only. If it fails there, the fix is the first atom of P2.
