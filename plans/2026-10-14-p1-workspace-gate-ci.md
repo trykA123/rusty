@@ -270,3 +270,4 @@ fn main() {
 - 2026-10-14 — A10 done (general-purpose, Sonnet, medium): README "Develop" section and `docs/dev-tools.md`; `typos` clean.
 - 2026-10-14 — A9 done (infra-builder, Sonnet, high): `ci.yml` with `gate-linux`, `gate-windows`, `build-windows`; every action pinned to a verified SHA (checkout v7.0.1, rust-toolchain 1.99.0 branch, rust-cache v2.9.2, install-action v2.87.28, upload-artifact v7.0.2); tools pinned to the local versions; `actionlint` clean. G1 starts.
 - 2026-10-14 — G1 CI run 1: `gate-linux` green; `gate-windows` failed one A7b test (`root_check_reports_non_utf8_rust_sources`) that built the expected path with `/` while the walk yields `\` on Windows. The orchestrator fixed the expected path in the test; behaviour unchanged.
+- 2026-10-14 — The owner approved moving `patcher` and `infra-builder` to Sonnet in `~/.config/crew/roles.json` and the agent files (backup `roles.json.bak-20261014b`); from now on T1 runs as `patcher` on Sonnet.
