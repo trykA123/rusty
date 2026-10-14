@@ -1,0 +1,48 @@
+{
+  "app_version": "0.1.0",
+  "os": "linux",
+  "arch": "x86_64",
+  "gpu": "llvmpipe (LLVM 23.1.1, 256 bits)",
+  "first_frame_ms": 211.141705,
+  "marks": [
+    {
+      "label": "main",
+      "ms": 0.006253
+    },
+    {
+      "label": "application created",
+      "ms": 11.768209
+    },
+    {
+      "label": "run callback",
+      "ms": 12.159506
+    },
+    {
+      "label": "gpui_kit::init",
+      "ms": 13.319182000000001
+    },
+    {
+      "label": "fonts added",
+      "ms": 13.357745000000001
+    },
+    {
+      "label": "open_window returned",
+      "ms": 209.467856
+    }
+  ],
+  "scroll_seconds": 10,
+  "scroll": {
+    "count": 225,
+    "p50_ms": 43.966191,
+    "p95_ms": 46.776801,
+    "p99_ms": 48.614199,
+    "max_ms": 155.708381,
+    "over_16_7_ms": 224,
+    "over_33_3_ms": 224
+  },
+  "memory": {
+    "rss_bytes": 226717696,
+    "peak_rss_bytes": 226717696
+  },
+  "binary_bytes": 39305832
+}
