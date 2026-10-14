@@ -25,8 +25,13 @@ Macros in packages are sequences of built-in commands (`pane.open-tab`, `path.co
 | Column | Per-file data in panels | Image dimensions, audio length, git author |
 | Context action | Items in the file context menu | “Upload to NAS” |
 | File system | A browsable location | SFTP, S3, an archive format |
-| Search source | Results in Ctrl+K | Bookmarks from a notes app; the bundled **Everything** plugin for instant global search |
+| Search source | Results in Ctrl+K | Bookmarks from a notes app; the optional **Everything** module |
 | Theme, keymap, icons | Look and keys (packages only) | Total Commander keymap, Nord theme |
+| Metadata provider | Per-file fields that feed columns, sorting, filters and search syntax at once | EXIF: a Camera column and `exif.camera:sony` |
+| View mode | A new way to show a folder | Gallery, Miller columns, tree, timeline |
+| Transform | Turns files into other files; the output goes through the job engine with a plan, progress and undo | Resize images, PDF to images, video to GIF |
+| Automation rule | Runs commands when something happens; every command goes through the usual plans and confirmations | Sort new files in Downloads |
+| Status and drive badge | Small items in the status bar or on drive buttons | SMART health, cloud sync state |
 
 Plugins cannot hook into file operations (no “before delete” hooks) and cannot replace built-in safety confirmations.
 
@@ -91,7 +96,24 @@ Permission scopes are narrow by default: `${selection}`, `${pane}`, a named fold
 
 Some features ship as plugins so they can be turned off or replaced:
 
-- **Everything:** global search through voidtools' Everything. When Everything is missing, the plugin offers to install it: it downloads the official installer from voidtools.com, verifies its checksum, and runs it only after the user agrees. Needs the `network` permission for voidtools.com and `process` for the installer.
+- **Everything (optional):** global search through voidtools' Everything for people who already run it; Rusty's own index is the default (D23). When Everything is missing, the module can offer to install it: it downloads the official installer from voidtools.com, verifies its checksum, and runs it only after the user agrees. Needs the `network` permission for voidtools.com and `process` for the installer.
+
+## Module ideas and packs
+
+Rusty works like a Framework laptop: the core is the mainboard, slots are the expansion ports, and modules are the cards people add (D24). Examples of what users could build:
+
+| For | Modules |
+| --- | --- |
+| Developers | Git, Docker containers for the current folder, task runner (npm scripts, `make`, `cargo`), open in IDE, JSON/YAML/Markdown preview, pull-request status column |
+| Photo and video | EXIF columns, RAW preview, photo map, bulk resize and convert, video duration and codec, similar-image duplicates, audio tags |
+| Homelab and sysadmin | SFTP, S3/MinIO, WebDAV, SMART health on the drive bar, permission (ACL) viewer, hash checks, Wake-on-LAN, media-server library refresh |
+| Documents | PDF merge and split, Office preview, OCR with text search, document tags |
+| Cloud | OneDrive, Google Drive and Dropbox sync state as a column and drive badge |
+| Productivity | Folder notes, Downloads sorter, send to phone over the local network, screenshot organiser |
+| Security | Hash lookup on VirusTotal, encrypted vaults (VeraCrypt, age), Mark-of-the-Web viewer |
+| Local AI | Semantic search with local models, rename suggestions, photo tagging; network only with explicit permission |
+
+**Module packs** (Developer, Photo, Homelab) install a curated set in one step and show every permission first.
 
 ## Versioning
 

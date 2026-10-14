@@ -16,7 +16,7 @@ Kinds: **core** is always on; **module** can be turned off; **package** is data 
 
 ## Design · done
 
-Product discussion, prototypes A–L (B chosen), architecture, plugin model, decisions D1–D22.
+Product discussion, prototypes A–L (B chosen), architecture, plugin model, decisions D1–D24.
 
 ## Foundation · v0.1 · next
 
@@ -71,7 +71,7 @@ Exit: every target is met on a clean Windows 11 machine.
 
 ## v1.1 · See and find
 
-- module: preview pane, thumbnails, archives as folders, global search with Rusty's own index (D11), auto switch view.
+- module: preview pane, thumbnails, archives as folders, global search with Rusty's own index and `rusty-indexd` (D23; engine built alongside Alpha, may ship in Beta), auto switch view.
 - core: saved column sets.
 
 Exit: global search answers in under 50 ms on 2 million files.
@@ -87,7 +87,8 @@ Exit: each module turns off without a restart and costs nothing while off.
 
 - core: WASM plugins (versioned WIT API, permissions, sandbox); Lua scripting.
 - infra: plugin SDK, template, dev mode with hot reload.
-- module: Everything, embedded terminal (ConPTY), SFTP/S3/rclone.
+- core: new slots for metadata providers, view modes, transforms, automation rules and status badges; module packs (D24).
+- module: Everything (optional), embedded terminal (ConPTY), SFTP/S3/rclone.
 - package: more languages, Romanian first.
 
 Exit: a third-party plugin is built, installed and updated without touching Rusty's code.

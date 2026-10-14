@@ -20,7 +20,7 @@ A Cargo workspace; dependencies point down the table.
 | `rusty-store` | Settings (TOML), session snapshot (`postcard`), SQLite databases `rusty.db` and `cache.db`; atomic writes, versions, migrations, recovery. Built in the Foundation phase | any |
 | `rusty-fs` | Listing, metadata, watching, the job engine (copy, move, recycle, delete) with progress, cancel, verification and the undo journal | Windows first, Linux for development |
 | `rusty-cache` | Bounded caches: listings, icons, thumbnails, enrichments; budgets and eviction | any |
-| `rusty-index` | Fuzzy matching (`nucleo`), folder search (`ignore`), global search (Everything IPC, own NTFS index later) | Windows for global |
+| `rusty-index` | Fuzzy matching (`nucleo`), folder search (`ignore`), global search through Rusty's own index and the `rusty-indexd` service (D23) | Windows for global |
 | `rusty-shell` | Windows shell: icons, thumbnails, native context menu, Properties, Recycle Bin, drag and drop, Mark-of-the-Web, ShellExecute | Windows |
 | `rusty-term` | Terminal providers: Windows Terminal, external command templates, embedded ConPTY + `alacritty_terminal` | Windows |
 | `rusty-plugins` | WASM component host, capability checks, plugin lifecycle | any |
@@ -144,7 +144,7 @@ Targets are measured with `tracing` spans in every build and checked by a start-
 ### Pre-warming
 
 - The cursor resting on a folder for 150 ms prefetches its listing (at most two prefetches at once).
-- After start-up goes idle: pins and workspace folders are listed, the Everything connection is opened, and fonts and icons for the visible panes are loaded.
+- After start-up goes idle: pins and workspace folders are listed, the connection to `rusty-indexd` is opened, and fonts and icons for the visible panes are loaded.
 - A terminal is pre-started only if the drawer's terminal view was open in the last session.
 
 ## Runtime and libraries
@@ -205,6 +205,18 @@ Main libraries (versions are pinned and checked in the Foundation plan):
 - **Plugins** are sandboxed and permission-checked; see [plugins.md](plugins.md).
 - **Supply chain:** pinned dependencies, `cargo-deny` and `cargo-audit` in CI, minimal crate features.
 - **No telemetry.** Diagnostic reports are created only on request and never leave the machine unless the user sends them.
+
+## Global search
+
+Rusty's own index is the main path (D11, D23); it works like Everything.
+
+- **`rusty-indexd`**, a small Windows service, reads each NTFS volume's file table (MFT) at first start and then follows the USN change journal. It saves the last journal position, so a restart only catches up; if the journal wrapped, it rescans.
+- **Memory layout:** one name buffer per volume, a parent index and a few fields (size, change time, attributes) per entry; paths are rebuilt from the parent chain. Budget about 80–100 MB for 2 million entries.
+- **Search:** substring, wildcards and regex, run in parallel over the name buffer (SIMD); `nucleo` ranks fuzzy results in Ctrl+K. Target: under 50 ms on 2 million entries.
+- **Filter syntax:** `ext:jpg`, `size:>10mb`, `dm:today`, `path:proiecte`, quotes and `regex:`; metadata providers (D24) can add their own keys.
+- **The app talks to the service over a local pipe** restricted to the user's account. The service returns names only and never opens files. On machines with several users it can filter results by the user's access rights.
+- **Fallback** for non-NTFS volumes, network drives, or when the service is not installed: a parallel walk saved to disk and kept current by watchers.
+- **Everything** is an optional module for people who already run it.
 
 ## Copy engine
 
