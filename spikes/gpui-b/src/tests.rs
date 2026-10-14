@@ -4,7 +4,7 @@ use crate::app::{Launch, Workspace, bind_keys};
 use crate::tokens::Mode;
 use gpui_kit::test::TestWindowExt;
 use gpui_kit::{
-    AppContext, Bounds, Entity, Point, TestAppContext, WindowBounds, WindowOptions, px, size,
+    AppContext, Bounds, Entity, Point, Role, TestAppContext, WindowBounds, WindowOptions, px, size,
 };
 
 fn open(cx: &mut TestAppContext) -> (gpui_kit::AnyWindowHandle, Entity<Workspace>) {
@@ -109,4 +109,67 @@ fn tab_moves_the_keyboard_to_the_next_pane(cx: &mut TestAppContext) {
     assert_eq!(active, 1);
     assert_eq!(cursor_and_marks(&content, 1, cx).0, 1);
     assert_eq!(cursor_and_marks(&content, 0, cx).0, 0);
+}
+
+#[gpui_kit::test]
+fn file_lists_expose_list_and_list_item_roles_with_names(cx: &mut TestAppContext) {
+    let (window, content) = open(cx);
+    cx.update_window(window, |_, window, cx| {
+        window.render_frame(cx);
+        let expected = [
+            (0usize, "core files"),
+            (1usize, "Downloads files"),
+            (2usize, "homelab files"),
+        ];
+        for (pane, name) in expected {
+            let list = window.find(("filelist", pane));
+            assert_eq!(list.role(), Some(Role::List));
+            assert_eq!(list.label(), Some(name));
+        }
+        let rows = [
+            (0usize, "src, folder"),
+            (1, "tests, folder"),
+            (2, "Cargo, 812 B, 13/10/26 19:40"),
+            (3, "layout, 14 KB, 13/10/26 21:22"),
+        ];
+        for (index, name) in rows {
+            let row = window.within(("filelist", 0usize)).find(("row", index));
+            assert_eq!(row.role(), Some(Role::ListItem), "row {index}");
+            assert_eq!(row.label(), Some(name), "row {index}");
+            assert_eq!(row.selected(), Some(false), "row {index}");
+        }
+        window.press("down", cx);
+        window.press("space", cx);
+        window.render_frame(cx);
+        assert_eq!(
+            window
+                .within(("filelist", 0usize))
+                .find(("row", 0usize))
+                .selected(),
+            Some(false)
+        );
+        assert_eq!(
+            window
+                .within(("filelist", 0usize))
+                .find(("row", 1usize))
+                .selected(),
+            Some(true)
+        );
+        assert_eq!(
+            window
+                .within(("filelist", 0usize))
+                .find(("row", 2usize))
+                .selected(),
+            Some(false)
+        );
+        assert_eq!(
+            window
+                .within(("filelist", 0usize))
+                .find(("row", 1usize))
+                .focused(),
+            None
+        );
+    })
+    .expect("window");
+    assert_eq!(cursor_and_marks(&content, 0, cx), (1, vec![1]));
 }
