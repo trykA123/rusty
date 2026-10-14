@@ -9,6 +9,7 @@ mod data;
 mod drawer;
 mod file_list;
 mod fkey_bar;
+mod metrics;
 mod pane;
 mod primitives;
 mod rail;
@@ -27,6 +28,7 @@ use gpui_kit::{
     App, AppContext, AssetSource, Bounds, SharedString, TitlebarOptions, WindowBounds,
     WindowOptions, px, size,
 };
+use metrics::Destination;
 use tokens::Mode;
 
 macro_rules! font {
@@ -90,9 +92,10 @@ impl AssetSource for SpikeAssets {
     }
 }
 
-fn parse_args() -> Result<(Mode, bool), String> {
+fn parse_args() -> Result<(Mode, bool, Option<Destination>), String> {
     let mut mode = Mode::Light;
     let mut big = false;
+    let mut metrics = None;
     let mut args = std::env::args().skip(1);
     while let Some(flag) = args.next() {
         let value = args.next().ok_or(format!("{flag} needs a value"))?;
@@ -101,10 +104,11 @@ fn parse_args() -> Result<(Mode, bool), String> {
             ("--theme", "dark") => mode = Mode::Dark,
             ("--rows", "sample") => big = false,
             ("--rows", "100k") => big = true,
+            ("--metrics", path) => metrics = Some(Destination::parse(path)),
             _ => return Err(format!("unknown argument {flag} {value}")),
         }
     }
-    Ok((mode, big))
+    Ok((mode, big, metrics))
 }
 
 fn load_fonts(cx: &App) {
@@ -137,10 +141,9 @@ fn window_options(cx: &App) -> WindowOptions {
 }
 
 fn mark(started: Instant, label: &str) {
-    eprintln!(
-        "[{:>8.1} ms] {label}",
-        started.elapsed().as_secs_f64() * 1000.0
-    );
+    let ms = started.elapsed().as_secs_f64() * 1000.0;
+    metrics::marks::push(label, ms);
+    eprintln!("[{ms:>8.1} ms] {label}");
 }
 
 fn main() {
@@ -149,10 +152,12 @@ fn main() {
         env_logger::init();
     }
     mark(started, "main");
-    let (mode, big) = match parse_args() {
+    let (mode, big, metrics) = match parse_args() {
         Ok(parsed) => parsed,
         Err(message) => {
-            eprintln!("{message}\nusage: gpui-b [--theme light|dark] [--rows sample|100k]");
+            eprintln!(
+                "{message}\nusage: gpui-b [--theme light|dark] [--rows sample|100k] [--metrics <path|->]"
+            );
             std::process::exit(2);
         }
     };
@@ -165,7 +170,12 @@ fn main() {
         load_fonts(cx);
         mark(started, "fonts added");
         app::bind_keys(cx);
-        let launch = Launch { mode, big, started };
+        let launch = Launch {
+            mode,
+            big,
+            started,
+            metrics: metrics.clone(),
+        };
         let options = window_options(cx);
         let opened = gpui_kit::open_window(options, cx, |window, cx| {
             cx.new(|cx| Workspace::new(launch, window, cx))

@@ -22,6 +22,7 @@ fn open(cx: &mut TestAppContext) -> (gpui_kit::AnyWindowHandle, Entity<Workspace
             mode: Mode::Light,
             big: true,
             started: Instant::now(),
+            metrics: None,
         };
         let (window, content) = gpui_kit::open_window(options, cx, |window, cx| {
             cx.new(|cx| Workspace::new(launch, window, cx))

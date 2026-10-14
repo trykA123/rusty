@@ -1,8 +1,9 @@
 use std::ops::Range;
-use std::time::Instant;
+use std::time::{Duration, Instant};
 
 use crate::data::folders;
 use crate::drawer::DrawerView;
+use crate::metrics::{self, Destination, Recorder, Report, Tick};
 use crate::pane::{self, PaneProps, PaneState};
 use crate::tokens::{self, Mode, Theme};
 use crate::{command_line, drawer, file_list, fkey_bar, rail, top_bar};
@@ -54,6 +55,7 @@ pub struct Launch {
     pub mode: Mode,
     pub big: bool,
     pub started: Instant,
+    pub metrics: Option<Destination>,
 }
 
 pub struct Workspace {
@@ -64,6 +66,8 @@ pub struct Workspace {
     drawer: DrawerView,
     focus: FocusHandle,
     is_first_frame: bool,
+    first_frame_ms: Option<f64>,
+    recorder: Option<Recorder>,
 }
 
 impl Workspace {
@@ -90,6 +94,8 @@ impl Workspace {
             drawer: DrawerView::Transfers,
             focus,
             is_first_frame: true,
+            first_frame_ms: None,
+            recorder: None,
         }
     }
 
@@ -223,7 +229,7 @@ impl Workspace {
         }))
     }
 
-    fn log_first_frame(&mut self, window: &mut Window) {
+    fn log_first_frame(&mut self, window: &mut Window, cx: &mut Context<Self>) {
         if !self.is_first_frame {
             return;
         }
@@ -233,15 +239,76 @@ impl Workspace {
             "[{:>8.1} ms] first render call",
             started.elapsed().as_secs_f64() * 1000.0
         );
-        window.on_next_frame(move |_, _| {
-            eprintln!("first frame: {:?} after main()", started.elapsed())
+        let this = cx.weak_entity();
+        window.on_next_frame(move |window, cx| {
+            eprintln!("first frame: {:?} after main()", started.elapsed());
+            let ms = started.elapsed().as_secs_f64() * 1000.0;
+            this.update(cx, |this, cx| this.start_metrics(ms, window, cx))
+                .ok();
         });
+    }
+
+    fn start_metrics(&mut self, first_frame_ms: f64, window: &mut Window, cx: &mut Context<Self>) {
+        if self.launch.metrics.is_none() {
+            return;
+        }
+        self.first_frame_ms = Some(first_frame_ms);
+        let window_len = Duration::from_secs(metrics::SCROLL_SECONDS);
+        self.recorder = Some(Recorder::begin(Instant::now(), window_len));
+        self.scroll_step(window, cx);
+    }
+
+    fn scroll_step(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        let Some(recorder) = self.recorder.as_mut() else {
+            return;
+        };
+        if recorder.tick(Instant::now()) == Tick::Done {
+            let idle = Duration::from_secs(metrics::IDLE_SECONDS);
+            cx.spawn_in(window, async move |this, cx| {
+                cx.background_executor().timer(idle).await;
+                this.update_in(cx, |this, window, cx| this.finish_metrics(window, cx))
+                    .ok();
+            })
+            .detach();
+            return;
+        }
+        let page = self.page_rows(window);
+        let pane = &mut self.panes[self.active];
+        if pane.cursor + 1 >= pane.len() {
+            pane.set_cursor(0);
+        } else {
+            pane.move_cursor(page);
+        }
+        cx.notify();
+        let this = cx.weak_entity();
+        window.on_next_frame(move |window, cx| {
+            this.update(cx, |this, cx| this.scroll_step(window, cx))
+                .ok();
+        });
+    }
+
+    fn finish_metrics(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        let (Some(dest), Some(recorder)) = (self.launch.metrics.as_ref(), self.recorder.as_ref())
+        else {
+            return;
+        };
+        let gpu = window.gpu_specs().map(|specs| specs.device_name);
+        let report = Report::collect(
+            gpu,
+            self.first_frame_ms,
+            recorder.finish(),
+            metrics::Memory::read(),
+        );
+        if let Err(err) = report.write(dest) {
+            eprintln!("could not write the metrics: {err}");
+        }
+        cx.quit();
     }
 }
 
 impl Render for Workspace {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
-        self.log_first_frame(window);
+        self.log_first_frame(window, cx);
         let t = self.theme.clone();
         let panes = self.panes.iter().enumerate().map(|(ix, state)| {
             let props = PaneProps {
