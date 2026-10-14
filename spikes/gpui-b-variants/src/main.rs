@@ -144,8 +144,19 @@ fn window_options(cx: &App) -> WindowOptions {
     }
 }
 
+fn mark(started: Instant, label: &str) {
+    eprintln!(
+        "[{:>8.1} ms] {label}",
+        started.elapsed().as_secs_f64() * 1000.0
+    );
+}
+
 fn main() {
     let started = Instant::now();
+    if std::env::var_os("RUST_LOG").is_some() {
+        env_logger::init();
+    }
+    mark(started, "main");
     let (variant, mode) = match parse_args() {
         Ok(parsed) => parsed,
         Err(message) => {
@@ -153,25 +164,30 @@ fn main() {
             std::process::exit(2);
         }
     };
-    gpui_kit::application()
-        .with_assets(SpikeAssets)
-        .run(move |cx| {
-            gpui_kit::init(cx);
-            load_fonts(cx);
-            app::bind_keys(cx);
-            let launch = Launch {
-                variant,
-                mode,
-                segoe: find_segoe(cx),
-                started,
-            };
-            let options = window_options(cx);
-            let opened = gpui_kit::open_window(options, cx, |window, cx| {
-                cx.new(|cx| Workspace::new(launch, window, cx))
-            });
-            if let Err(err) = opened {
-                eprintln!("could not open the window: {err:#}");
-                cx.quit();
-            }
+    let application = gpui_kit::application().with_assets(SpikeAssets);
+    mark(started, "application created");
+    application.run(move |cx| {
+        mark(started, "run callback");
+        gpui_kit::init(cx);
+        mark(started, "gpui_kit::init");
+        load_fonts(cx);
+        mark(started, "fonts added");
+        app::bind_keys(cx);
+        let launch = Launch {
+            variant,
+            mode,
+            segoe: find_segoe(cx),
+            started,
+        };
+        mark(started, "system font list (Segoe lookup)");
+        let options = window_options(cx);
+        let opened = gpui_kit::open_window(options, cx, |window, cx| {
+            cx.new(|cx| Workspace::new(launch, window, cx))
         });
+        mark(started, "open_window returned");
+        if let Err(err) = opened {
+            eprintln!("could not open the window: {err:#}");
+            cx.quit();
+        }
+    });
 }

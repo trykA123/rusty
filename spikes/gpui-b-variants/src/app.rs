@@ -223,6 +223,10 @@ impl Workspace {
         }
         self.is_first_frame = false;
         let started = self.launch.started;
+        eprintln!(
+            "[{:>8.1} ms] first render call",
+            started.elapsed().as_secs_f64() * 1000.0
+        );
         window.on_next_frame(move |_, _| {
             eprintln!("first frame: {:?} after main()", started.elapsed())
         });
