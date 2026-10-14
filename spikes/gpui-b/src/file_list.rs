@@ -10,7 +10,8 @@ use gpui_kit::base::{Scrollbar, ScrollbarMode, TestSupportExt};
 use gpui_kit::prelude::FluentBuilder;
 use gpui_kit::{
     AnyElement, Context, Div, FontWeight, Hsla, InteractiveElement, IntoElement, MouseButton,
-    ParentElement, Pixels, Styled, div, px, uniform_list,
+    ParentElement, Pixels, Role, SharedString, StatefulInteractiveElement, Styled, div, px,
+    uniform_list,
 };
 
 const SIDE_PAD: f32 = 12.;
@@ -58,11 +59,29 @@ pub fn list(ix: usize, state: &PaneState, cx: &mut Context<Workspace>) -> impl I
     )
     .track_scroll(&state.scroll)
     .size_full();
-    div().relative().flex_1().min_h_0().child(rows).child(
-        Scrollbar::vertical(&state.scroll)
-            .id(("scrollbar", ix))
-            .mode(ScrollbarMode::Always),
-    )
+    let name = state.folder.crumbs.last().copied().unwrap_or_default();
+    div()
+        .id(("filelist", ix))
+        .role(Role::List)
+        .aria_label(format!("{name} files"))
+        .relative()
+        .flex_1()
+        .min_h_0()
+        .child(rows)
+        .child(
+            Scrollbar::vertical(&state.scroll)
+                .id(("scrollbar", ix))
+                .mode(ScrollbarMode::Always),
+        )
+        .test_support()
+}
+
+fn spoken(entry: &Entry) -> SharedString {
+    if entry.kind == Kind::Folder {
+        let name = entry.name.trim_start_matches('[').trim_end_matches(']');
+        return format!("{name}, folder").into();
+    }
+    format!("{}, {}, {}", entry.name, entry.size, entry.date).into()
 }
 
 pub struct RowFlags {
@@ -88,8 +107,17 @@ pub fn rows(
                 is_marked: pane.marked.contains(&index),
                 is_active_pane,
             };
-            row(t, &pane.entry(index), &flags)
+            let entry = pane.entry(index);
+            row(t, &entry, &flags)
                 .id(("row", index))
+                .role(Role::ListItem)
+                .aria_label(spoken(&entry))
+                .aria_selected(flags.is_marked)
+                .aria_position_in_set(index + 1)
+                .aria_size_of_set(pane.len())
+                .when(flags.is_cursor && is_active_pane, |d| {
+                    d.aria_active_descendant()
+                })
                 .on_mouse_down(
                     MouseButton::Left,
                     cx.listener(move |this, _, window, cx| {
