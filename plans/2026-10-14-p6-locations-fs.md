@@ -40,7 +40,7 @@ Rusty reads folders through providers instead of raw paths. A fake file system w
 | F7 | `local_provider` Linux Green | T3 | api-builder | xhigh | F6 | `… local` on Linux |
 | F8 | `local_provider` Windows Green | T3 | api-builder | xhigh | F7 | `… local` on Windows CI, hostile corpus included |
 | F9 | `io_queue` Red | T2 | checker | high | F4 | tests compile, fail |
-| F10 | `io_queue` Green | T4 | core-builder-high | high | F9 | `… io_queue` |
+| F10 | `io_queue` Green | T4 | ui-builder-high | high | F9 | `… io_queue` |
 | G6 | gate | — | orchestrator + reviewer | high | F1–F10 | gate, CI on both OS, review |
 
 F9–F10 run in parallel with F5–F8.

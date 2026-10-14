@@ -28,7 +28,7 @@ The rest of Alpha (workspaces, drive bar, context menu, Explorer clipboard and s
 | **T1** | Haiku 5.5 | `scout`, `researcher`, `patcher`, `infra-builder` | Lookups, moves, exact edits, small config. **The brief plus reading and writing stays under 60k tokens; 90k is the hard ceiling.** More to read means a `scout` atom first or a split |
 | **T2** | Sonnet 5.5 | `ui-builder`, `checker`, `infra-builder` (large) | UI work, medium implementation, writing the failing tests (Red atoms), CI |
 | **T3** | gpt-6.1-sol, `xhigh` | `api-builder` | Backend Rust: core, store, fs, index, diag, xtask |
-| **T4** | Opus 5.5, `medium` or `high` | `ui-builder-high` (UI), `core-builder-high` (non-UI) | The hardest atoms: the spike, `FileList`, the pane container, the job engine's recovery, the I/O queue |
+| **T4** | Opus 5.5, `medium` or `high` | `ui-builder-high` (UI and, with a Rust-only brief, the hardest non-UI atoms) | The hardest atoms: the spike, `FileList`, the pane container, `apply()`, the job engine's recovery, the I/O queue |
 
 - The tier follows the atom's difficulty, not its crate. A one-line move in `rusty-core` is T1.
 - Escalation follows `planning.md`: one retry with the failure output and one effort step more, then one tier up (T1 → T2 → T3 for backend or T4). Every escalation is logged in the plan.

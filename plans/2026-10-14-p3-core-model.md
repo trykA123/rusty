@@ -38,7 +38,7 @@ Status: drafting (briefs get exact `Read` ranges when G2 passes) · Branch: `p3-
 | C7 | `selection` Red | T2 | checker | high | C6 | tests compile, fail |
 | C8 | `selection` Green | T3 | api-builder | xhigh | C7 | `… selection` |
 | C9 | `apply` Red | T2 | checker | high | C6, C8 | tests compile, fail |
-| C10 | `apply` Green | T4 | core-builder-high | high | C9 | `… apply` |
+| C10 | `apply` Green | T4 | ui-builder-high | high | C9 | `… apply` |
 | C11 | `replay` Red | T2 | checker | medium | C10 | tests compile, fail |
 | C12 | `replay` Green | T3 | api-builder | xhigh | C11 | `… replay` |
 | G3 | gate | — | orchestrator + reviewer | high | C1–C12 | `cargo xtask gate --coverage`; CI green; review |

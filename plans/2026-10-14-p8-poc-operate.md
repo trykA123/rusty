@@ -35,7 +35,7 @@ Status: drafting (briefs get exact `Read` ranges when G7 passes) · Branch: `p8-
 | O3 | `job_journal` Red | T2 | checker | high | G7 | tests compile, fail |
 | O4 | `job_journal` Green | T3 | api-builder | xhigh | O3 | `… journal` |
 | O5 | `job_engine` Red | T2 | checker | high | O2, O4 | tests compile, fail (faults: disk full, locked, network lost, crash mid-copy) |
-| O6 | `job_engine` Green | T4 | core-builder-high | high | O5 | `… job_engine`; no partial target after any fault |
+| O6 | `job_engine` Green | T4 | ui-builder-high | high | O5 | `… job_engine`; no partial target after any fault |
 | O7 | `copy_standard` | T3 | api-builder | xhigh | O6 | integration on Linux and Windows CI |
 | O8 | `copy_auto` | T3 | api-builder | xhigh | O7 | integration + first benchmark numbers |
 | O9 | `recycle` | T3 | api-builder | xhigh | O6 | Windows CI: file lands in the Recycle Bin |
