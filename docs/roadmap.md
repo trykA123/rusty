@@ -16,14 +16,15 @@ Kinds: **core** is always on; **module** can be turned off; **package** is data 
 
 ## Design · done
 
-Product discussion, prototypes A–L (B chosen), architecture, plugin model, decisions D1–D16.
+Product discussion, prototypes A–L (B chosen), architecture, plugin model, decisions D1–D18.
 
 ## Foundation · v0.1 · next
 
 Goal: prove the stack and build the factory.
 
 - infra: foundation plan; Cargo workspace with the ten crates; quality gate; Windows CI producing a portable `.exe` per push.
-- infra: GPUI spike on design B with 100k entries, three panes and the drawer.
+- infra: GPUI spike on design B with 100k entries, three panes and the drawer; `nucleo` against `frizbee` on 2 million names.
+- core: storage layer with SQLite from day one (`rusty.db`, `cache.db`, migrations) and the session snapshot (D17).
 - core: command system, layout tree, state and `apply()` with property tests.
 
 Exit: the spike meets the targets on Linux and the work PC, otherwise D2 is reopened.

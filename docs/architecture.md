@@ -17,7 +17,7 @@ A Cargo workspace; dependencies point down the table.
 | Crate | Job | Platform |
 | --- | --- | --- |
 | `rusty-core` | Pure model and logic: paths, entries, panes, tabs, layout tree, workspaces, pins, selection, sort/filter, the command set, operation planning. No I/O. | any |
-| `rusty-store` | Settings (TOML), session and workspace snapshots, journals; atomic writes, versions, migrations, recovery | any |
+| `rusty-store` | Settings (TOML), session snapshot (`postcard`), SQLite databases `rusty.db` and `cache.db`; atomic writes, versions, migrations, recovery. Built in the Foundation phase | any |
 | `rusty-fs` | Listing, metadata, watching, the job engine (copy, move, recycle, delete) with progress, cancel, verification and the undo journal | Windows first, Linux for development |
 | `rusty-cache` | Bounded caches: listings, icons, thumbnails, enrichments; budgets and eviction | any |
 | `rusty-index` | Fuzzy matching (`nucleo`), folder search (`ignore`), global search (Everything IPC, own NTFS index later) | Windows for global |
@@ -61,15 +61,19 @@ This gives the palette, custom shortcuts and plugins one surface, and gives safe
 | --- | --- | --- |
 | Settings and keymaps | TOML, hand-editable | Validated on load; invalid files are reported and **never overwritten**; the last valid copy keeps running |
 | Session and workspaces | Versioned binary (`postcard`) with header and checksum | Debounced saves (1 s), atomic replace, previous file kept as `.bak`, recovery from `.bak` on a bad checksum |
-| Job journal (copies, moves, deletes) | Append-only, one record per step, flushed per step | Lets an interrupted job resume or roll back after a crash |
-| Undo journal | Same as job journal | Bounded; entries expire |
+| User data (`rusty.db`, SQLite) | History, frecency, tags, saved searches, module key-value data, job and undo journals | WAL mode; one transaction per job step; `PRAGMA user_version` migrations; `integrity_check` on start-up after a crash |
+| Job journal (copies, moves, deletes) | Table in `rusty.db`, one row per step, committed per step | Lets an interrupted job resume or roll back after a crash |
+| Undo journal | Table in `rusty.db` | Bounded; entries expire |
+| Cache (`cache.db`, SQLite) | Listings, icons, thumbnails as blobs, folder sizes | Safe to delete at any time; rebuilt on demand; a corrupt file is replaced, never repaired |
+| Global search index | Own file format under `index/`, memory-mapped (`rkyv`) | Rebuilt when missing or from an older version |
 
 - **Atomic writes:** write `name.tmp`, flush, then `ReplaceFileW` / `MoveFileExW(MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH)`.
 - **Single writer:** one process per user session (a named mutex); a second launch hands its arguments to the first instance and exits.
-- **Migrations:** each format has a version; migrations are pure functions with fixture tests for every old version.
+- **Migrations:** each format has a version (`PRAGMA user_version` for SQLite); migrations are pure functions with fixture tests for every old version.
+- **SQLite from the start:** `rusqlite` with bundled SQLite is part of `rusty-store` from the Foundation phase, so every later feature stores its data in the same place.
 - **Crashes:** a panic hook writes a crash report and the last session; the next start offers to restore it.
 
-Storage lives in `%APPDATA%\Rusty` (settings), `%LOCALAPPDATA%\Rusty` (caches, journals). **Portable mode:** if `rusty.toml` sits next to the executable, everything lives beside it instead.
+Storage lives in `%APPDATA%\Rusty` (settings, `rusty.db`), `%LOCALAPPDATA%\Rusty` (session, `cache.db`, index). **Portable mode:** if `rusty.toml` sits next to the executable, everything lives beside it instead.
 
 ## Speed: caching, lazy loading, pre-warming
 
@@ -83,8 +87,8 @@ Storage lives in `%APPDATA%\Rusty` (settings), `%LOCALAPPDATA%\Rusty` (caches, j
 
 Start-up order:
 
-1. Read the session snapshot (small, one file) and draw the last layout immediately.
-2. Fill visible panes from the listing cache, marked as cached, and revalidate them in the background.
+1. Read the session snapshot (small, one file) and draw the last layout immediately. The snapshot also holds about 100 visible rows per pane, marked as cached, so the first frame needs one file read and **no database**.
+2. Open `rusty.db` and `cache.db` in the background, fill the rest of the panes from the listing cache and revalidate everything.
 3. Start everything else **lazily**: plugins, global index connection, git, thumbnails and terminals start on first use or after the app is idle.
 
 Targets are measured with `tracing` spans in every build and checked by a start-up benchmark in CI on Windows.
@@ -100,9 +104,9 @@ Targets are measured with `tracing` spans in every build and checked by a start-
 | Cache | Key | Budget | Invalidation |
 | --- | --- | --- | --- |
 | Listings (memory) | path + volume serial | 64 MB, LRU | File watcher for open panes; folder change time on revisit |
-| Listings (disk) | same | pinned and workspace folders only, 32 MB | Same; never trusted without revalidation |
-| Icons | extension, or file for `.exe`, `.lnk`, `.ico` | 8 MB | App restart, or the file's change time |
-| Thumbnails (disk) | path + size + change time | 256 MB, LRU | Key change; purged when the file is deleted through Rusty |
+| Listings (`cache.db`) | same | pinned and workspace folders only, 32 MB, `lz4` compressed | Same; never trusted without revalidation |
+| Icons (memory and `cache.db`) | extension, or file for `.exe`, `.lnk`, `.ico` | 8 MB | Icon theme change, or the file's change time; the Windows shell is not touched before the first frame |
+| Thumbnails (`cache.db` blobs) | path + size + change time | 256 MB, LRU | Key change; purged when the file is deleted through Rusty |
 | Enrichments (git, folder sizes) | path + change time | 16 MB | Watcher events |
 
 - **Stale while revalidating:** a cached listing shows at once and is replaced by a diff when fresh data arrives; selection and scroll position are kept.
@@ -115,6 +119,41 @@ Targets are measured with `tracing` spans in every build and checked by a start-
 - The cursor resting on a folder for 150 ms prefetches its listing (at most two prefetches at once).
 - After start-up goes idle: pins and workspace folders are listed, the Everything connection is opened, and fonts and icons for the visible panes are loaded.
 - A terminal is pre-started only if the drawer's terminal view was open in the last session.
+
+## Runtime and libraries
+
+No Tokio in the core (D18). GPUI already has a foreground and a background executor whose tasks are cancelled when dropped, and file-system calls on Windows block anyway.
+
+| Work | Runs on |
+| --- | --- |
+| UI and pane-owned tasks (listing, enrichment) | GPUI executors |
+| Copy, move, recycle, delete | The job engine's own pool of `std` threads with bounded channels; copies use `CopyFileExW` for progress, cancel and attributes |
+| CPU-parallel work (folder sizes, large sorts) | `rayon` |
+| Folder walks | `ignore` or `jwalk` |
+| Watching | `notify` (ReadDirectoryChangesW) |
+| Network (remotes, downloads) | Inside the module that needs it; a module may start its own Tokio runtime on first use |
+
+Main libraries (versions are pinned and checked in the Foundation plan):
+
+| Role | Crate |
+| --- | --- |
+| UI | `gpui`, `gpui-component` |
+| Windows API | `windows` |
+| Errors | `thiserror` in libraries, `anyhow` only in `rusty-app` |
+| Logging and timing | `tracing`, `tracing-subscriber`, `tracing-appender` (size-limited) |
+| Serialisation | `serde`, `toml`, `postcard`, `rkyv` |
+| Database | `rusqlite` (bundled SQLite) |
+| Fuzzy matching | `nucleo`; `frizbee` is compared in the spike |
+| Channels | `crossbeam-channel` (bounded) |
+| Hashing | `xxhash` for cache keys, `sha2` for copy verification |
+| Compression | `lz4_flex` |
+| File names | `compact_str` (short names stored inline) |
+| Translation | `fluent-bundle` |
+| Tests and benchmarks | `proptest`, `insta`, `dhat`, `divan` |
+
+- Sorting by name uses `StrCmpLogicalW`, the same order as Explorer (`file2` before `file10`).
+- A file-list row costs about 56 bytes, so 100,000 entries take about 6 MB.
+- Release profile: `lto = "fat"`, `codegen-units = 1`, `strip = true`, `panic = "unwind"` so a panic in a background task stops that task, not the app. `mimalloc` is adopted only if the spike shows a gain.
 
 ## Safety
 
