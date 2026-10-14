@@ -30,17 +30,17 @@ Status: drafting (briefs get exact `Read` ranges when G2 passes) · Branch: `p3-
 | Atom | Component | Tier | Role | Effort | After | Check |
 | --- | --- | --- | --- | --- | --- | --- |
 | C1 | `command` Red | T2 | checker | high | G2 | tests compile, fail |
-| C2 | `command` Green | T3 | api-builder | xhigh | C1 | `cargo nextest run -p rusty-core command` |
+| C2 | `command` Green | T4 | orchestrator | high | C1 | `cargo nextest run -p rusty-core command` |
 | C3 | `layout` Red | T2 | checker | high | G2 | tests compile, fail |
-| C4 | `layout` Green | T3 | api-builder | xhigh | C3 | `… layout` |
-| C5 | `state` Red | T2 | checker | medium | C2, C4 | tests compile, fail |
-| C6 | `state` Green | T3 | api-builder | xhigh | C5 | `… state` |
+| C4 | `layout` Green | T4 | orchestrator | high | C3 | `… layout` |
+| C5 | `state` Red | T2 | checker | high | C2, C4 | tests compile, fail |
+| C6 | `state` Green | T4 | orchestrator | high | C5 | `… state` |
 | C7 | `selection` Red | T2 | checker | high | C6 | tests compile, fail |
-| C8 | `selection` Green | T3 | api-builder | xhigh | C7 | `… selection` |
+| C8 | `selection` Green | T4 | orchestrator | high | C7 | `… selection` |
 | C9 | `apply` Red | T2 | checker | high | C6, C8 | tests compile, fail |
-| C10 | `apply` Green | T4 | ui-builder-high | high | C9 | `… apply` |
-| C11 | `replay` Red | T2 | checker | medium | C10 | tests compile, fail |
-| C12 | `replay` Green | T3 | api-builder | xhigh | C11 | `… replay` |
+| C10 | `apply` Green | T4 | orchestrator | high | C9 | `… apply` |
+| C11 | `replay` Red | T2 | checker | high | C10 | tests compile, fail |
+| C12 | `replay` Green | T4 | orchestrator | high | C11 | `… replay` |
 | G3 | gate | — | orchestrator + reviewer | high | C1–C12 | `cargo xtask gate --coverage`; CI green; review |
 
 C1–C2 and C3–C4 run in parallel.

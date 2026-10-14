@@ -31,8 +31,8 @@ Find out with numbers whether GPUI with `gpui-kit` can carry Rusty: design B's l
 | Atom | Component | Tier | Role | Effort | After | Check | Status |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | S1 | `gpui-kit-notes` | T1 | researcher | medium | G1 | notes answer every question below, with links | blocked |
-| S2 | `spike-shell` | T4 | ui-builder-high | high | S1 | window opens on Linux; screenshot reviewed by orchestrator | blocked |
-| S3 | `spike-list` | T4 | ui-builder-high | high | S2 | headless test passes; manual scroll smooth | blocked |
+| S2 | `spike-shell` | T4 | orchestrator | high | S1 | window opens on Linux; screenshot reviewed by orchestrator | blocked |
+| S3 | `spike-list` | T4 | orchestrator | high | S2 | headless test passes; manual scroll smooth | blocked |
 | S4 | `spike-metrics` | T2 | ui-builder | medium | S3 | `spike --metrics` prints valid JSON | blocked |
 | S5 | `fuzzy-bench` | T3 | api-builder | xhigh | G1 | `cargo bench -p fuzzy-bench` prints the table | blocked |
 | S6 | `a11y-probe` | T2 | ui-builder | high | S3 | headless test finds list rows with names | blocked |
