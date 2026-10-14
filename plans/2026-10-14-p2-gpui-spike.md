@@ -30,8 +30,8 @@ Find out with numbers whether GPUI with `gpui-kit` can carry Rusty: design B's l
 
 | Atom | Component | Tier | Role | Effort | After | Check | Status |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| S1 | `gpui-kit-notes` | T1 | researcher | medium | G1 | notes answer every question below, with links | running |
-| S2 | `spike-shell` | T4 | orchestrator | high | S1 | window opens on Linux; screenshot reviewed by orchestrator | blocked |
+| S1 | `gpui-kit-notes` | T1 | researcher | medium | G1 | notes answer every question below, with links | done |
+| S2 | `spike-shell` | T4 | orchestrator | high | S1 | window opens on Linux; screenshot reviewed by orchestrator | running |
 | S3 | `spike-list` | T4 | orchestrator | high | S2 | headless test passes; manual scroll smooth | blocked |
 | S4 | `spike-metrics` | T2 | ui-builder | medium | S3 | `spike --metrics` prints valid JSON | blocked |
 | S5 | `fuzzy-bench` | T3 | api-builder | xhigh | G1 | `cargo bench -p fuzzy-bench` prints the table | running |
@@ -67,3 +67,4 @@ S5 runs in parallel with S1–S4.
 
 - 2026-10-14 — G1 passed; P2 starts. The spike branch `spike/gpui-b-variants` (`52f997a`, worktree `.crew/rusty-gpui-b-variants`) holds variant 1 in `spikes/gpui-b-variants/` (2,417 lines, own workspace, `gpui-kit = "=0.7.3"`). S1 (researcher, Haiku, read-only, medium) and S5 (api-builder, gpt-6.1-sol, xhigh) start in parallel. S2 and S3 are the orchestrator's (D28).
 - 2026-10-14 — S1 on Haiku used ~114k tokens (above the 90k ceiling) and twice ended without a report. Escalated one tier: S1 retry on Sonnet (general-purpose, read-only, medium) with a narrower reading plan; it writes the notes to the scratchpad for the orchestrator to commit.
+- 2026-10-14 — S1 done (Sonnet retry): `docs/spike/gpui-kit-notes.md`. Spot-checked: `get_adapter` at `gpui-pre-windows-0.3.9/src/directx_devices.rs:106` walks `EnumAdapters` (no GPU preference), `Window::debug_a11y_tree_json` exists, gpui-kit ships headless tests (`tests/dock.rs`, `tests/collections.rs`). Key facts for S2–S6: `uniform_list` + `scroll_to_item` for fixed rows, `DockArea::dump/load` for layout, JSON themes via `ThemeRegistry`, rows need an explicit `ListItem` role, `#[gpui_kit::test]` with `test-support`. S2 starts (orchestrator).
