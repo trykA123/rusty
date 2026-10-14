@@ -16,17 +16,19 @@ Kinds: **core** is always on; **module** can be turned off; **package** is data 
 
 ## Design · done
 
-Product discussion, prototypes A–L (B chosen), architecture, plugin model, decisions D1–D20.
+Product discussion, prototypes A–L (B chosen), architecture, plugin model, decisions D1–D22.
 
 ## Foundation · v0.1 · next
 
 Goal: prove the stack and build the factory.
 
 - infra: foundation plan; Cargo workspace with the eleven crates; quality gate; Windows CI producing a portable `.exe` per push.
-- infra: GPUI spike on design B with 100k entries, three panes and the drawer; `nucleo` against `frizbee` on 2 million names.
+- infra: GPUI spike on design B with 100k entries, three panes and the drawer; `nucleo` against `frizbee` on 2 million names; screen-reader support.
 - core: storage layer with SQLite from day one (`rusty.db`, `cache.db`, migrations) and the session snapshot (D17).
 - core: diagnostics with redacted logs, memory and performance statistics and a hand-saved report (D20).
-- core: command system, layout tree, state and `apply()` with property tests.
+- core: serialisable commands, layout tree, multi-window state and `apply()` with property tests.
+- core: locations and providers, record and replay, one error model, I/O queues per volume, experimental flags (D21).
+- infra: fake file system with fault injection and a hostile-name corpus.
 
 Exit: the spike meets the targets on Linux and the work PC, otherwise D2 is reopened.
 
@@ -38,6 +40,8 @@ Goal: a file manager the owner can use every day on Windows.
 - core: Total Commander selection (D15); native context menu on a long right-click.
 - core: drive bar with mapped network drives, reconnect, Alt+F1, UNC paths and an offline state (D19).
 - core: copy, move, rename, new folder, Recycle Bin, Shift+Del with a warning; plan before acting; background job queue.
+- core: copy engine in Auto and Standard modes (D22); Explorer clipboard; lock owner in errors; command line; key contexts; per-monitor DPI.
+- infra: copy benchmark against Explorer, `robocopy /MT` and TeraCopy.
 - core: pins, Ctrl+K palette, shortcuts in TOML, F-key bar; every string in Fluent files (English only).
 - package: built-in light and dark themes following Windows.
 
@@ -50,6 +54,7 @@ Goal: safe, configurable and pleasant; modules and theming arrive.
 - core: workspaces (Alt+1…9); refresh mode per network location; drag and drop with Explorer; crash-safe job journal and undo.
 - core: module registry with runtime on/off and safe mode; settings window generated from module schemas.
 - core: per-case confirmations, date and size formats, ignore list.
+- core: Parallel and Large files copy modes, copy options, profiles and rules by destination; accessibility basics.
 - package: custom colour themes and icon themes (D16).
 - module: copy path, terminal (Windows Terminal and templates), folder search, frecency jump, external viewer and editor (F3/F4), notifications for long operations.
 - infra: soak test and start-up benchmark in CI.
@@ -59,6 +64,7 @@ Exit: no open data-safety bugs; start-up and memory targets met in CI.
 ## v1.0
 
 - infra: signed portable `.exe` and installer; user guide.
+- core: optional default file manager (Win+E).
 - package: Total Commander keymap.
 
 Exit: every target is met on a clean Windows 11 machine.

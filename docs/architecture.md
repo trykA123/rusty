@@ -40,6 +40,32 @@ Every action is a typed command with a stable id, for example `pane.open-tab { p
 
 This gives the palette, custom shortcuts and plugins one surface, and gives safety checks one place to live.
 
+## Core foundations
+
+Structure that is cheap now and expensive to add later (D21). Most of it is types and tests, not runtime weight.
+
+| Foundation | What it means | Phase |
+| --- | --- | --- |
+| **Locations, not paths** | Panes work with `Location { provider, path }`. Local disks, UNC shares, archives, SFTP and search results are providers that declare what they support (write, watch, recycle, rename) | Foundation |
+| **Serialisable commands** | Every command round-trips through text (`pane.open-tab { path: "…" }`), so macros, the command line, plugins and replay share one format | Foundation |
+| **Record and replay** | The redacted command stream can be recorded and replayed against the fake file system; a reported bug becomes a test | Foundation |
+| **Fake file system with fault injection** | Disk full, access denied, sharing violation, file locked, network lost halfway through a copy; used by the job engine tests on Linux CI | Foundation |
+| **Hostile names** | Long paths (`\\?\`), names that are invalid UTF-16, `CON` and `NUL`, trailing dots and spaces, Windows case-insensitive comparison; a corpus of such names runs in CI | Foundation |
+| **One error model** | Every error has a kind, a user message and recovery actions (Retry, Skip, Skip all, Run as admin, Show what locks the file); every error dialog is the same component | Foundation |
+| **I/O queue per volume** | Priorities (visible, prefetch, idle) and a concurrency limit per disk and per network share, set from the drive type | Foundation |
+| **Multi-window state** | `AppState` holds windows; v1 opens one | Foundation |
+| **Experimental flags** | `experimental.*` settings hide unfinished features in test builds | Foundation |
+| **Key contexts** | Bindings apply in contexts such as `FileList && !Renaming`, with chords; mouse gestures such as the long right-click are bindings too | Alpha |
+
+Small core features that depend on these:
+
+- **Explorer clipboard:** copy and cut in Rusty, paste in Explorer and back (`CF_HDROP`, preferred drop effect). Alpha.
+- **Who locks a file:** the Restart Manager names the process ("used by WINWORD.EXE") in the error dialog. Alpha.
+- **Command line:** `rusty <path>`, `rusty --new-tab <path>`, `rusty cmd <command>` sent to the running instance over its pipe. Alpha.
+- **Per-monitor DPI:** each monitor keeps its own scale; window placement is saved per monitor setup. Alpha.
+- **Accessibility:** everything works from the keyboard, focus is always visible, a high-contrast theme exists, the UI scales. Screen-reader support depends on GPUI and is checked in the spike.
+- **Default file manager:** optional; Win+E and "Open folder" open Rusty, with a clean way back to Explorer. v1.0.
+
 ## State
 
 ### One owner, one direction
@@ -165,7 +191,7 @@ Main libraries (versions are pinned and checked in the Foundation plan):
 - **Protected locations** (drive roots, `C:\Windows`, `Program Files`, the user profile root, Rusty's own folders) need a typed confirmation.
 - **Links are never followed when deleting or moving.** Symlinks and junctions are removed as links; recursive operations stop at reparse points.
 - **Re-check at execution.** Paths are canonicalised and re-validated just before each step, so a changed folder can't redirect an operation.
-- **Copies are safe:** written to a temporary name, verified (size; optional SHA-256), then renamed. Conflicts follow an explicit policy (ask, skip, rename, overwrite older).
+- **Copies are safe:** written to a temporary name, verified (size, `xxh3` or SHA-256; see Copy engine), then renamed. Conflicts follow an explicit policy (ask, skip, rename, overwrite older).
 - **Undo** covers rename, move, copy and Recycle Bin operations.
 - **Keyboard and mouse guards:** F8 and Del act only when the file list has focus, repeated presses are debounced, and drag-and-drop between drives copies by default.
 
@@ -179,6 +205,31 @@ Main libraries (versions are pinned and checked in the Foundation plan):
 - **Plugins** are sandboxed and permission-checked; see [plugins.md](plugins.md).
 - **Supply chain:** pinned dependencies, `cargo-deny` and `cargo-audit` in CI, minimal crate features.
 - **No telemetry.** Diagnostic reports are created only on request and never leave the machine unless the user sends them.
+
+## Copy engine
+
+The user chooses how a copy runs (D22). The mode changes speed only: every mode keeps the plan, the temporary name, verification, the job journal and undo.
+
+| Mode | How it copies | Good for |
+| --- | --- | --- |
+| **Auto** (default) | `CopyFile2` per file; parallel on SSD, NVMe and network, sequential on spinning disks; unbuffered above a size threshold; thresholds come from the copy benchmark | Everything |
+| **Standard** | `CopyFile2`, one file at a time, like Explorer | Compatibility, odd file systems |
+| **Parallel** | Like `robocopy /MT`: a chosen number of files at once (2–32) | Many small files, network shares |
+| **Large files** | Unbuffered I/O with large buffers, reads and writes overlapped, like FastCopy | Big files between physical disks |
+
+`CopyFile2` gives server-side copy on SMB (data stays on the NAS when source and target are on it), block cloning on ReFS and Dev Drive, and SMB compression where Windows supports them.
+
+Options per job, with defaults in settings:
+
+- **Verify:** none, size, fast hash (`xxh3`) or SHA-256.
+- **Conflicts:** ask, skip, rename, overwrite older, overwrite all.
+- **Keep:** timestamps and attributes (always), alternate data streams, permissions and owner (may need elevation).
+- **Load:** normal or background I/O priority; an optional bandwidth limit for network targets.
+- **When:** start now or add to the queue.
+
+**Copy profiles** save a mode with its options under a name. **Rules** choose a profile by destination (for example, the NAS drive uses Parallel 4 with SHA-256). The F5 and F6 dialogs show the chosen profile and can change it for one job. A same-volume move is a rename.
+
+Running `robocopy.exe` as an engine is not part of the core; it could come later as a module.
 
 ## Theming
 
