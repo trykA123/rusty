@@ -47,7 +47,7 @@ Final. Workers never reopen them; a worker that finds one wrong stops and report
 | A7b | `xtask` coverage to its floor | T3 | api-builder | xhigh | A4, A6 | `cargo xtask coverage` shows `xtask` ≥ 85 % without exclusions | done | |
 | A8 | `xtask-gate` | T3 | api-builder | xhigh | A4, A6, A7 | gate tests pass; `cargo xtask gate` green | done | |
 | A9 | `ci` | T2 | infra-builder | high | A8 | `actionlint` clean | running | |
-| A10 | `dev-docs` | T1 | patcher (Sonnet) | medium | A8 | `typos` clean | running | |
+| A10 | `dev-docs` | T1 | general-purpose (Sonnet) | medium | A8 | `typos` clean | done | |
 | G1 | gate | — | orchestrator + reviewer | high | A0–A10, A7b | CI green on both OS, artifact runs, review approved | blocked | |
 
 A3 and A5 can run in parallel after A2; A4 and A6 in parallel after their Red atoms; A7 in parallel with all of them.
@@ -266,3 +266,5 @@ fn main() {
 - 2026-10-14 — A8 merged (api-builder, gpt-6.1-sol, xhigh): 5 gate tests pass; `cargo xtask gate` green in 3 s; `--bogus` exits 2. A8 stays `running` until `cargo xtask gate --coverage` is green, which waits on A7b.
 - 2026-10-14 — A7b done (api-builder, gpt-6.1-sol, xhigh): 46 tests added, no lexer bug, `xtask` 91 % on its own branch. After merging with A8, `gate --coverage` gave 84.3 % because `gate/run.rs` is untested. A8 retry (same tier, failure output in the brief) adds those tests.
 - 2026-10-14 — A8 done after one retry (api-builder, gpt-6.1-sol, xhigh): `run_steps` extracted and tested (stop at first failure, exit code passed on, spawn failure); 90 xtask tests. `cargo xtask gate --coverage`: all 10 steps green, `xtask` 91.6 %. A9 (infra-builder, Sonnet, high) and A10 (patcher, Sonnet, medium) start in parallel.
+- 2026-10-14 — The fleet hook pins `patcher` to Haiku (`~/.config/crew/roles.json`) and refuses a Sonnet override, so A10 runs as a `general-purpose` agent on Sonnet with the patcher brief. Changing `roles.json` is the owner's call (it is global).
+- 2026-10-14 — A10 done (general-purpose, Sonnet, medium): README "Develop" section and `docs/dev-tools.md`; `typos` clean.
