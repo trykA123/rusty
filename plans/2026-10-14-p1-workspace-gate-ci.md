@@ -249,8 +249,8 @@ fn main() {
 ## Done when
 
 - `cargo xtask gate --coverage` passes locally and in CI on Linux; the Windows gate passes.
-- Every push to `main` uploads a `rusty.exe` under 30 MiB that prints its version.
-- A file over 400 lines, a function over 50 lines, an `unwrap()` outside tests or a coverage drop each fail the gate (checked by the xtask tests and a deliberate local trial before merge).
+- Every push to `main` uploads a `ferrite.exe` under 30 MiB that prints its version, and a Linux `ferrite` binary (D29, D30).
+- A file over 400 lines, a function over 50 lines, an `unwrap()`, `expect()` or `panic!` outside tests (D31) or a coverage drop each fail the gate (checked by the xtask tests and a deliberate local trial before merge).
 
 ## Log
 
@@ -274,3 +274,4 @@ fn main() {
 - 2026-10-14 — The owner approved moving `patcher` and `infra-builder` to Sonnet in `~/.config/crew/roles.json` and the agent files (backup `roles.json.bak-20261014b`); from now on T1 runs as `patcher` on Sonnet.
 - 2026-10-14 — G1 CI run 2 (`38614800321`, `d89f1c1`): `gate-linux`, `gate-windows` and `build-windows` green. Artifact `rusty-windows-x64-d89f1c1…`: `rusty.exe` is 115 KB, PE32+ x86-64 console; CI checked that it prints `rusty 0.0.1`. Waiting for the `reviewer` verdict and the owner's run on the work PC.
 - 2026-10-14 — `reviewer` (Opus, high): **approve**, no blocking issues; Done-when trials pass (401-line file, 53-line function, `unwrap`, coverage drop). The orchestrator applied three notes: static CRT for `x86_64-pc-windows-msvc` (a portable `rusty.exe` without the VC++ runtime, D3), no cancelling of CI runs on `main` (every push to `main` gets an exe), and `target/` excluded in `typos.toml`. A11 (Sol) takes the two `xtask` notes. Open for the owner: deny `clippy::expect_used` as well.
+- 2026-10-14 — Owner decisions folded into P1 before merge: product name Ferrite (D29; the binary is now `ferrite`, CI checks `ferrite 0.0.1` and uploads `ferrite-windows-x64-…`), Linux as a secondary target (D30; new `build-linux` job uploads `ferrite-linux-x64-…`), no panics outside tests (D31; `expect_used`, `panic`, `unimplemented` denied, trial in `rusty-core` fails clippy as expected), Lucide for UI icons (D32).
