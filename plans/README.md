@@ -1,0 +1,120 @@
+# Rusty plans
+
+How Rusty is built: in plans, each cut into atoms, each atom one worker run. Rules come from `~/.agents/rules/planning.md`, `code-quality.md` and `rust.md`; this file adds Rusty's own (D26).
+
+## The plans, in order
+
+Each plan ends in a gate. The next plan starts only after that gate passes.
+
+| Plan | File | Delivers | Gate |
+| --- | --- | --- | --- |
+| P1 | [Workspace, gate and CI](2026-10-14-p1-workspace-gate-ci.md) | Eleven crates, `cargo xtask gate`, CI on Linux and Windows, a portable `.exe` per push | G1 |
+| P2 | [GPUI spike](2026-10-14-p2-gpui-spike.md) | Design B on `gpui-kit` with 100k rows; measured frame time, memory, start-up, fuzzy matching, accessibility | G2: go or no-go for D2 |
+| P3 | [Core model](2026-10-14-p3-core-model.md) | Commands, layout tree, state, `apply()`, TC selection, record and replay | G3 |
+| P4 | [Storage](2026-10-14-p4-storage.md) | Atomic writes, settings, session snapshot, `rusty.db`, `cache.db`, migrations | G4 |
+| P5 | [Diagnostics](2026-10-14-p5-diagnostics.md) | Redacted logs, event ring, memory statistics, report, canary test | G5 |
+| P6 | [Locations and file systems](2026-10-14-p6-locations-fs.md) | Locations and providers, fake file system with faults, hostile names, local listing, I/O queues, error model | G6 |
+| P7 | [PoC 1: Browse](2026-10-14-p7-poc-browse.md) | Components and gallery; a window with two panes that browse real folders; session restore | G7: **PoC 1** |
+| P8 | [PoC 2: Operate](2026-10-14-p8-poc-operate.md) | Plans, job journal, copy, move, Recycle Bin, Shift+Del, progress and cancel | G8: **PoC 2** |
+
+P1 is ready to run. P2–P8 list their components, atoms and decided design; each plan's briefs get their exact `Read` line ranges when the previous gate passes, because the code they point at does not exist yet.
+
+The rest of Alpha (workspaces, drive bar, context menu, Explorer clipboard and so on) is planned after PoC 2, from the roadmap.
+
+## Tiers: which model runs an atom
+
+| Tier | Model | Roles | Used for |
+| --- | --- | --- | --- |
+| **T1** | Haiku 5.5 | `scout`, `researcher`, `patcher`, `infra-builder` | Lookups, moves, exact edits, small config. **The brief plus reading and writing stays under 60k tokens; 90k is the hard ceiling.** More to read means a `scout` atom first or a split |
+| **T2** | Sonnet 5.5 | `ui-builder`, `checker`, `infra-builder` (large) | UI work, medium implementation, writing the failing tests (Red atoms), CI |
+| **T3** | gpt-6.1-sol, `xhigh` | `api-builder` | Backend Rust: core, store, fs, index, diag, xtask |
+| **T4** | Opus 5.5, `medium` or `high` | `ui-builder-high` (UI), `core-builder-high` (non-UI) | The hardest atoms: the spike, `FileList`, the pane container, the job engine's recovery, the I/O queue |
+
+- The tier follows the atom's difficulty, not its crate. A one-line move in `rusty-core` is T1.
+- Escalation follows `planning.md`: one retry with the failure output and one effort step more, then one tier up (T1 → T2 → T3 for backend or T4). Every escalation is logged in the plan.
+- Red and Green atoms run on different models where possible, so the tests are not written by the same model that makes them pass.
+
+## No skipping
+
+1. **Plans run in order.** A plan starts when the previous gate is done: every atom done, `cargo xtask gate` green, CI green on Linux and Windows, `reviewer` approved, merged to `main`.
+2. **An atom starts only when every atom in its `After` column is done.** Atoms without a shared file or dependency may run in parallel, each in its own worktree.
+3. **Nothing is deferred or skipped.** A failed atom blocks everything after it until it passes. The gate lists every atom of its plan, so a plan cannot close with a hole in it.
+4. **A big atom is split in place** before it runs: A6 becomes A6a, A6b, A6c. Atoms that depended on A6 now depend on A6c. The split is logged.
+5. **Statuses:** `blocked` (waiting on `After`), `ready`, `running`, `done`, `failed`, `split`.
+6. **Every gate leaves `main` shippable:** the quality gate passes, the `.exe` builds, and the plan's "Done when" items are checked for real.
+
+## Test-driven
+
+- **Every component with behaviour gets a Red atom, then a Green atom.**
+  - **Red** (`checker`, T2): writes the public API as stubs (`todo!()`) and the tests from the contract. The check is that the tests compile and fail for the expected reason.
+  - **Green** (T1–T4 by difficulty): makes those tests pass without changing them. A Green worker that thinks a test is wrong stops and reports; only the orchestrator changes a Red test.
+- Kinds of test, by layer:
+
+| Kind | Tool | Where |
+| --- | --- | --- |
+| Unit | `cargo nextest` | `tests.rs` beside the module |
+| Property | `proptest` | Pure logic: layout tree, selection, redaction, plans |
+| Snapshot | `insta` | Serialised formats: commands, settings, session, reports |
+| Integration | fake file system with fault injection | `crates/<crate>/tests/` |
+| Migration | fixtures of every old format | `crates/rusty-store/tests/fixtures/` |
+| UI | `gpui-kit` headless tests | `crates/rusty-ui/tests/` |
+| Windows | the same tests on `windows-latest` | CI job `test-windows` |
+| Soak, start-up, size | `dhat`, timing spans, file size | Nightly and per-push CI jobs |
+
+- **Coverage floors**, enforced by `cargo xtask coverage` from `cargo llvm-cov`: `rusty-core` 90 %, `rusty-store`, `rusty-diag`, `rusty-cache`, `rusty-index` 85 %, `rusty-fs` 80 %, `rusty-ui` 60 %. A floor never goes down without a decision.
+- Between a Red and its Green atom the plan branch is red on purpose; only gates must be green.
+
+## Size limits, with room where it is earned
+
+From `code-quality.md`, counted as non-blank, non-comment lines and enforced by `cargo xtask size` and clippy:
+
+| Unit | Aim | Fails the gate over | Enforced by |
+| --- | --- | --- | --- |
+| File | 300 | 400 | `xtask size` |
+| Function | 30 | 50 | `clippy::too_many_lines` |
+| Parameters | 3 | 4 | `clippy::too_many_arguments` |
+| Nesting | 2 | 3 | `clippy::excessive_nesting` |
+
+- **Exceptions** are allowed for files whose job really is one large unit: a state machine, a parser, a lookup table, a Windows API binding. Each is listed in `size-exceptions.toml` with its own limit and a reason, and `reviewer` must accept it.
+- **No exception goes above 800 lines.** A file over 800 lines is split, without discussion. That keeps the room for real needs and rules out 5,000-line monoliths.
+- Tests (`tests.rs`, `tests/`), fixtures and generated code are exempt.
+
+## Latest versions
+
+- Every tool and dependency starts at its **latest stable release** when it is added: Rust 1.99.0 (current stable), `gpui-kit` 0.7.3, and the latest release of every crate in the architecture's library table. Exact versions are pinned in `Cargo.lock` and `rust-toolchain.toml` and recorded in `docs/dev-tools.md`.
+- Every dependency comes from its official source and passes `cargo deny` (licences, advisories, sources) before it lands.
+- A monthly update atom (T1) runs `cargo update`, bumps the toolchain if a new stable is out, runs the gate and logs what changed. Major version bumps get their own atom.
+
+## Repository layout
+
+```text
+rusty/
+├── Cargo.toml              workspace, shared lints, release profile
+├── rust-toolchain.toml     pinned toolchain
+├── clippy.toml             size thresholds
+├── deny.toml               licences, advisories, sources
+├── size-exceptions.toml    files allowed above 400 lines, with reasons
+├── .config/nextest.toml
+├── .github/workflows/      ci.yml (every push), nightly.yml
+├── crates/
+│   ├── rusty-core/         pure model: command/, layout/, state/, selection/, location/, error/, replay/
+│   ├── rusty-store/        atomic_write, settings/, session/, db/
+│   ├── rusty-fs/           provider, fake/, local/ (windows.rs, unix.rs), jobs/, io_queue/
+│   ├── rusty-cache/        bounded caches
+│   ├── rusty-index/        matching, folder search, global index
+│   ├── rusty-shell/        Windows shell integration
+│   ├── rusty-term/         terminal providers
+│   ├── rusty-plugins/      module host
+│   ├── rusty-diag/         redaction, logs, statistics, reports
+│   ├── rusty-ui/           tokens/, primitives/, components/, views/
+│   ├── rusty-ui-gallery/   binary: every component in every state
+│   └── rusty-app/          the binary
+├── xtask/                  cargo xtask gate | size | coverage | binsize
+├── spikes/                 throwaway experiments, outside the default build
+├── docs/  design/  plans/
+```
+
+- **Folders by domain, not by kind:** `layout/`, `session/`, never `structs.rs` or `utils.rs`.
+- **A module folder** has a small `mod.rs` (the public API and nothing else), one file per job, and `tests.rs`.
+- Platform code sits in `windows.rs` and `unix.rs` behind one trait; callers never use `cfg` themselves.
+- `pub` only what another crate uses; everything else is `pub(crate)` or private.

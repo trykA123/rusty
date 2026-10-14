@@ -16,7 +16,7 @@ Kinds: **core** is always on; **module** can be turned off; **package** is data 
 
 ## Design · done
 
-Product discussion, prototypes A–L (B chosen), architecture, plugin model, decisions D1–D25.
+Product discussion, prototypes A–L (B chosen), architecture, plugin model, decisions D1–D26; plans P1–P8 in `plans/`.
 
 ## Foundation · v0.1 · next
 

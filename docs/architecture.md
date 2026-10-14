@@ -329,6 +329,9 @@ The command `terminal.open { where: Tab | Window | Split | Drawer }` works the s
 
 ## Building and testing
 
+Plans, tiers, test-driven atoms, size limits with their exceptions, the repository layout and the version policy are in [plans/README.md](../plans/README.md) (D26).
+
+
 - Development on Linux: everything except the Windows-only crates builds, runs and tests there; the UI runs on Linux for layout work.
 - Windows builds: GitHub Actions on `windows-latest` produces a portable `.exe` for every push to `main`, for testing at work. `cargo-xwin` builds locally when needed.
 - Corporate machines may block unsigned executables; the build will be signed once a certificate is available, and until then it may need IT approval.
