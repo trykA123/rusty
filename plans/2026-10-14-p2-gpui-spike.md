@@ -33,9 +33,9 @@ Find out with numbers whether GPUI with `gpui-kit` can carry Rusty: design B's l
 | S1 | `gpui-kit-notes` | T1 | researcher | medium | G1 | notes answer every question below, with links | done |
 | S2 | `spike-shell` | T4 | orchestrator | high | S1 | window opens on Linux; screenshot reviewed by orchestrator | done |
 | S3 | `spike-list` | T4 | orchestrator | high | S2 | headless test passes; manual scroll smooth | done |
-| S4 | `spike-metrics` | T2 | ui-builder | medium | S3 | `spike --metrics` prints valid JSON | blocked |
+| S4 | `spike-metrics` | T2 | ui-builder | medium | S3 | `spike --metrics` prints valid JSON | running |
 | S5 | `fuzzy-bench` | T3 | api-builder | xhigh | G1 | `cargo bench -p fuzzy-bench` prints the table | running |
-| S6 | `a11y-probe` | T2 | ui-builder | high | S3 | headless test finds list rows with names | blocked |
+| S6 | `a11y-probe` | T2 | ui-builder | high | S3 | headless test finds list rows with names | running |
 | S7 | Windows run | — | orchestrator | — | S4, S6 | CI job uploads metrics JSON; owner runs on work PC | blocked |
 | G2 | go or no-go | — | orchestrator + owner | — | S1–S7 | `docs/spike/results.md` written; D2 updated | blocked |
 
