@@ -25,6 +25,7 @@ A Cargo workspace; dependencies point down the table.
 | `rusty-term` | Terminal providers: Windows Terminal, external command templates, embedded ConPTY + `alacritty_terminal` | Windows |
 | `rusty-plugins` | WASM component host, capability checks, plugin lifecycle | any |
 | `rusty-ui` | GPUI views and components on the design tokens from the prototype; draws state, sends commands | any |
+| `rusty-diag` | Logging setup, redaction, in-memory event ring, memory statistics, diagnostic reports. Built in the Foundation phase | any |
 | `rusty-app` | The binary: wiring, single instance, tray, global hotkey, crash handling | Windows |
 
 `rusty-core`, `rusty-store`, `rusty-cache`, `rusty-index` (matching) and `rusty-plugins` build and test on Linux, so most work happens on the development machine. Windows-only crates sit behind traits with a fake implementation for tests.
@@ -71,7 +72,7 @@ This gives the palette, custom shortcuts and plugins one surface, and gives safe
 - **Single writer:** one process per user session (a named mutex); a second launch hands its arguments to the first instance and exits.
 - **Migrations:** each format has a version (`PRAGMA user_version` for SQLite); migrations are pure functions with fixture tests for every old version.
 - **SQLite from the start:** `rusqlite` with bundled SQLite is part of `rusty-store` from the Foundation phase, so every later feature stores its data in the same place.
-- **Crashes:** a panic hook writes a crash report and the last session; the next start offers to restore it.
+- **Crashes:** a panic hook writes a redacted crash report (see Diagnostics) and the last session; the next start offers to restore it and to save the report.
 
 Storage lives in `%APPDATA%\Rusty` (settings, `rusty.db`), `%LOCALAPPDATA%\Rusty` (session, `cache.db`, index). **Portable mode:** if `rusty.toml` sits next to the executable, everything lives beside it instead.
 
@@ -177,7 +178,7 @@ Main libraries (versions are pinned and checked in the Foundation plan):
 - **Credentials** for remotes are kept in Windows Credential Manager, never in config files.
 - **Plugins** are sandboxed and permission-checked; see [plugins.md](plugins.md).
 - **Supply chain:** pinned dependencies, `cargo-deny` and `cargo-audit` in CI, minimal crate features.
-- **No telemetry.**
+- **No telemetry.** Diagnostic reports are created only on request and never leave the machine unless the user sends them.
 
 ## Theming
 
@@ -189,6 +190,45 @@ Modelled on Zed (D16). Themes and icon themes are data packages, so they need no
 - **Validation:** a theme with a missing token falls back to the built-in value; text and background pairs below 4.5:1 are reported, not silently accepted.
 - **Icon themes** are separate: SVG files mapped by file name, extension and folder name, with open and closed folders. Icons are rendered once per size and cached. Files whose icon lives inside them (`.exe`, `.lnk`, `.ico`) keep the Windows shell icon.
 - Fonts, size and density are settings, not part of a theme.
+
+## Drives and network locations
+
+- **Drive bar:** one button per drive letter above the panes, as in Total Commander; mapped network drives show a network icon, disconnected ones are dimmed. It can be turned off in Layout. The rail also lists drives with free space.
+- **Alt+F1** opens the drive menu for the focused pane.
+- **Enumeration:** `GetLogicalDrives` and `GetDriveTypeW`; mapped drives are resolved to their UNC path with `WNetGetConnectionW`; remembered but disconnected drives come from `WNetOpenEnumW(RESOURCE_REMEMBERED)`. Clicking a disconnected drive reconnects it with `WNetAddConnection2W`, and Windows asks for credentials when it needs them.
+- **Changes** arrive through `WM_DEVICECHANGE`, plus a slow periodic check for network drives.
+- **Never blocking:** labels, free space and listings of network drives are read in the background with a timeout (2 s for metadata). A share that does not answer shows "offline, showing cached".
+- **UNC paths** (`\\server\share`) work wherever a path works: the path bar, new tabs, pins and workspaces.
+- **Refresh** per network location: watcher, interval or manual, because SMB change notifications are unreliable.
+- Browsing the network neighbourhood comes after v1, as a module.
+
+## Diagnostics
+
+From the Foundation phase, so problems found in testing come with evidence (D20). Nothing is sent anywhere: the user saves a report and decides what to do with it.
+
+**What a report holds:**
+
+| Part | Content |
+| --- | --- |
+| Build and system | Rusty version and commit, Windows version, CPU count, RAM, GPU adapter class, display scale |
+| Configuration | Enabled modules and their versions; settings that differ from the defaults, with paths redacted |
+| Errors | Error kind, Windows error code, the operation and a backtrace of Rusty's own functions |
+| Panics and crashes | Message, thread, backtrace, the last events before the crash |
+| Recent events | The in-memory ring of the last structured events (bounded, about 2 MB) |
+| Memory | Process working set and private bytes, allocator statistics, every cache's size against its budget, task and channel counts per owner |
+| Performance | Start-up spans, slow-frame histogram, listing times by drive type |
+
+**How it stays free of personal data.** Redaction happens when an event is recorded, not when the report is written:
+
+- Paths are logged only through a `RedactedPath` type. It keeps the shape and drops the names: `C:\<user>\<d:3fa2>\<d:91bc>\<f:07e1>.jpg`, with the drive type (local, network, removable), depth, length class, long-path and non-ASCII flags. Tokens are salted per report, so the same folder gets the same token inside one report and cannot be matched across reports.
+- UNC servers and shares become `\\<server:1>\<share:1>`. User, computer and domain names are replaced.
+- Windows error texts that embed paths are not stored; the error code and Rusty's own message are.
+- No file contents, clipboard data, search queries, file names typed by the user or credentials, ever.
+- A test runs a session with canary values (a user name, paths, a server name, a search query) and fails if any of them appears in the logs or the report.
+
+**Where it lives:** a rolling log in `%LOCALAPPDATA%\Rusty\logs` (3 × 10 MB), already redacted. **Help → Save diagnostic report** writes `rusty-report-<date>.zip` with a readable `report.json` and a summary of what it contains; the user can open it before sharing.
+
+**Raw memory dumps** (`MiniDumpWriteDump`) contain whatever was in memory, including file names. They are off by default, can be turned on for one session, stay local, and are deleted after 7 days.
 
 ## Terminal
 
