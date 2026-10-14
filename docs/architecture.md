@@ -140,6 +140,17 @@ Targets are measured with `tracing` spans in every build and checked by a start-
 - **Supply chain:** pinned dependencies, `cargo-deny` and `cargo-audit` in CI, minimal crate features.
 - **No telemetry.**
 
+## Theming
+
+Modelled on Zed (D16). Themes and icon themes are data packages, so they need no WASM host and ship before v1.0.
+
+- **Colour themes** are TOML files with semantic tokens (surface, rail, line, text, muted, accent, selection, folder, file kinds, ok, warn, danger). One file holds a family with light and dark variants.
+- **Mode:** `system`, `light` or `dark`; `system` follows the Windows setting. Settings name one light and one dark theme.
+- **Live reload:** editing a theme file updates the window. The theme picker previews each theme while you move through the list.
+- **Validation:** a theme with a missing token falls back to the built-in value; text and background pairs below 4.5:1 are reported, not silently accepted.
+- **Icon themes** are separate: SVG files mapped by file name, extension and folder name, with open and closed folders. Icons are rendered once per size and cached. Files whose icon lives inside them (`.exe`, `.lnk`, `.ico`) keep the Windows shell icon.
+- Fonts, size and density are settings, not part of a theme.
+
 ## Terminal
 
 The terminal is a provider, chosen in settings:
