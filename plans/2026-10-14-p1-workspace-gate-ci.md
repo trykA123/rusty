@@ -40,14 +40,15 @@ Final. Workers never reopen them; a worker that finds one wrong stops and report
 | A1 | `workspace` | T1 | patcher | medium | A0 | `taplo check` on the new files; nesting calibration | done | |
 | A2 | `crate-skeletons` | T1 | patcher | medium | A1 | `cargo check --workspace`; `rusty --version` | done | |
 | A3 | `xtask-size` Red | T2 | checker | medium | A2 | tests compile and fail with `not yet implemented` | done | |
-| A4 | `xtask-size` Green | T3 | api-builder | xhigh | A3 | `cargo nextest run -p xtask size` passes | running | |
+| A4 | `xtask-size` Green | T3 | api-builder | xhigh | A3 | `cargo nextest run -p xtask size` passes | done | |
 | A5 | `xtask-coverage`, `xtask-binsize` Red | T2 | checker | medium | A2 | tests compile and fail | done | |
 | A6 | `xtask-coverage`, `xtask-binsize` Green | T3 | api-builder | xhigh | A5 | `cargo nextest run -p xtask coverage binsize` passes | done | |
 | A7 | `tool-configs` | T1 | patcher | medium | A2 | `cargo deny check`; `typos` | done | |
-| A8 | `xtask-gate` | T3 | api-builder | xhigh | A4, A6, A7 | gate tests pass; `cargo xtask gate` green | blocked | |
+| A7b | `xtask` coverage to its floor | T3 | api-builder | xhigh | A4, A6 | `cargo xtask coverage` shows `xtask` ≥ 85 % without exclusions | running | |
+| A8 | `xtask-gate` | T3 | api-builder | xhigh | A4, A6, A7 | gate tests pass; `cargo xtask gate` green | running | |
 | A9 | `ci` | T2 | infra-builder | high | A8 | `actionlint` clean | blocked | |
 | A10 | `dev-docs` | T1 | patcher | medium | A8 | `typos` clean | blocked | |
-| G1 | gate | — | orchestrator + reviewer | high | A0–A10 | CI green on both OS, artifact runs, review approved | blocked | |
+| G1 | gate | — | orchestrator + reviewer | high | A0–A10, A7b | CI green on both OS, artifact runs, review approved | blocked | |
 
 A3 and A5 can run in parallel after A2; A4 and A6 in parallel after their Red atoms; A7 in parallel with all of them.
 
@@ -261,3 +262,4 @@ fn main() {
 - 2026-10-14 — Before A4 and A6, the orchestrator added `toml` 1.1.8, `serde` 1.0.229 and `serde_json` 1.0.154 to `xtask`, and a `main.rs` dispatcher calling `size::run`, `coverage::run`, `binsize::run` (stubs), so the two parallel Green atoms touch disjoint files.
 - 2026-10-14 — The owner overruled the tiers (D28): Haiku never implements; T1 edits now run on Sonnet 5.5 medium (A10); `rusty-core` Green atoms and the hardest atoms are done by the orchestrator on Opus 5.5 high. A1, A2 and A7 had already run on Haiku; they are config and scaffold, verified by the orchestrator, and stay.
 - 2026-10-14 — A6 done (api-builder, gpt-6.1-sol, xhigh): 14 tests pass; `binsize` and `coverage` wired. Without rustup, `cargo llvm-cov` needs `LLVM_COV=/usr/bin/llvm-cov LLVM_PROFDATA=/usr/bin/llvm-profdata` locally. Open: `xtask` measured 42 % against its 85 % floor (without the `size` tests); the untested parts are the thin `run.rs` shells and `main.rs`. To settle before A8.
+- 2026-10-14 — A4 done (api-builder, gpt-6.1-sol, xhigh): 19 size tests pass; `cargo xtask size` exits 0 and flags a 401-line probe. With all 33 tests, `xtask` coverage is 45 %: the `run.rs` shells and `main.rs` are untested, and the lexer (`count.rs`, 64 %) and exception errors (72 %) have untested branches. New atom A7b (Sol) raises it to the 85 % floor with tests, not exclusions; G1 now lists A7b. A8 runs in parallel; its coverage step is expected red until A7b lands.
