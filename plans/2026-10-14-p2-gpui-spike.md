@@ -61,7 +61,7 @@ S5 runs in parallel with S1–S4.
 
 - 2026-10-14 — Early Windows numbers from the variants prototype on the work PC (Intel UHD + NVIDIA T1200 laptop, CrowdStrike present). Release `.exe` 17.6 MB with fat LTO and `panic=unwind`.
   - Default (GPUI takes DXGI adapter 0 = NVIDIA): first frame 566–667 ms. Phases: platform and DirectWrite init ~170 ms, D3D11 device on the NVIDIA GPU ~250–310 ms, our fonts and Segoe lookup ~4 ms, window and first render ~145 ms.
-  - A later run picked Intel UHD as adapter 0 without any setting changed by the owner (the adapter order changed between runs, probably with the display setup): first frame **376 ms**; device creation drops to ~70 ms.
+  - The owner set the app's GPU to Intel UHD by hand: first frame **376 ms**; device creation drops to ~70 ms.
   - Linux dev PC for comparison: ~110 ms.
   - Actions for S2–S4: patch GPUI's `get_adapter` (gpui-pre-windows 0.3.9, `directx_devices.rs`) to prefer `EnumAdapterByGpuPreference(DXGI_GPU_PREFERENCE_MINIMUM_POWER)` unless the window's monitor is driven by another adapter, and offer it upstream; break down the ~170 ms before the run callback and the ~130 ms to the first frame; test start from the tray (hot) on Windows. The warm target (≤ 150 ms) is not met on Windows yet; revisit it with the owner after these fixes.
 
