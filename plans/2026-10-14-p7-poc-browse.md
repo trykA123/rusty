@@ -10,7 +10,7 @@ Status: drafting (briefs get exact `Read` ranges when G6 passes) · Branch: `p7-
 
 - D25 (component layers on `gpui-kit`), D16 (themes), D15 (selection), D17 (session first frame).
 - The app never imports `gpui-kit` outside `rusty-ui/src/primitives/`.
-- Theme tokens come from P2's spike theme struct, cleaned into `rusty-ui/src/tokens/`.
+- Theme tokens come from variant 1 of the spike (D27), cleaned into `rusty-ui/src/tokens/`.
 - Coverage floor `rusty-ui = 60` added in U1.
 
 ## Components

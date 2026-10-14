@@ -11,6 +11,7 @@ Find out with numbers whether GPUI with `gpui-kit` can carry Rusty: design B's l
 - Spike code lives in `spikes/` and is not part of the product. It is deleted or archived after G2; lessons go to `docs/spike/results.md`.
 - `gpui-kit` at its latest release (0.7.3 today), pinned exactly.
 - Visual reference: `design/prototype/dir-b.css`, `design/prototype/shared.css`, `design/screens/b4-1440.png`.
+- Start from variant 1 of `spikes/gpui-b-variants` (branch `spike/gpui-b-variants`, D27): its tokens, static fonts and shell already exist. S2 and S3 extend it; S1 adds the open gaps listed in D27 (scrollbar, gpui-kit TabBar, Table and Dock not yet tried, Windows untested).
 - Targets from `docs/roadmap.md`: cold ≤ 400 ms, warm ≤ 150 ms, idle RAM < 80 MB with two panes, `.exe` < 30 MB; scrolling 100k rows without dropped frames at 60 Hz.
 - Measurements on three machines: Linux dev PC, `windows-latest` CI (software rendering, for start-up and memory only), the owner's work PC (manual run).
 
