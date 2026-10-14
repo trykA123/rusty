@@ -16,14 +16,14 @@ Kinds: **core** is always on; **module** can be turned off; **package** is data 
 
 ## Design · done
 
-Product discussion, prototypes A–L (B chosen), architecture, plugin model, decisions D1–D24.
+Product discussion, prototypes A–L (B chosen), architecture, plugin model, decisions D1–D25.
 
 ## Foundation · v0.1 · next
 
 Goal: prove the stack and build the factory.
 
 - infra: foundation plan; Cargo workspace with the eleven crates; quality gate; Windows CI producing a portable `.exe` per push.
-- infra: GPUI spike on design B with 100k entries, three panes and the drawer; `nucleo` against `frizbee` on 2 million names; screen-reader support.
+- infra: GPUI spike on design B with 100k entries, three panes and the drawer; `nucleo` against `frizbee` on 2 million names; built on `gpui-kit`, including its AccessKit support.
 - core: storage layer with SQLite from day one (`rusty.db`, `cache.db`, migrations) and the session snapshot (D17).
 - core: diagnostics with redacted logs, memory and performance statistics and a hand-saved report (D20).
 - core: serialisable commands, layout tree, multi-window state and `apply()` with property tests.
@@ -37,6 +37,7 @@ Exit: the spike meets the targets on Linux and the work PC, otherwise D2 is reop
 Goal: a file manager the owner can use every day on Windows.
 
 - core: tiled panes and tabs with history; session restore; virtualised file list with sorting, quick filter and shell icons.
+- core: component library in `rusty-ui` (primitives and Rusty components) with the component gallery and headless UI tests (D25).
 - core: Total Commander selection (D15); native context menu on a long right-click.
 - core: drive bar with mapped network drives, reconnect, Alt+F1, UNC paths and an offline state (D19).
 - core: copy, move, rename, new folder, Recycle Bin, Shift+Del with a warning; plan before acting; background job queue.

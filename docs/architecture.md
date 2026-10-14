@@ -24,7 +24,7 @@ A Cargo workspace; dependencies point down the table.
 | `rusty-shell` | Windows shell: icons, thumbnails, native context menu, Properties, Recycle Bin, drag and drop, Mark-of-the-Web, ShellExecute | Windows |
 | `rusty-term` | Terminal providers: Windows Terminal, external command templates, embedded ConPTY + `alacritty_terminal` | Windows |
 | `rusty-plugins` | WASM component host, capability checks, plugin lifecycle | any |
-| `rusty-ui` | GPUI views and components on the design tokens from the prototype; draws state, sends commands | any |
+| `rusty-ui` | Rusty's component library and views on `gpui-kit`, styled with the design tokens from the prototype; draws state, sends commands (see UI components) | any |
 | `rusty-diag` | Logging setup, redaction, in-memory event ring, memory statistics, diagnostic reports. Built in the Foundation phase | any |
 | `rusty-app` | The binary: wiring, single instance, tray, global hotkey, crash handling | Windows |
 
@@ -164,7 +164,7 @@ Main libraries (versions are pinned and checked in the Foundation plan):
 
 | Role | Crate |
 | --- | --- |
-| UI | `gpui`, `gpui-component` |
+| UI | `gpui-kit` (pins the matching `gpui` and re-exports `gpui-base` and `gpui-component`) |
 | Windows API | `windows` |
 | Errors | `thiserror` in libraries, `anyhow` only in `rusty-app` |
 | Logging and timing | `tracing`, `tracing-subscriber`, `tracing-appender` (size-limited) |
@@ -181,6 +181,28 @@ Main libraries (versions are pinned and checked in the Foundation plan):
 - Sorting by name uses `StrCmpLogicalW`, the same order as Explorer (`file2` before `file10`).
 - A file-list row costs about 56 bytes, so 100,000 entries take about 6 MB.
 - Release profile: `lto = "fat"`, `codegen-units = 1`, `strip = true`, `panic = "unwind"` so a panic in a background task stops that task, not the app. `mimalloc` is adopted only if the spike shows a gain.
+
+## UI components
+
+Reusable components from the first screen (D25). Rule: the app is assembled from components; no view draws raw elements for something a component already does.
+
+**Foundation:** `gpui-kit` (formerly gpui-component, Apache-2.0). One dependency pins a matching GPUI release, which contains GPUI's API churn. It brings virtual lists and tables for hundreds of thousands of rows, a serialisable dock layout, inputs, menus and overlays, AccessKit accessibility and headless UI tests. Its JavaScript extension runtime (`gpui-shell`) is not used; plugins stay WASM (D4).
+
+**Layers**, each depending only on the ones above it:
+
+| Layer | Contents | Rule |
+| --- | --- | --- |
+| Tokens | Colours, type, spacing, radii, motion from the active theme (D16), mapped onto the `gpui-kit` theme | No literal colour or size outside the theme |
+| Primitives | `Button`, `IconButton`, `Input`, `Toggle`, `Menu`, `Popover`, `Tabs`, `Table`, `VirtualList`, `Splitter`, `Tooltip`, `Kbd` | Thin wrappers over `gpui-kit` with Rusty's variants; the rest of the app never imports `gpui-kit` directly |
+| Rusty components | `FileList`, `PaneTabs`, `PathBar`, `DriveBar`, `Rail`, `Palette`, `Drawer`, `JobRow`, `StatusBar`, `FKeyBar`, `ErrorDialog`, `ConfirmDialog`, `SettingsForm` (generated from a schema), `WidgetHost` (renders plugin widgets) | Props in, commands out; no file-system access, no stored state |
+| Views | `Window`, `Pane`, `Workspace`, `SettingsWindow` | Containers: read `AppState`, own tasks, render components |
+
+- **One primitive per concept** with variants (size, tone, density), never a copy per screen.
+- **`ConfirmDialog` is core-only.** Plugin widgets render through `WidgetHost`, which cannot produce it.
+- **Plugin widgets are a subset of these components**, so plugins look and behave like the app.
+- **Component gallery:** a `rusty-ui-gallery` binary shows every component in every state, both themes and three densities. It is the review surface for design changes and the fixture for headless UI tests (input, focus, layout, accessibility names).
+- **Accessibility through AccessKit:** every interactive component has a role, a name and keyboard access; tests check them.
+- Wrapping `gpui-kit` behind Rusty's primitives keeps a way out: if a `gpui-kit` component does not fit, it is replaced in one place.
 
 ## Safety
 
@@ -310,4 +332,4 @@ The command `terminal.open { where: Tab | Window | Split | Drawer }` works the s
 - Development on Linux: everything except the Windows-only crates builds, runs and tests there; the UI runs on Linux for layout work.
 - Windows builds: GitHub Actions on `windows-latest` produces a portable `.exe` for every push to `main`, for testing at work. `cargo-xwin` builds locally when needed.
 - Corporate machines may block unsigned executables; the build will be signed once a certificate is available, and until then it may need IT approval.
-- Quality gate: `cargo fmt`, `clippy -D warnings`, tests, the soak test, the start-up benchmark (Windows CI), `cargo-deny`, `cargo-audit`.
+- Quality gate: `cargo fmt`, `clippy -D warnings`, tests, headless UI tests of the components, the soak test, the start-up benchmark (Windows CI), `cargo-deny`, `cargo-audit`.
