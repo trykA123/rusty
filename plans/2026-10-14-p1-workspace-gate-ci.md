@@ -39,11 +39,11 @@ Final. Workers never reopen them; a worker that finds one wrong stops and report
 | A0 | dev tools | — | orchestrator | — | — | every tool prints `--version` | done | |
 | A1 | `workspace` | T1 | patcher | medium | A0 | `taplo check` on the new files; nesting calibration | done | |
 | A2 | `crate-skeletons` | T1 | patcher | medium | A1 | `cargo check --workspace`; `rusty --version` | done | |
-| A3 | `xtask-size` Red | T2 | checker | medium | A2 | tests compile and fail with `not yet implemented` | running | |
-| A4 | `xtask-size` Green | T3 | api-builder | xhigh | A3 | `cargo nextest run -p xtask size` passes | blocked | |
-| A5 | `xtask-coverage`, `xtask-binsize` Red | T2 | checker | medium | A2 | tests compile and fail | running | |
-| A6 | `xtask-coverage`, `xtask-binsize` Green | T3 | api-builder | xhigh | A5 | `cargo nextest run -p xtask coverage binsize` passes | blocked | |
-| A7 | `tool-configs` | T1 | patcher | medium | A2 | `cargo deny check`; `typos` | running | |
+| A3 | `xtask-size` Red | T2 | checker | medium | A2 | tests compile and fail with `not yet implemented` | done | |
+| A4 | `xtask-size` Green | T3 | api-builder | xhigh | A3 | `cargo nextest run -p xtask size` passes | running | |
+| A5 | `xtask-coverage`, `xtask-binsize` Red | T2 | checker | medium | A2 | tests compile and fail | done | |
+| A6 | `xtask-coverage`, `xtask-binsize` Green | T3 | api-builder | xhigh | A5 | `cargo nextest run -p xtask coverage binsize` passes | running | |
+| A7 | `tool-configs` | T1 | patcher | medium | A2 | `cargo deny check`; `typos` | done | |
 | A8 | `xtask-gate` | T3 | api-builder | xhigh | A4, A6, A7 | gate tests pass; `cargo xtask gate` green | blocked | |
 | A9 | `ci` | T2 | infra-builder | high | A8 | `actionlint` clean | blocked | |
 | A10 | `dev-docs` | T1 | patcher | medium | A8 | `typos` clean | blocked | |
@@ -257,3 +257,5 @@ fn main() {
 - 2026-10-14 — Outside the plan, at the owner's request: GPUI prototype of design B in three variants (`spikes/gpui-b-variants`, branch `spike/gpui-b-variants`); its findings feed P2.
 - 2026-10-14 — A1 done (patcher, Haiku, medium). Calibration: clippy counts the function body as a level, so `excessive-nesting-threshold = 4` makes 3 levels pass and 4 fail; `clippy.toml` uses 4.
 - 2026-10-14 — A2 done (patcher, Haiku, medium). The four crates without `forbid` have a `lib.rs` of one newline. A3, A5 and A7 start in parallel, each in its own worktree.
+- 2026-10-14 — A3 done (checker, Sonnet, medium): 19 size tests, all `not yet implemented`. A5 done (checker, Sonnet, medium): 13 tests plus one the orchestrator added (a crate with zero lines counts as 100 %); only the constant test passes. A7 done (patcher, Haiku, medium): `cargo deny check`, `typos`, `taplo check` green. Merged into `p1-workspace`.
+- 2026-10-14 — Before A4 and A6, the orchestrator added `toml` 1.1.8, `serde` 1.0.229 and `serde_json` 1.0.154 to `xtask`, and a `main.rs` dispatcher calling `size::run`, `coverage::run`, `binsize::run` (stubs), so the two parallel Green atoms touch disjoint files.
