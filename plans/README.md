@@ -28,10 +28,11 @@ The rest of Alpha (workspaces, drive bar, context menu, Explorer clipboard and s
 | **T1** | Sonnet 5.5, `medium` | `patcher`, `infra-builder` | Moves, exact edits, small config, scaffolds |
 | **T2** | Sonnet 5.5, `medium` or `high` | `ui-builder`, `checker`, `infra-builder` (large) | UI work, medium implementation, writing the failing tests (Red atoms), CI |
 | **T3** | gpt-6.1-sol, `xhigh` | `api-builder` | Backend Rust outside the core model: store, fs, index, diag, xtask, wiring |
-| **T4** | Opus 5.5, `high`: the orchestrator itself | orchestrator | The core and the hardest atoms: every `rusty-core` Green atom, the spike, `FileList`, the pane view, `apply()`, the job engine, the I/O queue |
+| **T4** | Opus 5.5, `high`: the orchestrator itself | orchestrator | The core and the hardest atoms: every `rusty-core` Green atom, everything that can lose user data (`atomic_write`, settings, session, job journal, job engine, standard copy), the spike, `FileList`, the pane view, the I/O queue |
 
 - **Haiku never implements (D28).** It runs only read-only lookups (`scout`, `researcher`), with the brief plus reading under 60k tokens and a 90k hard ceiling.
-- The tier follows the atom's difficulty, but every `rusty-core` Green atom is T4. A one-line move elsewhere is T1.
+- The tier follows the atom's difficulty, but every `rusty-core` Green atom and every data-safety atom is T4. A one-line move elsewhere is T1.
+- Red atoms for T4 components run on Sonnet `high`, and the orchestrator reviews their tests against the contract before the Green atom starts.
 - Escalation follows `planning.md`: one retry with the failure output and one effort step more, then one tier up (T1 → T2 → T3 for backend or T4). Every escalation is logged in the plan.
 - Red and Green atoms run on different models where possible, so the tests are not written by the same model that makes them pass.
 
