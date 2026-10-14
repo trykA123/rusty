@@ -46,9 +46,9 @@ Final. Workers never reopen them; a worker that finds one wrong stops and report
 | A7 | `tool-configs` | T1 | patcher | medium | A2 | `cargo deny check`; `typos` | done | |
 | A7b | `xtask` coverage to its floor | T3 | api-builder | xhigh | A4, A6 | `cargo xtask coverage` shows `xtask` ≥ 85 % without exclusions | done | |
 | A8 | `xtask-gate` | T3 | api-builder | xhigh | A4, A6, A7 | gate tests pass; `cargo xtask gate` green | done | |
-| A9 | `ci` | T2 | infra-builder | high | A8 | `actionlint` clean | running | |
+| A9 | `ci` | T2 | infra-builder | high | A8 | `actionlint` clean | done | |
 | A10 | `dev-docs` | T1 | general-purpose (Sonnet) | medium | A8 | `typos` clean | done | |
-| G1 | gate | — | orchestrator + reviewer | high | A0–A10, A7b | CI green on both OS, artifact runs, review approved | blocked | |
+| G1 | gate | — | orchestrator + reviewer | high | A0–A10, A7b | CI green on both OS, artifact runs, review approved | running | |
 
 A3 and A5 can run in parallel after A2; A4 and A6 in parallel after their Red atoms; A7 in parallel with all of them.
 
@@ -268,3 +268,4 @@ fn main() {
 - 2026-10-14 — A8 done after one retry (api-builder, gpt-6.1-sol, xhigh): `run_steps` extracted and tested (stop at first failure, exit code passed on, spawn failure); 90 xtask tests. `cargo xtask gate --coverage`: all 10 steps green, `xtask` 91.6 %. A9 (infra-builder, Sonnet, high) and A10 (patcher, Sonnet, medium) start in parallel.
 - 2026-10-14 — The fleet hook pins `patcher` to Haiku (`~/.config/crew/roles.json`) and refuses a Sonnet override, so A10 runs as a `general-purpose` agent on Sonnet with the patcher brief. Changing `roles.json` is the owner's call (it is global).
 - 2026-10-14 — A10 done (general-purpose, Sonnet, medium): README "Develop" section and `docs/dev-tools.md`; `typos` clean.
+- 2026-10-14 — A9 done (infra-builder, Sonnet, high): `ci.yml` with `gate-linux`, `gate-windows`, `build-windows`; every action pinned to a verified SHA (checkout v7.0.1, rust-toolchain 1.99.0 branch, rust-cache v2.9.2, install-action v2.87.28, upload-artifact v7.0.2); tools pinned to the local versions; `actionlint` clean. G1 starts.
