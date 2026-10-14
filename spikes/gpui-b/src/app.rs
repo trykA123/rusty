@@ -52,6 +52,7 @@ pub fn bind_keys(cx: &mut App) {
 
 pub struct Launch {
     pub mode: Mode,
+    pub big: bool,
     pub started: Instant,
 }
 
@@ -68,18 +69,38 @@ pub struct Workspace {
 impl Workspace {
     pub fn new(launch: Launch, window: &mut Window, cx: &mut Context<Self>) -> Self {
         let theme = tokens::theme(launch.mode);
+        let big = launch.big;
         tokens::kit::apply(&theme, cx);
         let focus = cx.focus_handle();
         window.focus(&focus, cx);
         Self {
             launch,
             theme,
-            panes: folders().into_iter().map(PaneState::new).collect(),
+            panes: folders()
+                .into_iter()
+                .map(|folder| {
+                    let mut pane = PaneState::new(folder);
+                    if big {
+                        pane.toggle_big();
+                    }
+                    pane
+                })
+                .collect(),
             active: 0,
             drawer: DrawerView::Transfers,
             focus,
             is_first_frame: true,
         }
+    }
+
+    #[cfg(test)]
+    pub fn pane(&self, ix: usize) -> &PaneState {
+        &self.panes[ix]
+    }
+
+    #[cfg(test)]
+    pub fn active_pane(&self) -> usize {
+        self.active
     }
 
     fn retheme(&mut self, cx: &mut Context<Self>) {

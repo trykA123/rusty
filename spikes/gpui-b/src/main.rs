@@ -15,6 +15,9 @@ mod rail;
 mod tokens;
 mod top_bar;
 
+#[cfg(test)]
+mod tests;
+
 use std::borrow::Cow;
 use std::time::Instant;
 
@@ -87,18 +90,21 @@ impl AssetSource for SpikeAssets {
     }
 }
 
-fn parse_args() -> Result<Mode, String> {
-    let args: Vec<String> = std::env::args().skip(1).collect();
-    match args
-        .iter()
-        .map(String::as_str)
-        .collect::<Vec<_>>()
-        .as_slice()
-    {
-        [] | ["--theme", "light"] => Ok(Mode::Light),
-        ["--theme", "dark"] => Ok(Mode::Dark),
-        other => Err(format!("unknown arguments {other:?}")),
+fn parse_args() -> Result<(Mode, bool), String> {
+    let mut mode = Mode::Light;
+    let mut big = false;
+    let mut args = std::env::args().skip(1);
+    while let Some(flag) = args.next() {
+        let value = args.next().ok_or(format!("{flag} needs a value"))?;
+        match (flag.as_str(), value.as_str()) {
+            ("--theme", "light") => mode = Mode::Light,
+            ("--theme", "dark") => mode = Mode::Dark,
+            ("--rows", "sample") => big = false,
+            ("--rows", "100k") => big = true,
+            _ => return Err(format!("unknown argument {flag} {value}")),
+        }
     }
+    Ok((mode, big))
 }
 
 fn load_fonts(cx: &App) {
@@ -143,10 +149,10 @@ fn main() {
         env_logger::init();
     }
     mark(started, "main");
-    let mode = match parse_args() {
+    let (mode, big) = match parse_args() {
         Ok(parsed) => parsed,
         Err(message) => {
-            eprintln!("{message}\nusage: gpui-b [--theme light|dark]");
+            eprintln!("{message}\nusage: gpui-b [--theme light|dark] [--rows sample|100k]");
             std::process::exit(2);
         }
     };
@@ -159,7 +165,7 @@ fn main() {
         load_fonts(cx);
         mark(started, "fonts added");
         app::bind_keys(cx);
-        let launch = Launch { mode, started };
+        let launch = Launch { mode, big, started };
         let options = window_options(cx);
         let opened = gpui_kit::open_window(options, cx, |window, cx| {
             cx.new(|cx| Workspace::new(launch, window, cx))

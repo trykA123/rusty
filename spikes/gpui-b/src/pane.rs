@@ -33,7 +33,12 @@ impl PaneState {
     }
 
     pub fn len(&self) -> usize {
-        self.folder.entries.len() + if self.is_big { GENERATED_ROWS } else { 0 }
+        let samples = self.folder.entries.len();
+        if self.is_big {
+            GENERATED_ROWS.max(samples)
+        } else {
+            samples
+        }
     }
 
     pub fn entry(&self, index: usize) -> Entry {
@@ -73,7 +78,7 @@ impl PaneState {
 
     fn status(&self) -> SharedString {
         if self.is_big {
-            format!("{} rows (100,000 generated)", group(self.len())).into()
+            format!("{} rows, generated", group(self.len())).into()
         } else {
             self.folder.status.into()
         }

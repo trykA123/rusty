@@ -12,3 +12,6 @@ gpui-kit = "=0.7.3"
 
 [profile.release]
 strip = true
+
+[dev-dependencies]
+gpui-kit = { version = "=0.7.3", features = ["test-support"] }

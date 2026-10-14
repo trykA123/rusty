@@ -6,6 +6,7 @@ use crate::pane::PaneState;
 use crate::primitives::{icon, inset_ring};
 use crate::tokens::Theme;
 use gpui_kit::assets::IconName;
+use gpui_kit::base::{Scrollbar, ScrollbarMode, TestSupportExt};
 use gpui_kit::prelude::FluentBuilder;
 use gpui_kit::{
     AnyElement, Context, Div, FontWeight, Hsla, InteractiveElement, IntoElement, MouseButton,
@@ -13,6 +14,7 @@ use gpui_kit::{
 };
 
 const SIDE_PAD: f32 = 12.;
+const SCROLLBAR_GUTTER: f32 = 16.;
 
 pub fn header(t: &Theme) -> Div {
     let cell = |text: &'static str, width: Pixels| {
@@ -24,7 +26,8 @@ pub fn header(t: &Theme) -> Div {
         .gap(px(8.))
         .flex_none()
         .h(px(24.))
-        .px(px(SIDE_PAD))
+        .pl(px(SIDE_PAD))
+        .pr(px(SCROLLBAR_GUTTER))
         .text_size(t.m.tiny)
         .font_weight(FontWeight::SEMIBOLD)
         .text_color(t.c.muted)
@@ -46,7 +49,7 @@ pub fn header(t: &Theme) -> Div {
 }
 
 pub fn list(ix: usize, state: &PaneState, cx: &mut Context<Workspace>) -> impl IntoElement {
-    uniform_list(
+    let rows = uniform_list(
         ("files", ix),
         state.len(),
         cx.processor(move |this: &mut Workspace, range: Range<usize>, _, cx| {
@@ -54,8 +57,12 @@ pub fn list(ix: usize, state: &PaneState, cx: &mut Context<Workspace>) -> impl I
         }),
     )
     .track_scroll(&state.scroll)
-    .flex_1()
-    .min_h_0()
+    .size_full();
+    div().relative().flex_1().min_h_0().child(rows).child(
+        Scrollbar::vertical(&state.scroll)
+            .id(("scrollbar", ix))
+            .mode(ScrollbarMode::Always),
+    )
 }
 
 pub struct RowFlags {
@@ -89,6 +96,7 @@ pub fn rows(
                         this.click_row(pane_ix, index, window, cx)
                     }),
                 )
+                .test_support()
                 .into_any_element()
         })
         .collect()
@@ -104,7 +112,8 @@ fn row(t: &Theme, entry: &Entry, f: &RowFlags) -> Div {
     let cursor_active = f.is_cursor && f.is_active_pane;
     let cursor_idle = f.is_cursor && !f.is_active_pane;
     outer
-        .px(px(SIDE_PAD))
+        .pl(px(SIDE_PAD))
+        .pr(px(SCROLLBAR_GUTTER))
         .when(f.index % 2 == 1, |d| d.bg(t.c.zebra))
         .when(cursor_active, |d| {
             d.bg(t.c.sel_bg).shadow(inset_ring(t.c.accent))
