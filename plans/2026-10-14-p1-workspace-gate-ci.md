@@ -38,12 +38,12 @@ Final. Workers never reopen them; a worker that finds one wrong stops and report
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | A0 | dev tools | — | orchestrator | — | — | every tool prints `--version` | done | |
 | A1 | `workspace` | T1 | patcher | medium | A0 | `taplo check` on the new files; nesting calibration | done | |
-| A2 | `crate-skeletons` | T1 | patcher | medium | A1 | `cargo check --workspace`; `rusty --version` | running | |
-| A3 | `xtask-size` Red | T2 | checker | medium | A2 | tests compile and fail with `not yet implemented` | blocked | |
+| A2 | `crate-skeletons` | T1 | patcher | medium | A1 | `cargo check --workspace`; `rusty --version` | done | |
+| A3 | `xtask-size` Red | T2 | checker | medium | A2 | tests compile and fail with `not yet implemented` | running | |
 | A4 | `xtask-size` Green | T3 | api-builder | xhigh | A3 | `cargo nextest run -p xtask size` passes | blocked | |
-| A5 | `xtask-coverage`, `xtask-binsize` Red | T2 | checker | medium | A2 | tests compile and fail | blocked | |
+| A5 | `xtask-coverage`, `xtask-binsize` Red | T2 | checker | medium | A2 | tests compile and fail | running | |
 | A6 | `xtask-coverage`, `xtask-binsize` Green | T3 | api-builder | xhigh | A5 | `cargo nextest run -p xtask coverage binsize` passes | blocked | |
-| A7 | `tool-configs` | T1 | patcher | medium | A2 | `cargo deny check`; `typos` | blocked | |
+| A7 | `tool-configs` | T1 | patcher | medium | A2 | `cargo deny check`; `typos` | running | |
 | A8 | `xtask-gate` | T3 | api-builder | xhigh | A4, A6, A7 | gate tests pass; `cargo xtask gate` green | blocked | |
 | A9 | `ci` | T2 | infra-builder | high | A8 | `actionlint` clean | blocked | |
 | A10 | `dev-docs` | T1 | patcher | medium | A8 | `typos` clean | blocked | |
@@ -256,3 +256,4 @@ fn main() {
 - 2026-10-14 — A0 done. From Arch packages (already the latest releases): cargo-deny 0.20.2, cargo-audit 0.22.2, cargo-llvm-cov 0.9.1, actionlint 1.7.12, taplo 0.10.0. From crates.io with `cargo install --locked` (newer than Arch): cargo-nextest 0.9.148, typos-cli 1.51.1.
 - 2026-10-14 — Outside the plan, at the owner's request: GPUI prototype of design B in three variants (`spikes/gpui-b-variants`, branch `spike/gpui-b-variants`); its findings feed P2.
 - 2026-10-14 — A1 done (patcher, Haiku, medium). Calibration: clippy counts the function body as a level, so `excessive-nesting-threshold = 4` makes 3 levels pass and 4 fail; `clippy.toml` uses 4.
+- 2026-10-14 — A2 done (patcher, Haiku, medium). The four crates without `forbid` have a `lib.rs` of one newline. A3, A5 and A7 start in parallel, each in its own worktree.
