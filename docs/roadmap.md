@@ -89,6 +89,7 @@ Exit: every target is met on a clean Windows 11 machine.
 ## v1.1 · See and find
 
 - module: preview pane, thumbnails, archives as folders, global search with Rusty's own index and `rusty-indexd` (D23; engine built alongside Alpha, may ship in Beta), auto switch view.
+- package: language packages for the F3 viewer (D38).
 - core: saved column sets.
 
 Exit: global search answers in under 50 ms on 2 million files.
