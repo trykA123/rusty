@@ -29,7 +29,7 @@ Windows must keep its window behaviour:
   - provides `TitleBar::window_options()`.
 
   Wrap it; do not reimplement the Win32 side.
-- `assets/brand/`, for the icon SVGs and PNGs.
+- `assets/brand/`, for the icon SVG and PNG files.
 
 ## Decided
 
