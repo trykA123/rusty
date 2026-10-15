@@ -1,6 +1,6 @@
 # P3 · Core model
 
-Status: G3 review running · Branch: `p3-core` · After: G2 for merging to `main`
+Status: done (G3 passed 2026-10-15) · Branch: `p3-core` · After: G2 for merging to `main`
 
 ## Goal
 
@@ -45,7 +45,7 @@ Status: G3 review running · Branch: `p3-core` · After: G2 for merging to `main
 | C10 | `apply` Green | T4 | orchestrator | high | C9 | `… apply` | done |
 | C11 | `replay` Red | T2 | checker (Opus) | medium | C10 | tests compile, fail | done |
 | C12 | `replay` Green | T4 | orchestrator | high | C11 | `… replay` | done |
-| G3 | gate | — | orchestrator + reviewer | high | C1–C12 | `cargo xtask gate --coverage`; CI green; review | running |
+| G3 | gate | — | orchestrator + reviewer | high | C1–C12 | `cargo xtask gate --coverage`; CI green; review | done |
 
 C1–C2 and C3–C4 run in parallel. Red atoms run on `checker` with Opus `medium` (D34). P3 merges to `main` only after G2 passes.
 
@@ -70,3 +70,4 @@ C1–C2 and C3–C4 run in parallel. Red atoms run on `checker` with Opus `mediu
 - 2026-10-15 — C1 and C3 done (checker, Opus medium): 96 command tests and 47 layout tests, all failing on `todo!()`. Orchestrator review: C3's resize rule changed so that resizing towards an outer edge moves the far border (tmux-like) instead of failing; C1's `WrongType` expectations fixed as "string", "integer", "keyword", "keyword or integer". C2 and C4 done (orchestrator, Opus high): hand-written lexer, parser and printer; split tree with permille ratios and geometric neighbours. 151 `rusty-core` tests pass; `cargo xtask gate --coverage` green (command 96 %, layout 98 %). C5 starts.
 - 2026-10-15 — C5 and C7 done (checker, Opus medium): 107 state tests, 98 selection tests. C6 done (orchestrator): windows and the app hold their focused pane and window inline, so readers need no `unwrap` or `expect` (D31); the mutators `expect(dead_code)` until C10. C8 done: bitset selection (1M rows in 125 KB), linear wildcard matcher, `Tab` owns its `Selection`. 359 tests pass. C9 starts; C11 brief written.
 - 2026-10-15 — C9 and C11 done (checker, Opus medium): 99 apply tests, 20 replay tests. C10 done (orchestrator): one handler per command, page rows on the pane, events applied only to a tab still at that location; window, tab-activate and scroll mutators keep a targeted `expect(dead_code)` until their commands come in P7. C12 done: replay log with a 10,000-record window and a line-numbered text form that reuses the command lexer; 16 extra error-path tests. 494 `rusty-core` tests pass; coverage 97 %. At the owner's request all branches were merged into `main` (P3 up to C10, P4 W1–W4, P2 spike, the D27 variants). G3 review starts.
+- 2026-10-15 — G3 passed. `reviewer` (Opus, high): approve with notes; gate green (595 tests, `rusty-core` coverage 98.9 %). Fixed now: pattern matching folds case per character (final sigma), and `CommandLog` counts dropped records and writes a `dropped <n>` line so a trimmed log is never mistaken for a complete one. Recorded for later plans: request numbers on listings and keeping marks on refresh (P6), window, tab and scroll commands and cursor-follows-scroll (P7). The session-restore counter is validated in P4 W6.

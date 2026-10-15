@@ -10,6 +10,7 @@ Status: drafting (briefs get exact `Read` ranges when G6 passes) · Branch: `p7-
 
 - D25 (component layers on `gpui-kit`), D16 (themes), D15 (selection), D17 (session first frame).
 - The app never imports `gpui-kit` outside `rusty-ui/src/primitives/`.
+- From G3 review (2026-10-15): window focus, tab activation and scrolling become commands (`window.open`, `window.close`, `window.focus`, `pane.activate-tab`, `pane.scroll`) so replay reproduces them; this removes the targeted `expect(dead_code)` on their state mutators. Cursor moves keep the cursor visible by adjusting `scroll` in `apply`, using the pane's page rows.
 - Theme tokens come from variant 1 of the spike (D27), cleaned into `rusty-ui/src/tokens/`.
 - Coverage floor `rusty-ui = 60` added in U1.
 

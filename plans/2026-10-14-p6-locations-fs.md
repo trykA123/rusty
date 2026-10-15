@@ -9,6 +9,7 @@ Rusty reads folders through providers instead of raw paths. A fake file system w
 ## Decisions
 
 - D19 (drives, network), D21 (locations, fake file system, hostile names, error model, I/O queues).
+- From G3 review (2026-10-15): `Effect::ListFolder` and `Event::ListingLoaded` get a request number; the tab keeps the pending number and accepts only the matching answer, so a late answer for the same folder cannot overwrite a newer one. A refresh of the same folder (watcher) keeps the marks by matching names instead of resetting the selection. Change the event form in F2/F3, before logs from users exist.
 - `Location { provider: ProviderId, path: ProviderPath }` lives in `rusty-core`; `ProviderPath` keeps Windows names as WTF-16 so invalid UTF-16 survives.
 - The `Provider` trait lives in `rusty-fs`: `capabilities()`, `list(location, sink)`, `metadata(location)`; operations come in P8.
 - Windows listing uses `FindFirstFileExW` with `FindExInfoBasic` and `FIND_FIRST_EX_LARGE_FETCH`, `\\?\` paths, batches of 512 entries.
