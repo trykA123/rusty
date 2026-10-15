@@ -1,6 +1,6 @@
 # P3 · Core model
 
-Status: drafting (briefs get exact `Read` ranges when G2 passes) · Branch: `p3-core` · After: G2
+Status: running in parallel with G2 (owner, 2026-10-15) · Branch: `p3-core` · After: G2 for merging to `main`
 
 ## Goal
 
@@ -12,7 +12,10 @@ Status: drafting (briefs get exact `Read` ranges when G2 passes) · Branch: `p3-
 - `apply(state, command) -> Result<Effects, CommandError>`; effects are data (`ListFolder { pane, location }`, `SaveSession`), run later by the runtime.
 - Command text form: `name { field: value }`, parsed and printed by one module; ids are kebab-case with a dot (`pane.open-tab`).
 - Panes hold a `Location` placeholder type from this plan; P6 replaces its inside, not its name.
-- Coverage floor `rusty-core = 90` is added to `xtask/coverage-floors.toml` in C1.
+- Coverage floor `rusty-core = 90` is added to `xtask/coverage-floors.toml` in C0.
+- C0 adds the shared types before the Red atoms: `PaneId`, `TabId`, `WindowId` (`id/`), `Location` (`location/`, a non-empty string without NUL) and `Direction` (`direction/`).
+- `layout.split` takes a `Direction` (the side where the new pane goes) instead of an axis, so the command text is unambiguous (`layout.split { direction: right }`).
+- Briefs: [C1](2026-10-15/p3-c1-brief.md), [C3](2026-10-15/p3-c3-brief.md).
 
 ## Components
 
@@ -29,9 +32,10 @@ Status: drafting (briefs get exact `Read` ranges when G2 passes) · Branch: `p3-
 
 | Atom | Component | Tier | Role | Effort | After | Check |
 | --- | --- | --- | --- | --- | --- | --- |
-| C1 | `command` Red | T2 | checker | high | G2 | tests compile, fail |
+| C0 | shared types | T4 | orchestrator | high | — | `cargo xtask gate` |
+| C1 | `command` Red | T2 | checker | high | C0 | tests compile, fail |
 | C2 | `command` Green | T4 | orchestrator | high | C1 | `cargo nextest run -p rusty-core command` |
-| C3 | `layout` Red | T2 | checker | high | G2 | tests compile, fail |
+| C3 | `layout` Red | T2 | checker | high | C0 | tests compile, fail |
 | C4 | `layout` Green | T4 | orchestrator | high | C3 | `… layout` |
 | C5 | `state` Red | T2 | checker | high | C2, C4 | tests compile, fail |
 | C6 | `state` Green | T4 | orchestrator | high | C5 | `… state` |
@@ -43,7 +47,7 @@ Status: drafting (briefs get exact `Read` ranges when G2 passes) · Branch: `p3-
 | C12 | `replay` Green | T4 | orchestrator | high | C11 | `… replay` |
 | G3 | gate | — | orchestrator + reviewer | high | C1–C12 | `cargo xtask gate --coverage`; CI green; review |
 
-C1–C2 and C3–C4 run in parallel.
+C1–C2 and C3–C4 run in parallel. P3 merges to `main` only after G2 passes.
 
 ### Briefs (outline)
 
@@ -59,3 +63,7 @@ C1–C2 and C3–C4 run in parallel.
 - Every PoC command is typed, round-trips through text and changes state only through `apply()`.
 - Replaying a recorded log gives the same state, checked by proptest.
 - `rusty-core` coverage ≥ 90 %.
+
+## Log
+
+- 2026-10-15 — The owner asked to keep working past the current plan while G2 waits for the work-PC numbers. `rusty-core` does not depend on the UI framework, so P3 starts on `p3-core` now and merges only after G2. C0 done (orchestrator): ids, `Location`, `Direction`, `thiserror` 2.0.21, `proptest` 1.12.0 and `insta` 1.49.0, floor `rusty-core = 90`; gate green. C1 and C3 start in parallel (checker, Sonnet, high), each in its own worktree.
