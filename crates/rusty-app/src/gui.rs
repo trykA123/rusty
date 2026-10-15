@@ -10,11 +10,12 @@ use rusty_ui::tokens::Mode;
 use rusty_ui::window_view::{StartOptions, run};
 
 use crate::startup::{home_location, initial_state, save};
-use crate::{jobs, launch};
+use crate::{editor, files, jobs, launch};
 
-pub fn open() {
+pub fn open(view: Option<std::path::PathBuf>) {
     let dirs = StoreDirs::detect();
     let session = dirs.as_ref().map(StoreDirs::session_file);
+    let settings = dirs.as_ref().map(StoreDirs::settings_file);
     let home = home_location(|name| std::env::var(name).ok());
     let state = session.as_deref().map_or_else(
         || initial_state(std::path::Path::new(""), home.clone()),
@@ -36,7 +37,15 @@ pub fn open() {
         mode: Mode::Light,
         operations,
         launcher: launch::launcher(),
+        editor: editor::hooks(settings.as_deref(), |name| std::env::var(name).ok()),
+        files: files::hooks(),
+        view: view.and_then(|path| view_location(&path)),
     });
+}
+
+fn view_location(path: &std::path::Path) -> Option<Location> {
+    let path = std::path::absolute(path).ok()?;
+    Location::new(path.to_str()?).ok()
 }
 
 pub fn operations(

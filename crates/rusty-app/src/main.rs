@@ -8,6 +8,8 @@
 mod cli;
 mod console;
 mod diag;
+mod editor;
+mod files;
 mod gui;
 mod jobs;
 mod launch;
@@ -28,7 +30,11 @@ fn main() -> ExitCode {
     }
     match parsed {
         Ok(Command::Open) => {
-            gui::open();
+            gui::open(None);
+            ExitCode::SUCCESS
+        }
+        Ok(Command::View(path)) => {
+            gui::open(Some(path));
             ExitCode::SUCCESS
         }
         Ok(Command::Version) => {

@@ -1,7 +1,9 @@
+mod editor;
 mod operate;
 mod pane;
 mod prompt;
 mod status;
+mod viewer;
 
 use std::collections::HashMap;
 use std::rc::Rc;
@@ -21,6 +23,9 @@ use crate::tokens::{self, Mode};
 
 const JOB_STOP_WAIT: Duration = Duration::from_secs(10);
 
+pub use editor::EditorHooks;
+pub use viewer::{FileHooks, FileStamp, FileText, Save, SaveError};
+
 pub type SaveSession = Rc<dyn Fn(&AppState)>;
 
 pub struct StartOptions {
@@ -30,6 +35,9 @@ pub struct StartOptions {
     pub mode: Mode,
     pub operations: Operations,
     pub launcher: Launcher,
+    pub editor: EditorHooks,
+    pub files: FileHooks,
+    pub view: Option<rusty_core::Location>,
 }
 
 pub fn run(options: StartOptions) {
@@ -38,6 +46,7 @@ pub fn run(options: StartOptions) {
         crate::file_list::bind_keys(cx);
         crate::confirm_dialog::bind_keys(cx);
         crate::prompt_dialog::bind_keys(cx);
+        viewer::bind_keys(cx);
         let bounds = Bounds::centered(None, size(px(1280.), px(800.)), cx);
         let window_options = WindowOptions {
             window_bounds: Some(WindowBounds::Windowed(bounds)),
@@ -59,6 +68,9 @@ pub struct FerriteWindow {
     split: Entity<SplitterState>,
     on_save: SaveSession,
     prompt: Option<prompt::Prompt>,
+    editor: EditorHooks,
+    files: FileHooks,
+    viewer: Option<viewer::Viewer>,
     next_prompt: u64,
     _appearance: Subscription,
 }
@@ -82,6 +94,9 @@ impl FerriteWindow {
             split: cx.new(|_| SplitterState::new(0.5)),
             on_save: options.on_save,
             prompt: None,
+            editor: options.editor,
+            files: options.files,
+            viewer: None,
             next_prompt: 0,
             _appearance: cx.observe_window_appearance(window, |_, window, cx| {
                 tokens::apply(mode_of(window.appearance()), cx);
@@ -90,7 +105,13 @@ impl FerriteWindow {
         };
         tokens::apply(mode_of(window.appearance()), cx);
         Self::close_saves_and_quits(window, cx);
-        cx.defer_in(window, |view, window, cx| view.focus_core_pane(window, cx));
+        let start_view = options.view;
+        cx.defer_in(window, move |view, window, cx| {
+            view.focus_core_pane(window, cx);
+            if let Some(location) = start_view {
+                view.view_location(location, window, cx);
+            }
+        });
         view
     }
 
@@ -170,9 +191,13 @@ impl FerriteWindow {
         (self.on_save)(self.browser.state());
     }
 
-    fn close(&mut self) {
+    fn close(&mut self, cx: &mut Context<Self>) -> bool {
+        if self.warn_unsaved(cx) {
+            return false;
+        }
         let _ = self.browser.shutdown(JOB_STOP_WAIT);
         self.save();
+        true
     }
 
     fn title_bar(cx: &mut Context<Self>) -> FerriteTitleBar {
@@ -180,17 +205,20 @@ impl FerriteWindow {
         FerriteTitleBar::new("Ferrite")
             .header(HeaderSearch::new())
             .on_close(move |_, cx| {
-                let _ = this.update(cx, |view, _| view.close());
-                cx.quit();
+                if this.update(cx, |view, cx| view.close(cx)).unwrap_or(true) {
+                    cx.quit();
+                }
             })
     }
 
     fn close_saves_and_quits(window: &mut Window, cx: &mut Context<Self>) {
         let this = cx.weak_entity();
         window.on_window_should_close(cx, move |_, cx| {
-            let _ = this.update(cx, |view, _| view.close());
-            cx.quit();
-            true
+            let closing = this.update(cx, |view, cx| view.close(cx)).unwrap_or(true);
+            if closing {
+                cx.quit();
+            }
+            closing
         });
     }
 }
@@ -210,6 +238,7 @@ impl Render for FerriteWindow {
             (Some(only), None) => only,
             _ => div().into_any_element(),
         };
+        let body = self.viewer_view(cx).unwrap_or(body);
         let jobs = self.job_strip(cx);
         let dialog = self.dialog(cx).or_else(|| self.prompt_view(cx));
         div()

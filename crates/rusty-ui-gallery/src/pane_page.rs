@@ -87,7 +87,9 @@ impl PanePage {
             | FileListAction::Rename(_)
             | FileListAction::NewFolder
             | FileListAction::SelectPattern { .. }
-            | FileListAction::Sort(_) => None,
+            | FileListAction::Sort(_)
+            | FileListAction::Edit { .. }
+            | FileListAction::View(_) => None,
         };
         if let Some(location) = target {
             self.run(&Command::PaneNavigate { location });

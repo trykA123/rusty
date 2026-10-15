@@ -49,6 +49,8 @@ pub enum FileListAction {
     NewFolder,
     SelectPattern { add: bool },
     Sort(SortBy),
+    Edit { row: u64, choose: bool },
+    View(u64),
 }
 
 #[derive(Clone, Debug)]
@@ -198,6 +200,20 @@ impl ListContext {
             '+' => self.act(FileListAction::SelectPattern { add: true }, window, cx),
             '-' => self.act(FileListAction::SelectPattern { add: false }, window, cx),
             _ => self.send(Command::SelectionInvert, window, cx),
+        }
+    }
+
+    fn view_cursor(&self, window: &mut Window, cx: &mut App) {
+        let row = self.props.view.cursor;
+        if self.props.rows.get(row_index(row)).is_some() {
+            self.act(FileListAction::View(row), window, cx);
+        }
+    }
+
+    fn edit_cursor(&self, choose: bool, window: &mut Window, cx: &mut App) {
+        let row = self.props.view.cursor;
+        if self.props.rows.get(row_index(row)).is_some() {
+            self.act(FileListAction::Edit { row, choose }, window, cx);
         }
     }
 
