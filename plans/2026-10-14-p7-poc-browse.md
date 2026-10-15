@@ -56,3 +56,8 @@ U5–U6 and U7 run in parallel after U3; U4 runs in parallel with them.
 - The owner opens `rusty.exe` on the work PC, browses with the keyboard, selects with Space and Insert, closes it, and on reopening sees the same layout immediately.
 - Gallery screenshots in both themes match design B.
 - `rusty-ui` coverage ≥ 60 %.
+
+## Log
+
+- 2026-10-15 — G2 and G6 passed; P7 starts on `p7-browse`. The owner wants a testable PoC today and Windows first, so the atoms run as fewer, larger ones: U0 (orchestrator) puts `gpui-kit` 0.7.3 and the low-power GPU patch (`vendor/gpui-pre-windows`) in the workspace; UA = U1–U4 (tokens, primitives, gallery), UB = D36 title bar on gpui-kit's `TitleBar`, UC = U5–U7 (file list, pane chrome, F-key and status bars), all on `ui-builder-high` (Opus high). Core (orchestrator): window, tab and scroll commands, the cursor keeps its row visible, `Location::parent`, `AppState::tab`, `list_missing`. `rusty-fs`: `load_folder` (folders first, then names without case). `rusty-store`: `StoreDirs` (`%APPDATA%\Ferrite`, `%LOCALAPPDATA%\Ferrite`). `rusty-ui`: `Browser` controller and the window (U9 + U10, orchestrator). `ferrite` without arguments opens the window; release builds use the GUI subsystem and CLI modes attach to the parent console. CI: Linux jobs only on manual dispatch.
+- Decisions taken on the way: core `Entry` stays name + folder flag; display details stay row-aligned in the pane; fonts are Archivo and JetBrains Mono with their OFL files; the close callback is registered once per window (re-registering on render panicked on Wayland).
