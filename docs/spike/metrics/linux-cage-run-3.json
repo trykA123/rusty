@@ -1,0 +1,48 @@
+{
+  "app_version": "0.1.0",
+  "os": "linux",
+  "arch": "x86_64",
+  "gpu": "Intel(R) Graphics (ARL)",
+  "first_frame_ms": 120.241875,
+  "marks": [
+    {
+      "label": "main",
+      "ms": 0.006692
+    },
+    {
+      "label": "application created",
+      "ms": 10.880811000000001
+    },
+    {
+      "label": "run callback",
+      "ms": 11.485675
+    },
+    {
+      "label": "gpui_kit::init",
+      "ms": 12.610991
+    },
+    {
+      "label": "fonts added",
+      "ms": 12.648523
+    },
+    {
+      "label": "open_window returned",
+      "ms": 111.28339399999999
+    }
+  ],
+  "scroll_seconds": 10,
+  "scroll": {
+    "count": 251,
+    "p50_ms": 38.9774,
+    "p95_ms": 43.513593,
+    "p99_ms": 46.44905,
+    "max_ms": 48.881127000000006,
+    "over_16_7_ms": 250,
+    "over_33_3_ms": 250
+  },
+  "memory": {
+    "rss_bytes": 92315648,
+    "peak_rss_bytes": 92315648
+  },
+  "binary_bytes": 39305832
+}
