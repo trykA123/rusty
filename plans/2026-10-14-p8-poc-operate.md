@@ -1,6 +1,6 @@
 # P8 · PoC 2: Operate
 
-Status: drafting (briefs get exact `Read` ranges when G7 passes) · Branch: `p8-operate` · After: G7
+Status: running (2026-10-15) · Branch: `p8-operate` · After: G7 (passed)
 
 ## Goal
 
@@ -51,3 +51,9 @@ O1–O2, O3–O4 and O10 run in parallel.
 - A copy killed halfway leaves no partial file at the target and resumes or rolls back on the next start.
 - Shift+Del shows the warning and nothing is deleted when it is dismissed.
 - The owner copies, moves and recycles files on the work PC with progress and cancel.
+
+## Log
+
+- 2026-10-15 — P8 starts after G7 and the owner's PoC 1 check. `Location` gains serde through its text form (plans are stored as postcard bytes). O1 (`op_plan` Red), O3 (`job_journal` Red) and O10 (`confirm_dialog`, `job_row`) run in parallel on Opus medium. Decisions for the PoC:
+  - `copy_standard` uses `std::fs::copy`, which is `CopyFileExW` on Windows (attributes and alternate streams kept), so `rusty-fs` stays free of `unsafe`; `CopyFile2` with per-file progress comes with Auto mode.
+  - `recycle` uses the `trash` crate (`IFileOperation` on Windows) instead of hand-written COM.
