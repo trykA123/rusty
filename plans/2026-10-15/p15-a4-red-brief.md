@@ -26,7 +26,7 @@ impl TokenKind { pub fn highlight_name(self) -> &'static str }
 pub struct Token { pub range: std::ops::Range<usize>, pub kind: TokenKind } // byte range in the line
 
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
-pub enum LineState { #[default] Normal, Block(u8), Delimited(u8) } // index of the open block comment or delimiter
+pub enum LineState { #[default] Normal, Block(u16), Delimited(u16) } // index of the open block comment or delimiter; u16 (review), an index past u16::MAX does not carry
 
 pub struct Language {
     pub name: String,
