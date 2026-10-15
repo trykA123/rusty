@@ -38,7 +38,7 @@ Exit: the spike meets the targets on Linux and the work PC, otherwise D2 is reop
 
 Goal: a file manager the owner can use every day on Windows.
 
-Progress: 38% (4 of 20 items done, 7 in progress).
+Progress: 40% (5 of 20 items done, 6 in progress).
 
 Done so far:
 
@@ -47,7 +47,7 @@ Done so far:
 - session restore;
 - virtualised list with quick filter;
 - TC marking with folder sizes;
-- copy, move, Recycle Bin and Shift+Del with plans, progress, cancel and a crash-safe journal;
+- copy, move, rename and new folder, Recycle Bin and Shift+Del with plans, progress, cancel and a crash-safe journal;
 - light and dark themes.
 
 Scope:
