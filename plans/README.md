@@ -25,12 +25,12 @@ The rest of Alpha (workspaces, drive bar, context menu, Explorer clipboard and s
 
 | Tier | Model | Roles | Used for |
 | --- | --- | --- | --- |
-| **T1** | Sonnet 5.5, `medium` | `patcher`, `infra-builder` | Moves, exact edits, small config, scaffolds |
-| **T2** | Sonnet 5.5 `medium`; Opus 5.5 `medium` where Sonnet `high` was used (D34) | `ui-builder`, `checker`, `infra-builder` (large) | UI work, medium implementation, writing the failing tests (Red atoms), CI |
-| **T3** | Opus 5.5, `medium` (D35; was gpt-6.1-sol) | Claude `general-purpose` agent | Backend Rust outside the core model: store, fs, index, diag, xtask, wiring |
-| **T4** | Opus 5.5, `high`: the orchestrator itself | orchestrator | The core and the hardest atoms: every `rusty-core` Green atom, everything that can lose user data (`atomic_write`, settings, session, job journal, job engine, standard copy), the spike, `FileList`, the pane view, the I/O queue |
+| **T1** | Opus 5.5, `medium` | `patcher`, `infra-builder` | Moves, exact edits, small config, scaffolds |
+| **T2** | Opus 5.5, `medium` | `ui-builder`, `checker`, `infra-builder` (large) | UI work, medium implementation, writing the failing tests (Red atoms), CI |
+| **T3** | Opus 5.5, `medium`; `high` for complex work | Claude `general-purpose` agent | Backend Rust outside the core model: store, fs, index, diag, xtask, wiring |
+| **T4** | Opus 5.5, `high`: the orchestrator itself, or `ui-builder-high` for hard UI | orchestrator, `ui-builder-high` | The core and the hardest atoms: every `rusty-core` Green atom, everything that can lose user data (`atomic_write`, settings, session, job journal, job engine, standard copy), the spike, `FileList`, the pane view, the I/O queue, hard refactors, cross-cutting changes |
 
-- **Haiku never implements (D28).** It runs only read-only lookups (`scout`, `researcher`), with the brief plus reading under 60k tokens and a 90k hard ceiling.
+- **Tiers as of 2026-10-15 (owner):** every editing agent runs on Opus 5.5 `medium`; complex work runs on Opus 5.5 `high`. Read-only `scout` and `researcher` run on Sonnet 5.5 `low` (`medium` for wider searches); `reviewer` runs on Opus `high`. No Haiku, no Sonnet for editing work, no gpt-6.1-sol, Codex or Gemini (D35). Every spawn passes `model` and `effort` explicitly.
 - The tier follows the atom's difficulty, but every `rusty-core` Green atom and every data-safety atom is T4. A one-line move elsewhere is T1.
 - Red atoms for T4 components run on Opus `medium` (D34), and the orchestrator reviews their tests against the contract before the Green atom starts.
 - Escalation follows `planning.md`: one retry with the failure output and one effort step more, then one tier up (T1 → T2 → T3 for backend or T4). Every escalation is logged in the plan.
