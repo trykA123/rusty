@@ -38,7 +38,7 @@ Exit: the spike meets the targets on Linux and the work PC, otherwise D2 is reop
 
 Goal: a file manager the owner can use every day on Windows.
 
-Progress: 40% (5 of 20 items done, 6 in progress).
+Progress: 45% (6 of 20 items done, 6 in progress).
 
 Done so far:
 
@@ -55,7 +55,7 @@ Scope:
 - core: tiled panes and tabs with history; session restore; virtualised file list with sorting, quick filter and shell icons.
 - core: component library in `rusty-ui` (primitives and Rusty components) with the component gallery and headless UI tests (D25).
 - core: Total Commander selection (D15); native context menu on a long right-click.
-- core: drive bar with mapped network drives, reconnect, Alt+F1, UNC paths and an offline state (D19).
+- core: drive bar with mapped network drives, reconnect, Alt+F1, UNC paths and an offline state (D19) (done, from plan P14).
 - core: copy, move, rename, new folder, Recycle Bin, Shift+Del with a warning; plan before acting; background job queue.
 - core: copy engine in Auto and Standard modes (D22); Explorer clipboard; lock owner in errors; command line; key contexts; per-monitor DPI.
 - infra: copy benchmark against Explorer, `robocopy /MT` and TeraCopy.
