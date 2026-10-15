@@ -1,6 +1,6 @@
 # Rusty roadmap
 
-Draft, 14 October 2026. The visual version is [`design/roadmap.html`](../design/roadmap.html). Scope rules are in [decisions.md](decisions.md) (D13, D14).
+Updated 15 October 2026. The visual version is [`design/roadmap.html`](../design/roadmap.html). Scope rules are in [decisions.md](decisions.md) (D13, D14).
 
 Kinds: **core** is always on; **module** can be turned off; **package** is data only (themes, keymaps); **infra** is build, CI and release work.
 
@@ -18,7 +18,9 @@ Kinds: **core** is always on; **module** can be turned off; **package** is data 
 
 Product discussion, prototypes A–L (B chosen), architecture, plugin model, decisions D1–D26; plans P1–P8 in `plans/`.
 
-## Foundation · v0.1 · next
+## Foundation · v0.1 · done
+
+Done 15 October 2026: P1–P8 passed their gates; PoC 1 and PoC 2 passed on the work PC.
 
 Goal: prove the stack and build the factory.
 
@@ -32,9 +34,23 @@ Goal: prove the stack and build the factory.
 
 Exit: the spike meets the targets on Linux and the work PC, otherwise D2 is reopened.
 
-## v1 Alpha · v0.5
+## v1 Alpha · v0.5 · now
 
 Goal: a file manager the owner can use every day on Windows.
+
+Progress: 38% (4 of 20 items done, 7 in progress).
+
+Done so far:
+
+- component library and gallery;
+- two panes with tabs and history (keyboard and mouse back/forward);
+- session restore;
+- virtualised list with quick filter;
+- TC marking with folder sizes;
+- copy, move, Recycle Bin and Shift+Del with plans, progress, cancel and a crash-safe journal;
+- light and dark themes.
+
+Scope:
 
 - core: tiled panes and tabs with history; session restore; virtualised file list with sorting, quick filter and shell icons.
 - core: component library in `rusty-ui` (primitives and Rusty components) with the component gallery and headless UI tests (D25).
