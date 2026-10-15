@@ -1,6 +1,6 @@
 # P7 · PoC 1: Browse
 
-Status: drafting (briefs get exact `Read` ranges when G6 passes) · Branch: `p7-browse` · After: G6
+Status: ready (G2 and G6 passed 2026-10-15) · Branch: `p7-browse` · After: G6
 
 ## Goal
 
@@ -13,6 +13,8 @@ Status: drafting (briefs get exact `Read` ranges when G6 passes) · Branch: `p7-
 - From G3 review (2026-10-15): window focus, tab activation and scrolling become commands (`window.open`, `window.close`, `window.focus`, `pane.activate-tab`, `pane.scroll`) so replay reproduces them; this removes the targeted `expect(dead_code)` on their state mutators. Cursor moves keep the cursor visible by adjusting `scroll` in `apply`, using the pane's page rows.
 - Theme tokens come from variant 1 of the spike (D27), cleaned into `rusty-ui/src/tokens/`.
 - Coverage floor `rusty-ui = 60` added in U1.
+- D36 (owner, 2026-10-15): a custom title bar merged with the header row replaces the native Windows caption: `fe_` icon, title, the header's search, and themed minimise, maximise and close buttons. Windows keeps snap layouts on maximise hover, drag to move, double-click to maximise and resize edges.
+- Accessibility follow-up from G2: Narrator read nothing on the spike list. Find why (the AccessKit tree is built only when a screen reader connects) and record it; the fix may come after PoC 1, since the owner does not need a screen reader now.
 
 ## Components
 
@@ -24,7 +26,8 @@ Status: drafting (briefs get exact `Read` ranges when G6 passes) · Branch: `p7-
 | `pane_chrome` | ui | `PaneTabs`, `PathBar` | headless |
 | `fkey_bar`, `status_bar` | ui | labels from the keymap; counts and sizes | headless |
 | `pane_view` | ui (container) | owns listing tasks, generation counter, streams batches into `file_list` | integration with `fake_fs` |
-| `window_view` | ui (container) | two panes in a split, rail placeholder, F-key bar | headless + screenshot |
+| `title_bar` | ui | custom caption: icon, title, header search slot, window buttons; hit-test areas for drag, caption buttons and resize | headless: buttons send minimise/maximise/close; screenshot both themes |
+| `window_view` | ui (container) | title bar, two panes in a split, rail placeholder, F-key bar | headless + screenshot |
 | `gallery` | ui (bin) | every component in every state, both themes | runs; screenshots reviewed |
 | `app_wiring` | app | start-up: session → first frame → open databases → list folders; save session on exit | start-up timing test |
 
@@ -40,7 +43,8 @@ Status: drafting (briefs get exact `Read` ranges when G6 passes) · Branch: `p7-
 | U6 | `file_list` Green | T4 | orchestrator | high | U5 | headless tests pass; 100k rows smooth |
 | U7 | `pane_chrome`, `fkey_bar`, `status_bar` | T2 | ui-builder | medium | U3 | headless tests pass |
 | U8 | `pane_view` | T4 | orchestrator | high | U6, U7 | integration with `fake_fs` passes; stale batches dropped |
-| U9 | `window_view` | T2 | ui-builder | high | U8 | headless + screenshots at 1100 and 1440 px, both themes |
+| U8b | `title_bar` | T2 | ui-builder-high | high | U3 | headless tests; screenshots both themes; on Windows CI exe: snap layouts on maximise hover, drag, double-click maximise |
+| U9 | `window_view` | T2 | ui-builder | high | U8, U8b | headless + screenshots at 1100 and 1440 px, both themes |
 | U10 | `app_wiring` | T3 | api-builder | xhigh | U9 | start-up test: first frame from session only |
 | U11 | PoC check on Windows | — | orchestrator | — | U10 | CI `.exe`; owner browses the work PC |
 | G7 | gate | — | orchestrator + reviewer | high | U1–U11 | gate, CI on both OS, review, **PoC 1 demo** |

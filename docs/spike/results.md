@@ -1,6 +1,6 @@
 # GPUI spike results (P2, G2)
 
-Status: **numbers complete except Narrator**; the owner found scrolling smooth on the 60 Hz work-PC monitor (2026-10-15); the owner decides go or no-go for D2. Work PC: Intel UHD + NVIDIA T1200 laptop, fat-LTO spike exe from CI run 38677189477, low-power GPU patch.
+Status: **G2 passed (2026-10-15): GO for GPUI (D2)**. Narrator read nothing on the list; it is a follow-up the owner does not need now; the owner found scrolling smooth on the 60 Hz work-PC monitor (2026-10-15); the owner decides go or no-go for D2. Work PC: Intel UHD + NVIDIA T1200 laptop, fat-LTO spike exe from CI run 38677189477, low-power GPU patch.
 
 Spike: `spikes/gpui-b` (design B, variant 1 of D27, three panes of 100,000 rows each, drawer, F-key bar) on `gpui-kit` 0.7.3. Raw numbers: `docs/spike/metrics/`. Plan and log: `plans/2026-10-14-p2-gpui-spike.md`.
 
@@ -69,4 +69,4 @@ Proposed: **go for GPUI (D2), with three follow-ups.**
 
 Owner's view of smoothness (2026-10-15): scrolling feels smooth on the 60 Hz monitor.
 
-Open before the owner decides: Narrator reading the list.
+Decision (2026-10-15): the owner agrees with GO. Narrator read nothing on the spike list; fixing it is a follow-up (the owner does not need a screen reader now).

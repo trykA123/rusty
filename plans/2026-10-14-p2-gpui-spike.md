@@ -1,6 +1,6 @@
 # P2 · GPUI spike
 
-Status: running · Branch: `p2-spike` · After: G1 (done 2026-10-14)
+Status: done (G2 passed 2026-10-15: GO, D2 validated) · Branch: `p2-spike` (merged) · After: G1 (done 2026-10-14)
 
 ## Goal
 
@@ -78,4 +78,4 @@ S5 runs in parallel with S1–S4.
 - 2026-10-15 — S7 CI part done: `spike-p2` run 38622266071 (`03e54c6`) green on windows-latest — 12 tests pass, fat-LTO exe 18.4 MB, three `--metrics` runs saved as `docs/spike/metrics/windows-ci-run-*.json`. On the runner's software renderer (Microsoft Basic Render Driver): first frame 510 / 274 / 220 ms, working set 63 MB (peak 67 MB) with three panes of 100k rows, scroll p50 64 ms (software rendering, not a smoothness verdict). S7 stays `running` until the owner's work-PC runs.
 - 2026-10-15 — D27 adapter action done: the spike vendors `gpui-pre-windows` 0.3.9 (`spikes/gpui-b/vendor/`, `[patch.crates-io]`) and `get_adapter` enumerates with `EnumAdapterByGpuPreference(MINIMUM_POWER)`; `FERRITE_GPU=default|high-performance` overrides it for A/B runs. CI run 38677189477 green (exe 17.6 MB); the runner has only the Basic Render Driver, so its numbers (first frame 546 / 313 / 308 ms, working set 59–60 MB) say nothing about the GPU choice. The work-PC run decides.
 - 2026-10-15 — Linux memory broken down (headless cage, non-LTO build; `docs/spike/metrics/linux-cage-memory-*.txt`): RSS 86 MB = 27 MB private (anon) + 59 MB file-backed code. File-backed: the 39 MB non-LTO binary (25 MB resident), Mesa's `libLLVM` (15 MB) and `libgallium` (8 MB). 100k rows per pane add ~1.5 MB. `gpui-pre-wgpu` 0.3.9 creates its wgpu instance with `VULKAN | GL` hard-coded (`wgpu_context.rs:474`, ignores `WGPU_BACKEND`), so the GL backend loads gallium and LLVM even though rendering uses Vulkan: ~24 MB of shared, clean pages. For G2: measure the target as private memory (Linux anon RSS, Windows private bytes), which is 27–29 MB on Linux; patching the instance to Vulkan-first would drop RSS to about 62 MB on Linux (D30: Linux is secondary).
-
+- 2026-10-15 — G2 passed. The owner found scrolling smooth on the 60 Hz work-PC monitor and agrees with GO for GPUI (D2 validated). Narrator read nothing on the list; the owner does not need a screen reader now, so it becomes a follow-up, not a blocker. The owner also asked for a title bar that looks like the app (D36, P7).
