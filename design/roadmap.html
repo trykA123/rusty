@@ -1,4 +1,4 @@
-<title>Rusty Roadmap</title>
+<title>Ferrite Roadmap</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -133,6 +133,11 @@ h1 { margin: 8px 0 12px; font-size: clamp(40px, 7vw, 72px); line-height: 0.95; f
 .target b small { font-size: 13px; color: var(--muted); font-weight: 400; }
 .target span { color: var(--muted); font-size: 12px; }
 .foot { color: var(--faint); font-size: 12.5px; }
+.progress { display: grid; gap: 8px; padding: 16px 18px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); }
+.progress h2 { margin: 0; font-size: 18px; font-weight: 750; font-stretch: 104%; }
+.progress p { margin: 0; color: var(--muted); font-size: 13px; }
+.bar { height: 8px; border-radius: 999px; background: var(--line); overflow: hidden; }
+.bar span { display: block; height: 100%; background: var(--ok); }
 
 @media (max-width: 960px) {
   .hero { grid-template-columns: minmax(0, 1fr); }
@@ -157,11 +162,11 @@ h1 { margin: 8px 0 12px; font-size: clamp(40px, 7vw, 72px); line-height: 0.95; f
   <header class="hero">
     <div>
       <div class="eyebrow">Keyboard-first file manager for Windows · Rust + GPUI</div>
-      <h1>Rusty roadmap</h1>
+      <h1>Ferrite roadmap</h1>
       <p class="lede">A small, stable and fast v1 first. The core is always on; every other feature is a module you can turn off. Later versions grow through modules, never by adding weight to the core.</p>
     </div>
     <aside class="now" aria-label="Current phase">
-      <div class="eyebrow">Now · since 14 Oct 2026</div>
+      <div class="eyebrow">Now · v1 Alpha · since 15 Oct 2026</div>
       <strong id="now-title"></strong>
       <p id="now-goal"></p>
       <dl id="now-stats"></dl>
@@ -172,6 +177,13 @@ h1 { margin: 8px 0 12px; font-size: clamp(40px, 7vw, 72px); line-height: 0.95; f
     <ol class="track" id="track"></ol>
   </nav>
 
+  <section id="progress" class="progress" aria-labelledby="progress-title">
+    <h2 id="progress-title">How close is the working version</h2>
+    <p>v1 Alpha, the version for daily use: 40% done</p>
+    <div class="bar" role="progressbar" aria-label="v1 Alpha progress" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"><span style="width: 40%"></span></div>
+    <p>5 of 20 Alpha items done, 6 in progress, 9 planned. Foundation is done. PoC 1 (browse) and PoC 2 (copy, move, delete) passed on the work PC.</p>
+    <p class="foot">Updated 15 October 2026. Done counts 1, in progress counts ½.</p>
+  </section>
   <div>
     <div class="toolbar">
       <span>Lanes</span>
@@ -195,7 +207,7 @@ h1 { margin: 8px 0 12px; font-size: clamp(40px, 7vw, 72px); line-height: 0.95; f
       <div class="target"><b>&lt; 30<small> MB</small></b><span>One portable .exe</span></div>
     </div>
   </section>
-  <p class="foot">Draft, updated 14 Oct 2026. Source: docs/roadmap.md and docs/decisions.md in the Rusty repository.</p>
+  <p class="foot">Updated 15 Oct 2026. Source: docs/roadmap.md and docs/decisions.md in the Rusty repository.</p>
 </div>
 
 <script>
@@ -210,45 +222,45 @@ const PHASES = [
       ["done", "Decisions D1–D26", "infra", "Including modules, v1 scope, theming, storage, runtime, drives, diagnostics, core foundations, copy modes, own index and module slots"],
     ],
     exit: "13–14 October 2026." },
-  { id: "foundation", key: "F2", dir: "01-foundation", title: "Foundation", ver: "v0.1", status: "next",
+  { id: "foundation", key: "F2", dir: "01-foundation", title: "Foundation", ver: "v0.1", status: "done",
     goal: "Prove the stack and build the factory: a workspace, a quality gate and a Windows build on every push.",
     items: [
-      ["done", "Plans P1–P8", "infra", "Atomic, test-driven plans by model tier, up to PoC 2; P1 ready to run"],
-      ["next", "Cargo workspace", "infra", "Eleven crates, pinned toolchain, Linux-first development"],
-      ["next", "Quality gate", "infra", "fmt, clippy -D warnings, tests, cargo-deny, cargo-audit"],
-      ["next", "Windows CI", "infra", "A portable .exe for every push to main, tested on the work PC"],
-      ["next", "GPUI spike", "infra", "Design B with 100k entries, three panes and the drawer; frame time, memory, cold and warm start; nucleo against frizbee on 2 million names; on gpui-kit with its AccessKit support"],
-      ["next", "Storage layer", "core", "SQLite from day one: rusty.db for user data and journals, cache.db for caches, migrations; session snapshot with visible rows"],
-      ["next", "Diagnostics", "core", "Redacted logs, event ring, memory and performance statistics, a report you save by hand; canary test for personal data"],
-      ["next", "Core model", "core", "Serialisable commands, layout tree, multi-window state and apply(), with property tests"],
-      ["next", "Locations and providers", "core", "Panes work with locations, not raw paths; local disk is the first provider"],
-      ["next", "Record and replay", "core", "Redacted command streams replay against the fake file system; bugs become tests"],
-      ["next", "Fake file system", "infra", "Fault injection: disk full, access denied, locked files, network lost mid-copy; hostile-name corpus"],
-      ["next", "Error model and I/O queues", "core", "One error dialog with recovery actions; priorities and limits per volume"],
+      ["done", "Plans P1–P9", "infra", "Atomic, test-driven plans by model tier; P1–P8 done, P9 in review"],
+      ["done", "Cargo workspace", "infra", "Eleven crates, pinned toolchain"],
+      ["done", "Quality gate", "infra", "fmt, clippy -D warnings, tests, cargo-deny, cargo-audit"],
+      ["done", "Windows CI", "infra", "A portable .exe for every push, about 14 minutes; tested on the work PC"],
+      ["done", "GPUI spike", "infra", "Design B on gpui-kit with 100k rows; GO on GPUI (60 Hz scrolling on Windows); screen reader support deferred"],
+      ["done", "Storage layer", "core", "SQLite from day one: rusty.db for user data and journals, cache.db for caches, migrations; session snapshot with visible rows"],
+      ["done", "Diagnostics", "core", "Redacted logs, event ring, memory and performance statistics, a report you save by hand; canary test for personal data"],
+      ["done", "Core model", "core", "Serialisable commands, layout tree, multi-window state and apply(), with property tests"],
+      ["done", "Locations and providers", "core", "Panes work with locations, not raw paths; local disk is the first provider"],
+      ["done", "Record and replay", "core", "Redacted command streams replay against the fake file system; bugs become tests"],
+      ["done", "Fake file system", "infra", "Fault injection: disk full, access denied, locked files, network lost mid-copy; hostile-name corpus"],
+      ["done", "Error model and I/O queues", "core", "One error dialog with recovery actions; priorities and limits per volume"],
     ],
-    exit: "The spike meets the targets on Linux and the work PC. Otherwise D2 is reopened." },
-  { id: "alpha", key: "F3", dir: "02-v1-alpha", title: "v1 Alpha", ver: "v0.5", status: "planned",
+    exit: "Done 15 October 2026. The spike passed on the work PC; GPUI stays (D2)." },
+  { id: "alpha", key: "F3", dir: "02-v1-alpha", title: "v1 Alpha", ver: "v0.5", status: "next",
     goal: "A file manager the owner can use every day on Windows.",
     items: [
-      ["planned", "Component library", "core", "Reusable primitives and Rusty components on gpui-kit, a component gallery, headless UI tests"],
-      ["planned", "Tiled panes and tabs", "core", "Split horizontally and vertically, focus, close, back and forward history"],
-      ["planned", "Session restore", "core", "The last layout, tabs, paths and visible rows come back at start, before any database opens"],
-      ["planned", "File list", "core", "Virtualised, streamed listing, sorting, quick filter, shell icons"],
-      ["planned", "Total Commander selection", "core", "Space selects and sizes folders, Insert, Num+ and Num−, right-click selects, right-drag selects a range"],
+      ["done", "Component library", "core", "Primitives and Ferrite components on gpui-kit, a gallery, headless UI tests"],
+      ["next", "Tiled panes and tabs", "core", "Two panes with tabs, focus, back and forward (Alt+arrows, mouse side buttons); free splitting still to come"],
+      ["done", "Session restore", "core", "Layout, tabs, paths and cursor come back at start"],
+      ["next", "File list", "core", "Virtualised and streamed; quick filter as you type; sizes in KB–TB; sort by name, extension, date or size (header click or Ctrl+F3–F6); shell icons still to come"],
+      ["next", "Total Commander selection", "core", "Space marks and sizes folders, Insert, right-click marks, Num+ and Num− select by pattern, Num* inverts; right-drag still to come"],
       ["planned", "Drive bar and network drives", "core", "Drive letters above the panes like TC, mapped drives marked, reconnect, Alt+F1, UNC paths, offline state instead of freezing"],
       ["planned", "Context menu", "core", "Native Windows menu on a long right-click, Shift+F10 or the Menu key, with Rusty's actions on top"],
-      ["planned", "File operations", "core", "Copy, move, rename, new folder, Recycle Bin, Shift+Del with a warning, plan before acting"],
-      ["planned", "Job queue", "core", "Background copies with progress, cancel and conflict handling"],
-      ["planned", "Copy engine: Auto and Standard", "core", "CopyFile2, parallel by drive type, unbuffered for large files, server-side copy on SMB"],
+      ["done", "File operations", "core", "Copy, move, rename, new folder, Recycle Bin, Shift+Del with a warning, plan before acting; Enter and double-click open files"],
+      ["done", "Job queue", "core", "Background jobs with progress and cancel; existing names are skipped; crash-safe journal rolls back at start"],
+      ["next", "Copy engine: Auto and Standard", "core", "Standard done (temp file, size check, rename); Auto mode still to come"],
       ["planned", "Copy benchmark", "infra", "Rusty against Explorer, robocopy /MT and TeraCopy: one big file, 10,000 small files, the NAS"],
       ["planned", "Explorer clipboard", "core", "Copy or cut in Rusty, paste in Explorer, and back"],
       ["planned", "Who locks the file", "core", "Errors name the process that holds a file, with Retry"],
       ["planned", "Command line", "core", "rusty <path>, --new-tab, rusty cmd <command> to the running instance"],
-      ["planned", "Key contexts and per-monitor DPI", "core", "Bindings per context with chords; each monitor keeps its scale"],
+      ["next", "Key contexts and per-monitor DPI", "core", "Key contexts done; per-monitor DPI not checked yet"],
       ["planned", "Pins", "core", "Pinned folders, tabs and files; Ctrl+1…9"],
       ["planned", "Command palette", "core", "Ctrl+K over commands, pins and folders"],
-      ["planned", "Shortcuts and F-key bar", "core", "Every action is a command; keymap in TOML"],
-      ["planned", "Light and dark", "package", "Built-in themes; follows the Windows setting"],
+      ["next", "Shortcuts and F-key bar", "core", "F-key bar shown; keymap in TOML still to come"],
+      ["done", "Light and dark", "package", "Built-in themes; follows the Windows setting"],
       ["planned", "Ready for translation", "core", "English only, every string in Fluent files"],
     ],
     exit: "Two weeks of daily use on the work PC with no lost or damaged files." },
@@ -260,7 +272,7 @@ const PHASES = [
       ["planned", "Copy modes and profiles", "core", "Parallel and Large files modes; verify, conflicts, I/O priority, bandwidth limit; profiles and rules by destination"],
       ["planned", "Accessibility basics", "core", "Full keyboard use, visible focus, high-contrast theme, UI scale"],
       ["planned", "Drag and drop with Explorer", "core", "Both directions; copy by default between drives"],
-      ["planned", "Crash-safe jobs and undo", "core", "Job journal resumes or rolls back; undo for rename, move, copy, recycle"],
+      ["next", "Crash-safe jobs and undo", "core", "Job journal rolls back unfinished jobs at start; undo still to come"],
       ["planned", "Module registry", "core", "Turn native modules on and off at runtime; safe mode with core only"],
       ["planned", "Settings window", "core", "Generated from each module's schema; search, live apply, reset to default"],
       ["planned", "Confirmations and formats", "core", "Total Commander ideas: per-case confirmations, date and size formats, ignore list"],
@@ -270,7 +282,7 @@ const PHASES = [
       ["planned", "Terminal", "module", "Windows Terminal tab, window or split; external command templates"],
       ["planned", "Folder search", "module", "Fuzzy search inside a folder tree with nucleo"],
       ["planned", "Frecency jump", "module", "Jump to frequent folders, like zoxide"],
-      ["planned", "External viewer and editor", "module", "F3 and F4 open the configured program per extension"],
+      ["done", "External viewer and editor", "module", "F3 viewer and F4 editor are done, from plan P12"],
       ["planned", "Done notifications", "module", "Windows notification when a long operation finishes"],
       ["planned", "Soak test and start-up benchmark", "infra", "Heap returns to baseline; start-up targets checked on Windows CI"],
     ],
@@ -289,6 +301,7 @@ const PHASES = [
     goal: "Look inside files and find anything on the disk.",
     items: [
       ["planned", "Preview pane", "module", "Images, code with highlighting, text, PDF"],
+      ["planned", "Language packages", "package", "Add languages to the F3 viewer: a tree-sitter grammar built to WebAssembly plus its query files, loaded at runtime; same format as Zed and Helix grammars"],
       ["planned", "Thumbnails", "module", "Disk cache with a budget; can be turned off and cleared"],
       ["planned", "Archives as folders", "module", "Browse zip and 7z like folders; safe extraction"],
       ["planned", "Global search", "module", "Like Everything: rusty-indexd reads the MFT and USN journal; substring, regex and fuzzy; ext:, size:, dm: filters. Engine built alongside Alpha"],
@@ -330,7 +343,7 @@ const LANES = [
   { k: "package", label: "Look & packages" },
   { k: "infra", label: "Build & quality" },
 ];
-const GROUPS = { design: ["done", "Done"], foundation: ["next", "Now"], alpha: ["", "Version 1"], see: ["", "After v1"] };
+const GROUPS = { design: ["done", "Done"], alpha: ["next", "Now · Version 1"], see: ["", "After v1"] };
 const STATUS = { done: "Done", next: "Now", planned: "Planned" };
 const esc = s => s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const check = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>';
