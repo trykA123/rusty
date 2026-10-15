@@ -1,6 +1,6 @@
 # P3 · Core model
 
-Status: running in parallel with G2 (owner, 2026-10-15) · Branch: `p3-core` · After: G2 for merging to `main`
+Status: G3 review running · Branch: `p3-core` · After: G2 for merging to `main`
 
 ## Goal
 
@@ -41,11 +41,11 @@ Status: running in parallel with G2 (owner, 2026-10-15) · Branch: `p3-core` · 
 | C6 | `state` Green | T4 | orchestrator | high | C5 | `… state` | done |
 | C7 | `selection` Red | T2 | checker (Opus) | medium | C6 | tests compile, fail | done |
 | C8 | `selection` Green | T4 | orchestrator | high | C7 | `… selection` | done |
-| C9 | `apply` Red | T2 | checker (Opus) | medium | C6, C8 | tests compile, fail | running |
-| C10 | `apply` Green | T4 | orchestrator | high | C9 | `… apply` | blocked |
-| C11 | `replay` Red | T2 | checker (Opus) | medium | C10 | tests compile, fail | blocked |
-| C12 | `replay` Green | T4 | orchestrator | high | C11 | `… replay` | blocked |
-| G3 | gate | — | orchestrator + reviewer | high | C1–C12 | `cargo xtask gate --coverage`; CI green; review | blocked |
+| C9 | `apply` Red | T2 | checker (Opus) | medium | C6, C8 | tests compile, fail | done |
+| C10 | `apply` Green | T4 | orchestrator | high | C9 | `… apply` | done |
+| C11 | `replay` Red | T2 | checker (Opus) | medium | C10 | tests compile, fail | done |
+| C12 | `replay` Green | T4 | orchestrator | high | C11 | `… replay` | done |
+| G3 | gate | — | orchestrator + reviewer | high | C1–C12 | `cargo xtask gate --coverage`; CI green; review | running |
 
 C1–C2 and C3–C4 run in parallel. Red atoms run on `checker` with Opus `medium` (D34). P3 merges to `main` only after G2 passes.
 
@@ -69,3 +69,4 @@ C1–C2 and C3–C4 run in parallel. Red atoms run on `checker` with Opus `mediu
 - 2026-10-15 — The owner asked to keep working past the current plan while G2 waits for the work-PC numbers. `rusty-core` does not depend on the UI framework, so P3 starts on `p3-core` now and merges only after G2. C0 done (orchestrator): ids, `Location`, `Direction`, `thiserror` 2.0.21, `proptest` 1.12.0 and `insta` 1.49.0, floor `rusty-core = 90`; gate green. C1 and C3 start in parallel (checker, Sonnet, high), each in its own worktree.
 - 2026-10-15 — C1 and C3 done (checker, Opus medium): 96 command tests and 47 layout tests, all failing on `todo!()`. Orchestrator review: C3's resize rule changed so that resizing towards an outer edge moves the far border (tmux-like) instead of failing; C1's `WrongType` expectations fixed as "string", "integer", "keyword", "keyword or integer". C2 and C4 done (orchestrator, Opus high): hand-written lexer, parser and printer; split tree with permille ratios and geometric neighbours. 151 `rusty-core` tests pass; `cargo xtask gate --coverage` green (command 96 %, layout 98 %). C5 starts.
 - 2026-10-15 — C5 and C7 done (checker, Opus medium): 107 state tests, 98 selection tests. C6 done (orchestrator): windows and the app hold their focused pane and window inline, so readers need no `unwrap` or `expect` (D31); the mutators `expect(dead_code)` until C10. C8 done: bitset selection (1M rows in 125 KB), linear wildcard matcher, `Tab` owns its `Selection`. 359 tests pass. C9 starts; C11 brief written.
+- 2026-10-15 — C9 and C11 done (checker, Opus medium): 99 apply tests, 20 replay tests. C10 done (orchestrator): one handler per command, page rows on the pane, events applied only to a tab still at that location; window, tab-activate and scroll mutators keep a targeted `expect(dead_code)` until their commands come in P7. C12 done: replay log with a 10,000-record window and a line-numbered text form that reuses the command lexer; 16 extra error-path tests. 494 `rusty-core` tests pass; coverage 97 %. At the owner's request all branches were merged into `main` (P3 up to C10, P4 W1–W4, P2 spike, the D27 variants). G3 review starts.
