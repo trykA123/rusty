@@ -7,6 +7,9 @@ use rusty_core::Location;
 use rusty_store::replace_atomic;
 use rusty_ui::window_view::{FileHooks, FileStamp, FileText, Save, SaveError};
 
+mod paged;
+mod summary;
+
 const MAX_VIEW: u64 = 16 * 1024 * 1024;
 const SNIFF: usize = 8 * 1024;
 
@@ -14,6 +17,8 @@ pub fn hooks() -> FileHooks {
     FileHooks {
         read: Rc::new(read),
         write: Rc::new(write),
+        pick: Rc::new(paged::pick),
+        paged: Rc::new(paged::paged),
     }
 }
 
