@@ -11,11 +11,11 @@ Replaces `handoff-1225.md` and `handoff-1139.md` (their rules still hold). Auto-
   - P11: Num+ / Num− select by pattern, Num* inverts, sort by column (header click, Ctrl+F3 name, F4 ext, F5 date, F6 size).
   - D38 (users add viewer languages as WASM tree-sitter packages) and the roadmap item.
   - CI for `52cad02` is run 38742814494; its artifact is the exe to give the owner for P9–P11.
-- **`p12-view-edit` at `34ef3c8` (+ this handoff), pushed** (worktree `<worktrees>/rusty-p12`, target dir `<targets>/p10`):
+- **`p12-view-edit` at `561f5eb`, pushed** (round 2 fixes included; this handoff is committed on top) (worktree `<worktrees>/rusty-p12`, target dir `<targets>/p10`):
   - F4 opens files in the editor the owner picks (saved as `[editor] path` in `ferrite.toml`); Shift+F4 changes it.
   - F3 built-in viewer/editor (gpui-kit code editor, 34 tree-sitter grammars, Ctrl+F find and replace, Ctrl+S safe save). D37: exe limit 60 MB.
   - `ferrite --view <file>` opens the viewer directly.
-  - Review round 1 was **FAIL**; all nine findings are fixed in `34ef3c8` (see `plans/2026-10-15-p12-view-edit.md`). Re-review and CI were running at 16:35. When both pass: merge into `main` (merge commit; `main` has docs commits), push, delete the branch and worktree, delete `targets/p10`, then run the Haiku roadmap brief "F3 viewer and F4 editor are done, from plan P12" (Beta item "External viewer and editor").
+  - Review round 1 FAIL, round 2 PASS WITH FIXES; all fixed (see `plans/2026-10-15-p12-view-edit.md`). Windows CI on `561f5eb` was running at compaction (background watcher). When it passes: merge into `main` (merge commit; `main` has docs commits), push, delete the branch and worktree, delete `targets/p10`, then run the Haiku roadmap brief "F3 viewer and F4 editor are done, from plan P12" (Beta item "External viewer and editor").
 - The main checkout is write-protected for this background session (bgIsolation): edit files in a worktree; git commands in the main checkout still work.
 
 ## Owner preferences learned today (also in memory)
