@@ -82,7 +82,10 @@ impl Redactor {
 - **`text()` replaces:**
   - user, computer and domain names, case-insensitively, wherever they occur, with `<user>`, `<computer>`, `<domain>`;
   - known UNC server names with their `<server:N>` token;
-  - every path-like substring with its redacted form, as `PathKind::File` and `DriveKind::Unknown`. Path-like means a drive root or a `\\` start, running up to whitespace, a quote, `<`, `>`, `|` or the end;
+  - every path-like substring with its redacted form, as `PathKind::File` and `DriveKind::Unknown` (changed by the orchestrator after L1, for privacy):
+    - a path starts at a drive root or a `\\` and runs over spaces up to a hard boundary: a quote, `<`, `>`, `|`, a tab, a newline or the end;
+    - a new path start inside that run (a space followed by a drive root or `\\`) ends the current path;
+    - the last segment ends just after the first word that ends with a valid extension (`.` plus 1–8 ASCII alphanumerics). If no word has one, it runs to the hard boundary, without trailing spaces. Over-redaction is accepted, a leak is not;
   - Unix paths that start with the profile.
 - **Never panics** on any input. Relative paths are treated as segments with no root.
 
