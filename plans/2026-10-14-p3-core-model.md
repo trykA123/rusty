@@ -42,7 +42,7 @@ Status: running in parallel with G2 (owner, 2026-10-15) · Branch: `p3-core` · 
 | C7 | `selection` Red | T2 | checker (Opus) | medium | C6 | tests compile, fail | done |
 | C8 | `selection` Green | T4 | orchestrator | high | C7 | `… selection` | done |
 | C9 | `apply` Red | T2 | checker (Opus) | medium | C6, C8 | tests compile, fail | running |
-| C10 | `apply` Green | T4 | orchestrator | high | C9 | `… apply` | running |
+| C10 | `apply` Green | T4 | orchestrator | high | C9 | `… apply` | blocked |
 | C11 | `replay` Red | T2 | checker (Opus) | medium | C10 | tests compile, fail | blocked |
 | C12 | `replay` Green | T4 | orchestrator | high | C11 | `… replay` | blocked |
 | G3 | gate | — | orchestrator + reviewer | high | C1–C12 | `cargo xtask gate --coverage`; CI green; review | blocked |
