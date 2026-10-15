@@ -22,4 +22,4 @@ strip = true
 gpui-kit = { version = "=0.7.3", features = ["test-support"] }
 
 [patch.crates-io]
-gpui-pre-windows = { path = "vendor/gpui-pre-windows" }
+gpui-pre-windows = { path = "../../vendor/gpui-pre-windows" }
