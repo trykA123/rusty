@@ -12,7 +12,7 @@ From now on every test build records what went wrong without recording who the u
 - `tracing` with a custom layer; rolling files 3 × 10 MB in the local data folder.
 - Memory statistics come through a `MemoryProbe` trait: a fake for tests, `/proc/self/status` on Linux, `GetProcessMemoryInfo` on Windows (in `rusty-app`, which may use `unsafe`).
 - Coverage floor `rusty-diag = 85` added in L1.
-- Briefs: [L1](2026-10-15/p5-l1-brief.md), [L3](2026-10-15/p5-l3-brief.md), [L7](2026-10-15/p5-l7-brief.md). Red atoms run on `checker` with Opus `medium` (D34).
+- Briefs: [L1](2026-10-15/p5-l1-brief.md), [L3](2026-10-15/p5-l3-brief.md), [L7](2026-10-15/p5-l7-brief.md), [L5](2026-10-15/p5-l5-brief.md). Red atoms run on `checker` with Opus `medium` (D34).
 - Redaction lives in one `Redactor` (salt, identity, UNC server table), so `<server:N>` numbering is stable within a report. Segment tokens are 4 hex characters of SipHash over salt and the lowercased name (std only).
 - The memory target metric is private memory (G2 proposal): Linux `RssAnon`, Windows private bytes.
 
@@ -64,3 +64,4 @@ L1, L3 and L7 run in parallel.
 ## Log
 
 - 2026-10-15 — P5 starts on `p5-diag` in parallel with P3's gate and P4, at the owner's request to keep implementing. L1, L3 and L7 (checker, Opus medium) start in parallel.
+- 2026-10-15 — L1, L3 and L7 done (checker, Opus medium): 66 redact, 25 ring and 26 memory tests. The orchestrator changed L1's text rule after the Red report: paths in free text run over spaces to a hard boundary (privacy over readability). L2 and L8 done (api-builder, gpt-6.1-sol xhigh), reviewed by hand; L4 done (orchestrator). 117 diag tests pass; redact coverage 99 %. L5 starts.
