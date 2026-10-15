@@ -1,6 +1,6 @@
 # P5 · Diagnostics
 
-Status: drafting (briefs get exact `Read` ranges when G4 passes) · Branch: `p5-diag` · After: G4
+Status: running in parallel with P3/P4 (owner, 2026-10-15) · Branch: `p5-diag` · After: G4 for merging
 
 ## Goal
 
@@ -12,6 +12,9 @@ From now on every test build records what went wrong without recording who the u
 - `tracing` with a custom layer; rolling files 3 × 10 MB in the local data folder.
 - Memory statistics come through a `MemoryProbe` trait: a fake for tests, `/proc/self/status` on Linux, `GetProcessMemoryInfo` on Windows (in `rusty-app`, which may use `unsafe`).
 - Coverage floor `rusty-diag = 85` added in L1.
+- Briefs: [L1](2026-10-15/p5-l1-brief.md), [L3](2026-10-15/p5-l3-brief.md), [L7](2026-10-15/p5-l7-brief.md). Red atoms run on `checker` with Opus `medium` (D34).
+- Redaction lives in one `Redactor` (salt, identity, UNC server table), so `<server:N>` numbering is stable within a report. Segment tokens are 4 hex characters of SipHash over salt and the lowercased name (std only).
+- The memory target metric is private memory (G2 proposal): Linux `RssAnon`, Windows private bytes.
 
 ## Components
 
@@ -57,3 +60,7 @@ L1, L3 and L7 run in parallel.
 - The canary test passes in CI on Linux and Windows.
 - `rusty --diag-report` writes a readable report with memory and timing sections.
 - `rusty-diag` coverage ≥ 85 %.
+
+## Log
+
+- 2026-10-15 — P5 starts on `p5-diag` in parallel with P3's gate and P4, at the owner's request to keep implementing. L1, L3 and L7 (checker, Opus medium) start in parallel.
