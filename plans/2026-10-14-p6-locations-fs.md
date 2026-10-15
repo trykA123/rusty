@@ -1,6 +1,6 @@
 # P6 · Locations and file systems
 
-Status: drafting (briefs get exact `Read` ranges when G5 passes) · Branch: `p6-fs` · After: G5
+Status: running in parallel with P5 (owner, 2026-10-15) · Branch: `p6-fs` · After: G5 for merging
 
 ## Goal
 
@@ -59,3 +59,8 @@ F9–F10 run in parallel with F5–F8.
 - The hostile-name corpus round-trips on the fake and the local provider, on Linux and Windows.
 - Faults produce the right `FsError` and recovery actions.
 - `rusty-fs` coverage ≥ 80 %.
+
+## Log
+
+- 2026-10-15 — F1 done (checker, Opus medium): 78 location and error tests. F2 done (orchestrator): `Location` = provider + lossless `ProviderPath` (text, UTF-16 with lone surrogates, or raw bytes; plane-16 escapes in the text form), NTFS-like `windows_eq`, `FsError` with Windows and errno tables, recovery actions and messages that never hold the OS text. G3 note done: listing request numbers, `pane.refresh` keeping marks by name, `list_unloaded()` for start-up. F3 done (checker): 63 provider and fake tests; `FakeFs::fault` keeps five parameters (reviewed `expect`). F4 runs on a Claude agent (Opus medium, D35).
+
