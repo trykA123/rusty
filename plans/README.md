@@ -27,7 +27,7 @@ The rest of Alpha (workspaces, drive bar, context menu, Explorer clipboard and s
 | --- | --- | --- | --- |
 | **T1** | Sonnet 5.5, `medium` | `patcher`, `infra-builder` | Moves, exact edits, small config, scaffolds |
 | **T2** | Sonnet 5.5 `medium`; Opus 5.5 `medium` where Sonnet `high` was used (D34) | `ui-builder`, `checker`, `infra-builder` (large) | UI work, medium implementation, writing the failing tests (Red atoms), CI |
-| **T3** | gpt-6.1-sol, `xhigh` | `api-builder` | Backend Rust outside the core model: store, fs, index, diag, xtask, wiring |
+| **T3** | Opus 5.5, `medium` (D35; was gpt-6.1-sol) | Claude `general-purpose` agent | Backend Rust outside the core model: store, fs, index, diag, xtask, wiring |
 | **T4** | Opus 5.5, `high`: the orchestrator itself | orchestrator | The core and the hardest atoms: every `rusty-core` Green atom, everything that can lose user data (`atomic_write`, settings, session, job journal, job engine, standard copy), the spike, `FileList`, the pane view, the I/O queue |
 
 - **Haiku never implements (D28).** It runs only read-only lookups (`scout`, `researcher`), with the brief plus reading under 60k tokens and a 90k hard ceiling.
