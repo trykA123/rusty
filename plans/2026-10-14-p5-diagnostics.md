@@ -1,6 +1,6 @@
 # P5 · Diagnostics
 
-Status: running in parallel with P3/P4 (owner, 2026-10-15) · Branch: `p5-diag` · After: G4 for merging
+Status: done (G5 passed 2026-10-15) · Branch: `p5-diag`
 
 ## Goal
 
@@ -65,3 +65,5 @@ L1, L3 and L7 run in parallel.
 
 - 2026-10-15 — P5 starts on `p5-diag` in parallel with P3's gate and P4, at the owner's request to keep implementing. L1, L3 and L7 (checker, Opus medium) start in parallel.
 - 2026-10-15 — L1, L3 and L7 done (checker, Opus medium): 66 redact, 25 ring and 26 memory tests. The orchestrator changed L1's text rule after the Red report: paths in free text run over spaces to a hard boundary (privacy over readability). L2 and L8 done (api-builder, gpt-6.1-sol xhigh), reviewed by hand; L4 done (orchestrator). 117 diag tests pass; redact coverage 99 %. L5 starts.
+- 2026-10-15 — L11 done (orchestrator): `ferrite --diag-report <file.zip>`; Windows memory through `K32GetProcessMemoryInfo` and `GlobalMemoryStatusEx`. G5 took five review rounds (Opus high). Fixed, each with a failing test first: allow-listed extensions only (a dotted user name such as `john.smith` leaked `.smith`), file names end at their last allow-listed extension word, `//`, `/`, `~/`, `./`, `file://` and `smb://` paths, drive paths after words, name-carrying log fields (`file`, `folder`, `name`, `src`, `dst`, … need a `RedactedPath`), quoted fragments become `<text:N chars>`, share names replaced as whole words, apostrophes inside names, report events parsed before redaction, stable second pass, linear time on long input, and the report never replaces an existing file (`hard_link`). The extension allow-list adds `bin` and `dat` to the brief's list.
+- Known limit, accepted: free-text redaction is heuristic. A bare name that is neither a path nor quoted (`renamed Budget into Plan`) cannot be recognised. Rule for code: names and paths reach logs only through path-carrying fields, which the log layer enforces by field name; messages never format a name in. Over-redaction (a Debug `by:\n` read as a path) is accepted.
