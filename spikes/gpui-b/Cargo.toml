@@ -20,3 +20,6 @@ strip = true
 
 [dev-dependencies]
 gpui-kit = { version = "=0.7.3", features = ["test-support"] }
+
+[patch.crates-io]
+gpui-pre-windows = { path = "vendor/gpui-pre-windows" }
