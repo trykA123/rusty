@@ -1,0 +1,55 @@
+== rollup
+55c386dfe000-7ffe60170000 ---p 00000000 00:00 0                          [rollup]
+Rss:               86932 kB
+Pss:               67454 kB
+Pss_Dirty:         27366 kB
+Pss_Anon:          27348 kB
+Pss_File:          40074 kB
+Pss_Shmem:            32 kB
+Shared_Clean:      29548 kB
+Shared_Dirty:         20 kB
+Private_Clean:     30008 kB
+Private_Dirty:     27356 kB
+Referenced:        86932 kB
+Anonymous:         27348 kB
+KSM:                   0 kB
+LazyFree:              0 kB
+AnonHugePages:         0 kB
+ShmemPmdMapped:        0 kB
+FilePmdMapped:         0 kB
+Shared_Hugetlb:        0 kB
+Private_Hugetlb:       0 kB
+Swap:                  0 kB
+SwapPss:               0 kB
+Locked:                0 kB
+== top mappings by Rss (kB)
+25956 <targets>/rusty-spike/release/gpui-b
+15476 /usr/lib/libLLVM.so.23.1
+14988 [heap]
+8328 /usr/lib/libgallium-26.2.4-arch3.1.so
+6428 [anon]
+4932 /usr/lib/libvulkan_intel.so
+1788 /usr/lib/libc.so.6
+1580 /usr/lib/libstdc++.so.6.0.36
+680 /usr/lib/libvulkan.so.1.4.363
+648 /usr/lib/libm.so.6
+468 /usr/lib/libzstd.so.1.5.7
+464 /usr/lib/libicuuc.so.78.3
+352 /usr/lib/libEGL_mesa.so.0.0.0
+320 /usr/share/fonts/Adwaita/AdwaitaSans-Regular.ttf
+320 /usr/share/fonts/Adwaita/AdwaitaSans-Italic.ttf
+280 /usr/lib/libX11.so.6.4.0
+280 /usr/lib/ld-linux-x86-64.so.2
+264 /usr/lib/libGLdispatch.so.0.0.0
+220 /usr/lib/libexpat.so.1.13.0
+212 /usr/lib/libxml2.so.16.1.4
+192 /usr/lib/libSPIRV-Tools.so
+184 /usr/lib/libudev.so.1.7.15
+168 /usr/lib/libncursesw.so.6.6
+168 /etc/ld.so.cache
+156 [stack]
+== anon / file / shmem
+VmRSS:	   86932 kB
+RssAnon:	   27348 kB
+RssFile:	   59532 kB
+RssShmem:	      52 kB

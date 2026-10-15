@@ -1,0 +1,48 @@
+{
+  "app_version": "0.1.0",
+  "os": "windows",
+  "arch": "x86_64",
+  "gpu": "Microsoft Basic Render Driver",
+  "first_frame_ms": 546.423,
+  "marks": [
+    {
+      "label": "main",
+      "ms": 0.0216
+    },
+    {
+      "label": "application created",
+      "ms": 182.3039
+    },
+    {
+      "label": "run callback",
+      "ms": 270.0766
+    },
+    {
+      "label": "gpui_kit::init",
+      "ms": 277.2235
+    },
+    {
+      "label": "fonts added",
+      "ms": 282.07959999999997
+    },
+    {
+      "label": "open_window returned",
+      "ms": 509.5115
+    }
+  ],
+  "scroll_seconds": 10,
+  "scroll": {
+    "count": 73,
+    "p50_ms": 124.4954,
+    "p95_ms": 271.8696,
+    "p99_ms": 457.606,
+    "max_ms": 457.606,
+    "over_16_7_ms": 71,
+    "over_33_3_ms": 71
+  },
+  "memory": {
+    "rss_bytes": 63180800,
+    "peak_rss_bytes": 64688128
+  },
+  "binary_bytes": 18405376
+}
