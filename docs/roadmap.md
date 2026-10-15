@@ -73,7 +73,7 @@ Goal: safe, configurable and pleasant; modules and theming arrive.
 - core: per-case confirmations, date and size formats, ignore list.
 - core: Parallel and Large files copy modes, copy options, profiles and rules by destination; accessibility basics.
 - package: custom colour themes and icon themes (D16).
-- module: copy path, terminal (Windows Terminal and templates), folder search, frecency jump, external viewer and editor (F3/F4), notifications for long operations.
+- module: copy path, terminal (Windows Terminal and templates), folder search, frecency jump, external viewer and editor (F3/F4; done, from plan P12), notifications for long operations.
 - infra: soak test and start-up benchmark in CI.
 
 Exit: no open data-safety bugs; start-up and memory targets met in CI.
