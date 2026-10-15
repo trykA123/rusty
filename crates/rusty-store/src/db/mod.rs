@@ -8,8 +8,10 @@ use rusqlite::{Connection, TransactionBehavior};
 const BUSY_TIMEOUT: Duration = Duration::from_secs(5);
 
 mod migrations;
+mod viewer;
 
 use migrations::MIGRATIONS;
+pub use viewer::{FileMemory, Stamp};
 
 #[derive(Debug, thiserror::Error)]
 pub enum DbError {
@@ -19,6 +21,8 @@ pub enum DbError {
     TooNew { found: u32, supported: u32 },
     #[error("database integrity check failed: {0}")]
     Corrupt(String),
+    #[error("could not encode a value for the database: {0}")]
+    Encode(String),
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
