@@ -1,6 +1,6 @@
 # P6 · Locations and file systems
 
-Status: drafting (briefs get exact `Read` ranges when G5 passes) · Branch: `p6-fs` · After: G5
+Status: done (G6 passed 2026-10-15) · Branch: `p6-fs` · After: G5 for merging
 
 ## Goal
 
@@ -59,3 +59,11 @@ F9–F10 run in parallel with F5–F8.
 - The hostile-name corpus round-trips on the fake and the local provider, on Linux and Windows.
 - Faults produce the right `FsError` and recovery actions.
 - `rusty-fs` coverage ≥ 80 %.
+
+## Log
+
+- 2026-10-15 — F1 done (checker, Opus medium): 78 location and error tests. F2 done (orchestrator): `Location` = provider + lossless `ProviderPath` (text, UTF-16 with lone surrogates, or raw bytes; plane-16 escapes in the text form), NTFS-like `windows_eq`, `FsError` with Windows and errno tables, recovery actions and messages that never hold the OS text. G3 note done: listing request numbers, `pane.refresh` keeping marks by name, `list_unloaded()` for start-up. F3 done (checker): 63 provider and fake tests; `FakeFs::fault` keeps five parameters (reviewed `expect`). F4 runs on a Claude agent (Opus medium, D35).
+
+- 2026-10-15 — F4 done (Claude agent, Opus medium): `FakeFs` with faults, 885 workspace tests. D31 cleanup: `Location::provider_root` replaces the last `expect`. `main` merged in. F5 (hostile names) and F9 (`io_queue` Red) start in parallel on `checker` (Opus medium); briefs in `plans/2026-10-15/`. F9 splits the queue into a pure `Scheduler` and a thin `IoQueue` runner with lazy per-volume threads; drive-type detection stays outside F9–F10 (`set_volume` is the input).
+- 2026-10-15 — F5 done (checker): 52 hostile names (52 total, 47 Unix, 38 Windows). The corpus found a core defect: a name holding a plane-16 escape character read back as another path, so `FakeFs::metadata` could return another file. Fixed in core: `to_text` quotes literal escape-range characters with U+100800. `Location::join` added (orchestrator). F9 done (checker, 61 tests); F10 done (orchestrator): pure `Scheduler` plus a runner with lazy per-volume workers, panics caught. F6 done (checker): 49 Linux and 9 Windows tests. Decision: the local provider uses `std::fs` on both OSes (no `unsafe`; lossless names on Windows through `OsStr` WTF-8); `FindFirstFileExW` only if the 100k benchmark misses 20 ms. Errno 20 and Windows 267 map to `NameInvalid`. F7+F8 run as one atom on a Claude agent (Opus medium).
+- 2026-10-15 — F7+F8 done (Claude agent, Opus medium): `LocalFs` on `std::fs`; first batch of a 100k folder in about 0.3 ms. Windows CI found one test bug (a plain path drops trailing dots). G6 review: PASS, six minors, all fixed before the merge: NTFS simple upcase for iota-subscript Greek, local Locations that would read back as a provider are refused, fake and local agree on cancel during the last batch, entries whose `stat` fails stay listed, `.`/`..` are resolved before `\\?\` (tested on Linux through `local/verbatim.rs`), `IoQueue::submit` takes a `JobSlot`. Four more `io_queue` guarantee tests. P6 merges to `main`.

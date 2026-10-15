@@ -552,6 +552,12 @@ dependencies = [
 [[package]]
 name = "rusty-fs"
 version = "0.0.1"
+dependencies = [
+ "proptest",
+ "rusty-core",
+ "tempfile",
+ "thiserror",
+]
 
 [[package]]
 name = "rusty-index"
