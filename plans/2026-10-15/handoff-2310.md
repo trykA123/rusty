@@ -77,3 +77,32 @@ No crew runs. No background shell jobs.
    - A2b: encoding picker, decoded paged rows, editable mixed line endings.
 6. **Then** A9 (P15 review), P16 automotive, and the audit items.
 7. **Roadmap:** a Haiku agent updates it after each merge. Read the artifact, then republish it.
+
+## Update: A6 review (after the usage warning, so no agent was started)
+
+A6 review verdict: **PASS WITH FIXES.** Resume the A6 agent (a9515d601abbaf8a0) after the usage reset to apply these fixes.
+
+**Must fix:**
+1. **SVGZ bomb.** `usvg` decompresses `.svgz` with no limit (2 MB file → 2 GB RSS).
+   - On `1f 8b`, gunzip yourself with `flate2` `.take(IMAGE_LIMIT + 1)` and refuse past the limit.
+   - Add a test.
+2. **Stack overflow on a 1000-deep SVG.** Windows thread-pool threads have 1 MiB stacks, so this aborts the whole app.
+   - Run `vector()` on a `std::thread` with a 16 MiB stack, or reject nesting deeper than about 256.
+   - Test on a 1 MiB thread.
+3. **Detached decodes pile up while n is held.**
+   - Add a liveness token (`Arc` held by `Opening`, `Weak` passed to the work).
+   - Add a static `Mutex` around the image load, and skip it if the view is gone.
+   - Test: count the `bytes` calls.
+
+**Should fix:**
+4. **Skipping non-images.**
+   - While Opening, n/p falls back to `is_image_name(title)`.
+   - Space/Backspace are also bound in the Viewer context.
+5. **Peak memory.** Shrink, then orient; use `into_rgba8`; set explicit `max_alloc` limits; take TIFF orientation from the decoder.
+6. **Missing tests.** Atlas entry dropped (`has_image_atlas_entry`); all 8 EXIF orientations.
+
+**Merge notes:**
+- A6 merges cleanly into main.
+- A8 conflicts on `bytes`: keep A6's body (metadata size check, "Too large…" message) and its `pub type ReadBytes`.
+- A5b: the conflicts are additive (`FileHooks` fields, test rigs, gallery).
+- Suggested order: A5b, then A6, then A8 (rebase A8's sniff onto A2's `looks_binary`), then A7.
