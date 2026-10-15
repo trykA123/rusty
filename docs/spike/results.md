@@ -1,6 +1,6 @@
 # GPUI spike results (P2, G2)
 
-Status: **draft**. The work-PC column fills in when the owner runs the spike exe; then the owner decides go or no-go for D2.
+Status: **numbers complete except Narrator and the owner's view of smoothness**; the owner decides go or no-go for D2. Work PC: Intel UHD + NVIDIA T1200 laptop, fat-LTO spike exe from CI run 38677189477, low-power GPU patch.
 
 Spike: `spikes/gpui-b` (design B, variant 1 of D27, three panes of 100,000 rows each, drawer, F-key bar) on `gpui-kit` 0.7.3. Raw numbers: `docs/spike/metrics/`. Plan and log: `plans/2026-10-14-p2-gpui-spike.md`.
 
@@ -8,13 +8,26 @@ Spike: `spikes/gpui-b` (design B, variant 1 of D27, three panes of 100,000 rows 
 
 | Target | Goal | Linux dev PC (headless cage) | Windows CI (software renderer) | Work PC |
 | --- | --- | --- | --- | --- |
-| Cold start, first frame | ≤ 400 ms | 671 ms (non-LTO, first run after build) | 510–546 ms | pending · variants prototype: 566–667 ms on NVIDIA, **376 ms** on Intel |
-| Warm start, first frame | ≤ 150 ms | **120 ms** | 220–313 ms | pending |
-| Idle memory, two or more panes | < 80 MB | RSS 86–88 MB; **private 27–29 MB** | working set 59–63 MB | pending |
-| `.exe` size | < 30 MB | 39 MB (non-LTO ELF) | **17.6 MB** (fat LTO) | same exe |
-| Scrolling 100k rows at 60 Hz | no dropped frames | not measurable: cage paces frames at ~39 ms | not measurable: software renderer, p50 64–124 ms | pending |
+| Cold start, first frame | ≤ 400 ms | 671 ms (non-LTO, first run after build) | 510–546 ms | **407 ms** (Intel, first run); 561 ms on NVIDIA |
+| Warm start, first frame | ≤ 150 ms | **120 ms** | 220–313 ms | 343–346 ms (Intel) — **misses**; needs a resident process |
+| Idle memory, two or more panes | < 80 MB | RSS 86–88 MB; **private 27–29 MB** | working set 59–63 MB | working set 91–99 MB on Intel, 130 MB on NVIDIA; private bytes not measured |
+| `.exe` size | < 30 MB | 39 MB (non-LTO ELF) | **17.6 MB** (fat LTO) | **17.6 MB** |
+| Scrolling 100k rows at 60 Hz | no dropped frames | not measurable: cage paces frames at ~39 ms | not measurable: software renderer | **mixed**: Intel run 3 and NVIDIA hold 60 fps (p95 17.4–17.5 ms, nothing over 33 ms); Intel runs 1 and 2 drop to 45 and 35 fps (p95 ~49 ms) |
 | Fuzzy matching | interactive on 100k names | frizbee: 1.2–2.1 ms per query on 100k basenames; 54–143 ms on 2M paths | — | — |
 | Accessibility | list and rows readable | roles, names, position and selection set (headless test) | — | Narrator check pending |
+
+### Work PC start-up breakdown (ms from `main`)
+
+| Run | GPU | application created | run callback | open_window returned | first frame |
+| --- | --- | ---: | ---: | ---: | ---: |
+| 1 | Intel UHD | 191 | 270 | 405 | 407 |
+| 2 | Intel UHD | 161 | 231 | 343 | 346 |
+| 3 | Intel UHD | 158 | 229 | 341 | 343 |
+| NVIDIA | T1200 | 156 | 406 | 558 | 561 |
+
+- The low-power GPU preference works: device creation on Intel takes ~70 ms against ~250 ms on NVIDIA, which saves ~200 ms of start-up.
+- Of the remaining ~340 ms, ~160 ms is the platform and DirectWrite before the app's code runs, and ~105 ms is the window and the first render. A warm start under 150 ms is not reachable by trimming; it needs the app to stay resident (tray) and show a hidden window, as Total Commander and Everything do.
+- Scroll frame counts in 10 s: 447, 352, 601 (Intel) and 602 (NVIDIA). The two slow Intel runs show frames at 33 and 50 ms (whole missed vsyncs), not a slow renderer: the same build holds 60 fps in run 3. Likely causes: iGPU power-state ramp-up or another app on screen; to confirm with a longer run.
 
 ## Findings
 
@@ -48,4 +61,10 @@ Spike: `spikes/gpui-b` (design B, variant 1 of D27, three panes of 100,000 rows 
 
 ## Decision
 
-Pending the work-PC numbers. Go if the Intel-GPU cold start and warm start are near target, scrolling holds 60 Hz on the work PC and Narrator reads the list; otherwise D2 reopens with the fallback in `docs/discussion.md`.
+Proposed: **go for GPUI (D2), with three follow-ups.**
+
+1. Cold start meets the target on the work PC thanks to the low-power GPU patch; offer the patch upstream and keep it vendored until then.
+2. Warm start needs a resident mode: Ferrite stays in the tray after its window closes and shows a pre-built hidden window (a plan item for after PoC 2).
+3. Measure private bytes on Windows (the P5 memory probe in `rusty-app`) and a 60-second scroll on the work PC, to settle the memory target and the Intel frame drops.
+
+Open before the owner decides: Narrator reading the list, and the owner's own view of smoothness.

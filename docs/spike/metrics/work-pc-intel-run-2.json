@@ -1,0 +1,48 @@
+{
+  "app_version": "0.1.0",
+  "os": "windows",
+  "arch": "x86_64",
+  "gpu": "Intel(R) UHD Graphics",
+  "first_frame_ms": 345.9262,
+  "marks": [
+    {
+      "label": "main",
+      "ms": 0.007500000000000001
+    },
+    {
+      "label": "application created",
+      "ms": 160.692
+    },
+    {
+      "label": "run callback",
+      "ms": 230.7072
+    },
+    {
+      "label": "gpui_kit::init",
+      "ms": 236.1163
+    },
+    {
+      "label": "fonts added",
+      "ms": 238.2811
+    },
+    {
+      "label": "open_window returned",
+      "ms": 343.32079999999996
+    }
+  ],
+  "scroll_seconds": 10,
+  "scroll": {
+    "count": 352,
+    "p50_ms": 33.4011,
+    "p95_ms": 49.1481,
+    "p99_ms": 49.6224,
+    "max_ms": 50.068599999999996,
+    "over_16_7_ms": 252,
+    "over_33_3_ms": 179
+  },
+  "memory": {
+    "rss_bytes": 95727616,
+    "peak_rss_bytes": 103682048
+  },
+  "binary_bytes": 18405376
+}
