@@ -19,7 +19,10 @@ fn title_of(tab: &Tab) -> SharedString {
 }
 
 impl FerriteWindow {
-    fn filter(&mut self, edit: FilterEdit) {
+    pub(super) fn filter(&mut self, edit: FilterEdit) {
+        if self.prompt.is_some() {
+            return;
+        }
         let _ = match edit {
             FilterEdit::Push(ch) => self.browser.filter_push(ch),
             FilterEdit::Pop => self.browser.filter_pop(),
@@ -145,6 +148,8 @@ impl FerriteWindow {
                         FileListAction::Filter(edit) => {
                             this.filter(*edit);
                         }
+                        FileListAction::Rename(row) => this.ask_rename(*row),
+                        FileListAction::NewFolder => this.ask_new_folder(),
                     }
                     this.focus_core_pane(window, cx);
                     cx.notify();

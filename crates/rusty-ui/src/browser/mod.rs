@@ -12,6 +12,7 @@ use rusty_fs::{
     folder_size, load_folder, volume_of,
 };
 
+pub use naming::NameProblem;
 use operate::JobUpdate;
 pub use operate::{JobStatus, JobView, LogFactory, OpLog, Operations, PendingOp};
 
@@ -36,6 +37,7 @@ enum Message {
     Loaded(Loaded),
     Measured(Measured),
     Job(JobUpdate),
+    Named(naming::Named),
 }
 
 impl Message {
@@ -59,6 +61,7 @@ pub struct Browser {
     wake: Waker,
     details: HashMap<TabId, Rc<[FsEntry]>>,
     errors: HashMap<TabId, FsError>,
+    late_errors: HashMap<TabId, FsError>,
     focus_after_load: HashMap<TabId, String>,
     in_flight: usize,
     save_requested: bool,
@@ -91,6 +94,7 @@ impl Browser {
             wake,
             details: HashMap::new(),
             errors: HashMap::new(),
+            late_errors: HashMap::new(),
             focus_after_load: HashMap::new(),
             in_flight: 0,
             save_requested: false,
@@ -182,6 +186,7 @@ impl Browser {
                 Message::Loaded(loaded) => self.accept(loaded),
                 Message::Measured(measured) => self.accept_size(&measured),
                 Message::Job(update) => self.accept_job(update),
+                Message::Named(named) => self.accept_named(named),
             };
         }
         changed
@@ -340,7 +345,10 @@ impl Browser {
         }
         let listing = match result {
             Ok(snapshot) => {
-                self.errors.remove(&tab);
+                match self.late_errors.remove(&tab) {
+                    Some(error) => self.errors.insert(tab, error),
+                    None => self.errors.remove(&tab),
+                };
                 let full = filter::Full {
                     listing: snapshot.listing,
                     details: snapshot.details.into(),
@@ -384,6 +392,7 @@ impl Browser {
 }
 
 mod filter;
+mod naming;
 mod operate;
 #[cfg(test)]
 mod tests;
