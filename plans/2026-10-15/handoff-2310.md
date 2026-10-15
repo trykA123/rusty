@@ -106,3 +106,19 @@ A6 review verdict: **PASS WITH FIXES.** Resume the A6 agent (a9515d601abbaf8a0) 
 - A8 conflicts on `bytes`: keep A6's body (metadata size check, "Too large…" message) and its `pub type ReadBytes`.
 - A5b: the conflicts are additive (`FileHooks` fields, test rigs, gallery).
 - Suggested order: A5b, then A6, then A8 (rebase A8's sniff onto A2's `looks_binary`), then A7.
+
+## Update: A5b fixes are done (not merged, because of the usage limit)
+
+- **p15-a5b commits:** `cabb3e9` (real merge of main at 823b589, with the encoding label ported into `editor/view.rs`), then `504977b` (all review items 1–6 and the low items).
+  - Gate: exit 0, all 9 steps passed; 2534 tests passed.
+  - Verified: the worktree is clean and the gate log's last line is correct.
+- **Next after the reset:**
+  - run a short re-review (reviewer, Opus high) on `cabb3e9..504977b`;
+  - merge p15-a5b into main;
+  - run clippy and test unpiped on main, then push;
+  - then do A6 fixes, A6 merge, A8 review.
+- **Open risks from the worker:**
+  - Tail counting assumes an append-only file: a file truncated and regrown keeps stale hits.
+  - Bookmarks drift after a save that rewrites line endings. This case is now read-only through A2.
+  - Remembered marks are rescanned once from 0.
+  - Edit mode has no way back to read-only without closing.
