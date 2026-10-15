@@ -57,3 +57,11 @@ O1–O2, O3–O4 and O10 run in parallel.
 - 2026-10-15 — P8 starts after G7 and the owner's PoC 1 check. `Location` gains serde through its text form (plans are stored as postcard bytes). O1 (`op_plan` Red), O3 (`job_journal` Red) and O10 (`confirm_dialog`, `job_row`) run in parallel on Opus medium. Decisions for the PoC:
   - `copy_standard` uses `std::fs::copy`, which is `CopyFileExW` on Windows (attributes and alternate streams kept), so `rusty-fs` stays free of `unsafe`; `CopyFile2` with per-file progress comes with Auto mode.
   - `recycle` uses the `trash` crate (`IFileOperation` on Windows) instead of hand-written COM.
+- 2026-10-15 — O5–O7, O9, O10 and O11 are done on `p8-operate` (O8 `copy_auto` deferred). O11 wires F5/F6/F8/Del/Shift+Del to `Browser::prepare` → `ConfirmDialog` → a job thread with progress and cancel; the app journals every step in `ferrite.db` and rolls back unfinished jobs at start.
+- 2026-10-15 — G8 review round 1: **FAIL**. Fixed with tests:
+  - Critical: a cross-volume move onto an existing name (or a target that appears after planning) deleted the source. `Ask` now emits no step, and the engine never removes a source whose own copy did not finish in this job.
+  - A second Ferrite process rolled back the first one's running job. Only the holder of `ferrite.lock` runs recovery.
+  - A same-volume move with a conflict failed the job instead of skipping the item.
+  - Closing the window mid-job killed it and the next start rolled it back silently. Close now cancels and waits (10 s) so the job ends `Cancelled`.
+  - A copy into a protected folder asked for the typed word; only Recycle/Delete do now. A panic in the job thread now ends the job `Failed`.
+  - Deferred, blockers before overwrite is offered in the UI: (5) atomic replace in `ProviderOps` (`MoveFileEx` replace) and rollback skipping overwrite steps; (6) a per-job token in the temp name, failing instead of deleting an existing `.ferrite-part`. Check in O12: F8 on a drive without a Recycle Bin (network share, USB) must not delete permanently.
