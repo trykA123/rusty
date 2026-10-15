@@ -73,7 +73,7 @@ Goal: safe, configurable and pleasant; modules and theming arrive.
 - core: per-case confirmations, date and size formats, ignore list.
 - core: Parallel and Large files copy modes, copy options, profiles and rules by destination; accessibility basics.
 - package: custom colour themes and icon themes (D16).
-- module: copy path, terminal (Windows Terminal and templates), folder search, frecency jump, external viewer and editor (F3/F4; done, from plan P12; hex view and large files done, from plan P13; viewer foundation done, from plan P15), notifications for long operations.
+- module: copy path, terminal (Windows Terminal and templates), folder search, frecency jump, external viewer and editor (F3/F4; done, from plan P12; hex view and large files done, from plan P13; viewer foundation done, from plan P15; extra grammars and content detection done, from plan P15 (A3); rule lexer and Notepad++ UDL import done, from plan P15 (A4, viewer wiring next); search counts, marks and history (model and store) done, from plan P15 (A5)), notifications for long operations.
 - infra: soak test and start-up benchmark in CI.
 
 Exit: no open data-safety bugs; start-up and memory targets met in CI.
