@@ -15,7 +15,7 @@ Status: running in parallel with G2 (owner, 2026-10-15) · Branch: `p3-core` · 
 - Coverage floor `rusty-core = 90` is added to `xtask/coverage-floors.toml` in C0.
 - C0 adds the shared types before the Red atoms: `PaneId`, `TabId`, `WindowId` (`id/`), `Location` (`location/`, a non-empty string without NUL) and `Direction` (`direction/`).
 - `layout.split` takes a `Direction` (the side where the new pane goes) instead of an axis, so the command text is unambiguous (`layout.split { direction: right }`).
-- Briefs: [C1](2026-10-15/p3-c1-brief.md), [C3](2026-10-15/p3-c3-brief.md), [C5](2026-10-15/p3-c5-brief.md), [C7](2026-10-15/p3-c7-brief.md). C7 Red may start once C5 Red is committed (it needs the `Listing` type), in parallel with C6.
+- Briefs: [C1](2026-10-15/p3-c1-brief.md), [C3](2026-10-15/p3-c3-brief.md), [C5](2026-10-15/p3-c5-brief.md), [C7](2026-10-15/p3-c7-brief.md), [C9](2026-10-15/p3-c9-brief.md), [C11](2026-10-15/p3-c11-brief.md). C7 Red may start once C5 Red is committed (it needs the `Listing` type), in parallel with C6.
 
 ## Components
 
@@ -37,12 +37,12 @@ Status: running in parallel with G2 (owner, 2026-10-15) · Branch: `p3-core` · 
 | C2 | `command` Green | T4 | orchestrator | high | C1 | `cargo nextest run -p rusty-core command` | done |
 | C3 | `layout` Red | T2 | checker (Opus) | medium | C0 | tests compile, fail | done |
 | C4 | `layout` Green | T4 | orchestrator | high | C3 | `… layout` | done |
-| C5 | `state` Red | T2 | checker (Opus) | medium | C2, C4 | tests compile, fail | running |
-| C6 | `state` Green | T4 | orchestrator | high | C5 | `… state` | blocked |
-| C7 | `selection` Red | T2 | checker (Opus) | medium | C6 | tests compile, fail | blocked |
-| C8 | `selection` Green | T4 | orchestrator | high | C7 | `… selection` | blocked |
-| C9 | `apply` Red | T2 | checker (Opus) | medium | C6, C8 | tests compile, fail | blocked |
-| C10 | `apply` Green | T4 | orchestrator | high | C9 | `… apply` | blocked |
+| C5 | `state` Red | T2 | checker (Opus) | medium | C2, C4 | tests compile, fail | done |
+| C6 | `state` Green | T4 | orchestrator | high | C5 | `… state` | done |
+| C7 | `selection` Red | T2 | checker (Opus) | medium | C6 | tests compile, fail | done |
+| C8 | `selection` Green | T4 | orchestrator | high | C7 | `… selection` | done |
+| C9 | `apply` Red | T2 | checker (Opus) | medium | C6, C8 | tests compile, fail | running |
+| C10 | `apply` Green | T4 | orchestrator | high | C9 | `… apply` | running |
 | C11 | `replay` Red | T2 | checker (Opus) | medium | C10 | tests compile, fail | blocked |
 | C12 | `replay` Green | T4 | orchestrator | high | C11 | `… replay` | blocked |
 | G3 | gate | — | orchestrator + reviewer | high | C1–C12 | `cargo xtask gate --coverage`; CI green; review | blocked |
@@ -67,4 +67,5 @@ C1–C2 and C3–C4 run in parallel. Red atoms run on `checker` with Opus `mediu
 ## Log
 
 - 2026-10-15 — The owner asked to keep working past the current plan while G2 waits for the work-PC numbers. `rusty-core` does not depend on the UI framework, so P3 starts on `p3-core` now and merges only after G2. C0 done (orchestrator): ids, `Location`, `Direction`, `thiserror` 2.0.21, `proptest` 1.12.0 and `insta` 1.49.0, floor `rusty-core = 90`; gate green. C1 and C3 start in parallel (checker, Sonnet, high), each in its own worktree.
-- 2026-10-15 — C1 and C3 done (checker, Opus medium): 96 command tests and 47 layout tests, all failing on `todo!()`. Orchestrator review: C3's resize rule changed so that resizing towards an outer edge moves the far border (tmux-like) instead of failing; C1's `WrongType` expectations fixed as "string", "integer", "keyword", "keyword or integer". C2 and C4 done (orchestrator, Opus high): hand-written lexer, parser and printer; split tree with permille ratios and geometric neighbours. 159 `rusty-core` tests pass; `cargo xtask gate --coverage` green (command 96 %, layout 98 %). C5 starts.
+- 2026-10-15 — C1 and C3 done (checker, Opus medium): 96 command tests and 47 layout tests, all failing on `todo!()`. Orchestrator review: C3's resize rule changed so that resizing towards an outer edge moves the far border (tmux-like) instead of failing; C1's `WrongType` expectations fixed as "string", "integer", "keyword", "keyword or integer". C2 and C4 done (orchestrator, Opus high): hand-written lexer, parser and printer; split tree with permille ratios and geometric neighbours. 151 `rusty-core` tests pass; `cargo xtask gate --coverage` green (command 96 %, layout 98 %). C5 starts.
+- 2026-10-15 — C5 and C7 done (checker, Opus medium): 107 state tests, 98 selection tests. C6 done (orchestrator): windows and the app hold their focused pane and window inline, so readers need no `unwrap` or `expect` (D31); the mutators `expect(dead_code)` until C10. C8 done: bitset selection (1M rows in 125 KB), linear wildcard matcher, `Tab` owns its `Selection`. 359 tests pass. C9 starts; C11 brief written.
