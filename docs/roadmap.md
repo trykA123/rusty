@@ -68,7 +68,7 @@ Exit: two weeks of daily use on the work PC with no lost or damaged files.
 
 Goal: safe, configurable and pleasant; modules and theming arrive.
 
-- core: workspaces (Alt+1…9); refresh mode per network location; drag and drop with Explorer; crash-safe job journal and undo.
+- core: workspaces (Alt+1…9); refresh mode per network location; drag and drop with Explorer; crash-safe job journal and undo (each step reversible, compensable or final; undo offers only what it can do).
 - core: module registry with runtime on/off and safe mode; settings window generated from module schemas.
 - core: per-case confirmations, date and size formats, ignore list.
 - core: Parallel and Large files copy modes, copy options, profiles and rules by destination; accessibility basics.
@@ -80,15 +80,23 @@ Exit: no open data-safety bugs; start-up and memory targets met in CI.
 
 ## v1.0
 
+Replaces Total Commander for daily work (D39). Parity features are built to beat TC, not copy it.
+
+- core: find files by name, content and attributes, with results as a pane you can work on; saved searches.
+- core: virtual collections: a pane can hold search results, recent changes or files picked from many folders.
+- core: archives as folders (zip, 7z, tar with gz, xz and zst): browse, extract and pack through the job engine; safe extraction.
+- core: multi-rename with a live preview, conflicts flagged first, presets and one undo step.
+- core: compare and sync: folder compare as two collections, sync as a reviewed plan, file diff in the F3 editor.
+- core: checksums (BLAKE3, SHA-256, SHA-1, MD5) with verify; properties drawer for attributes, timestamps and permissions; images in F3.
 - infra: signed portable `.exe` and installer; user guide.
 - core: optional default file manager (Win+E).
 - package: Total Commander keymap.
 
-Exit: every target is met on a clean Windows 11 machine.
+Exit: every target is met on a clean Windows 11 machine, and a week of work runs without opening Total Commander.
 
 ## v1.1 · See and find
 
-- module: preview pane, thumbnails, archives as folders, global search with Rusty's own index and `rusty-indexd` (D23; engine built alongside Alpha, may ship in Beta), auto switch view.
+- module: preview pane, thumbnails, global search with Rusty's own index and `rusty-indexd` (D23; engine built alongside Alpha, may ship in Beta), auto switch view.
 - package: language packages for the F3 viewer (D38).
 - core: saved column sets.
 
@@ -96,7 +104,7 @@ Exit: global search answers in under 50 ms on 2 million files.
 
 ## v1.2 · Power tools
 
-- module: Git, compare and sync, batch rename, duplicates and disk usage, clipboard history and notes, summon hotkey and tray.
+- module: Git, duplicates and disk usage, clipboard history and notes, summon hotkey and tray.
 - package: import of Zed and VS Code colour themes.
 
 Exit: each module turns off without a restart and costs nothing while off.
