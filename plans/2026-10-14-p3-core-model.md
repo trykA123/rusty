@@ -15,7 +15,7 @@ Status: running in parallel with G2 (owner, 2026-10-15) · Branch: `p3-core` · 
 - Coverage floor `rusty-core = 90` is added to `xtask/coverage-floors.toml` in C0.
 - C0 adds the shared types before the Red atoms: `PaneId`, `TabId`, `WindowId` (`id/`), `Location` (`location/`, a non-empty string without NUL) and `Direction` (`direction/`).
 - `layout.split` takes a `Direction` (the side where the new pane goes) instead of an axis, so the command text is unambiguous (`layout.split { direction: right }`).
-- Briefs: [C1](2026-10-15/p3-c1-brief.md), [C3](2026-10-15/p3-c3-brief.md), [C5](2026-10-15/p3-c5-brief.md).
+- Briefs: [C1](2026-10-15/p3-c1-brief.md), [C3](2026-10-15/p3-c3-brief.md), [C5](2026-10-15/p3-c5-brief.md), [C7](2026-10-15/p3-c7-brief.md). C7 Red may start once C5 Red is committed (it needs the `Listing` type), in parallel with C6.
 
 ## Components
 
