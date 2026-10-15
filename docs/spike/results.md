@@ -1,6 +1,6 @@
 # GPUI spike results (P2, G2)
 
-Status: **numbers complete except Narrator and the owner's view of smoothness**; the owner decides go or no-go for D2. Work PC: Intel UHD + NVIDIA T1200 laptop, fat-LTO spike exe from CI run 38677189477, low-power GPU patch.
+Status: **numbers complete except Narrator**; the owner found scrolling smooth on the 60 Hz work-PC monitor (2026-10-15); the owner decides go or no-go for D2. Work PC: Intel UHD + NVIDIA T1200 laptop, fat-LTO spike exe from CI run 38677189477, low-power GPU patch.
 
 Spike: `spikes/gpui-b` (design B, variant 1 of D27, three panes of 100,000 rows each, drawer, F-key bar) on `gpui-kit` 0.7.3. Raw numbers: `docs/spike/metrics/`. Plan and log: `plans/2026-10-14-p2-gpui-spike.md`.
 
@@ -67,4 +67,6 @@ Proposed: **go for GPUI (D2), with three follow-ups.**
 2. Warm start needs a resident mode: Ferrite stays in the tray after its window closes and shows a pre-built hidden window (a plan item for after PoC 2).
 3. Measure private bytes on Windows (the P5 memory probe in `rusty-app`) and a 60-second scroll on the work PC, to settle the memory target and the Intel frame drops.
 
-Open before the owner decides: Narrator reading the list, and the owner's own view of smoothness.
+Owner's view of smoothness (2026-10-15): scrolling feels smooth on the 60 Hz monitor.
+
+Open before the owner decides: Narrator reading the list.
