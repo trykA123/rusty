@@ -86,7 +86,7 @@ Replaces Total Commander for daily work (D39). Parity features are built to beat
 - core: virtual collections: a pane can hold search results, recent changes or files picked from many folders.
 - core: archives as folders (zip, 7z, tar with gz, xz and zst): browse, extract and pack through the job engine; safe extraction.
 - core: multi-rename with a live preview, conflicts flagged first, presets and one undo step.
-- core: compare and sync: folder compare as two collections, sync as a reviewed plan, file diff in the F3 editor.
+- core: compare and sync, better than Beyond Compare where it counts (D40): folder compare in the panes, sync as a plan with undo, cached BLAKE3 hashes, syntax-aware text diff, paged diff for huge and binary files, image compare; engine in the shared `rusty-compare` crate.
 - core: checksums (BLAKE3, SHA-256, SHA-1, MD5) with verify; properties drawer for attributes, timestamps and permissions; images in F3.
 - infra: signed portable `.exe` and installer; user guide.
 - core: optional default file manager (Win+E).
