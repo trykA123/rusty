@@ -325,3 +325,44 @@ fn letters_do_not_filter_while_a_prompt_is_open(cx: &mut TestAppContext) {
     let tab = view.read_with(cx, |view, _| view.browser.state().active_tab().id());
     assert!(view.read_with(cx, |view, _| view.browser.filter_text(tab).is_none()));
 }
+
+#[gpui_kit::test]
+fn plus_marks_by_pattern_and_star_inverts(cx: &mut TestAppContext) {
+    let fs = fake();
+    let state = home_beside_dest(&fs);
+    let (window, view) = open_with(cx, fs, state, Rc::default());
+    press(cx, window, &view, "+");
+    type_in(cx, window, &view, "*.txt");
+    press(cx, window, &view, "enter");
+    let marked = |cx: &mut TestAppContext| {
+        view.read_with(cx, |view, _| {
+            view.browser.state().active_tab().selection().marked()
+        })
+    };
+    assert_eq!(marked(cx), [1]);
+    press(cx, window, &view, "*");
+    assert!(marked(cx).is_empty());
+}
+
+#[gpui_kit::test]
+fn an_empty_pattern_keeps_the_prompt_open(cx: &mut TestAppContext) {
+    let fs = fake();
+    let state = home_beside_dest(&fs);
+    let (window, view) = open_with(cx, fs, state, Rc::default());
+    press(cx, window, &view, "-");
+    press(cx, window, &view, "backspace");
+    press(cx, window, &view, "enter");
+    assert!(prompt_open(cx, &view));
+}
+
+#[gpui_kit::test]
+fn ctrl_f6_sorts_the_pane_by_size(cx: &mut TestAppContext) {
+    use crate::file_list::SortBy;
+    let fs = fake();
+    let state = home_beside_dest(&fs);
+    let (window, view) = open_with(cx, fs, state, Rc::default());
+    press(cx, window, &view, "ctrl-f6");
+    let tab = view.read_with(cx, |view, _| view.browser.state().active_tab().id());
+    let key = view.read_with(cx, |view, _| view.browser.sort_key(tab));
+    assert_eq!(key.by, SortBy::Size);
+}

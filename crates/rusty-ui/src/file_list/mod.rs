@@ -1,6 +1,8 @@
+mod header;
 mod keys;
 mod kind;
 mod row;
+mod sort;
 
 #[cfg(test)]
 mod tests;
@@ -19,6 +21,7 @@ use rusty_core::{Command, Selection, ViewState};
 use rusty_fs::FsEntry;
 
 pub use keys::bind_keys;
+pub use sort::{SortBy, SortKey};
 
 use crate::primitives::{ListScroll, RowSemantics, VirtualList};
 use crate::tokens::{self, Theme};
@@ -44,6 +47,8 @@ pub enum FileListAction {
     Filter(FilterEdit),
     Rename(u64),
     NewFolder,
+    SelectPattern { add: bool },
+    Sort(SortBy),
 }
 
 #[derive(Clone, Debug)]
@@ -54,6 +59,7 @@ pub struct FileListProps {
     pub marked: Rc<Selection>,
     pub is_active: bool,
     pub filter: Option<SharedString>,
+    pub sort: SortKey,
 }
 
 #[derive(IntoElement)]
@@ -180,6 +186,18 @@ impl ListContext {
     fn type_key(&self, event: &KeyDownEvent, window: &mut Window, cx: &mut App) {
         if let Some(ch) = typed_char(&event.keystroke) {
             self.act(FileListAction::Filter(FilterEdit::Push(ch)), window, cx);
+        }
+    }
+
+    fn mark_key(&self, key: char, window: &mut Window, cx: &mut App) {
+        if self.props.filter.is_some() {
+            self.act(FileListAction::Filter(FilterEdit::Push(key)), window, cx);
+            return;
+        }
+        match key {
+            '+' => self.act(FileListAction::SelectPattern { add: true }, window, cx),
+            '-' => self.act(FileListAction::SelectPattern { add: false }, window, cx),
+            _ => self.send(Command::SelectionInvert, window, cx),
         }
     }
 
@@ -371,7 +389,7 @@ impl RenderOnce for FileList {
             .when_some(ctx.props.filter.clone(), |list, text| {
                 list.child(row::filter_bar(&t, text, len))
             })
-            .child(row::header(&t))
+            .child(header::header(&t, ctx.props.sort, &ctx))
             .child(area)
     }
 }
