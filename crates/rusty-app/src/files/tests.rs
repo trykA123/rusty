@@ -160,6 +160,17 @@ fn a_trailing_dot_name_is_read_and_saved_as_itself() {
 }
 
 #[test]
+fn range_reads_only_the_asked_bytes_and_stops_at_the_end() {
+    let dir = tempfile::tempdir().unwrap();
+    let file = dir.path().join("data.bin");
+    fs::write(&file, b"0123456789").unwrap();
+    assert_eq!(super::range(&at(&file), 3, 4).unwrap(), b"3456");
+    assert_eq!(super::range(&at(&file), 8, 10).unwrap(), b"89");
+    assert!(super::bytes(&at(&file), 5).is_err());
+    assert_eq!(super::bytes(&at(&file), 10).unwrap(), b"0123456789");
+}
+
+#[test]
 fn the_hooks_list_a_zip_and_read_one_entry() {
     use std::io::Write as _;
     let dir = tempfile::tempdir().unwrap();
@@ -188,4 +199,15 @@ fn bytes_reads_a_whole_file_up_to_the_limit() {
     assert_eq!(bytes(&at(&file), 4).unwrap(), [0x89, b'P', b'N', b'G']);
     let error = bytes(&at(&file), 3).unwrap_err();
     assert!(error.starts_with("Too large"), "{error}");
+}
+
+#[test]
+fn range_never_reads_more_than_its_cap_whatever_length_is_asked() {
+    let dir = tempfile::tempdir().unwrap();
+    let file = dir.path().join("sparse.bin");
+    let handle = fs::File::create(&file).unwrap();
+    handle.set_len(super::MAX_RANGE as u64 + 4096).unwrap();
+    drop(handle);
+    let bytes = super::range(&at(&file), 0, usize::MAX).unwrap();
+    assert_eq!(bytes.len(), super::MAX_RANGE);
 }

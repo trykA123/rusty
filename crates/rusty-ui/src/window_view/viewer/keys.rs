@@ -1,7 +1,7 @@
 use gpui_kit::KeyBinding;
 
 use super::search::{FIND_ALL_CONTEXT, FIND_CONTEXT};
-use super::{CONTEXT, IMAGE_CONTEXT, PAGED_CONTEXT, archive};
+use super::{CONTEXT, IMAGE_CONTEXT, PAGED_CONTEXT, archive, markdown, table, tree};
 use crate::prelude::*;
 
 gpui_kit::actions!(
@@ -100,6 +100,9 @@ pub fn bind_keys(cx: &mut App) {
     ]);
     bind_marking_keys(cx);
     bind_image_keys(cx);
+    tree::bind_keys(cx);
+    table::bind_keys(cx);
+    markdown::bind_keys(cx);
 }
 
 fn bind_image_keys(cx: &mut App) {

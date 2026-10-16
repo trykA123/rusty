@@ -2,11 +2,14 @@ mod archive;
 mod font;
 mod hex;
 mod image;
+mod markdown;
+mod table;
 mod text;
+mod tree;
 
 use std::any::Any;
 use std::sync::Arc;
-use std::sync::atomic::AtomicBool;
+use std::sync::atomic::{AtomicBool, Ordering};
 
 use rusty_core::Location;
 
@@ -60,6 +63,10 @@ pub(super) use text::paged_text;
 
 pub type Loaded = Box<dyn Any + Send>;
 
+pub struct Declined(pub &'static str);
+
+const CANCELLED: &str = "The viewer closed before the file opened.";
+
 #[derive(Clone, Copy)]
 #[non_exhaustive]
 pub struct Load<'a> {
@@ -67,6 +74,31 @@ pub struct Load<'a> {
     pub location: &'a Location,
     pub sniff: &'a Sniff<'a>,
     pub cancel: &'a AtomicBool,
+}
+
+impl<'a> Load<'a> {
+    #[must_use]
+    pub fn new(
+        hooks: &'a FileHooks,
+        location: &'a Location,
+        sniff: &'a Sniff<'a>,
+        cancel: &'a AtomicBool,
+    ) -> Self {
+        Self {
+            hooks,
+            location,
+            sniff,
+            cancel,
+        }
+    }
+
+    pub(super) fn ensure_open(&self) -> Result<(), String> {
+        if self.cancel.load(Ordering::Relaxed) {
+            Err(CANCELLED.to_owned())
+        } else {
+            Ok(())
+        }
+    }
 }
 
 pub trait ViewerKind: Send + Sync {
@@ -89,6 +121,10 @@ pub trait ViewerKind: Send + Sync {
     fn reuse(&self, _: &dyn ViewerBody, _: &Sniff<'_>, _: &mut App) -> bool {
         false
     }
+
+    fn declined(&self, _: &Sniff<'_>) -> Option<&'static str> {
+        None
+    }
 }
 
 pub type Kind = Arc<dyn ViewerKind>;
@@ -103,6 +139,9 @@ impl Kinds {
             Arc::new(text::Text),
             Arc::new(hex::Hex),
             Arc::new(image::Image),
+            Arc::new(tree::TreeKind),
+            Arc::new(table::TableKind),
+            Arc::new(markdown::MarkdownKind),
             Arc::new(archive::Archive),
             Arc::new(font::Font),
         ])
@@ -125,6 +164,27 @@ impl Kinds {
         scored.sort_by_key(|(score, _)| std::cmp::Reverse(*score));
         scored.into_iter().map(|(_, kind)| kind).collect()
     }
+
+    #[must_use]
+    pub fn declined(&self, sniff: &Sniff<'_>) -> Option<&'static str> {
+        self.0.iter().find_map(|kind| kind.declined(sniff))
+    }
+}
+
+pub(super) fn extension(name: &str) -> Option<String> {
+    let (_, extension) = name.rsplit_once('.')?;
+    Some(extension.to_ascii_lowercase())
+}
+
+pub(super) fn named(name: &str, list: &[&str]) -> bool {
+    extension(name).is_some_and(|extension| list.contains(&extension.as_str()))
+}
+
+pub(super) fn first_byte(head: &[u8]) -> Option<u8> {
+    let head = head.strip_prefix(b"\xEF\xBB\xBF").unwrap_or(head);
+    head.iter()
+        .copied()
+        .find(|byte| !byte.is_ascii_whitespace())
 }
 
 #[cfg(test)]

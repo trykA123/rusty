@@ -1,5 +1,5 @@
 use std::fs::{self, File};
-use std::io::Read;
+use std::io::{Read, Seek, SeekFrom};
 use std::path::PathBuf;
 use std::sync::Arc;
 use std::time::UNIX_EPOCH;
@@ -17,6 +17,7 @@ mod summary;
 
 const MAX_VIEW: u64 = 16 * 1024 * 1024;
 const SNIFF: usize = 8 * 1024;
+const MAX_RANGE: usize = 64 * 1024 * 1024;
 
 pub use memory::{SharedDb, open as open_memory};
 
@@ -29,6 +30,7 @@ pub fn hooks(db: Option<SharedDb>) -> FileHooks {
         archive: Arc::new(archive::archive),
         archive_entry: Arc::new(archive::archive_entry),
         bytes: Arc::new(bytes),
+        range: Arc::new(range),
         ..FileHooks::none()
     };
     match db {
@@ -106,6 +108,18 @@ pub fn bytes(location: &Location, limit: u64) -> Result<Vec<u8>, String> {
     if bytes.len() as u64 > limit {
         return Err(too_large(limit));
     }
+    Ok(bytes)
+}
+
+pub fn range(location: &Location, offset: u64, len: usize) -> Result<Vec<u8>, String> {
+    let path = path_of(location)?;
+    let mut file = File::open(&path).map_err(|error| format!("Cannot open it: {error}"))?;
+    file.seek(SeekFrom::Start(offset))
+        .map_err(|error| format!("Cannot read it: {error}"))?;
+    let mut bytes = Vec::with_capacity(len.min(MAX_RANGE));
+    file.take(len.min(MAX_RANGE) as u64)
+        .read_to_end(&mut bytes)
+        .map_err(|error| format!("Cannot read it: {error}"))?;
     Ok(bytes)
 }
 

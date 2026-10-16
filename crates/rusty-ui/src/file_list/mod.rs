@@ -21,6 +21,7 @@ use rusty_core::{Command, Selection, ViewState};
 use rusty_fs::FsEntry;
 
 pub use keys::bind_keys;
+pub(crate) use row::filter_bar;
 pub use sort::{SortBy, SortKey};
 
 use crate::primitives::{ListScroll, RowSemantics, VirtualList};

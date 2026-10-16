@@ -1,5 +1,6 @@
 mod acts;
 mod archive;
+mod background;
 mod body;
 mod cancel;
 mod editor;
@@ -10,10 +11,14 @@ mod keys;
 mod keys_bar;
 mod kinds;
 mod lister;
+mod markdown;
 mod modes;
 mod open;
 mod paged;
+mod rich_header;
 mod search;
+mod table;
+mod tree;
 mod view;
 
 use gpui_kit::FocusHandle;
@@ -29,7 +34,7 @@ pub use font::{FontFace, FontView};
 pub use image::{ExifEntry, IMAGE_LIMIT, ImageView, Picture, decode_image};
 pub use keys::bind_keys;
 use keys::*;
-pub use kinds::{EDIT_LIMIT, Kind, Kinds, Load, Loaded, Slot, Sniff, ViewerKind};
+pub use kinds::{Declined, EDIT_LIMIT, Kind, Kinds, Load, Loaded, Slot, Sniff, ViewerKind};
 pub use paged::{PagedKind, PagedView};
 pub use search::memory::MemoryLink;
 
