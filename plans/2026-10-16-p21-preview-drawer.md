@@ -22,7 +22,7 @@ All decided (D52, D43, D45); workers never reopen them.
 | Atom | What | Role | Effort | After | Check | Status |
 | --- | --- | --- | --- | --- | --- | --- |
 | V1 | Side sheet component (D1), gallery page | ui-builder-high | high | — | UI tests: sides, resize, snap at 1100 px, reduced motion; screenshots both themes | running |
-| V2 | Folder profile service (D3) in rusty-fs | api-builder (Opus medium) | medium | — | fake fs tests: progress, cancel, top 10, kinds cap, skipped; property test on totals | running |
+| V2 | Folder profile service (D3) in rusty-fs | api-builder (Opus medium) | medium | — | fake fs tests: progress, cancel, top 10, kinds cap, skipped; property test on totals | done |
 | V3 | Preview host: toggle, follow, files read-only, folder layout (D2, D4, D6) | ui-builder-high | high | V1, V2 | UI tests: debounce, cancel, Tab jump, each kind; screenshots | blocked |
 | V4 | Browse mode (D5) | ui-builder | medium | V3 | UI tests: focus in and out, Enter on folder and file, F3, double-click | blocked |
 | V5 | Review | reviewer (Opus high) | high | all | verdict | blocked |
@@ -35,3 +35,4 @@ All decided (D52, D43, D45); workers never reopen them.
 ## Log
 
 - 2026-10-16 — Plan written after the owner picked direction 1 and accepted the revised prototype (tree first, opaque headers, browse and open).
+- 2026-10-16 — V2 (cd6601a) merged: `folder_profile` + `spawn_profile` (Idle priority, cancel on drop) in rusty-fs, `ProfileCache` (256, keyed by location + change time) in rusty-cache. For V3: invalidate cached profiles on watch events too (a folder's change time ignores deep edits); never wait for a final snapshot after a drop.
