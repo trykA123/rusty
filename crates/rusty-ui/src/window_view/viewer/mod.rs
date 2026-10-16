@@ -1,7 +1,10 @@
 mod acts;
+mod archive;
 mod body;
+mod cancel;
 mod editor;
 mod files;
+mod font;
 mod image;
 mod keys;
 mod keys_bar;
@@ -16,15 +19,17 @@ mod view;
 use gpui_kit::FocusHandle;
 use rusty_core::Location;
 
+pub use archive::{ArchiveSource, ArchiveView};
 pub use body::{Attach, BodyAct, BodyKeys, Carried, Host, Key, ViewerBody};
 pub use files::{
     FileHooks, FileStamp, FileText, Head, IndexRun, Paged, ReadBytes, Reopen, Save, SaveError,
     SharedSource,
 };
+pub use font::{FontFace, FontView};
 pub use image::{ExifEntry, IMAGE_LIMIT, ImageView, Picture, decode_image};
 pub use keys::bind_keys;
 use keys::*;
-pub use kinds::{EDIT_LIMIT, Kind, Kinds, Loaded, Slot, Sniff, ViewerKind};
+pub use kinds::{EDIT_LIMIT, Kind, Kinds, Load, Loaded, Slot, Sniff, ViewerKind};
 pub use paged::{PagedKind, PagedView};
 pub use search::memory::MemoryLink;
 

@@ -5,6 +5,7 @@ use rusty_core::Location;
 use rusty_core::encoding::TextEncoding;
 use rusty_core::marks::{Bookmarks, MarkSet, SearchHistory};
 use rusty_core::paging::{ByteSource, LineIndex, Needle};
+use rusty_fs::archive::ArchiveListing;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct FileStamp {
@@ -76,6 +77,10 @@ type Write =
     Arc<dyn Fn(&Location, &Save<'_>) -> Result<Option<FileStamp>, SaveError> + Send + Sync>;
 type ReadHead = Arc<dyn Fn(&Location) -> Result<Head, String> + Send + Sync>;
 type OpenPaged = Arc<dyn Fn(&Location) -> Result<Paged, String> + Send + Sync>;
+type ListArchive =
+    Arc<dyn Fn(&Location, &AtomicBool) -> Result<ArchiveListing, String> + Send + Sync>;
+type ReadArchiveEntry =
+    Arc<dyn Fn(&Location, usize, &AtomicBool) -> Result<Vec<u8>, String> + Send + Sync>;
 type LoadMemory = Arc<dyn Fn(&Location, FileStamp) -> Option<(MarkSet, Bookmarks)> + Send + Sync>;
 type SaveMemory = Arc<dyn Fn(&Location, FileStamp, &MarkSet, &Bookmarks) + Send + Sync>;
 type LoadHistory = Arc<dyn Fn() -> SearchHistory + Send + Sync>;
@@ -88,6 +93,8 @@ pub struct FileHooks {
     pub write: Write,
     pub head: ReadHead,
     pub paged: OpenPaged,
+    pub archive: ListArchive,
+    pub archive_entry: ReadArchiveEntry,
     pub memory: LoadMemory,
     pub save_memory: SaveMemory,
     pub history: LoadHistory,
@@ -105,6 +112,8 @@ impl FileHooks {
             }),
             head: Arc::new(|_| Err("Files cannot be opened here.".to_owned())),
             paged: Arc::new(|_| Err("Files cannot be opened here.".to_owned())),
+            archive: Arc::new(|_, _| Err("Archives cannot be opened here.".to_owned())),
+            archive_entry: Arc::new(|_, _, _| Err("Archives cannot be opened here.".to_owned())),
             memory: Arc::new(|_, _| None),
             save_memory: Arc::new(|_, _, _, _| {}),
             history: Arc::new(SearchHistory::default),

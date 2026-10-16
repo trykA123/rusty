@@ -1,7 +1,7 @@
 use gpui_kit::KeyBinding;
 
 use super::search::{FIND_ALL_CONTEXT, FIND_CONTEXT};
-use super::{CONTEXT, IMAGE_CONTEXT, PAGED_CONTEXT};
+use super::{CONTEXT, IMAGE_CONTEXT, PAGED_CONTEXT, archive};
 use crate::prelude::*;
 
 gpui_kit::actions!(
@@ -93,6 +93,8 @@ pub fn bind_keys(cx: &mut App) {
         KeyBinding::new("ctrl-g", OpenGoTo, context),
         KeyBinding::new("alt-c", MatchCase, context),
         KeyBinding::new("escape", Back, Some(PAGED_CONTEXT)),
+        KeyBinding::new("home", GoStart, Some(archive::CONTEXT)),
+        KeyBinding::new("end", GoEnd, Some(archive::CONTEXT)),
     ]);
     bind_marking_keys(cx);
     bind_image_keys(cx);

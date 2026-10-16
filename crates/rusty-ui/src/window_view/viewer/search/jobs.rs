@@ -1,19 +1,11 @@
-use std::sync::Arc;
-use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::atomic::AtomicBool;
 use std::time::{Duration, Instant};
 
 use futures::StreamExt;
 use gpui_kit::Task;
 
 use crate::prelude::*;
-
-struct Cancel(Arc<AtomicBool>);
-
-impl Drop for Cancel {
-    fn drop(&mut self) {
-        self.0.store(true, Ordering::Relaxed);
-    }
-}
+use crate::window_view::viewer::cancel::Cancel;
 
 pub(in crate::window_view::viewer) struct Job {
     _cancel: Cancel,
@@ -46,9 +38,9 @@ pub(in crate::window_view::viewer) fn spawn_job<V: 'static, M: Send + 'static>(
     work: impl FnOnce(&AtomicBool, &dyn Fn(M)) + Send + 'static,
     apply: impl Fn(&mut V, M, &mut Context<V>) + 'static,
 ) -> Job {
-    let flag = Arc::new(AtomicBool::new(false));
+    let cancel = Cancel::new();
     let (sender, mut receiver) = futures::channel::mpsc::unbounded::<M>();
-    let worker_flag = flag.clone();
+    let worker_flag = cancel.flag();
     cx.background_spawn(async move {
         work(&worker_flag, &|message| {
             let _ = sender.unbounded_send(message);
@@ -66,7 +58,7 @@ pub(in crate::window_view::viewer) fn spawn_job<V: 'static, M: Send + 'static>(
         }
     });
     Job {
-        _cancel: Cancel(flag),
+        _cancel: cancel,
         _task: task,
     }
 }

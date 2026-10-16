@@ -58,6 +58,10 @@ pub trait ViewerBody: Any {
         false
     }
 
+    fn is_typing(&self, _: &App) -> bool {
+        false
+    }
+
     fn can_start_editing(&self, _: &App) -> bool {
         false
     }

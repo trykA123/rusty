@@ -1,6 +1,8 @@
+mod archive;
 mod find;
 mod find_all;
 mod follow;
+mod font;
 mod image;
 mod kind;
 mod language;
