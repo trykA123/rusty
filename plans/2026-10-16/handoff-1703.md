@@ -32,7 +32,7 @@ main = ec28c75, pushed; Windows CI is green on it (run 38904584039).
 
 | Agent id | Role | Worktree / branch | Doing |
 | --- | --- | --- | --- |
-| a674659ead5988bdb | ui-builder-high, Opus high | `<worktrees>/rusty-p21-v3`, p21-v3 (6ca8bb6 at handoff) | P21 V3, the preview host: Ctrl+Q toggle, card button, follow with debounce, files read-only, folder layout with the tree first, profile cache and watch invalidation. It may push p21-v3 and run Windows CI once. |
+| a674659ead5988bdb | ui-builder-high, Opus high | `<worktrees>/rusty-p21-v3`, p21-v3 (6ca8bb6, pushed) | **Finished at 17:10.** P21 V3, the preview host, is built. Gate, clippy and test are green. In manual run 38911285210 the Windows jobs are green, but the overall conclusion is failure: only the gate-linux coverage step failed, on `rusty-fs::watch_drop::dropped_watches_leave_no_thread_or_handle_behind`, which looks flaky on Linux. I checked the folder screenshot: it matches the prototype. Not merged, not reviewed. |
 
 - There are no background shell jobs.
 - No uncommitted work is on main.
@@ -45,7 +45,7 @@ main = ec28c75, pushed; Windows CI is green on it (run 38904584039).
 
 ## Next steps, in order
 
-1. **V3 report.** Check the diff and the screenshots. Run a reviewer (Opus high). Merge on PASS, run the gate, clippy and test, push. Release once CI is confirmed `success`.
+1. **V3.** Run a reviewer (Opus high) on p21-v3. Merge on PASS, run the gate, clippy and test, push. Release once the push CI on main is confirmed `success`. Separately, look at the Linux `watch_drop` thread-count test that failed under coverage (it may count llvm-cov threads) and add it to docs/bugs.md if it is flaky.
 2. **P21 V4:** browse mode (Ctrl+Shift+Q, Enter goes to the item or reveals it, F3, Esc, double-click), on ui-builder Opus medium. Then V5, the review.
 3. **Roadmap:** a Sonnet medium agent updates `design/roadmap.html` with the context menu, app menu, tabs, F-key bar, auto refresh, preview drawer in progress, and D53–D55 as later items. Then republish.
 4. **P17 M7:** the F3/F4 context menu per kind (D51). Then M6, the review.
