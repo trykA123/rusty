@@ -190,7 +190,7 @@ kbd { font-family: var(--font-mono); font-size: var(--fs-12); }
 .win.xnarrow .chead .pill:not(.on) { display: none; }
 .win.narrow .cbtn .lbl { display: none; }
 
-.toast { position: absolute; left: 50%; bottom: 60px; z-index: var(--z-toast); display: inline-flex; align-items: center; gap: var(--s4); padding: var(--s3) var(--s6) var(--s3) var(--s3); border-radius: 18px; background: var(--w-surface); box-shadow: var(--pop-shadow); white-space: nowrap; opacity: 0; transform: translate(-50%, 8px); transition: opacity var(--dur) var(--ease-out), transform var(--dur) var(--ease-out); pointer-events: none; }
+.toast { position: absolute; left: 50%; bottom: 100px; z-index: var(--z-toast); display: inline-flex; align-items: center; gap: var(--s4); padding: var(--s3) var(--s6) var(--s3) var(--s3); border-radius: 18px; background: var(--w-surface); box-shadow: var(--pop-shadow); white-space: nowrap; opacity: 0; transform: translate(-50%, 8px); transition: opacity var(--dur) var(--ease-out), transform var(--dur) var(--ease-out); pointer-events: none; }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 .toast .tic { width: 26px; height: 26px; display: grid; place-items: center; border-radius: 13px; background: var(--w-cur); color: var(--w-accent-text); }
 
@@ -207,7 +207,7 @@ kbd { font-family: var(--font-mono); font-size: var(--fs-12); }
 .follows b { color: var(--w-text); font-weight: 600; }
 .xbtn { display: inline-flex; align-items: center; gap: var(--s3); height: 28px; padding: 0 var(--s2) 0 var(--s3); border-radius: var(--r-md); color: var(--w-muted); flex: none; white-space: nowrap; }
 .xbtn:hover { background: var(--w-field); color: var(--w-text); }
-.pv { flex: 1; min-height: 0; overflow: auto; container: pv / inline-size; padding: var(--s6) var(--s7) var(--s7); scrollbar-width: thin; transition: opacity var(--dur-fast) var(--ease-out); }
+.pv { --pt: var(--s6); --pv-bg: var(--w-surface); flex: 1; min-height: 0; overflow: auto; container: pv / inline-size; padding: var(--pt) var(--s7) var(--s7); scrollbar-width: thin; transition: opacity var(--dur-fast) var(--ease-out); }
 .pv.stale { opacity: .6; }
 .hk { display: inline-flex; align-items: center; gap: var(--s2); white-space: nowrap; }
 .grip { position: absolute; z-index: 3; touch-action: none; }
@@ -264,7 +264,7 @@ kbd { font-family: var(--font-mono); font-size: var(--fs-12); }
 .win.narrow .inpv { border-left: 0; border-top: 1px solid var(--w-line); }
 .pvbar { display: flex; align-items: center; gap: var(--s4); padding: var(--s3) var(--s3) var(--s3) var(--s5); border-bottom: 1px solid var(--w-line); min-height: 46px; flex: none; min-width: 0; }
 .pvfoot { display: flex; align-items: center; gap: var(--s5); height: 30px; flex: none; padding-inline: var(--s5); border-top: 1px solid var(--w-line); color: var(--w-muted); font-size: var(--fs-12); white-space: nowrap; overflow: hidden; }
-.inpv .pv { padding: var(--s5) var(--s6) var(--s6); }
+.inpv .pv { --pt: var(--s5); --pv-bg: var(--w-field); padding: var(--pt) var(--s6) var(--s6); }
 .inpv .kchip { display: none; }
 
 /* entrance and exit, transform and opacity only */
@@ -303,7 +303,7 @@ kbd { font-family: var(--font-mono); font-size: var(--fs-12); }
 .sbar { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; overflow: hidden; }
 .sbar i { display: block; width: 30%; height: 100%; background: var(--w-accent); border-radius: 2px; animation: sweep 1.6s linear infinite; }
 .fsec { min-width: 0; }
-.fsec h4 { margin: 0 0 var(--s3); font-size: var(--fs-12); font-weight: 600; color: var(--w-muted); display: flex; gap: var(--s3); align-items: center; position: sticky; top: 0; background: inherit; }
+.fsec h4 { margin: 0 0 var(--s2); height: 28px; font-size: var(--fs-12); font-weight: 600; color: var(--w-muted); display: flex; gap: var(--s3); align-items: center; position: sticky; top: calc(var(--pt) * -1); z-index: 1; background: var(--pv-bg); box-shadow: 0 1px 0 var(--w-line); }
 .fsec h4 .r { margin-left: auto; font-weight: 400; }
 .trow { display: grid; grid-template-columns: 56px 52px 70px minmax(40px, 1fr); gap: var(--s4); align-items: center; height: 24px; }
 .ext { display: inline-flex; align-items: center; gap: var(--s3); font-family: var(--mono); font-size: var(--fs-12); }
@@ -314,7 +314,9 @@ kbd { font-family: var(--font-mono); font-size: var(--fs-12); }
 .inpv .tbar { background: var(--w-surface); }
 .tbar i { display: block; height: 100%; background: var(--c); transform-origin: left center; }
 .largest { list-style: none; margin: 0; padding: 0; }
-.largest li { display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; gap: var(--s4); align-items: center; height: 24px; }
+.largest li.ph, .lrow { display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; gap: var(--s4); align-items: center; height: 24px; }
+.lrow { width: 100%; padding-inline: var(--s1) var(--s3); border-radius: var(--r-md); position: relative; white-space: nowrap; }
+.win .lrow:hover { background: var(--w-field); }
 .largest .rk { color: var(--w-muted); font-size: var(--fs-12); text-align: right; }
 .largest .lp { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; direction: rtl; text-align: left; }
 .largest .lp bdi { direction: ltr; }
@@ -322,7 +324,7 @@ kbd { font-family: var(--font-mono); font-size: var(--fs-12); }
 .largest .sz { font-size: var(--fs-12); }
 .largest li.ph span:nth-child(2) { height: 8px; border-radius: 4px; background: var(--w-field); box-shadow: inset 0 0 0 1px var(--w-line); width: 70%; }
 .tree { display: flex; flex-direction: column; }
-.tn { display: grid; grid-template-columns: 14px 16px minmax(0, 1fr) auto; align-items: center; gap: var(--s3); width: 100%; height: 24px; padding-left: calc(var(--d) * 16px + 2px); padding-right: var(--s3); border-radius: var(--r-md); white-space: nowrap; }
+.tn { position: relative; display: grid; grid-template-columns: 14px 16px minmax(0, 1fr) auto; align-items: center; gap: var(--s3); width: 100%; height: 24px; padding-left: calc(var(--d) * 16px + 2px); padding-right: var(--s3); border-radius: var(--r-md); white-space: nowrap; }
 .win .tn:hover { background: var(--w-field); }
 .inpv .tn:hover { background: var(--w-surface); }
 .tn .n { overflow: hidden; text-overflow: ellipsis; }
@@ -338,7 +340,23 @@ kbd { font-family: var(--font-mono); font-size: var(--fs-12); }
   .fold { grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr) minmax(0, 1.1fr); grid-template-rows: auto minmax(0, 1fr); height: 100%; }
   .fstats { grid-column: 1 / -1; }
   .fsec { min-height: 0; overflow: auto; scrollbar-width: thin; padding-right: var(--s2); }
+  .fsec h4 { top: 0; }
+  .fold.tf { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr); }
+  .fold.tf .fsec.tree { grid-column: 1; grid-row: 1 / -1; }
+  .fold.tf .fstats { grid-column: 2; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .fold.tf .fstats .stat.size { grid-column: 1 / -1; }
+  .fold.tf .fsec.types, .fold.tf .fsec.large { grid-column: 2; }
+  .fold.tf .fsec.types { overflow: visible; }
 }
+
+.it.sel { box-shadow: inset 0 0 0 1px var(--w-line); }
+.win.pfocus .it.sel { background: var(--w-cur); box-shadow: none; }
+.win.pfocus .it.sel::before { content: ""; position: absolute; left: 0; top: 6px; bottom: 6px; width: 3px; border-radius: 2px; background: var(--w-accent); }
+.win.pfocus .card.on .row.cur { background: transparent; box-shadow: inset 0 0 0 1px var(--w-line); }
+.win.pfocus .card.on .row.cur::before { content: none; }
+.win.pfocus .card.on { box-shadow: 0 0 0 1px var(--w-line); }
+.win.pfocus .sheet { box-shadow: 0 0 0 1.5px var(--w-accent), var(--sheet-shadow); }
+.focuschip { font-size: var(--fs-12); font-weight: 600; color: var(--w-accent-text); background: var(--w-cur); border-radius: 11px; padding: 0 var(--s4); line-height: 22px; white-space: nowrap; flex: none; }
 
 /* preview content: files */
 .code, .json, .hex, .txt { font-variant-ligatures: none; }
@@ -355,7 +373,7 @@ kbd { font-family: var(--font-mono); font-size: var(--fs-12); }
 .jm { color: var(--w-muted); font-family: var(--ui); margin-inline: var(--s3); font-size: var(--fs-12); }
 .csv { border-collapse: separate; border-spacing: 0; font-size: var(--fs-12); width: 100%; }
 .csv th, .csv td { padding: 0 var(--s5); height: 24px; text-align: left; white-space: nowrap; border-bottom: 1px solid var(--w-line); }
-.csv th { position: sticky; top: calc(var(--s6) * -1); background: var(--w-surface); color: var(--w-muted); font-weight: 600; }
+.csv th { position: sticky; top: calc(var(--pt) * -1); background: var(--w-surface); color: var(--w-muted); font-weight: 600; }
 .inpv .csv th { background: var(--w-field); }
 .csv td.n, .csv th.n { text-align: right; font-variant-numeric: tabular-nums; }
 .csv td:first-child, .csv th:first-child { color: var(--w-muted); text-align: right; width: 1%; }
@@ -415,7 +433,7 @@ kbd { font-family: var(--font-mono); font-size: var(--fs-12); }
   <nav class="toolbar" aria-label="Prototype controls">
     <div class="group"><span class="group-label" id="lbl-d">Direction</span>
       <div class="seg" role="group" aria-labelledby="lbl-d" id="seg-d">
-        <button type="button" data-d="1" aria-pressed="true">1 <span class="badge">Pick</span></button>
+        <button type="button" data-d="1" aria-pressed="true">1 <span class="badge">Chosen</span></button>
         <button type="button" data-d="2" aria-pressed="false">2</button>
         <button type="button" data-d="3" aria-pressed="false">3</button>
         <button type="button" data-d="4" aria-pressed="false">4</button>
@@ -442,8 +460,8 @@ kbd { font-family: var(--font-mono); font-size: var(--fs-12); }
         <button type="button" data-s="1" aria-pressed="false">100%</button>
       </div>
     </div>
-    <p class="recline"><b>Recommended: 1.</b> One drawer component shared with the settings sheet (D43), full height for code, trees and the top-10 list, and a width that does not depend on the pane split.</p>
-    <p class="hint">Keys 1–4 pick a direction. Inside the window: ↑ ↓ Home End move the cursor · Tab switches panes · Q or Ctrl+Q opens and closes · [ and ] resize · Enter or F3 opens · Esc stops a folder scan. Shift+Tab leaves the window.</p>
+    <p class="recline"><b>Chosen: 1.</b> The owner picked the side sheet. This round revises only direction 1: Contents tree first, opaque sticky headers, and opening items from the preview. Directions 2–4 stay as reviewed.</p>
+    <p class="hint">Keys 1–4 pick a direction. Inside the window: ↑ ↓ Home End move the cursor · Tab switches panes · Q or Ctrl+Q opens and closes · [ and ] resize · Enter or F3 opens · Esc stops a folder scan. Direction 1 only: Ctrl+Shift+Q (P in this prototype, because browsers quit on Ctrl+Shift+Q) moves focus into the preview; there ↑ ↓ move, ← → fold, Enter goes to the item, F3 views it, Esc returns to the list. Shift+Tab leaves the window.</p>
   </nav>
 
   <main>
@@ -455,7 +473,7 @@ kbd { font-family: var(--font-mono); font-size: var(--fs-12); }
     </section>
 
     <aside class="rec" aria-labelledby="rec-title">
-      <h2 id="rec-title">My recommendation: direction 1</h2>
+      <h2 id="rec-title">Direction 1: recommended, and chosen by the owner</h2>
       <p><strong>Build the side sheet over the passive pane.</strong> It is the drawer the owner asked for, and it is the same component as the settings sheet (D43): one opaque surface, one grip, one footer strip for key hints. Full height suits what a preview mostly shows: code, JSON trees, the 10 largest files and the folder tree. Its width is its own, so a narrow peek or a wide reading view does not move the pane splitter.</p>
       <p>Tab keeps working: the sheet jumps to the other side, so it always covers the passive pane and never the cursor it follows. At 1100 px and below it snaps exactly over the passive card, which is what direction 3 does anyway.</p>
       <p><strong>Fallbacks.</strong> Direction 3 is the cheapest to build (a pane mode, no overlay) and the most familiar to Total Commander users; take it if the sheet's overlap with settings feels crowded. Direction 2 is the only one that keeps both panes visible, but code and images get a short, wide box. Direction 4 keeps everything in view and is the most cramped.</p>
@@ -603,13 +621,16 @@ kbd { font-family: var(--font-mono); font-size: var(--fs-12); }
         ["Resize", "Drag the grip on the sheet's inner edge, or Ctrl+[ and Ctrl+] in 48 px steps ([ and ] here). It may overlap the active card but never leaves it under 360 px."],
         ["1100 px and below", "The sheet snaps exactly over the passive card, edge to edge, so no sliver of the covered list shows. At 900 px the kind chip goes and the hints keep only keys."],
         ["Tab and focus", "Tab still switches panes. The sheet jumps to the other side so it always covers the passive pane and previews the new active cursor. Focus never enters the sheet."],
-        ["Key hints", "A footer strip inside the sheet, the same place as the settings sheet's footer."],
-        ["Trade-off", "Hides most of the passive pane, the usual copy target, while open. Costs little: it is the settings sheet with different content."],
+        ["Key hints", "A footer strip inside the sheet, the same place as the settings sheet's footer. It swaps to the browse keys while focus is in the sheet."],
+        ["Folder order", "The Contents tree comes first and takes the full height; size and counts, By type and Largest files follow below it. If the sheet is widened past 760 px, the tree becomes the main column and the rest moves to a side column."],
+        ["Browse and open", "Ctrl+Shift+Q moves focus into the sheet; the list cursor turns passive and the sheet gets the accent ring. ↑ ↓ move over tree rows and Largest files, ← → fold or go to the parent. Enter or a double-click on a folder takes the active pane into it; on a file it reveals it: the pane goes to its folder with the cursor on it. F3 opens a file in the full viewer. Esc returns to the list; Tab still switches panes."],
+        ["Why Ctrl+Shift+Q", "It extends Ctrl+Q, the preview key, so it is easy to remember. Alt+→ is directory history forward and Ctrl+→ opens the folder under the cursor in the other pane in Total Commander, so both are taken. Pressed with the sheet closed, it opens the sheet and focuses it."],
+        ["Trade-off", "Hides most of the passive pane, the usual copy target, while open. Costs little: it is the settings sheet with different content. Full height suits browsing the tree, which the bottom drawer (2) and the split (4) would cut short."],
       ] },
     2: { idea: "A drawer docks above the F-key bar and spans both panes. Both lists stay visible; they give up rows.", icon: () => "panelB",
       notes: [
         ["Open and close", "Ctrl+Q or the Preview button in the active card's header. The drawer rises from the F-key bar; the panes get shorter at once, without animating their height."],
-        ["Resize", "Drag the top grip, or pick Peek, Half or Tall in the header (Ctrl+Shift+Q cycles). Peek shows only the folder totals or a one-line file summary. [ and ] step the height."],
+        ["Resize", "Drag the top grip, or pick Peek, Half or Tall in the header. Peek shows only the folder totals or a one-line file summary. [ and ] step the height."],
         ["1100 px and below", "Folder sections stack in two rows instead of three columns. The F-key labels fold to keys only, so the preview hints still fit next to them."],
         ["Tab and focus", "The drawer stays put. A 'follows' label in its header names the pane it previews; Tab switches that pane."],
         ["Key hints", "In the F-key bar as a Preview layer, right under the drawer, like the copy pill next to F10."],
@@ -635,7 +656,7 @@ kbd { font-family: var(--font-mono); font-size: var(--fs-12); }
       ] },
   };
 
-  const state = { d: 1, theme: "auto", ww: 1440, scale: "fit", open: true, side: "L", cur: { L: 4, R: 2 }, sDelta: 0, bdFrac: 0.42, pvFrac3: 0.5, lFrac: 0.54, moves: 0, loads: 0, enter: false };
+  const state = { d: 1, theme: "auto", ww: 1440, scale: "fit", open: true, side: "L", cur: { L: 4, R: 2 }, sDelta: 0, bdFrac: 0.42, pvFrac3: 0.5, lFrac: 0.54, moves: 0, loads: 0, enter: false, pf: false, pKey: null };
   const scans = {};
   const collapsedJson = new Set(["/keys"]);
   const openTree = {};
@@ -675,8 +696,13 @@ kbd { font-family: var(--font-mono); font-size: var(--fs-12); }
     const btn = active ? `<button type="button" class="cbtn" data-act="toggle" aria-pressed="${state.open}" aria-label="Preview (Ctrl+Q)">${ic(DIRS[state.d].icon(), "sm")}<span class="lbl">Preview</span><span class="kbdc lbl">Ctrl Q</span></button>` : "";
     return `<div class="chead">${tabs}<span class="sp"></span>${btn}<span class="drv">${ic(p.kind, "sm")}<b>${p.drive}:</b><span class="muted">${p.label}</span>${ic("chevD", "sm")}</span></div>`;
   }
-  const hintList = () => [["Enter F3", "Open"], ...(entry().kind === "folder" ? [["Esc", "Stop scan"]] : []), ["[ ]", state.d === 2 ? "Height" : "Width"], ["Ctrl Q", "Close"]];
-  const hintsHtml = (keysOnly) => hintList().map(([k, l]) => `<span class="hk">${k.split(" ").map((x) => `<span class="kbdc">${x}</span>`).join("")}${keysOnly ? "" : ` ${l}`}</span>`).join("");
+  const browsable = () => state.d === 1 && state.open && entry().kind === "folder";
+  const hintList = () => state.pf
+    ? [["↑ ↓", "Move"], ["← →", "Fold"], ["Enter", "Go to"], ["F3", "View"], ["Esc", "Back to list"]]
+    : state.d === 1
+      ? [...(entry().kind === "folder" ? [["Ctrl Shift Q", "Browse"]] : []), ["Enter F3", "Open"], ...(entry().kind === "folder" ? [["Esc", "Stop scan"]] : []), ["[ ]", ""], ["Ctrl Q", "Close"]]
+      : [["Enter F3", "Open"], ...(entry().kind === "folder" ? [["Esc", "Stop scan"]] : []), ["[ ]", state.d === 2 ? "Height" : "Width"], ["Ctrl Q", "Close"]];
+  const hintsHtml = (keysOnly) => hintList().map(([k, l]) => `<span class="hk">${k.split(" ").map((x) => `<span class="kbdc">${x}</span>`).join("")}${(keysOnly && l !== "Browse" && l !== "Back to list") || !l ? "" : ` ${l}`}</span>`).join("");
 
   function card(side) {
     const active = side === state.side;
@@ -773,7 +799,7 @@ kbd { font-family: var(--font-mono); font-size: var(--fs-12); }
   }
   function paintHead() {
     const f = entry();
-    const h = $("#pvh"); if (h) h.innerHTML = headHtml(f);
+    const h = $("#pvh"); if (h) h.innerHTML = headHtml(f) + (state.pf ? '<span class="focuschip">Browsing</span>' : "");
     const c = $("#qvcrumb"); if (c) c.innerHTML = ic("eye", "sm") + crumbs([...PANE[state.side].path, f.up ? ".." : f.x ? `${f.n}.${f.x}` : f.n]);
     const ft = $("#pvf");
     if (ft) ft.innerHTML = state.d === 2 ? `<span class="lyr">Preview</span>${hintsHtml(false)}` : state.d === 4 ? hintsHtml(xnarrow()) : hintsHtml(state.d === 1 ? xnarrow() : narrow());
@@ -796,6 +822,7 @@ kbd { font-family: var(--font-mono); font-size: var(--fs-12); }
     shownFid = f.kind === "folder" ? f.fid : null;
     pv.classList.remove("stale");
     pv.scrollTop = 0;
+    state.pf = false; state.pKey = null; $("#win")?.classList.remove("pfocus");
     pv.innerHTML = `<div class="swap">${bodyHtml(f)}</div>`;
     if (pv.firstElementChild.firstElementChild?.classList.contains("fold")) pv.replaceChildren(pv.firstElementChild.firstElementChild);
     if (shownFid) tick();
@@ -823,11 +850,12 @@ kbd { font-family: var(--font-mono); font-size: var(--fs-12); }
 
   function folderHtml(fid) {
     const f = FOLD[fid]; scanOf(fid);
-    return `<div class="fold" data-fid="${fid}">
-      <div class="fstats" id="fstats"></div>
-      <section class="fsec"><h4>By type<span class="r" id="tcount"></span></h4><div id="ftypes"></div></section>
-      <section class="fsec"><h4>Largest files<span class="r">top 10</span></h4><ol class="largest" id="flarge"></ol></section>
-      <section class="fsec"><h4>Contents<span class="r">${f.tree.length} items</span></h4><div class="tree" id="ftree" role="tree">${treeHtml(fid)}</div></section></div>`;
+    const treeSec = `<section class="fsec tree"><h4>Contents<span class="r">${f.tree.length} items</span></h4><div class="tree" id="ftree" role="tree">${treeHtml(fid)}</div></section>`;
+    return `<div class="fold${state.d === 1 ? " tf" : ""}" data-fid="${fid}">
+      ${state.d === 1 ? treeSec : ""}<div class="fstats" id="fstats"></div>
+      <section class="fsec types"><h4>By type<span class="r" id="tcount"></span></h4><div id="ftypes"></div></section>
+      <section class="fsec large"><h4>Largest files<span class="r">top 10</span></h4><ol class="largest" id="flarge"></ol></section>
+      ${state.d === 1 ? "" : treeSec}</div>`;
   }
   function tick() {
     const fid = shownFid; if (!fid || !$("#fstats")) return;
@@ -848,18 +876,19 @@ kbd { font-family: var(--font-mono); font-size: var(--fs-12); }
     const n = done ? 10 : Math.min(10, Math.floor(p * 12));
     $("#flarge").innerHTML = f.largest.slice(0, n).map((l, i) => {
       const cut = l.p.lastIndexOf("/");
-      return `<li><span class="rk num">${i + 1}</span><span class="lp" title="${esc(l.p)}"><bdi><span class="dirp">${esc(l.p.slice(0, cut + 1))}</span><b>${esc(l.p.slice(cut + 1))}</b></bdi></span><span class="sz num">${fmtB(l.s)}</span></li>`;
+      return `<li><button type="button" class="lrow it" tabindex="-1" data-key="l:${esc(l.p)}" data-ip="${esc(l.p)}"><span class="rk num">${i + 1}</span><span class="lp" title="${esc(l.p)}"><bdi><span class="dirp">${esc(l.p.slice(0, cut + 1))}</span><b>${esc(l.p.slice(cut + 1))}</b></bdi></span><span class="sz num">${fmtB(l.s)}</span></button></li>`;
     }).join("") + Array.from({ length: 10 - n }, (_, i) => `<li class="ph" aria-hidden="true"><span class="rk num">${n + i + 1}</span><span></span><span></span></li>`).join("");
     $$("#ftree .tn.dir .s").forEach((el) => { el.textContent = done ? el.dataset.s : "…"; });
     if (done) {
       const row = $$(".row").find((r) => FILES[r.dataset.side][r.dataset.i].fid === fid && !FILES[r.dataset.side][r.dataset.i].up);
       if (row) { const c = $(".sz", row); c.textContent = fmtB(f.totalB); c.classList.add("got"); }
     }
+    markSel(false);
     meter();
     if (!done && !stopped) tickTimer = setTimeout(tick, 100);
   }
   function treeHtml(fid) {
-    const open = openTree[fid] || (openTree[fid] = new Set([FOLD[fid].tree[0][0]]));
+    const open = openTree[fid] || (openTree[fid] = new Set(FOLD[fid].tree.filter((n) => Array.isArray(n[2])).slice(0, 2).map((n) => n[0])));
     const done = scans[fid] && prog(scans[fid]) >= 1;
     const out = [];
     const walk = (nodes, depth, base) => nodes.forEach((n) => {
@@ -869,7 +898,7 @@ kbd { font-family: var(--font-mono); font-size: var(--fs-12); }
       const exp = Array.isArray(kids) && open.has(path.slice(1));
       const chev = Array.isArray(kids) ? ic(exp ? "chevD" : "chevR", "sm") : "";
       const t = isDir ? "dir" : (EXT_C[name.split(".").pop()] || "faint");
-      out.push(`<button type="button" class="tn${isDir ? " dir" : ""}" role="treeitem" ${Array.isArray(kids) ? `aria-expanded="${exp}" data-tp="${esc(path.slice(1))}"` : ""} style="--d:${depth}"><span class="chev">${chev}</span><span class="t-${t}" style="display:contents">${ic(isDir ? "dir" : t === "img" ? "img" : t === "code" ? "code" : "faint", "sm")}</span><span class="n">${esc(name)}</span><span class="s num" ${isDir ? `data-s="${fmtB(b(size))}"` : ""}>${isDir && !done ? "…" : fmtB(b(size))}</span></button>`);
+      out.push(`<button type="button" class="tn it${isDir ? " dir" : ""}" role="treeitem" tabindex="-1" data-key="t:${esc(path.slice(1))}" data-ip="${esc(path.slice(1))}"${isDir ? ' data-dir="1"' : ""} ${Array.isArray(kids) ? `aria-expanded="${exp}" data-tp="${esc(path.slice(1))}"` : ""} style="--d:${depth}"><span class="chev">${chev}</span><span class="t-${t}" style="display:contents">${ic(isDir ? "dir" : t === "img" ? "img" : t === "code" ? "code" : "faint", "sm")}</span><span class="n">${esc(name)}</span><span class="s num" ${isDir ? `data-s="${fmtB(b(size))}"` : ""}>${isDir && !done ? "…" : fmtB(b(size))}</span></button>`);
       if (exp) { walk(kids, depth + 1, path); if (more) out.push(`<span class="tn more" style="--d:${depth + 1}"><span></span><span></span><span class="n">and ${more} more</span><span></span></span>`); }
     });
     walk(FOLD[fid].tree, 0, "");
@@ -984,6 +1013,69 @@ kbd { font-family: var(--font-mono); font-size: var(--fs-12); }
   const textHtml = () => `<div class="txt">${LOG.map(([t, c, l, m]) => `<span class="ts">${t}</span> <span class="${c}">${l.padEnd(5)}</span> ${esc(m)}`).join("\n")}</div>`;
 
   /* ---------- render and interaction ---------- */
+  const items = () => $$("#pv .it");
+  function markSel(scroll) {
+    const win = $("#win"); if (!win) return;
+    win.classList.toggle("pfocus", state.pf);
+    let hit = null;
+    items().forEach((el) => { const on = el.dataset.key === state.pKey; el.classList.toggle("sel", on); el.setAttribute("aria-selected", String(on)); if (on) hit = el; });
+    if (hit && scroll) reveal(hit);
+  }
+  function reveal(el) {
+    let box = el.parentElement;
+    while (box && !(box.scrollHeight > box.clientHeight + 1 && /(auto|scroll)/.test(getComputedStyle(box).overflowY))) box = box.parentElement;
+    if (!box) return;
+    const er = el.getBoundingClientRect(), br = box.getBoundingClientRect(), head = 34 * curScale;
+    if (er.top < br.top + head) box.scrollTop -= (br.top + head - er.top) / curScale;
+    else if (er.bottom > br.bottom - 4 * curScale) box.scrollTop += (er.bottom - br.bottom) / curScale + 4;
+  }
+  function setPF(on, key) {
+    state.pf = on;
+    if (on) state.pKey = key || state.pKey || items()[0]?.dataset.key || null;
+    paintHead(); markSel(on);
+  }
+  function stepItem(d) {
+    const list = items(); if (!list.length) return;
+    const i = list.findIndex((el) => el.dataset.key === state.pKey);
+    state.pKey = list[Math.max(0, Math.min(list.length - 1, (i < 0 ? 0 : i + d)))].dataset.key;
+    markSel(true);
+  }
+  function foldItem(dir) {
+    const el = items().find((x) => x.dataset.key === state.pKey); if (!el || !el.classList.contains("tn")) return;
+    const path = el.dataset.ip, set = openTree[shownFid], expandable = el.dataset.tp !== undefined, open = set.has(path);
+    if (dir > 0) { if (expandable && !open) { set.add(path); redrawTree(); } else if (expandable) stepItem(1); return; }
+    if (expandable && open) { set.delete(path); redrawTree(); return; }
+    const cut = path.lastIndexOf("/"); if (cut > 0) { state.pKey = `t:${path.slice(0, cut)}`; markSel(true); }
+  }
+  function redrawTree() { $("#ftree").innerHTML = treeHtml(shownFid); markSel(true); }
+  function openItem(el, viewer) {
+    const base = FOLD[shownFid].path, rel = el.dataset.ip.replace(/\//g, "\\"), full = `${base}\\${rel}`;
+    const cut = full.lastIndexOf("\\"), name = full.slice(cut + 1), folder = full.slice(0, cut);
+    const pane = state.side === "L" ? "Left" : "Right";
+    const isDir = el.dataset.dir === "1";
+    const msg = viewer
+      ? (isDir ? `F3 on a folder opens the full scan view of <b>${esc(name)}</b>` : `F3 opens <b>${esc(name)}</b> in the full viewer`)
+      : (isDir ? `${pane} pane goes into <b>${esc(full)}</b>` : `${pane} pane goes to <b>${esc(folder)}</b> with the cursor on <b>${esc(name)}</b>`);
+    toast(`<span class="tic">${ic(viewer ? "eye" : isDir ? "dir" : "open", "sm")}</span><span>${msg}</span>`);
+  }
+  function previewKeys(e) {
+    const k = e.key;
+    const cur = () => items().find((x) => x.dataset.key === state.pKey);
+    if (k === "ArrowDown") stepItem(1);
+    else if (k === "ArrowUp") stepItem(-1);
+    else if (k === "Home") { state.pKey = items()[0]?.dataset.key; markSel(true); }
+    else if (k === "End") { const l = items(); state.pKey = l[l.length - 1]?.dataset.key; markSel(true); }
+    else if (k === "ArrowRight") foldItem(1);
+    else if (k === "ArrowLeft") foldItem(-1);
+    else if (k === "Enter") { const el = cur(); if (el) openItem(el, false); }
+    else if (k === "F3") { const el = cur(); if (el) openItem(el, true); }
+    else if (k === "Escape") setPF(false);
+    else if (k === "Tab" && !e.shiftKey) { state.pf = false; switchSide(); }
+    else if ((k === "q" || k === "Q") && !e.shiftKey && !e.altKey) { state.pf = false; setOpen(false); }
+    else return false;
+    e.preventDefault(); return true;
+  }
+
   function render() {
     clearTimeout(tickTimer); clearTimeout(loadTimer);
     $("#scaler").innerHTML = winHtml();
@@ -992,6 +1084,7 @@ kbd { font-family: var(--font-mono); font-size: var(--fs-12); }
     paintHead();
     load();
     state.enter = false;
+    state.pf = false; state.pKey = null;
     fit();
     syncControls();
   }
@@ -1000,7 +1093,7 @@ kbd { font-family: var(--font-mono); font-size: var(--fs-12); }
     $$("#seg-w button").forEach((x) => x.setAttribute("aria-pressed", String(+x.dataset.w === state.ww)));
     $$("#seg-t button").forEach((x) => x.setAttribute("aria-pressed", String(x.dataset.t === state.theme)));
     $$("#seg-s button").forEach((x) => x.setAttribute("aria-pressed", String(x.dataset.s === state.scale)));
-    $("#dtitle").textContent = `Direction ${state.d}${state.d === 1 ? " (recommended)" : ""}`;
+    $("#dtitle").textContent = `Direction ${state.d}${state.d === 1 ? " (chosen)" : ""}`;
     $("#didea").textContent = DIRS[state.d].idea;
     $("#notes").innerHTML = DIRS[state.d].notes.map(([h, p]) => `<div class="note${h === "Trade-off" ? " trade" : ""}"><h3>${h}</h3><p>${p}</p></div>`).join("");
   }
@@ -1068,6 +1161,14 @@ kbd { font-family: var(--font-mono); font-size: var(--fs-12); }
     }
     if (!inWin) return;
     const k = e.key;
+    if (state.pf && previewKeys(e)) return;
+    if (state.d === 1 && ((e.ctrlKey && e.shiftKey && (k === "q" || k === "Q")) || ((k === "p" || k === "P") && !e.ctrlKey && !e.altKey))) {
+      e.preventDefault();
+      if (!state.open) { state.open = true; state.enter = true; render(); focusWin(); }
+      if (browsable()) setTimeout(() => setPF(true), state.open ? 0 : 30);
+      else toast(`<span class="tic">${ic("eye", "sm")}</span><span>File previews have nothing to browse; F3 opens the full viewer</span>`);
+      return;
+    }
     if (/^[1-4]$/.test(k) && !e.ctrlKey) { state.d = +k; state.enter = state.open; render(); focusWin(); e.preventDefault(); return; }
     if (k === "ArrowDown") { moveCursor(state.cur[state.side] + 1); e.preventDefault(); }
     else if (k === "ArrowUp") { moveCursor(state.cur[state.side] - 1); e.preventDefault(); }
@@ -1077,7 +1178,6 @@ kbd { font-family: var(--font-mono); font-size: var(--fs-12); }
     else if (k === "PageUp") { moveCursor(state.cur[state.side] - 8); e.preventDefault(); }
     else if (k === "Tab" && !e.shiftKey) { switchSide(); e.preventDefault(); }
     else if ((k === "q" || k === "Q") && !e.altKey && !e.shiftKey) { setOpen(!state.open); e.preventDefault(); }
-    else if ((k === "q" || k === "Q") && e.ctrlKey && e.shiftKey && state.d === 2 && state.open) { const pre = [0.23, 0.42, 0.66]; const i = pre.findIndex((x) => Math.abs(x - state.bdFrac) < 0.01); state.bdFrac = pre[(i + 1) % 3]; applySizes(); e.preventDefault(); }
     else if (k === "[" || k === "]") { if (state.open) resize(k === "]" ? 1 : -1); e.preventDefault(); }
     else if (k === "Escape") { if (state.open) stopScan(); e.preventDefault(); }
     else if (k === "Enter" || k === "F3") {
@@ -1104,6 +1204,10 @@ kbd { font-family: var(--font-mono); font-size: var(--fs-12); }
     if (act === "rescan") { scans[entry().fid] = null; delete scans[entry().fid]; load(); focusWin(); return; }
     if (t.dataset.h) { state.bdFrac = parseFloat(t.dataset.h); applySizes(); focusWin(); return; }
     if (t.dataset.jp !== undefined) { const p = t.dataset.jp; collapsedJson.has(p) ? collapsedJson.delete(p) : collapsedJson.add(p); $("#json").innerHTML = jsonHtml(); focusWin(); return; }
+    if (t.classList.contains("it")) {
+      if (e.target.closest(".chev") && t.dataset.tp !== undefined) { const set = openTree[shownFid]; set.has(t.dataset.tp) ? set.delete(t.dataset.tp) : set.add(t.dataset.tp); state.pKey = t.dataset.key; redrawTree(); focusWin(); return; }
+      if (state.d === 1) { setPF(true, t.dataset.key); focusWin(); return; }
+    }
     if (t.dataset.tp !== undefined) { const fid = shownFid; const set = openTree[fid]; set.has(t.dataset.tp) ? set.delete(t.dataset.tp) : set.add(t.dataset.tp); $("#ftree").innerHTML = treeHtml(fid); focusWin(); return; }
     if (t.classList.contains("row")) {
       const side = t.dataset.side, i = +t.dataset.i;
@@ -1111,7 +1215,11 @@ kbd { font-family: var(--font-mono); font-size: var(--fs-12); }
       moveCursor(i); focusWin();
     }
   });
-  document.addEventListener("dblclick", (e) => { if (e.target.closest(".gut")) { state.pvFrac3 = 0.5; applySizes(); } });
+  document.addEventListener("dblclick", (e) => {
+    if (e.target.closest(".gut")) { state.pvFrac3 = 0.5; applySizes(); return; }
+    const it = e.target.closest("#win .it");
+    if (it && state.d === 1 && !e.target.closest(".chev")) { setPF(true, it.dataset.key); openItem(it, false); }
+  });
 
   document.addEventListener("pointerdown", (e) => {
     const g = e.target.closest(".grip"); if (!g) return;
