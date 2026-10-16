@@ -65,6 +65,7 @@ pub enum Page {
     WindowShift,
     WindowAlt,
     WindowNarrow,
+    AppMenu,
 }
 
 pub struct PageInfo {
@@ -83,7 +84,7 @@ const fn info(page: Page, label: &'static str, stem: &'static str, in_switch: bo
     }
 }
 
-pub const PAGES: [PageInfo; 23] = [
+pub const PAGES: [PageInfo; 24] = [
     info(Page::Primitives, "Parts", "p7-gallery", true),
     info(Page::Pane, "Pane", "p7-pane", true),
     info(Page::Operate, "Operate", "p8-confirm", true),
@@ -117,6 +118,7 @@ pub const PAGES: [PageInfo; 23] = [
         "p19-window-1100",
         false,
     ),
+    info(Page::AppMenu, "App menu", "p19-app-menu", false),
 ];
 
 impl Page {
@@ -152,6 +154,7 @@ pub struct Gallery {
     main_window: Entity<WindowPage>,
     shift_window: Entity<WindowPage>,
     alt_window: Entity<WindowPage>,
+    menu_window: Entity<WindowPage>,
     tab: usize,
     clicks: usize,
     scroll: ListScroll,
@@ -180,6 +183,7 @@ impl Gallery {
             main_window: cx.new(|cx| WindowPage::new(None, cx)),
             shift_window: cx.new(|cx| WindowPage::new(Some(KeyLayer::Shift), cx)),
             alt_window: cx.new(|cx| WindowPage::new(Some(KeyLayer::Alt), cx)),
+            menu_window: cx.new(WindowPage::with_menu),
             tab: 1,
             clicks: 0,
             scroll: ListScroll::new(),
@@ -338,15 +342,12 @@ impl Render for Gallery {
             .font_family(t.typography.ui_font.clone())
             .text_size(t.typography.body)
             .line_height(t.typography.line_height);
-        match self.page {
-            Page::Window => return root.child(self.main_window.clone()),
-            Page::WindowShift => return root.child(self.shift_window.clone()),
-            Page::WindowAlt => return root.child(self.alt_window.clone()),
-            Page::WindowNarrow => {
-                let narrow = div().w(px(NARROW)).h_full().child(self.main_window.clone());
-                return root.bg(t.colors.line).child(narrow);
-            }
-            _ => {}
+        if let Some(page) = self.window_page() {
+            return root.child(page);
+        }
+        if self.page == Page::WindowNarrow {
+            let narrow = div().w(px(NARROW)).h_full().child(self.main_window.clone());
+            return root.bg(t.colors.line).child(narrow);
         }
         let root = root.child(self.header(cx)).child(self.page_bar(&t, cx));
         match self.page {
@@ -373,12 +374,26 @@ impl Render for Gallery {
                 None => root.child("This sample did not load."),
             },
             Page::Tokens => root.child(tokens_page::render(&t)),
-            Page::Window | Page::WindowShift | Page::WindowAlt | Page::WindowNarrow => root,
+            Page::Window
+            | Page::WindowShift
+            | Page::WindowAlt
+            | Page::WindowNarrow
+            | Page::AppMenu => root,
         }
     }
 }
 
 impl Gallery {
+    fn window_page(&self) -> Option<Entity<WindowPage>> {
+        match self.page {
+            Page::Window => Some(self.main_window.clone()),
+            Page::WindowShift => Some(self.shift_window.clone()),
+            Page::WindowAlt => Some(self.alt_window.clone()),
+            Page::AppMenu => Some(self.menu_window.clone()),
+            _ => None,
+        }
+    }
+
     fn menu_page(&self, page: Page) -> Option<Entity<MenuPage>> {
         self.menus
             .iter()
