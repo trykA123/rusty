@@ -1,0 +1,617 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ferrite Context Menu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400..700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: oklch(99.2% 0.002 260); --surface: oklch(99.2% 0.002 260); --rail: oklch(96.2% 0.005 260);
+  --zebra: oklch(97.6% 0.004 260); --line: oklch(88% 0.008 260); --line-strong: oklch(80% 0.01 260);
+  --text: oklch(21% 0.012 260); --muted: oklch(46% 0.02 260); --faint: oklch(60% 0.016 260);
+  --hover: oklch(95% 0.008 260); --sel-bg: oklch(93% 0.035 262); --accent: oklch(50% 0.18 262);
+  --accent-text: oklch(46% 0.17 262); --on-accent: oklch(99% 0.003 262); --mark: oklch(53% 0.2 30);
+  --folder: oklch(60% 0.13 80); --k-code: oklch(50% 0.15 262); --k-image: oklch(52% 0.15 340);
+  --k-archive: oklch(52% 0.12 45); --k-app: oklch(50% 0.12 150); --ok: oklch(50% 0.13 150); --warn: oklch(55% 0.13 70);
+  --mica: linear-gradient(100deg, oklch(95.5% 0.012 250), oklch(96.5% 0.008 60) 60%, oklch(96% 0.01 200));
+  --menu-bg: oklch(99.6% 0.002 260); --menu-shadow: 0 18px 48px -14px oklch(20% 0.03 260 / 0.32), 0 2px 6px -2px oklch(20% 0.03 260 / 0.12);
+  --scrim: oklch(20% 0.02 260 / 0.06);
+  --bmp-7z: oklch(30% 0.01 260); --bmp-npp: oklch(52% 0.13 145); --bmp-git: oklch(52% 0.12 250);
+
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-6: 24px; --s-8: 32px; --s-12: 48px;
+  --r-sm: 4px; --r-md: 6px; --r-lg: 10px;
+  --fs-xs: 0.6875rem; --fs-sm: 0.75rem; --fs-ui: 0.8125rem; --fs-md: 0.875rem; --fs-lg: 1.125rem;
+  --font-ui: "Archivo", system-ui, sans-serif; --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --row: 24px; --mi: 28px; --title-h: 46px; --keys-h: 36px;
+  --win-w: 1200px; --win-h: 800px;
+  --z-menu: 30; --z-sub: 31; --z-bar: 50;
+  --dur-in: 150ms; --dur-sub: 180ms; --ease-out: cubic-bezier(.2,.8,.2,1);
+}
+:root[data-theme="dark"] {
+  --bg: oklch(16% 0.008 260); --surface: oklch(16% 0.008 260); --rail: oklch(19% 0.01 260); --zebra: oklch(18% 0.009 260);
+  --line: oklch(28% 0.012 260); --line-strong: oklch(36% 0.014 260);
+  --text: oklch(93% 0.006 260); --muted: oklch(72% 0.016 260); --faint: oklch(58% 0.014 260); --hover: oklch(22% 0.012 260);
+  --sel-bg: oklch(30% 0.07 262); --accent: oklch(72% 0.13 262); --accent-text: oklch(78% 0.11 262); --on-accent: oklch(18% 0.03 262);
+  --mark: oklch(72% 0.16 30); --folder: oklch(80% 0.11 85); --k-code: oklch(76% 0.1 262); --k-image: oklch(75% 0.11 340);
+  --k-archive: oklch(75% 0.1 45); --k-app: oklch(75% 0.1 150); --ok: oklch(76% 0.13 150); --warn: oklch(80% 0.12 75);
+  --mica: linear-gradient(100deg, oklch(20% 0.02 250), oklch(19% 0.012 60) 60%, oklch(20% 0.016 200));
+  --menu-bg: oklch(21% 0.01 260); --menu-shadow: 0 22px 56px -12px oklch(5% 0.01 260 / 0.7), 0 0 0 1px oklch(34% 0.014 260);
+  --scrim: oklch(5% 0.01 260 / 0.18);
+  --bmp-7z: oklch(86% 0.01 260); --bmp-npp: oklch(74% 0.13 145); --bmp-git: oklch(74% 0.1 250);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--rail); color: var(--text); font: 400 var(--fs-ui)/1.4 var(--font-ui); font-stretch: 92%; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+kbd { font: 500 var(--fs-xs)/1 var(--font-mono); padding: 2px 5px; border-radius: var(--r-sm); border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
+.ic { width: 15px; height: 15px; flex: none; display: block; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Page chrome */
+.bar { position: sticky; top: 0; z-index: var(--z-bar); display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-4); padding: var(--s-2) var(--s-4); background: var(--bg); border-bottom: 1px solid var(--line); }
+.bar h1 { margin: 0; font-size: var(--fs-md); font-weight: 700; font-stretch: 100%; }
+.bar h1 span { color: var(--muted); font-weight: 500; }
+.seg { display: flex; gap: 2px; padding: 2px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--rail); }
+.seg button { display: flex; align-items: center; gap: 6px; height: 28px; padding: 0 var(--s-2); border-radius: var(--r-sm); color: var(--muted); white-space: nowrap; }
+.seg button:hover { color: var(--text); background: var(--hover); }
+.seg button[aria-pressed="true"] { background: var(--bg); color: var(--text); font-weight: 600; box-shadow: 0 0 0 1px var(--line); }
+.seg kbd { padding: 1px 4px; }
+.bar .spacer { flex: 1; }
+.themebtn { display: flex; align-items: center; gap: 6px; height: 32px; padding: 0 var(--s-2); border: 1px solid var(--line); border-radius: var(--r-md); color: var(--muted); }
+.themebtn:hover { color: var(--text); }
+
+.stage-scroll { overflow-x: auto; overflow-y: hidden; padding: var(--s-6) var(--s-4); scrollbar-width: thin; }
+.stage { width: var(--win-w); margin-inline: auto; }
+
+/* Ferrite window */
+.win { position: relative; width: var(--win-w); height: var(--win-h); display: grid; grid-template-rows: var(--title-h) minmax(0, 1fr) var(--keys-h); background: var(--bg); border: 1px solid var(--line-strong); border-radius: var(--r-lg); overflow: hidden; box-shadow: 0 30px 80px -40px oklch(20% 0.03 260 / 0.45); font-variant-numeric: tabular-nums; user-select: none; }
+.title { display: flex; align-items: center; gap: var(--s-3); padding-inline: var(--s-3) 0; background: var(--mica); border-bottom: 1px solid var(--line); }
+.brand { display: flex; align-items: center; gap: var(--s-2); font-weight: 700; font-stretch: 100%; width: 190px; }
+.brand svg { width: 22px; height: 22px; }
+.find { flex: 0 1 460px; display: flex; align-items: center; gap: var(--s-2); height: 30px; padding: 0 6px 0 var(--s-3); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--bg); color: var(--muted); }
+.find span { flex: 1; }
+.title .tbtn { display: grid; place-items: center; width: 32px; height: 32px; border-radius: var(--r-md); color: var(--muted); }
+.title .tright { margin-left: auto; display: flex; align-items: center; gap: 2px; }
+.winctl { display: flex; margin-left: var(--s-2); }
+.winctl span { display: grid; place-items: center; width: 46px; height: var(--title-h); color: var(--muted); }
+
+.panes { display: grid; grid-template-columns: 1fr 1fr; min-height: 0; }
+.pane { display: grid; grid-template-rows: auto auto auto minmax(0, 1fr) auto; min-width: 0; min-height: 0; border-right: 1px solid var(--line); }
+.pane:last-child { border-right: 0; }
+.drives { display: flex; gap: 2px; padding: 6px 6px 2px; }
+.drv { display: flex; align-items: center; gap: 5px; height: 24px; padding: 0 6px; border-radius: var(--r-sm); color: var(--muted); font-size: var(--fs-sm); position: relative; }
+.drv::after { content: ""; position: absolute; left: 6px; right: 6px; bottom: 1px; height: 2px; border-radius: 1px; background: var(--accent); opacity: 0.55; }
+.drv.on { background: var(--sel-bg); color: var(--text); font-weight: 600; }
+.path { display: flex; align-items: center; gap: 6px; margin: 4px 6px 6px; height: 28px; padding-right: var(--s-1); border: 1px solid var(--line); border-radius: var(--r-md); font-size: var(--fs-sm); }
+.pane.active .path { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.path b { align-self: stretch; display: grid; place-items: center; padding: 0 var(--s-2); background: var(--rail); border-right: 1px solid var(--line); border-radius: 5px 0 0 5px; }
+.path .cr { color: var(--muted); } .path .cr:last-child { color: var(--text); font-weight: 600; }
+.path .sep { color: var(--muted); opacity: 0.6; width: 12px; height: 12px; }
+.heads, .frow { display: grid; grid-template-columns: minmax(0, 1fr) 54px 76px 116px; gap: var(--s-2); padding-inline: var(--s-3); }
+.heads { height: 24px; align-items: center; font-size: var(--fs-xs); font-weight: 600; color: var(--muted); border-block: 1px solid var(--line); background: var(--rail); }
+.heads span + span { text-align: right; }
+.list { overflow: hidden; }
+.frow { height: var(--row); align-items: center; font-size: var(--fs-ui); }
+.frow:nth-child(even) { background: var(--zebra); }
+.frow .nm { display: flex; align-items: center; gap: var(--s-2); min-width: 0; }
+.frow .nm span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.frow.dir .nm span { font-weight: 600; }
+.frow .ext, .frow .sz, .frow .dt { color: var(--muted); font-size: var(--fs-sm); text-align: right; white-space: nowrap; }
+.frow .ext { text-align: left; }
+.pane.active .frow.cur { background: var(--sel-bg); box-shadow: inset 0 0 0 1px var(--accent); }
+.frow.marked .nm span, .frow.marked .ext, .frow.marked .sz { color: var(--mark); font-weight: 700; }
+.k-folder { color: var(--folder); } .k-code { color: var(--k-code); } .k-image { color: var(--k-image); } .k-archive { color: var(--k-archive); } .k-app { color: var(--k-app); } .k-doc { color: var(--muted); }
+.pstat { display: flex; justify-content: space-between; padding: 5px var(--s-3); font-size: var(--fs-sm); color: var(--muted); border-top: 1px solid var(--line); background: var(--rail); }
+.pstat b { color: var(--mark); }
+
+.keys { display: flex; align-items: center; gap: var(--s-1); padding: 0 var(--s-2); border-top: 1px solid var(--line); background: var(--rail); }
+.cap { display: flex; align-items: center; gap: 6px; height: 26px; padding: 0 var(--s-2); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: var(--r-md); background: var(--bg); font-size: var(--fs-sm); }
+.cap kbd { border: 0; padding: 0; color: var(--accent-text); font-weight: 700; }
+.keys .mods { margin-left: auto; display: flex; gap: var(--s-1); color: var(--muted); }
+
+/* Long right-click origin */
+.press { position: absolute; z-index: calc(var(--z-menu) - 1); width: 26px; height: 26px; margin: -13px 0 0 -13px; border-radius: 50%; border: 2px solid var(--accent); opacity: 0.8; animation: press 420ms var(--ease-out) both; pointer-events: none; }
+.press::after { content: ""; position: absolute; inset: 7px; border-radius: 50%; background: var(--accent); }
+@keyframes press { from { transform: scale(0.4); opacity: 0; } }
+.scrim { position: absolute; inset: var(--title-h) 0 var(--keys-h); background: var(--scrim); z-index: calc(var(--z-menu) - 2); pointer-events: none; }
+
+/* Menu shared */
+.menu { position: absolute; z-index: var(--z-menu); background: var(--menu-bg); color: var(--text); border: 1px solid var(--line); border-radius: var(--r-lg); box-shadow: var(--menu-shadow); transform-origin: top left; animation: menu-in var(--dur-in) var(--ease-out) both; font-size: var(--fs-ui); }
+.menu.sub { z-index: var(--z-sub); animation-name: sub-in; animation-duration: var(--dur-sub); }
+@keyframes menu-in { from { opacity: 0; transform: translateY(-4px) scale(0.98); } }
+@keyframes sub-in { from { opacity: 0; transform: translateX(-6px); } }
+.mi { display: grid; grid-template-columns: 20px minmax(0, 1fr) auto; align-items: center; gap: var(--s-2); width: 100%; height: var(--mi); padding: 0 var(--s-2); border-radius: var(--r-md); text-align: left; color: var(--text); }
+.mi:hover, .mi.hot { background: var(--sel-bg); }
+.mi .t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mi .k { font: 500 var(--fs-xs)/1 var(--font-mono); color: var(--muted); white-space: nowrap; }
+.mi .chev { color: var(--muted); }
+.mi .lead { display: grid; place-items: center; color: var(--muted); }
+.mi.fe .lead { color: var(--accent-text); }
+.mi.def .t { font-weight: 700; }
+.mi[aria-disabled="true"] { color: var(--faint); cursor: default; }
+.mi[aria-disabled="true"]:hover { background: none; }
+.mi[aria-disabled="true"] .lead, .mi[aria-disabled="true"] .k { color: var(--faint); }
+.mi.focus { outline: 2px solid var(--accent); outline-offset: -2px; background: var(--sel-bg); }
+.mi mark { background: none; color: var(--accent-text); font-weight: 700; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 2px; }
+.bmp { display: grid; place-items: center; width: 16px; height: 16px; border-radius: 3px; font: 700 8px/1 var(--font-mono); letter-spacing: -0.04em; color: var(--menu-bg); }
+.bmp.b7z { background: var(--bmp-7z); } .bmp.bnpp { background: var(--bmp-npp); } .bmp.bgit { background: var(--bmp-git); }
+.tag { font: 600 var(--fs-xs)/1 var(--font-mono); padding: 2px 5px; border-radius: var(--r-sm); border: 1px solid var(--line); color: var(--muted); }
+.msep { height: 1px; margin: var(--s-1) var(--s-2); background: var(--line); }
+.mhint { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-3); padding: var(--s-2) var(--s-3); border-top: 1px solid var(--line); color: var(--muted); font-size: var(--fs-sm); }
+.mhint span { display: inline-flex; align-items: center; gap: 4px; }
+.mhint kbd { padding: 1px 4px; }
+.mhint .end { margin-left: auto; }
+
+/* Variant 1: filter list */
+.v1 { width: 316px; display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; }
+.v1 .flt { display: flex; align-items: center; gap: var(--s-2); margin: 6px; padding: 0 var(--s-2); height: 32px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--bg); color: var(--muted); }
+.v1 .flt:focus-within, .v1 .flt.on { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.v1 .flt input { flex: 1; min-width: 0; border: 0; background: none; color: var(--text); font: inherit; outline: none; }
+.v1 .flt input::placeholder { color: var(--muted); }
+.v1 .ctx { display: flex; align-items: center; gap: 6px; padding: 0 var(--s-3) var(--s-1); color: var(--muted); font-size: var(--fs-sm); min-width: 0; }
+.v1 .ctx b { color: var(--text); font: 600 var(--fs-sm) var(--font-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.v1 .items { padding: 0 var(--s-1) var(--s-1); overflow: auto; scrollbar-width: thin; }
+.v1 .crumb { color: var(--muted); }
+.v1 .grp { padding: var(--s-2) var(--s-2) 2px; font-size: var(--fs-xs); font-weight: 600; color: var(--muted); }
+.v1.sub { width: 300px; padding: var(--s-1); display: block; }
+.v1 .subh { display: flex; align-items: center; gap: var(--s-2); padding: 6px var(--s-2); color: var(--muted); font-size: var(--fs-sm); }
+
+/* Variant 2: action strip */
+.v2 { width: 292px; padding: 6px; }
+.v2 .who { display: flex; align-items: center; gap: var(--s-2); padding: 2px var(--s-1) 6px; font-size: var(--fs-sm); color: var(--muted); }
+.v2 .who b { color: var(--text); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.v2 .who .tag { margin-left: auto; }
+.v2 .strip { display: grid; grid-template-columns: repeat(6, 1fr); gap: 2px; padding: 2px; border-radius: var(--r-md); background: var(--rail); }
+.v2 .sb { display: grid; place-items: center; height: 40px; border-radius: var(--r-sm); color: var(--text); }
+.v2 .sb:hover { background: var(--bg); box-shadow: 0 0 0 1px var(--line); }
+.v2 .sb .ic { width: 17px; height: 17px; }
+.v2 .sb[aria-disabled="true"] { color: var(--faint); }
+.v2 .sb.focus { outline: 2px solid var(--accent); outline-offset: -2px; background: var(--bg); color: var(--accent-text); }
+.v2 .cap2 { display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); height: 26px; padding: 0 var(--s-2); font-size: var(--fs-sm); color: var(--muted); }
+.v2 .cap2 b { color: var(--text); font-weight: 600; }
+.v2 .fold { display: grid; animation: sub-in var(--dur-sub) var(--ease-out) both; }
+.v2 .more .chev { transition: transform var(--dur-in) var(--ease-out); }
+.v2 .more[aria-expanded="true"] .chev { transform: rotate(180deg); }
+.v2 .more .t { color: var(--muted); }
+.v2.sub { width: 300px; }
+
+/* Variant 3: sectioned sheet */
+.v3 { width: 540px; overflow: hidden; }
+.v3 .head { display: flex; align-items: center; gap: var(--s-3); padding: var(--s-3) var(--s-3) var(--s-2); }
+.v3 .fic { display: grid; place-items: center; width: 36px; height: 36px; border-radius: var(--r-md); background: var(--rail); border: 1px solid var(--line); }
+.v3 .fic .ic { width: 18px; height: 18px; }
+.v3 .stack { display: flex; }
+.v3 .stack .fic + .fic { margin-left: -18px; box-shadow: -2px 0 0 var(--menu-bg); }
+.v3 .hmeta { display: grid; gap: 2px; min-width: 0; }
+.v3 .hmeta b { font-size: var(--fs-md); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.v3 .hmeta span { color: var(--muted); font-size: var(--fs-sm); }
+.v3 .head .back { display: grid; place-items: center; width: 32px; height: 32px; border-radius: var(--r-md); border: 1px solid var(--line); color: var(--text); }
+.v3 .head .back:hover { background: var(--hover); }
+.v3 .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 var(--s-2); padding: 0 6px 6px; border-top: 1px solid var(--line); }
+.v3 .col { display: grid; align-content: start; }
+.v3 h3 { margin: var(--s-3) var(--s-2) var(--s-1); font-size: var(--fs-xs); font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); font-stretch: 85%; }
+.v3 .mi { grid-template-columns: 20px 20px minmax(0, 1fr) auto; }
+.v3 .ak { display: grid; place-items: center; width: 18px; height: 18px; border-radius: var(--r-sm); border: 1px solid var(--line); font: 600 var(--fs-xs)/1 var(--font-mono); color: var(--muted); }
+.v3 .mi.focus .ak, .v3 .mi.hot .ak { border-color: var(--accent); color: var(--accent-text); }
+.v3.akeys .ak { border-color: var(--line-strong); color: var(--text); }
+.v3 .more { color: var(--muted); }
+.v3 .page { animation: drill var(--dur-sub) var(--ease-out) both; }
+.v3 .page.back-in { animation-name: drill-back; }
+@keyframes drill { from { opacity: 0; transform: translateX(16px); } }
+@keyframes drill-back { from { opacity: 0; transform: translateX(-16px); } }
+.v3 .subcols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 var(--s-2); padding: 6px; border-top: 1px solid var(--line); }
+.v3 .lazy { display: flex; align-items: center; gap: var(--s-2); padding: 0 var(--s-2); height: var(--mi); color: var(--muted); font-size: var(--fs-sm); }
+
+/* Notes */
+.notes { max-width: 1200px; margin: 0 auto; padding: 0 var(--s-4) var(--s-12); display: grid; gap: var(--s-4); grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.note { background: var(--bg); border: 1px solid var(--line); border-radius: var(--r-lg); padding: var(--s-4); }
+.note h2 { margin: 0 0 var(--s-2); font-size: var(--fs-md); font-stretch: 100%; }
+.note h2 small { color: var(--muted); font-weight: 500; }
+.note dl { margin: 0; display: grid; gap: var(--s-2); }
+.note dt { font-size: var(--fs-xs); font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
+.note dd { margin: 0; line-height: 1.5; }
+.note.rec { border-color: var(--accent); }
+.note.cur { box-shadow: inset 0 0 0 1px var(--accent); }
+
+@media (prefers-reduced-motion: reduce) {
+  .menu, .menu.sub, .v2 .fold, .v3 .page, .press { animation: fade 120ms linear both; }
+  .v2 .more .chev { transition: none; }
+  @keyframes fade { from { opacity: 0; } }
+}
+</style>
+</head>
+<body>
+<header class="bar">
+  <h1>Ferrite <span>· shell context menu</span></h1>
+  <div class="seg" role="group" aria-label="Variant" id="vseg">
+    <button data-v="1">Variant 1 <kbd>1</kbd></button>
+    <button data-v="2">Variant 2 <kbd>2</kbd></button>
+    <button data-v="3">Variant 3 <kbd>3</kbd></button>
+  </div>
+  <div class="seg" role="group" aria-label="State" id="sseg">
+    <button data-s="root">Root <kbd>Q</kbd></button>
+    <button data-s="sub">Submenu <kbd>W</kbd></button>
+    <button data-s="multi">3 files <kbd>E</kbd></button>
+    <button data-s="kbd">Keyboard <kbd>R</kbd></button>
+  </div>
+  <span class="spacer"></span>
+  <button class="themebtn" id="theme" aria-label="Toggle theme"></button>
+</header>
+<main>
+  <div class="stage-scroll"><div class="stage"><div class="win" id="win"></div></div></div>
+  <section class="notes" id="notes" aria-label="Notes"></section>
+</main>
+<script>
+const ICONS = {"copy":"<rect width=\"14\" height=\"14\" x=\"8\" y=\"8\" rx=\"2\" ry=\"2\"/><path d=\"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2\"/>","scissors":"<circle cx=\"6\" cy=\"6\" r=\"3\"/><path d=\"M8.12 8.12 12 12\"/><path d=\"M20 4 8.12 15.88\"/><circle cx=\"6\" cy=\"18\" r=\"3\"/><path d=\"M14.8 14.8 20 20\"/>","clipboard-paste":"<path d=\"M11 14h10\"/><path d=\"M16 4h2a2 2 0 0 1 2 2v1.344\"/><path d=\"m17 18 4-4-4-4\"/><path d=\"M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 1.793-1.113\"/><rect x=\"8\" y=\"2\" width=\"8\" height=\"4\" rx=\"1\"/>","pencil":"<path d=\"M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z\"/><path d=\"m15 5 4 4\"/>","trash":"<path d=\"M10 11v6\"/><path d=\"M14 11v6\"/><path d=\"M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6\"/><path d=\"M3 6h18\"/><path d=\"M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2\"/>","share-2":"<circle cx=\"18\" cy=\"5\" r=\"3\"/><circle cx=\"6\" cy=\"12\" r=\"3\"/><circle cx=\"18\" cy=\"19\" r=\"3\"/><line x1=\"8.59\" x2=\"15.42\" y1=\"13.51\" y2=\"17.49\"/><line x1=\"15.41\" x2=\"8.59\" y1=\"6.51\" y2=\"10.49\"/>","info":"<circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M12 16v-4\"/><path d=\"M12 8h.01\"/>","folder-open":"<path d=\"m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2\"/>","external-link":"<path d=\"M15 3h6v6\"/><path d=\"M10 14 21 3\"/><path d=\"M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6\"/>","app-window":"<rect x=\"2\" y=\"4\" width=\"20\" height=\"16\" rx=\"2\"/><path d=\"M10 4v4\"/><path d=\"M2 8h20\"/><path d=\"M6 4v4\"/>","chevron-right":"<path d=\"m9 18 6-6-6-6\"/>","chevron-left":"<path d=\"m15 18-6-6 6-6\"/>","chevron-down":"<path d=\"m6 9 6 6 6-6\"/>","search":"<path d=\"m21 21-4.34-4.34\"/><circle cx=\"11\" cy=\"11\" r=\"8\"/>","file-archive":"<path d=\"M13.659 22H18a2 2 0 0 0 2-2V8a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 14 2H6a2 2 0 0 0-2 2v11.5\"/><path d=\"M14 2v5a1 1 0 0 0 1 1h5\"/><path d=\"M8 12v-1\"/><path d=\"M8 18v-2\"/><path d=\"M8 7V6\"/><circle cx=\"8\" cy=\"20\" r=\"2\"/>","send":"<path d=\"M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z\"/><path d=\"m21.854 2.147-10.94 10.939\"/>","link":"<path d=\"M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71\"/><path d=\"M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71\"/>","clipboard-copy":"<rect width=\"8\" height=\"4\" x=\"8\" y=\"2\" rx=\"1\" ry=\"1\"/><path d=\"M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2\"/><path d=\"M16 4h2a2 2 0 0 1 2 2v4\"/><path d=\"M21 14H11\"/><path d=\"m15 10-4 4 4 4\"/>","file-text":"<path d=\"M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z\"/><path d=\"M14 2v5a1 1 0 0 0 1 1h5\"/><path d=\"M10 9H8\"/><path d=\"M16 13H8\"/><path d=\"M16 17H8\"/>","columns-2":"<rect width=\"18\" height=\"18\" x=\"3\" y=\"3\" rx=\"2\"/><path d=\"M12 3v18\"/>","git-compare":"<circle cx=\"18\" cy=\"18\" r=\"3\"/><circle cx=\"6\" cy=\"6\" r=\"3\"/><path d=\"M13 6h3a2 2 0 0 1 2 2v7\"/><path d=\"M11 18H8a2 2 0 0 1-2-2V9\"/>","shield-check":"<path d=\"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z\"/><path d=\"m9 12 2 2 4-4\"/>","ellipsis":"<circle cx=\"12\" cy=\"12\" r=\"1\"/><circle cx=\"19\" cy=\"12\" r=\"1\"/><circle cx=\"5\" cy=\"12\" r=\"1\"/>","eye-off":"<path d=\"M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49\"/><path d=\"M14.084 14.158a3 3 0 0 1-4.242-4.242\"/><path d=\"M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143\"/><path d=\"m2 2 20 20\"/>","settings-2":"<path d=\"M14 17H5\"/><path d=\"M19 7h-9\"/><circle cx=\"17\" cy=\"17\" r=\"3\"/><circle cx=\"7\" cy=\"7\" r=\"3\"/>","file":"<path d=\"M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z\"/><path d=\"M14 2v5a1 1 0 0 0 1 1h5\"/>","folder":"<path d=\"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z\"/>","image":"<rect width=\"18\" height=\"18\" x=\"3\" y=\"3\" rx=\"2\" ry=\"2\"/><circle cx=\"9\" cy=\"9\" r=\"2\"/><path d=\"m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21\"/>","file-code":"<path d=\"M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z\"/><path d=\"M14 2v5a1 1 0 0 0 1 1h5\"/><path d=\"M10 12.5 8 15l2 2.5\"/><path d=\"m14 12.5 2 2.5-2 2.5\"/>","arrow-right-left":"<path d=\"m16 3 4 4-4 4\"/><path d=\"M20 7H4\"/><path d=\"m8 21-4-4 4-4\"/><path d=\"M4 17h16\"/>","text-cursor-input":"<path d=\"M12 20h-1a2 2 0 0 1-2-2 2 2 0 0 1-2 2H6\"/><path d=\"M13 8h7a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-7\"/><path d=\"M5 16H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1\"/><path d=\"M6 4h1a2 2 0 0 1 2 2 2 2 0 0 1 2-2h1\"/><path d=\"M9 6v12\"/>","hash":"<line x1=\"4\" x2=\"20\" y1=\"9\" y2=\"9\"/><line x1=\"4\" x2=\"20\" y1=\"15\" y2=\"15\"/><line x1=\"10\" x2=\"8\" y1=\"3\" y2=\"21\"/><line x1=\"16\" x2=\"14\" y1=\"3\" y2=\"21\"/>","sun":"<circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2\"/><path d=\"M12 20v2\"/><path d=\"m4.93 4.93 1.41 1.41\"/><path d=\"m17.66 17.66 1.41 1.41\"/><path d=\"M2 12h2\"/><path d=\"M20 12h2\"/><path d=\"m6.34 17.66-1.41 1.41\"/><path d=\"m19.07 4.93-1.41 1.41\"/>","moon":"<path d=\"M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401\"/>","minus":"<path d=\"M5 12h14\"/>","square":"<rect width=\"18\" height=\"18\" x=\"3\" y=\"3\" rx=\"2\"/>","x":"<path d=\"M18 6 6 18\"/><path d=\"m6 6 12 12\"/>","keyboard":"<path d=\"M10 8h.01\"/><path d=\"M12 12h.01\"/><path d=\"M14 8h.01\"/><path d=\"M16 12h.01\"/><path d=\"M18 8h.01\"/><path d=\"M6 8h.01\"/><path d=\"M7 16h10\"/><path d=\"M8 12h.01\"/><rect width=\"20\" height=\"16\" x=\"2\" y=\"4\" rx=\"2\"/>","list-filter":"<path d=\"M2 5h20\"/><path d=\"M6 12h12\"/><path d=\"M9 19h6\"/>","archive":"<rect width=\"20\" height=\"5\" x=\"2\" y=\"3\" rx=\"1\"/><path d=\"M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8\"/><path d=\"M10 12h4\"/>","package-open":"<path d=\"M12 22v-9\"/><path d=\"M15.17 2.21a1.67 1.67 0 0 1 1.63 0L21 4.57a1.93 1.93 0 0 1 0 3.36L8.82 14.79a1.655 1.655 0 0 1-1.64 0L3 12.43a1.93 1.93 0 0 1 0-3.36z\"/><path d=\"M20 13v3.87a2.06 2.06 0 0 1-1.11 1.83l-6 3.08a1.93 1.93 0 0 1-1.78 0l-6-3.08A2.06 2.06 0 0 1 4 16.87V13\"/><path d=\"M21 12.43a1.93 1.93 0 0 0 0-3.36L8.83 2.2a1.64 1.64 0 0 0-1.63 0L3 4.57a1.93 1.93 0 0 0 0 3.36l12.18 6.86a1.636 1.636 0 0 0 1.63 0z\"/>","package-plus":"<path d=\"M12 22V12\"/><path d=\"M16 17h6\"/><path d=\"M19 14v6\"/><path d=\"M21 10.535V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.729l7 4a2 2 0 0 0 2 .001l1.675-.955\"/><path d=\"M3.29 7 12 12l8.71-5\"/><path d=\"m7.5 4.27 8.997 5.148\"/>","files":"<path d=\"M15 2h-4a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8\"/><path d=\"M16.706 2.706A2.4 2.4 0 0 0 15 2v5a1 1 0 0 0 1 1h5a2.4 2.4 0 0 0-.706-1.706z\"/><path d=\"M5 7a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h8a2 2 0 0 0 1.732-1\"/>","mail":"<path d=\"m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7\"/><rect x=\"2\" y=\"4\" width=\"20\" height=\"16\" rx=\"2\"/>","monitor":"<rect width=\"20\" height=\"14\" x=\"2\" y=\"3\" rx=\"2\"/><line x1=\"8\" x2=\"16\" y1=\"21\" y2=\"21\"/><line x1=\"12\" x2=\"12\" y1=\"17\" y2=\"21\"/>","bluetooth":"<path d=\"m7 7 10 10-5 5V2l5 5L7 17\"/>","hard-drive":"<path d=\"M10 16h.01\"/><path d=\"M2.212 11.577a2 2 0 0 0-.212.896V18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-5.527a2 2 0 0 0-.212-.896L18.55 5.11A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z\"/><path d=\"M21.946 12.013H2.054\"/><path d=\"M6 16h.01\"/>","layers":"<path d=\"M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z\"/><path d=\"M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12\"/><path d=\"M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17\"/>","user-plus":"<path d=\"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2\"/><circle cx=\"9\" cy=\"7\" r=\"4\"/><line x1=\"19\" x2=\"19\" y1=\"8\" y2=\"14\"/><line x1=\"22\" x2=\"16\" y1=\"11\" y2=\"11\"/>","star":"<path d=\"M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z\"/>","corner-down-left":"<path d=\"M20 4v7a4 4 0 0 1-4 4H4\"/><path d=\"m9 10-5 5 5 5\"/>","arrow-up":"<path d=\"m5 12 7-7 7 7\"/><path d=\"M12 19V5\"/>","arrow-down":"<path d=\"M12 5v14\"/><path d=\"m19 12-7 7-7-7\"/>","command":"<path d=\"M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3\"/>","panel-right":"<rect width=\"18\" height=\"18\" x=\"3\" y=\"3\" rx=\"2\"/><path d=\"M15 3v18\"/>","file-pen":"<path d=\"M12.659 22H18a2 2 0 0 0 2-2V8a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 14 2H6a2 2 0 0 0-2 2v9.34\"/><path d=\"M14 2v5a1 1 0 0 0 1 1h5\"/><path d=\"M10.378 12.622a1 1 0 0 1 3 3.003L8.36 20.637a2 2 0 0 1-.854.506l-2.867.837a.5.5 0 0 1-.62-.62l.836-2.869a2 2 0 0 1 .506-.853z\"/>","bookmark-plus":"<path d=\"M12 7v6\"/><path d=\"M15 10H9\"/><path d=\"M17 3a2 2 0 0 1 2 2v15a1 1 0 0 1-1.496.868l-4.512-2.578a2 2 0 0 0-1.984 0l-4.512 2.578A1 1 0 0 1 5 20V5a2 2 0 0 1 2-2z\"/>","file-type":"<path d=\"M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z\"/><path d=\"M14 2v5a1 1 0 0 0 1 1h5\"/><path d=\"M11 18h2\"/><path d=\"M12 12v6\"/><path d=\"M9 13v-.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 .5.5v.5\"/>","panel-top":"<rect width=\"18\" height=\"18\" x=\"3\" y=\"3\" rx=\"2\"/><path d=\"M3 9h18\"/>"};
+const BRAND = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x=".5" y=".5" width="23" height="23" rx="5" fill="#23262b" stroke="#444952"/><path d="M5 4h3v1h-3zM4 5h4v1h-4zM4 6h2v2h-2zM3 8h5v2h-5zM10 8h4v1h-4zM9 9h6v1h-6zM4 10h2v8h-2zM9 10h2v2h-2zM13 10h2v2h-2zM9 12h6v2h-6zM9 14h2v2h-2zM9 16h6v1h-6zM10 17h4v1h-4z" fill="#EEEAE3"/><path d="M16 18h5v2h-5z" fill="#E8601F"/></svg>';
+const ic = (n, cls = "") => `<svg class="ic ${cls}" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n] || ""}</svg>`;
+const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const KIND_IC = { dir: "folder", code: "file-code", app: "app-window", archive: "file-archive", image: "image", doc: "file-text" };
+const KIND_CLS = { dir: "k-folder", code: "k-code", app: "k-app", archive: "k-archive", image: "k-image", doc: "k-doc" };
+
+const LEFT = [
+  ["src", "dir", "", "&lt;DIR&gt;", "2026-10-16 09:12"],
+  ["tests", "dir", "", "&lt;DIR&gt;", "2026-10-15 22:40"],
+  ["docs", "dir", "", "&lt;DIR&gt;", "2026-10-15 21:05"],
+  ["Cargo", "code", "lock", "40.3 KB", "2026-10-15 21:05"],
+  ["Cargo", "code", "toml", "812 B", "2026-10-15 21:05"],
+  ["ferrite", "app", "exe", "14.2 MB", "2026-10-16 08:51"],
+  ["ferrite-0.4.2-win64", "archive", "zip", "6.8 MB", "2026-10-16 08:52"],
+  ["logo", "image", "png", "47.1 KB", "2026-10-08 22:40"],
+  ["notes", "doc", "md", "2.0 KB", "2026-10-11 22:40"],
+  ["README", "doc", "md", "4.1 KB", "2026-10-14 18:02"],
+  ["release-notes", "doc", "txt", "3.3 KB", "2026-10-16 08:50"],
+  ["SHA256SUMS", "doc", "txt", "212 B", "2026-10-16 08:52"],
+];
+const RIGHT = [
+  ["2026-09", "dir", "", "&lt;DIR&gt;", "2026-09-30 23:59"],
+  ["2026-10", "dir", "", "&lt;DIR&gt;", "2026-10-16 03:00"],
+  ["ferrite-0.4.1-win64", "archive", "zip", "6.6 MB", "2026-10-12 19:20"],
+  ["ferrite-0.4.0-win64", "archive", "zip", "6.5 MB", "2026-10-09 11:02"],
+  ["musique-db", "archive", "7z", "312 MB", "2026-10-16 03:00"],
+  ["restore", "doc", "md", "1.8 KB", "2026-10-02 10:14"],
+  ["snapshots", "doc", "txt", "9.4 KB", "2026-10-16 03:01"],
+];
+const CUR = 6, MARKED = [5, 6, 7];
+
+const FE = [
+  { id: "cpath", ic: "clipboard-copy", t: "Copy path", k: "Ctrl+Shift+C", ak: "P" },
+  { id: "cname", ic: "text-cursor-input", t: "Copy name", k: "Ctrl+Alt+C", ak: "N" },
+  { id: "ren", ic: "pencil", t: "Rename", k: "F2", ak: "R", mt: "Multi-rename 3 files…", mk: "Ctrl+M" },
+  { id: "cmp", ic: "git-compare", t: "Compare with other pane", k: "Ctrl+=", ak: "M", moff: "needs 2" },
+  { id: "other", ic: "panel-right", t: "Open in other pane", k: "Ctrl+Right", ak: "O" },
+  { id: "props", ic: "info", t: "Properties", k: "Alt+Enter", ak: "I" },
+];
+const SH = [
+  { t: "Open", def: true, ic: "folder-open", k: "Enter", g: "open", ak: "E" },
+  { t: "Open with", sub: "openwith", ic: "app-window", g: "open", single: true, ak: "W" },
+  { t: "Extract All…", ic: "package-open", g: "open", single: true, ak: "X" },
+  { t: "7-Zip", sub: "7zip", bmp: ["b7z", "7z"], g: "ext", ak: "7" },
+  { t: "CRC SHA", sub: "crc", bmp: ["b7z", "#"], g: "ext", hidden: true },
+  { t: "Edit with Notepad++", bmp: ["bnpp", "N+"], g: "ext", ak: "D" },
+  { t: "Scan with Microsoft Defender", ic: "shield-check", g: "ext", ak: "V" },
+  { t: "Share", ic: "share-2", g: "share", ak: "H" },
+  { t: "Send to", sub: "sendto", ic: "send", g: "share", ak: "S" },
+  { t: "Give access to", sub: "access", ic: "user-plus", g: "share", hidden: true },
+  { t: "Copy as path", ic: "link", g: "share", hidden: true },
+  { t: "Cut", ic: "scissors", k: "Ctrl+X", g: "clip", ak: "T" },
+  { t: "Copy", ic: "copy", k: "Ctrl+C", g: "clip", ak: "C" },
+  { t: "Delete", ic: "trash", k: "Del", g: "clip", ak: "L" },
+  { t: "Create shortcut", ic: "link", g: "rare" },
+  { t: "Add to Favorites", ic: "star", g: "rare" },
+  { t: "Restore previous versions", ic: "layers", g: "rare", single: true },
+  { t: "TortoiseGit", bmp: ["bgit", "TG"], g: "rare", owner: true },
+];
+const SUBS = {
+  "7zip": { t: "7-Zip", items: [
+    { t: "Open archive", def: true }, { t: "Extract files…" }, { t: "Extract Here" }, { t: 'Extract to "ferrite-0.4.2-win64\\"' }, { t: "Test archive" }, "-",
+    { t: "Add to archive…" }, { t: "Compress and email…" }, { t: 'Add to "ferrite-0.4.2-win64.7z"' }, { t: 'Add to "ferrite-0.4.2-win64.zip"', off: true }] },
+  sendto: { t: "Send to", items: [
+    { t: "Bluetooth device", ic: "bluetooth" }, { t: "Compressed (zipped) folder", ic: "file-archive" }, { t: "Desktop (create shortcut)", ic: "monitor" },
+    { t: "Documents", ic: "folder" }, { t: "Mail recipient", ic: "mail" }, "-", { t: "DVD RW Drive (E:)", ic: "hard-drive", off: true }, { t: "nas-media (Z:)", ic: "hard-drive" }] },
+  openwith: { t: "Open with", items: [{ t: "7-Zip File Manager", bmp: ["b7z", "7z"] }, { t: "Windows Explorer", ic: "folder" }, "-", { t: "Search the Microsoft Store", ic: "search" }, { t: "Choose another app", ic: "app-window" }] },
+  crc: { t: "CRC SHA", items: [{ t: "CRC-32" }, { t: "CRC-64" }, { t: "SHA-1" }, { t: "SHA-256" }, "-", { t: "*" }] },
+  access: { t: "Give access to", items: [{ t: "Remove access" }, { t: "Specific people…", ic: "user-plus" }] },
+};
+
+const S = { v: 1, s: "root", sub: null, fold: false, q: "", drill: null, back: false };
+
+function setState(s) {
+  S.s = s;
+  S.sub = s === "sub" && S.v !== 3 ? "7zip" : null;
+  S.drill = s === "sub" && S.v === 3 ? "7zip" : null;
+  S.fold = S.v === 2 && s === "multi";
+  S.q = S.v === 1 && s === "kbd" ? "ext" : "";
+  S.back = false;
+  render();
+}
+
+function feItems(multi) {
+  return FE.map((f) => multi ? { ...f, t: f.mt || f.t, k: f.mk || f.k, off: !!f.moff, k2: f.moff } : f);
+}
+function shItems(multi) { return SH.filter((x) => !(multi && x.single)); }
+
+function lead(it) {
+  if (it.bmp) return `<span class="bmp ${it.bmp[0]}">${it.bmp[1]}</span>`;
+  return it.ic ? ic(it.ic) : "";
+}
+function mi(it, o = {}) {
+  const cls = ["mi", it.fe ? "fe" : "", it.def ? "def" : "", o.hot ? "hot" : "", o.focus ? "focus" : "", o.cls || ""].join(" ");
+  const right = it.sub ? ic("chevron-right", "chev") : it.owner ? '<span class="tag">classic</span>' : o.tag ? `<span class="tag">${o.tag}</span>` : it.off && it.k2 ? `<span class="k">${it.k2}</span>` : it.k ? `<span class="k">${it.k}</span>` : "<span></span>";
+  const ak = o.ak !== undefined ? `<span class="ak">${o.ak || ""}</span>` : "";
+  const attrs = [it.sub ? `aria-haspopup="menu" aria-expanded="${!!o.hot}" data-sub="${it.sub}"` : "", it.off ? 'aria-disabled="true"' : "", o.focus ? 'data-autofocus' : ""].join(" ");
+  return `<button class="${cls}" role="menuitem" ${attrs}>${ak}<span class="lead">${lead(it)}</span><span class="t">${o.label || esc(it.t)}</span>${right}</button>`;
+}
+const sep = '<div class="msep" role="separator"></div>';
+
+function subMenu(id, cls) {
+  const d = SUBS[id];
+  const rows = d.items.map((x) => x === "-" ? sep : mi(x)).join("");
+  return `<div class="menu sub ${cls}" role="menu" aria-label="${esc(d.t)}" data-subof="${id}">${rows}</div>`;
+}
+
+/* Variant 1: filter list */
+function v1Items() {
+  const multi = S.s === "multi";
+  const q = S.q.trim().toLowerCase();
+  if (q) {
+    const pool = [];
+    feItems(multi).forEach((f) => pool.push({ it: { ...f, fe: true }, path: f.t }));
+    shItems(multi).forEach((x) => {
+      pool.push({ it: x, path: x.t, tag: x.hidden ? "hidden" : null });
+      if (x.sub) SUBS[x.sub].items.forEach((c) => c !== "-" && pool.push({ it: { ...c, bmp: c.bmp || (c.ic ? null : x.bmp), ic: c.ic || x.ic }, path: `${x.t} › ${c.t}`, crumb: x.t, own: c.t, tag: x.hidden ? "hidden" : null }));
+    });
+    const hits = pool.filter((p) => p.path.toLowerCase().includes(q) && (p.own ? p.own.toLowerCase().includes(q) : true));
+    if (!hits.length) return `<p class="subh">No command matches “${esc(S.q)}”.</p>`;
+    return hits.map((h, i) => {
+      const own = h.own || h.path;
+      const at = own.toLowerCase().indexOf(q);
+      const hl = esc(own.slice(0, at)) + "<mark>" + esc(own.slice(at, at + q.length)) + "</mark>" + esc(own.slice(at + q.length));
+      const label = h.crumb ? `<span class="crumb">${esc(h.crumb)} › </span>${hl}` : hl;
+      return mi({ ...h.it, sub: h.crumb ? null : h.it.sub }, { label, hot: i === 0, focus: i === 0 && S.s === "kbd", tag: h.tag });
+    }).join("");
+  }
+  let html = '<div class="grp">Ferrite</div>' + feItems(multi).map((f) => mi({ ...f, fe: true })).join("");
+  html += '<div class="grp">Windows</div>';
+  const list = shItems(multi).filter((x) => !x.hidden && x.g !== "rare");
+  let g = null;
+  list.forEach((x) => { if (g && x.g !== g) html += sep; g = x.g; html += mi(x, { hot: S.sub === x.sub && !!x.sub }); });
+  return html;
+}
+function v1Hint() {
+  if (S.q) return '<span><kbd>↑↓</kbd> move</span><span><kbd>Enter</kbd> run</span><span><kbd>→</kbd> submenu</span><span class="end"><kbd>Esc</kbd> clear</span>';
+  return `<span>${ic("eye-off")} 3 hidden, 4 rare: type to reach</span><button class="end mi" style="width:auto;height:24px;grid-template-columns:auto auto" data-classic><span class="t">Classic menu</span><span class="k">Shift+F10</span></button>`;
+}
+function v1() {
+  const multi = S.s === "multi";
+  const ctx = multi ? `${ic("files")}<b>3 files</b><span>· 21.0 MB</span>` : `${ic("file-archive", "k-archive")}<b>ferrite-0.4.2-win64.zip</b><span>· 6.8 MB</span>`;
+  const main = `<div class="menu v1" role="menu" aria-label="Context menu">
+    <label class="flt ${S.s === "kbd" ? "on" : ""}">${ic("search")}<input id="v1q" aria-label="Filter commands" placeholder="Type to filter commands" value="${esc(S.q)}" autocomplete="off"><kbd>Esc</kbd></label>
+    <div class="ctx">${ctx}</div>
+    <div class="items">${v1Items()}</div>
+    <div class="mhint">${v1Hint()}</div></div>`;
+  return main + (S.sub ? subMenu(S.sub, "v1") : "");
+}
+
+/* Variant 2: action strip + fold */
+function v2() {
+  const multi = S.s === "multi";
+  const who = multi ? `${ic("files")}<b>3 files</b><span class="tag">21.0 MB</span>` : `${ic("file-archive", "k-archive")}<b>ferrite-0.4.2-win64.zip</b>`;
+  const fe = feItems(multi);
+  const order = ["cpath", "cname", "ren", "cmp", "other", "props"];
+  const focusId = S.s === "kbd" ? "ren" : null;
+  const strip = order.map((id) => {
+    const f = fe.find((x) => x.id === id);
+    return `<button class="sb ${focusId === id ? "focus" : ""}" aria-label="${esc(f.t)}" data-cap="${esc(f.t)}" data-k="${f.off ? f.k2 : f.k}" ${f.off ? 'aria-disabled="true"' : ""}>${ic(f.ic)}</button>`;
+  }).join("");
+  const capF = fe.find((x) => x.id === (focusId || "cpath"));
+  const cap = focusId ? `<b>${esc(capF.t)}</b><kbd>${capF.k}</kbd>` : `<span>Ferrite actions</span><span><kbd>Tab</kbd></span>`;
+  const sh = shItems(multi).filter((x) => !x.hidden);
+  const pinned = ["Open", "Open with", "Extract All…", "7-Zip", "Send to", "Share"];
+  const top = sh.filter((x) => pinned.includes(x.t));
+  const rest = sh.filter((x) => !pinned.includes(x.t));
+  let topHtml = "", g = null;
+  top.forEach((x) => { if (g && x.g !== g) topHtml += sep; g = x.g; topHtml += mi(x, { hot: S.sub === x.sub && !!x.sub }); });
+  let foldHtml = "";
+  g = null;
+  rest.forEach((x) => { if (g && x.g !== g) foldHtml += sep; g = x.g; foldHtml += mi(x); });
+  foldHtml += sep + `<button class="mi" role="menuitem" data-classic><span class="lead">${ic("app-window")}</span><span class="t">Show classic menu</span><span class="k">Shift+F10</span></button>`;
+  const more = `<button class="mi more" role="menuitem" aria-expanded="${S.fold}" data-fold><span class="lead">${ic("ellipsis")}</span><span class="t">${S.fold ? "Fewer options" : `More options · ${rest.length}`}</span>${ic("chevron-down", "chev")}</button>`;
+  const main = `<div class="menu v2" role="menu" aria-label="Context menu">
+    <div class="who">${who}</div>
+    <div class="strip" role="toolbar" aria-label="Ferrite actions">${strip}</div>
+    <div class="cap2" id="cap2">${cap}</div>
+    ${sep}${topHtml}${sep}${more}
+    ${S.fold ? `<div class="fold">${foldHtml}</div>` : ""}
+    ${S.s === "kbd" ? '<div class="mhint"><span><kbd>←→</kbd> strip</span><span><kbd>↓</kbd> list</span><span><kbd>Tab</kbd> switch zone</span></div>' : ""}
+  </div>`;
+  return main + (S.sub ? subMenu(S.sub, "v2") : "");
+}
+
+/* Variant 3: sectioned sheet with drill-in */
+function v3() {
+  const multi = S.s === "multi";
+  const kbd = S.s === "kbd";
+  const sh = shItems(multi).filter((x) => !x.hidden);
+  const by = (g) => sh.filter((x) => x.g === g);
+  const sec = (title, items, fe) => `<h3>${title}</h3>` + items.map((x) => mi(fe ? { ...x, fe: true } : x, { ak: x.ak || "", focus: kbd && x.id === "other" })).join("");
+  const head = multi
+    ? `<div class="stack"><span class="fic">${ic("app-window", "k-app")}</span><span class="fic">${ic("file-archive", "k-archive")}</span><span class="fic">${ic("image", "k-image")}</span></div><div class="hmeta"><b>3 files</b><span>exe, zip, png · 21.0 MB</span></div>`
+    : `<span class="fic">${ic("file-archive", "k-archive")}</span><div class="hmeta"><b>ferrite-0.4.2-win64.zip</b><span>ZIP archive · 6.8 MB · D:\\work\\ferrite\\dist</span></div>`;
+  if (S.drill) {
+    const d = SUBS[S.drill];
+    const items = d.items.filter((x) => x !== "-");
+    const half = Math.ceil(items.length / 2);
+    const keys = "1234567890";
+    const col = (arr, off) => `<div class="col">${arr.map((x, i) => mi(x, { ak: keys[off + i] || "", hot: off + i === 0 })).join("")}</div>`;
+    return `<div class="menu v3" role="menu" aria-label="${esc(d.t)}"><div class="page ${S.back ? "back-in" : ""}">
+      <div class="head"><button class="back" aria-label="Back" data-back>${ic("chevron-left")}</button><div class="hmeta"><b>${esc(d.t)}</b><span>ferrite-0.4.2-win64.zip · filled when opened</span></div></div>
+      <div class="subcols">${col(items.slice(0, half), 0)}${col(items.slice(half), half)}</div>
+      <div class="mhint"><span><kbd>←</kbd> back</span><span><kbd>1–9</kbd> run</span><span class="end"><kbd>Esc</kbd> close</span></div></div></div>`;
+  }
+  const rare = sh.filter((x) => x.g === "rare");
+  const foldRows = S.fold ? `<div class="cols" style="border-top:0">${'<div class="col">' + rare.slice(0, 2).map((x) => mi(x, { ak: "" })).join("") + '</div><div class="col">' + rare.slice(2).map((x) => mi(x, { ak: "" })).join("") + "</div>"}</div>` : "";
+  return `<div class="menu v3 ${kbd ? "akeys" : ""}" role="menu" aria-label="Context menu"><div class="page ${S.back ? "back-in" : ""}">
+    <div class="head">${head}</div>
+    <div class="cols">
+      <div class="col">${sec("Ferrite", feItems(multi), true)}${sec("Open", by("open"))}</div>
+      <div class="col">${sec("Share", by("share"))}${sec("Edit", by("clip"))}${sec("Shell extensions", by("ext"))}</div>
+    </div>
+    ${foldRows}
+    <div class="mhint"><button class="mi more" style="width:auto;height:24px;grid-template-columns:auto auto" aria-expanded="${S.fold}" data-fold><span class="t">${S.fold ? "Less" : `More · ${rare.length} rare, 3 hidden`}</span>${ic("chevron-down", "chev")}</button>
+      ${kbd ? '<span><kbd>Tab</kbd> section</span><span><kbd>letter</kbd> run</span>' : ""}
+      <button class="end mi" style="width:auto;height:24px;grid-template-columns:auto auto" data-classic><span class="t">Classic menu</span><span class="k">Shift+F10</span></button></div>
+  </div></div>`;
+}
+
+/* Window */
+function frow(r, i, o) {
+  const [n, kind, ext, size, date] = r;
+  const cls = ["frow", kind === "dir" ? "dir" : "", o.cur === i ? "cur" : "", o.marked && o.marked.includes(i) ? "marked" : ""].join(" ");
+  return `<div class="${cls}"><span class="nm">${ic(KIND_IC[kind], KIND_CLS[kind])}<span>${kind === "dir" ? `[${n}]` : n}</span></span><span class="ext">${ext}</span><span class="sz">${size}</span><span class="dt">${date}</span></div>`;
+}
+function pane(o) {
+  const drives = o.drives.map((d) => `<span class="drv ${d === o.drive ? "on" : ""}">${ic("hard-drive")}${d}</span>`).join("");
+  const crumbs = o.path.map((c) => `<span class="cr">${c}</span>`).join(ic("chevron-right", "sep"));
+  return `<section class="pane ${o.active ? "active" : ""}" aria-label="${o.label}">
+    <div class="drives">${drives}</div>
+    <div class="path"><b>${o.drive}:</b>${crumbs}</div>
+    <div class="heads"><span>Name ↑</span><span style="text-align:left">Ext</span><span>Size</span><span>Date</span></div>
+    <div class="list">${o.rows.map((r, i) => frow(r, i, o)).join("")}</div>
+    <div class="pstat"><span>${o.stat}</span><span>412 GB free</span></div></section>`;
+}
+function windowHtml() {
+  const multi = S.s === "multi";
+  const left = pane({ label: "Left pane", active: true, drives: ["C", "D", "Z"], drive: "D", path: ["D:", "work", "ferrite", "dist"], rows: LEFT, cur: CUR, marked: multi ? MARKED : null,
+    stat: multi ? "<b>3 of 9 files</b> · 21.0 MB selected" : "9 files, 3 folders · 28.5 MB" });
+  const right = pane({ label: "Right pane", drives: ["C", "D", "Z"], drive: "D", path: ["D:", "backup", "2026"], rows: RIGHT, stat: "5 files, 2 folders · 331 MB" });
+  const caps = [["F3", "View"], ["F4", "Edit"], ["F5", "Copy"], ["F6", "Move"], ["F7", "New folder"], ["F8", "Delete"], ["F9", "Drawer"], ["F10", "Menu"]]
+    .map(([k, t]) => `<span class="cap"><kbd>${k}</kbd>${t}</span>`).join("");
+  return `<header class="title"><span class="brand">${BRAND}Ferrite</span>
+      <span class="find">${ic("search")}<span>Find anywhere: files, folders, commands</span><kbd>Ctrl+K</kbd></span>
+      <span class="tright"><span class="tbtn">${ic(document.documentElement.dataset.theme === "dark" ? "moon" : "sun")}</span>
+      <span class="winctl"><span>${ic("minus")}</span><span>${ic("square")}</span><span>${ic("x")}</span></span></span></header>
+    <div class="panes">${left}${right}</div>
+    <footer class="keys">${caps}<span class="mods"><span class="cap">Shift</span><span class="cap">Ctrl</span><span class="cap">Alt</span></span></footer>
+    <div class="scrim"></div><div id="layer"></div>`;
+}
+
+function place() {
+  const win = document.getElementById("win");
+  const W = win.clientWidth, H = win.clientHeight;
+  const cur = win.querySelector(".pane.active .frow.cur");
+  const wr = win.getBoundingClientRect(), cr = cur.getBoundingClientRect();
+  const kbd = S.s === "kbd";
+  const ax = kbd ? cr.left - wr.left + 34 : 236, ay = cr.top - wr.top + (kbd ? cr.height + 2 : cr.height / 2);
+  const layer = document.getElementById("layer");
+  if (!kbd) layer.insertAdjacentHTML("afterbegin", `<span class="press" style="left:${ax}px;top:${ay}px"></span>`);
+  const menu = layer.querySelector(".menu:not(.sub)");
+  const keysH = 36, titleH = 46, gap = 8;
+  const mw = menu.offsetWidth, mh = menu.offsetHeight;
+  const left = Math.min(ax + (kbd ? 0 : 14), W - mw - gap);
+  const top = Math.max(titleH + gap, Math.min(ay + 4, H - keysH - mh - gap));
+  menu.style.left = left + "px"; menu.style.top = top + "px";
+  const sc = document.querySelector(".stage-scroll");
+  if (sc.clientWidth < W) sc.scrollLeft = Math.max(0, left - 24);
+  const sub = layer.querySelector(".menu.sub");
+  if (sub) {
+    const hot = menu.querySelector(`.mi[data-sub="${sub.dataset.subof}"]`);
+    const hr = hot.getBoundingClientRect(), mr = menu.getBoundingClientRect();
+    let sl = left + mw - 4;
+    if (sl + sub.offsetWidth > W - gap) { sl = left - sub.offsetWidth + 4; sub.style.transformOrigin = "top right"; }
+    const st = Math.max(titleH + gap, Math.min(top + (hr.top - mr.top) - 5, H - keysH - sub.offsetHeight - gap));
+    sub.style.left = sl + "px"; sub.style.top = st + "px";
+  }
+}
+
+function render() {
+  document.querySelectorAll("#vseg button").forEach((b) => b.setAttribute("aria-pressed", String(+b.dataset.v === S.v)));
+  document.querySelectorAll("#sseg button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.s === S.s)));
+  const dark = document.documentElement.dataset.theme === "dark";
+  document.getElementById("theme").innerHTML = `${ic(dark ? "moon" : "sun")}<span>${dark ? "Dark" : "Light"}</span><kbd>T</kbd>`;
+  const win = document.getElementById("win");
+  win.innerHTML = windowHtml();
+  document.getElementById("layer").innerHTML = S.v === 1 ? v1() : S.v === 2 ? v2() : v3();
+  place();
+  renderNotes();
+}
+
+const NOTES = {
+  1: { name: "Variant 1", sub: "Filter list",
+    plus: "Fastest keyboard path: type two or three letters, press Enter. Search reaches into submenus and hidden entries. Same model as the Ctrl+K palette, so nothing new to learn.",
+    minus: "Flat list with little hierarchy for mouse users. Searching submenus means filling lazy ones (Send to, 7-Zip) in the background when the menu opens; a slow handler must time out quietly.",
+    keys: "Menu key or Shift+F10 opens with the filter focused. Typing filters, ↑↓ move, Enter runs, → opens a submenu, ← closes it, Esc clears the filter, then closes.",
+    cost: "Low to medium. One list view, the existing text input and the palette's fuzzy matcher; background enumeration of submenus with a 150 ms budget." },
+  2: { name: "Variant 2", sub: "Action strip and fold",
+    plus: "Windows 11 shape users already know. Ferrite's six actions sit one click away; the list stays short because rare items and clipboard verbs fold under More options.",
+    minus: "Icon-only strip needs the caption line to be learnable. Two focus zones. Disabled icons in a multi-selection are easy to miss. No search, so long shell menus still mean scanning.",
+    keys: "Opens with focus on the default verb. Tab moves to the strip, ←→ walk it, ↓ or Tab returns to the list. Space on More options unfolds it in place.",
+    cost: "Medium. Toolbar plus list with two focus zones, a caption bound to focus, the fold, and a per-entry pinned/folded/hidden setting in ferrite.toml." },
+  3: { name: "Variant 3", sub: "Sectioned sheet",
+    plus: "Clear groups (Ferrite, Open, Share, Edit, Shell extensions) and visible access keys: one letter runs a command. Submenus drill in, so nothing cascades off the window edge.",
+    minus: "540 px wide: covers much of the passive pane, more eye travel. Needs a classifier for unknown verbs (they fall into Shell extensions) and stable access-key assignment.",
+    keys: "Letters run items, Tab jumps to the next section, → or Enter drills into a submenu, ← or Backspace goes back, 1–9 run submenu items, Esc closes.",
+    cost: "Medium to high. Two-column layout, verb classifier, access-key allocator with collision rules, drill-in transition and its back stack." },
+};
+function renderNotes() {
+  const cards = [1, 2, 3].map((v) => {
+    const n = NOTES[v];
+    return `<article class="note ${v === S.v ? "cur" : ""}"><h2>${n.name} <small>· ${n.sub}</small></h2><dl>
+      <dt>Strengths</dt><dd>${n.plus}</dd><dt>Weaknesses</dt><dd>${n.minus}</dd><dt>Keyboard flow</dt><dd>${n.keys}</dd><dt>GPUI build cost</dt><dd>${n.cost}</dd></dl></article>`;
+  }).join("");
+  const rec = `<article class="note rec"><h2>Recommendation <small>· Variant 1, with two borrowings</small></h2><dl>
+    <dd>Ferrite is keyboard-first, and the filter list is the only direction where typing beats scanning, including inside submenus. Take Variant 3's quiet section headers for the unfiltered list, and Variant 2's More fold for rare verbs, so mouse users still get a short, ordered menu. Keep cascading submenus; drill-in is a later option if cascades clip at narrow widths.</dd></dl></article>`;
+  document.getElementById("notes").innerHTML = cards + rec;
+}
+
+document.addEventListener("click", (e) => {
+  const t = e.target.closest("button");
+  if (!t) return;
+  if (t.dataset.v) { S.v = +t.dataset.v; setState(S.s); return; }
+  if (t.dataset.s) { setState(t.dataset.s); return; }
+  if (t.id === "theme") { toggleTheme(); return; }
+  if (t.dataset.sub) { if (S.v === 3) { S.drill = t.dataset.sub; S.back = false; } else S.sub = S.sub === t.dataset.sub ? null : t.dataset.sub; render(); return; }
+  if (t.hasAttribute("data-fold")) { S.fold = !S.fold; render(); return; }
+  if (t.hasAttribute("data-back")) { S.drill = null; S.back = true; render(); }
+});
+document.addEventListener("input", (e) => {
+  if (e.target.id !== "v1q") return;
+  S.q = e.target.value; S.sub = null;
+  const layer = document.getElementById("layer");
+  layer.querySelector(".v1 .items").innerHTML = v1Items();
+  layer.querySelector(".v1 .mhint").innerHTML = v1Hint();
+  layer.querySelector(".menu.sub")?.remove();
+});
+document.addEventListener("mouseover", (e) => {
+  const b = e.target.closest(".sb");
+  const cap = document.getElementById("cap2");
+  if (b && cap) cap.innerHTML = `<b>${b.dataset.cap}</b><kbd>${b.dataset.k}</kbd>`;
+});
+document.addEventListener("keydown", (e) => {
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  if (e.target.id === "v1q") {
+    if (e.key === "Escape") { if (S.q) { e.target.value = ""; e.target.dispatchEvent(new Event("input", { bubbles: true })); } else e.target.blur(); }
+    return;
+  }
+  const k = e.key.toLowerCase();
+  if (["1", "2", "3"].includes(k)) { S.v = +k; setState(S.s); }
+  else if ({ q: 1, w: 1, e: 1, r: 1 }[k]) setState({ q: "root", w: "sub", e: "multi", r: "kbd" }[k]);
+  else if (k === "t") toggleTheme();
+});
+function toggleTheme() {
+  const d = document.documentElement;
+  d.dataset.theme = d.dataset.theme === "dark" ? "light" : "dark";
+  render();
+}
+document.documentElement.dataset.theme = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+const P = new URLSearchParams(location.search);
+if (P.get("theme")) document.documentElement.dataset.theme = P.get("theme");
+if (P.get("v")) S.v = +P.get("v");
+setState(P.get("s") || "root");
+document.fonts?.ready.then(() => render());
+</script>
+</body>
+</html>
