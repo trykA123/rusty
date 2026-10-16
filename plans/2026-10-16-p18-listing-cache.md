@@ -38,7 +38,7 @@ From docs/architecture.md ("Speed: caching, lazy loading, pre-warming"), which a
 | --- | --- | --- | --- | --- | --- | --- |
 | C1 | `ListingCache` (D1) | Red checker, Green api-builder | medium | — | `cargo test -p rusty-cache` | done |
 | C2 | stale-while-revalidate and diff apply (D2) | ui-builder-high | high | C1 | UI tests: Back is instant, cursor kept, diff applied | done |
-| C3 | watchers (D3) | api-builder (Opus high) | high | C1 | Windows CI tests | ready |
+| C3 | watchers (D3) | api-builder (Opus high) | high | C1 | Windows CI tests | done |
 | C4 | pre-warming (D4) | ui-builder | medium | C2 | UI tests | ready |
 | C5 | network timeout and offline state (D5) | ui-builder-high | high | C2 | fake fs with a stalled share | ready |
 | C6 | disk cache (D6) | api-builder | medium | C1 | store tests | ready |
@@ -59,3 +59,4 @@ From docs/architecture.md ("Speed: caching, lazy loading, pre-warming"), which a
 - 2026-10-16 — C1 (f40ec96): `ListingCache` over `Arc<[FsEntry]>`, 39 tests. Review PASS WITH FIXES: patch outside the lock, pinned byte counter, conditional put; sort keys stay in the pane; volume serial filled by C2. Fixes running.
 - 2026-10-16 — Owner: the mapped network folder takes 5–8 s to list; scroll is very fast, no freezes. The local provider still lists through `std::fs::read_dir`, not the planned `FindFirstFileExW` large fetch: C9 added. Baseline asked: entry count and Explorer time.
 - 2026-10-16 — Owner, on the build with C9 (native listing) and the cache: the share "e foarte rapid" now. C9 confirmed.
+- 2026-10-16 — C3 (dd721a6, e75e905; review fixes c2119b5, 28a7389, short-name tweak) merged after two green Windows runs: one watcher per open folder (ReadDirectoryChangesW / inotify), 100 ms quiet and 500 ms max debounce, patches up to 64 distinct names else relists, background tabs relist when they return, 8.3 names relist, network fallback every 5 s, Ctrl+R.
