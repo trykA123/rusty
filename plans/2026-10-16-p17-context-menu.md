@@ -36,7 +36,8 @@ A long right-click, the Menu key or Shift+F10 opens the Windows context menu for
 | M3 | `shell_menu` provider (STA thread, lazy submenus, icons, invoke, classic) | api-builder (Opus high) | high | M1, M2 | Windows CI tests | done |
 | M4 | `ContextMenu` component per D46 | ui-builder-high | high | M2 | headless UI tests, gallery screenshots both themes | done |
 | M5 | wiring and Ferrite actions | ui-builder | medium | M3, M4 | UI tests with the fake provider; owner tries it on Windows | ready |
-| M6 | review | reviewer (Opus high) | high | all | verdict | blocked |
+| M7 | F3 and F4 context menu per kind (D51), on the M4 component | ui-builder | medium | M5 | UI tests per kind: right-click, Menu key, Shift+F10, each item dispatches its action | blocked |
+| M6 | review | reviewer (Opus high) | high | M5, M7 | verdict | blocked |
 
 ## Done when
 
@@ -51,3 +52,4 @@ A long right-click, the Menu key or Shift+F10 opens the Windows context menu for
 - 2026-10-16 — M2 (8373238) in `rusty_core::shell_menu`; review PASS WITH FIXES (disabled parents, selection kept by path, empty text skipped, `set_submenu`, Classic menu action) fixed in dbbd4f2; merged. M1 spike running on Windows CI.
 - 2026-10-16 — M1 spike done (cc04f67, run 38851289858): 38–70 items, 36–48 with verbs; 7-Zip submenu complete; invoke by id works (Extract Here, copy → CF_HDROP); icons are 32-bit bitmaps, converted to RGBA; 0 owner-drawn; Send to needs `CMF_SYNCCASCADEMENU`. D5 and D7 updated, D9 added; merged.
 - 2026-10-16 — M4 (88d5579, review fixes 306d3f3) and M3 (499874b, review fixes 3a75452; Windows run 38855214205 green) merged. M3 timings on the runner: open 350–780 ms, Send to fill ~436 ms (the fill blocks past the 250 ms budget and still returns Filled; revisit in M5 with an async fill). M5 contract: the UI polls `Pending` with `wait_timeout`, never blocks; restore focus via `ContextMenuInput.restore`; call `context_menu::bind_keys` in init.
+- 2026-10-16 — M7 added: the owner asked for a context menu in the F3 viewer (D51).
