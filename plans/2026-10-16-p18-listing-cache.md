@@ -12,12 +12,13 @@ The owner hit this on 2026-10-16: on a mapped network folder with thousands of e
 
 From docs/architecture.md ("Speed: caching, lazy loading, pre-warming"), which already holds them; `rusty-cache` was never built.
 
-- **D1 — Memory listing cache.** Key: location + volume serial. Budget 64 MB by bytes, LRU. Entries hold the listing rows, the sort keys and the folder's change time at read time. Bounded and owned by one service.
+- **D1 — Memory listing cache.** Key: location + volume serial. Budget 64 MB by bytes, LRU. Entries hold the listing rows and the folder's change time at read time; the pane computes sort keys (decided 2026-10-16 after the C1 review). Keys always carry the volume serial or the UNC root (C2 fills it), so a remapped drive letter never serves another share's listing. Bounded and owned by one service.
 - **D2 — Stale while revalidating.** A cached listing shows at once, marked as cached. A fresh listing streams in the background and is applied as a diff; cursor, selection and scroll stay on the same names. A folder whose change time is unchanged and has an active watcher is not re-listed.
 - **D3 — Watchers on open panes.** `ReadDirectoryChangesW` (works on SMB shares) for each open pane's folder, debounced; events patch the cached listing. A watcher that fails or overflows falls back to revalidation on focus and an interval for network locations (D-beta network refresh modes later).
 - **D4 — Pre-warming.** The cursor resting on a folder for 150 ms prefetches its listing (at most two prefetches at once, cancelled when the cursor moves on). The parent of the current folder stays cached while you are inside it, so Back is always warm.
 - **D5 — Network.** Listing has a 2 s timeout for the first batch and never blocks the UI. A share that does not answer shows "Offline · showing cached" with the time of the cached listing, and retries in the background.
 - **D6 — Disk cache.** `cache.db` keeps listings of pinned and workspace folders only, 32 MB, lz4 compressed, never trusted without revalidation. Used to draw the panes right after start.
+- **D8 — Crate direction.** `rusty-cache` depends on `rusty-core` and `rusty-fs`; C6's listing serialisation lives in `rusty-cache` and uses `rusty-store` for the database, never the other way round.
 - **D7 — Visible budgets.** The diagnostics view shows each cache's size against its budget; the soak test (10,000 tabs, 50,000 folders on the fake file system) checks the heap returns within 2 % of baseline.
 
 ## Components
@@ -54,3 +55,4 @@ From docs/architecture.md ("Speed: caching, lazy loading, pre-warming"), which a
 ## Log
 
 - 2026-10-16 — Plan written after the owner's network test.
+- 2026-10-16 — C1 (f40ec96): `ListingCache` over `Arc<[FsEntry]>`, 39 tests. Review PASS WITH FIXES: patch outside the lock, pinned byte counter, conditional put; sort keys stay in the pane; volume serial filled by C2. Fixes running.
