@@ -38,9 +38,9 @@ Paths: `<worktrees>` = the `.crew` folder next to the repo; `<targets>` = `<work
 
 ## Open questions for the owner
 
-1. Keep or delete release alpha-2026-10-16d, which was published from a red CI run?
-2. Enter in an archive showing "A folder…": which row was it, and was there filter text?
-3. Time for the big mapped share with alpha-16d (fast listing), and its entry count against Explorer.
+1. Done: alpha-2026-10-16d deleted with its tag at the owner's request (10:40). The next release is 16e.
+2. Enter in an archive showing "A folder…": the owner will test at the office and report.
+3. Share timing and entry count against Explorer: the owner will report from the office (use 16e, since 16d is gone).
 
 ## Next steps, in order
 
