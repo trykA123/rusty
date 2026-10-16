@@ -1,10 +1,10 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>Ferrite Roadmap</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
-/* Layout: milestone track on top, then a vertical timeline; each phase splits into four lanes. */
 :root {
   --bg: oklch(98.6% 0.004 260);
   --card: oklch(100% 0 0);
@@ -40,377 +40,82 @@ body { background: var(--bg); color: var(--text); font: 14px/1.45 var(--display)
 a { color: inherit; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
 
-.hero { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 32px; align-items: end; }
-.eyebrow { font: 600 11.5px var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); }
-h1 { margin: 8px 0 12px; font-size: clamp(40px, 7vw, 72px); line-height: 0.95; font-weight: 800; font-stretch: 115%; letter-spacing: -0.025em; }
-.lede { margin: 0; max-width: 58ch; color: var(--muted); font-size: 15.5px; }
-.now { display: grid; gap: 4px; padding: 16px 18px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); }
-.now .eyebrow { color: var(--accent-text); }
-.now strong { font-size: 20px; font-weight: 750; font-stretch: 104%; }
-.now p { margin: 0; color: var(--muted); font-size: 13px; }
-.now dl { display: grid; grid-template-columns: repeat(3, auto); justify-content: start; gap: 2px 20px; margin: 10px 0 0; }
-.now dt { font: 600 10.5px var(--mono); letter-spacing: 0.05em; text-transform: uppercase; color: var(--faint); grid-row: 1; }
-.now dd { margin: 0; font: 600 15px var(--mono); grid-row: 2; }
 
-.track-wrap { overflow-x: auto; scrollbar-width: thin; padding-bottom: 4px; }
-.track { --n: 8; --fill: 0; position: relative; display: flex; min-width: 760px; margin: 0; padding: 0; list-style: none; }
-.track::before, .track::after { content: ""; position: absolute; top: 15px; height: 3px; border-radius: 2px; left: calc(100% / (2 * var(--n))); }
-.track::before { right: calc(100% / (2 * var(--n))); background: repeating-linear-gradient(90deg, var(--line-strong) 0 6px, transparent 6px 11px); }
-.track::after { width: calc((100% - 100% / var(--n)) * var(--fill)); background: linear-gradient(90deg, var(--ok), var(--accent)); }
-.stop { flex: 1 1 0; min-width: 0; }
-.stop a { position: relative; z-index: 1; display: grid; justify-items: center; gap: 3px; padding: 0 4px 6px; text-align: center; text-decoration: none; border-radius: 8px; }
-.stop a:hover .tname { color: var(--accent-text); }
-.tnode { display: grid; place-items: center; width: 33px; height: 33px; border-radius: 50%; background: var(--bg); border: 2px dashed var(--line-strong); color: var(--faint); font: 600 11px var(--mono); }
-.s-done .tnode { border: 0; background: var(--ok); color: var(--bg); }
-.s-next .tnode { border: 3px solid var(--accent); color: var(--accent-text); background: var(--tint); }
-.rel .tnode { border-radius: 8px; transform: rotate(45deg); border-style: solid; border-color: var(--release); }
-.rel .tnode span { transform: rotate(-45deg); }
-.tname { margin-top: 6px; font-weight: 700; font-size: 14px; font-stretch: 100%; }
-.tsub { color: var(--faint); font: 11px var(--mono); }
-.s-next .tsub { color: var(--accent-text); }
-.rel .tsub { color: var(--release-text); }
-
-.toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
-.toolbar > span { font: 600 11px var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); }
-.lanes-toggle { display: flex; flex-wrap: wrap; gap: 6px; }
-.lanes-toggle button { display: inline-flex; align-items: center; gap: 7px; height: 30px; padding: 0 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--card); color: var(--text); font: inherit; font-size: 13px; cursor: pointer; }
-.lanes-toggle button[aria-pressed="false"] { background: none; color: var(--faint); border-style: dashed; }
-.lanes-toggle i, .lane h3 i { width: 8px; height: 8px; border-radius: 2px; background: var(--c); }
-.key { margin-left: auto; display: flex; gap: 14px; flex-wrap: wrap; color: var(--muted); font-size: 12.5px; }
-.key span { display: inline-flex; align-items: center; gap: 6px; }
-
-.lane-core { --c: var(--accent); }
-.lane-module { --c: var(--ok); }
-.lane-package { --c: oklch(60% 0.15 340); }
-.lane-infra { --c: var(--release); }
-
-.timeline { display: grid; }
-.band, .phase { display: grid; grid-template-columns: 44px minmax(0, 1fr); column-gap: 18px; }
-.rail { position: relative; display: flex; justify-content: center; }
-.rail::before { content: ""; position: absolute; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); border-left: 2px dashed var(--line-strong); }
-.s-done .rail::before, .band.b-done .rail::before { border-left-style: solid; border-left-color: var(--ok); }
-.s-next .rail::before { border-image: linear-gradient(var(--accent) 0 60%, transparent 60%) 1; border-left-style: solid; }
-.band:first-child .rail::before { top: 50%; }
-.band .lbl { padding: 22px 0 12px; font: 600 11.5px var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); }
-.band.b-next .lbl { color: var(--accent-text); }
-
-.node { position: relative; z-index: 1; display: grid; place-items: center; width: 34px; height: 34px; margin-top: 2px; border-radius: 50%; background: var(--bg); border: 2px dashed var(--line-strong); color: var(--faint); }
-.s-done .node { border: 0; background: var(--ok); color: var(--bg); }
-.s-next .node { border: 3px solid var(--accent); background: var(--tint); color: var(--accent-text); }
-.rel .node { border-radius: 9px; transform: rotate(45deg); border-style: solid; border-color: var(--release); color: var(--release-text); }
-.rel .node > * { transform: rotate(-45deg); }
-
-.body { min-width: 0; display: grid; gap: 14px; padding-bottom: 40px; scroll-margin-top: 16px; }
-.ph-head { display: grid; gap: 6px; }
-.ph-title { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; }
-.ph-title h2 { margin: 0; font-size: 26px; line-height: 1.15; font-weight: 800; font-stretch: 108%; letter-spacing: -0.01em; }
-.ver { font: 600 13px var(--mono); color: var(--faint); }
-.tag { align-self: center; padding: 3px 9px; border-radius: 999px; font: 600 10.5px/1.3 var(--mono); letter-spacing: 0.05em; text-transform: uppercase; border: 1px solid var(--line); color: var(--muted); }
-.s-done .tag { color: var(--ok); border-color: color-mix(in oklch, var(--ok) 45%, transparent); }
-.s-next .tag { color: var(--accent-text); background: var(--tint); border-color: transparent; }
-.rel .tag.release { color: var(--release-text); border-color: color-mix(in oklch, var(--release) 50%, transparent); }
-.ph-head p { margin: 0; max-width: 72ch; color: var(--muted); font-size: 15px; }
-
-.lanes { display: grid; grid-template-columns: repeat(var(--cols, 4), minmax(0, 1fr)); gap: 12px; }
-.lane { min-width: 0; display: grid; align-content: start; gap: 8px; }
-.lane h3 { display: flex; align-items: center; gap: 7px; margin: 0; font: 600 11px var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
-.lane h3 em { font-style: normal; color: var(--faint); font-weight: 400; }
-.lane ul { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
-.lane.empty h3 { opacity: 0.45; }
-.item { display: grid; grid-template-columns: 14px minmax(0, 1fr); gap: 8px; padding: 9px 11px; background: var(--card); border: 1px solid var(--line); border-radius: 8px; }
-.item b { display: block; font-size: 13.5px; font-weight: 650; line-height: 1.3; }
-.item span { display: block; margin-top: 2px; color: var(--muted); font-size: 12.5px; line-height: 1.4; }
-.glyph { width: 12px; height: 12px; margin-top: 3px; border-radius: 50%; border: 1.5px solid var(--c); }
-.st-done .glyph { background: var(--c); border-color: var(--c); }
-.st-next .glyph { background: radial-gradient(circle, var(--c) 0 2.5px, transparent 3px); }
-.st-done b { color: var(--muted); }
-.exit { display: flex; gap: 10px; align-items: baseline; margin: 0; padding: 10px 12px; border-radius: 8px; background: var(--tint); color: var(--text); font-size: 13.5px; }
-.exit b { flex: none; font: 600 10.5px var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent-text); }
-
-.targets { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-.target { display: grid; gap: 2px; padding: 14px 4px; }
-.target b { font: 600 22px/1.1 var(--mono); letter-spacing: -0.02em; }
-.target b small { font-size: 13px; color: var(--muted); font-weight: 400; }
-.target span { color: var(--muted); font-size: 12px; }
-.foot { color: var(--faint); font-size: 12.5px; }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--text); font: 14px/1.45 var(--display); font-stretch: 94%; font-variant-numeric: tabular-nums; -webkit-font-smoothing: antialiased; }
+.page { max-width: 900px; margin: 0 auto; padding-block: 40px 80px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 28px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+.eyebrow { font: 600 11.5px var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); margin: 0; }
+h1 { margin: 8px 0 12px; font-size: clamp(40px, 7vw, 64px); line-height: 0.95; font-weight: 800; font-stretch: 115%; letter-spacing: -0.025em; }
+h2 { margin: 0; font-size: 22px; font-weight: 780; font-stretch: 106%; }
+.lede { margin: 0; color: var(--muted); font-size: 15.5px; }
+.where { display: grid; gap: 16px; }
+.q { display: grid; gap: 10px; padding: 16px 18px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); border-left: 4px solid var(--c); }
+.q-done { --c: var(--ok); } .q-now { --c: var(--accent); } .q-next { --c: var(--release); }
+.q .eyebrow { color: var(--c); }
+.q-next .eyebrow { color: var(--release-text); }
+.feat { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.feat li { display: grid; grid-template-columns: 14px minmax(0, 1fr); gap: 10px; }
+.feat b { display: block; font-size: 14.5px; font-weight: 650; line-height: 1.3; }
+.feat span { display: block; margin-top: 1px; color: var(--muted); font-size: 13px; }
+.glyph { width: 12px; height: 12px; margin-top: 4px; border-radius: 50%; border: 1.5px solid var(--c); }
+.q-done .glyph { background: var(--c); }
+.q-now .glyph { background: radial-gradient(circle, var(--c) 0 2.5px, transparent 3px); }
+.sub { margin: 6px 0 0; font: 600 11px var(--mono); letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.chips li { padding: 4px 10px; border: 1px dashed var(--line-strong); border-radius: 999px; color: var(--muted); font-size: 13px; }
 .progress { display: grid; gap: 8px; padding: 16px 18px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); }
-.progress h2 { margin: 0; font-size: 18px; font-weight: 750; font-stretch: 104%; }
 .progress p { margin: 0; color: var(--muted); font-size: 13px; }
-.bar { height: 8px; border-radius: 999px; background: var(--line); overflow: hidden; }
-.bar span { display: block; height: 100%; background: var(--ok); }
-
-@media (max-width: 960px) {
-  .hero { grid-template-columns: minmax(0, 1fr); }
-  .lanes { grid-template-columns: repeat(min(var(--cols, 4), 2), minmax(0, 1fr)); }
-  .targets { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-}
-@media (max-width: 560px) {
-  .band, .phase { grid-template-columns: 30px minmax(0, 1fr); column-gap: 12px; }
-  .node { width: 26px; height: 26px; }
-  .rel .node { border-radius: 7px; }
-  .ph-title h2 { font-size: 22px; }
-  .lanes { grid-template-columns: minmax(0, 1fr); }
-  .lane.empty { display: none; }
-  .key { margin-left: 0; }
-  .targets { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .now dl { grid-template-columns: repeat(3, auto); gap: 2px 14px; }
-}
-@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+.progress .big { font: 700 36px/1 var(--mono); color: var(--text); letter-spacing: -0.03em; }
+.bar { display: flex; height: 12px; border-radius: 999px; background: var(--line); overflow: hidden; }
+.bar .a { background: var(--ok); }
+.bar .b { background: repeating-linear-gradient(135deg, var(--ok) 0 3px, transparent 3px 6px); }
+.foot { color: var(--faint); font-size: 12.5px; }
+.laters { display: grid; gap: 8px; }
+.later { border: 1px solid var(--line); border-radius: 10px; background: var(--card); }
+.later summary { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; padding: 12px 16px; cursor: pointer; list-style: none; }
+.later summary::-webkit-details-marker { display: none; }
+.later summary::before { content: "▸"; color: var(--faint); }
+.later[open] summary::before { content: "▾"; }
+.later .t { font-weight: 750; font-size: 16px; }
+.later .n, .later .tg { font: 11px var(--mono); color: var(--faint); }
+.later .tg { margin-left: auto; }
+.one { margin: 0; padding: 0 16px 12px; list-style: none; display: grid; gap: 4px; }
+.one li { padding: 5px 0; border-top: 1px solid var(--line); font-size: 13.5px; }
+.one b { font-weight: 650; margin-right: 8px; }
+.one span { color: var(--muted); }
+@media (max-width: 560px) { .page { padding-top: 24px; } .q, .progress { padding: 14px; } .later .tg { margin-left: 0; } }
 </style>
-
 <div class="page">
-  <header class="hero">
-    <div>
-      <div class="eyebrow">Keyboard-first file manager for Windows · Rust + GPUI</div>
-      <h1>Ferrite roadmap</h1>
-      <p class="lede">A small, stable and fast v1 first. The core is always on; every other feature is a module you can turn off. Later versions grow through modules, never by adding weight to the core.</p>
-    </div>
-    <aside class="now" aria-label="Current phase">
-      <div class="eyebrow">Now · v1 Alpha · since 15 Oct 2026</div>
-      <strong id="now-title"></strong>
-      <p id="now-goal"></p>
-      <dl id="now-stats"></dl>
-    </aside>
+  <header>
+    <div class="eyebrow">Keyboard-first file manager for Windows</div>
+    <h1>Ferrite roadmap</h1>
+    <p class="lede">Where we are, in features you can try. Updated 16 October 2026.</p>
   </header>
 
-  <nav class="track-wrap" aria-label="Milestones">
-    <ol class="track" id="track"></ol>
-  </nav>
-
-  <section id="progress" class="progress" aria-labelledby="progress-title">
-    <h2 id="progress-title">How close is the working version</h2>
-    <p>v1 Alpha, the version for daily use: 45% done</p>
-    <div class="bar" role="progressbar" aria-label="v1 Alpha progress" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100"><span style="width: 45%"></span></div>
-    <p>6 of 20 Alpha items done, 6 in progress, 8 planned. Foundation is done. PoC 1 (browse) and PoC 2 (copy, move, delete) passed on the work PC.</p>
-    <p class="foot">Updated 15 October 2026. Done counts 1, in progress counts ½.</p>
+  <section class="where" aria-labelledby="where-title">
+    <h2 id="where-title">Where we are</h2>
+    <div class="q q-done"><div class="eyebrow">1 · Works today in the alpha download</div><ul class="feat"><li class="d"><i class="glyph"></i><div><b>Two panes with tabs</b><span>Back and forward. Your session comes back at start.</span></div></li><li class="d"><i class="glyph"></i><div><b>Fast file list</b><span>Huge folders, filter as you type, sizes in KB to TB, sort by name, extension, date or size.</span></div></li><li class="d"><i class="glyph"></i><div><b>Total Commander style selection</b><span>Space, Insert, right-click, Num+, Num− and Num*.</span></div></li><li class="d"><i class="glyph"></i><div><b>Drive bar and network drives</b></div></li><li class="d"><i class="glyph"></i><div><b>File operations</b><span>Copy, move, rename (F2), new folder, Recycle Bin and Shift+Del.</span></div></li><li class="d"><i class="glyph"></i><div><b>Background jobs</b><span>Progress and cancel. A job cut short is rolled back safely at the next start.</span></div></li><li class="d"><i class="glyph"></i><div><b>F3 viewer for text</b><span>Colours for many languages, hex view, huge files page by page, correct encodings.</span></div></li><li class="d"><i class="glyph"></i><div><b>F4 editor</b></div></li><li class="d"><i class="glyph"></i><div><b>New today: images in F3</b><span>Zoom, pan, next and previous image, correct rotation.</span></div></li><li class="d"><i class="glyph"></i><div><b>New today: search and marks</b><span>Search shows “3 of 1,248”. Find All, colour marks (Ctrl+1 to 8), bookmarks, Follow for growing logs. All kept after restart.</span></div></li><li class="d"><i class="glyph"></i><div><b>Light and dark themes</b><span>They follow Windows. F-key bar at the bottom.</span></div></li></ul></div>
+    <div class="q q-now"><div class="eyebrow">2 · Being finished this week</div><ul class="feat"><li class="n"><i class="glyph"></i><div><b>Archives and fonts in F3</b><span>Look inside zip, 7z and tar files, and preview fonts.</span></div></li><li class="n"><i class="glyph"></i><div><b>Structured files in F3</b><span>JSON, YAML and XML as a tree, CSV as a table, Markdown rendered.</span></div></li><li class="n"><i class="glyph"></i><div><b>The new viewer look you picked</b><span>Function name in the header, Ctrl+O list of functions, marks and bookmarks, coloured scrollbar, one-row search with a colour drawer.</span></div></li><li class="n"><i class="glyph"></i><div><b>More colours and encodings</b><span>Colours for m4, OIL, DCM and Notepad++ user languages. An encoding picker.</span></div></li></ul></div>
+    <div class="q q-next"><div class="eyebrow">3 · Comes next for the alpha</div><ul class="feat"><li class="n"><i class="glyph"></i><div><b>Automotive files in F3</b><span>HEX and S-record memory maps, ELF sections and symbols, linker map flash usage, DBC and A2L signals, CAN traces as tables, ARXML.</span></div></li><li class="n"><i class="glyph"></i><div><b>Windows context menu in Ferrite style</b><span>Modern look (three designs ready for your pick), with Ferrite’s own actions on top.</span></div></li><li class="n"><i class="glyph"></i><div><b>New copy progress card</b><span>With a small mode next to F10.</span></div></li><li class="n"><i class="glyph"></i><div><b>New app menu and settings dialog</b><span>Already designed and chosen.</span></div></li></ul>
+      <p class="sub">Still open for the alpha</p>
+      <ul class="chips"><li>Explorer clipboard (copy here, paste in Explorer)</li><li>Show which program locks a file</li><li>Command line: ferrite &lt;path&gt;</li><li>Pins</li><li>Command palette (Ctrl+K)</li><li>Keymap in a file</li><li>Auto copy mode</li><li>Copy speed benchmark</li><li>Shell icons</li><li>Right-drag selection</li><li>Per-monitor DPI check</li><li>Text ready for translation</li></ul></div>
   </section>
-  <div>
-    <div class="toolbar">
-      <span>Lanes</span>
-      <div class="lanes-toggle" id="lane-toggle" role="group" aria-label="Show lanes"></div>
-      <div class="key">
-        <span><i class="glyph" style="--c: var(--ok); background: var(--ok)"></i>Done</span>
-        <span><i class="glyph" style="--c: var(--accent); background: radial-gradient(circle, var(--accent) 0 2.5px, transparent 3px)"></i>Next</span>
-        <span><i class="glyph" style="--c: var(--faint)"></i>Planned</span>
-      </div>
-    </div>
-    <div class="timeline" id="timeline"></div>
-  </div>
 
-  <section aria-label="Targets for v1.0">
-    <div class="eyebrow">Targets for v1.0</div>
-    <div class="targets">
-      <div class="target"><b>≤ 400<small> ms</small></b><span>Cold start to first usable frame</span></div>
-      <div class="target"><b>≤ 150<small> ms</small></b><span>Warm start</span></div>
-      <div class="target"><b>≤ 50<small> ms</small></b><span>Summon from tray (v1.2)</span></div>
-      <div class="target"><b>&lt; 80<small> MB</small></b><span>RAM, two panes, idle</span></div>
-      <div class="target"><b>&lt; 30<small> MB</small></b><span>One portable .exe</span></div>
-    </div>
+  <section class="progress" aria-labelledby="pt">
+    <h2 id="pt">v1 Alpha (daily use)</h2>
+    <p class="big">42% done</p>
+    <div class="bar" role="progressbar" aria-label="v1 Alpha progress" aria-valuenow="42" aria-valuemin="0" aria-valuemax="100"><span class="a" style="width:35.5%"></span><span class="b" style="width:6.5%"></span></div>
+    <p>11 of 31 items done, 4 being finished (counted as half), 16 still to do: (11 + 2) ÷ 31.</p>
+    <p class="foot">Updated 16 October 2026.</p>
   </section>
-  <p class="foot">Updated 15 Oct 2026. Source: docs/roadmap.md and docs/decisions.md in the Rusty repository.</p>
+
+  <section aria-labelledby="later-title" class="laters">
+    <h2 id="later-title" class="eyebrow">Later phases</h2>
+    <details class="later"><summary><span class="t">v1 Beta</span><span class="n">10 items</span><span class="tg">Safe and pleasant</span></summary><ul class="one"><li><b>Workspaces</b><span>Saved sets of panes and tabs.</span></li><li><b>Undo for file operations</b><span></span></li><li><b>Drag and drop with Explorer</b><span>Both directions.</span></li><li><b>More copy modes</b><span>Parallel and large-file modes, verify, speed limit, profiles.</span></li><li><b>Settings window and custom themes</b><span>Search, live apply, your own colours.</span></li><li><b>Icon themes</b><span></span></li><li><b>Accessibility</b><span>Full keyboard use, high contrast, UI scale.</span></li><li><b>Handy tools</b><span>Copy path, open terminal, folder search, jump to frequent folders.</span></li><li><b>Done notifications</b><span>Windows alert when a long job finishes.</span></li><li><b>Network refresh modes</b><span>Watch, interval or manual.</span></li></ul></details>
+    <details class="later"><summary><span class="t">v1.0</span><span class="n">10 items</span><span class="tg">Replaces Total Commander</span></summary><ul class="one"><li><b>Find files</b><span>By name, content and attributes; results land in a pane you can work in.</span></li><li><b>Archives as folders</b><span>Browse, extract and pack zip, 7z and tar in the panes.</span></li><li><b>Multi-rename</b><span>Live preview, conflicts flagged first, one undo.</span></li><li><b>Compare and sync folders</b><span></span></li><li><b>Checksums</b><span>BLAKE3, SHA-256, SHA-1 and MD5.</span></li><li><b>Properties drawer</b><span></span></li><li><b>Total Commander keymap</b><span>Familiar keys.</span></li><li><b>Default file manager</b><span>Optional: Win+E opens Ferrite.</span></li><li><b>Signed builds, portable mode and installer</b><span></span></li><li><b>User guide</b><span></span></li></ul></details>
+    <details class="later"><summary><span class="t">See and find</span><span class="n">6 items</span><span class="tg">After v1</span></summary><ul class="one"><li><b>Preview pane</b><span>Images, code, text, PDF.</span></li><li><b>Global search</b><span>Find any file on the disk at once, like Everything.</span></li><li><b>Thumbnails</b><span></span></li><li><b>More viewer languages</b><span>Add your own.</span></li><li><b>Column sets</b><span></span></li><li><b>Auto switch view</b><span>For example thumbnails in photo folders.</span></li></ul></details>
+    <details class="later"><summary><span class="t">Power tools</span><span class="n">5 items</span><span class="tg">After v1</span></summary><ul class="one"><li><b>Git status and view</b><span></span></li><li><b>Duplicates and disk usage</b><span></span></li><li><b>Clipboard history and notes</b><span></span></li><li><b>Summon hotkey</b><span>Quake style from the tray.</span></li><li><b>Import Zed and VS Code themes</b><span></span></li></ul></details>
+    <details class="later"><summary><span class="t">Open platform</span><span class="n">8 items</span><span class="tg">v2.0</span></summary><ul class="one"><li><b>Plugins for other developers</b><span>With permissions and a sandbox.</span></li><li><b>Plugin kit</b><span></span></li><li><b>Module packs</b><span>Developer, Photo and Homelab sets.</span></li><li><b>Remote locations</b><span>SFTP, S3 and rclone.</span></li><li><b>Embedded terminal</b><span></span></li><li><b>Lua scripting</b><span></span></li><li><b>Everything integration</b><span></span></li><li><b>More languages</b><span>Romanian first.</span></li></ul></details>
+  </section>
 </div>
-
-<script>
-const PHASES = [
-  { id: "design", key: "F1", dir: "00-design", title: "Design", ver: "done", status: "done",
-    goal: "Decide what Rusty is, how it looks and how it is built, before writing code.",
-    items: [
-      ["done", "Product discussion", "infra", "Features, stack options, why Rust"],
-      ["done", "Twelve design directions", "infra", "Prototypes A–L behind a picker; B, Commander, chosen"],
-      ["done", "Architecture", "infra", "Crates, one command system, state, caching, safety, terminal"],
-      ["done", "Plugin model", "infra", "Data packages and sandboxed WASM extensions with permissions"],
-      ["done", "Decisions D1–D26", "infra", "Including modules, v1 scope, theming, storage, runtime, drives, diagnostics, core foundations, copy modes, own index and module slots"],
-    ],
-    exit: "13–14 October 2026." },
-  { id: "foundation", key: "F2", dir: "01-foundation", title: "Foundation", ver: "v0.1", status: "done",
-    goal: "Prove the stack and build the factory: a workspace, a quality gate and a Windows build on every push.",
-    items: [
-      ["done", "Plans P1–P9", "infra", "Atomic, test-driven plans by model tier; P1–P8 done, P9 in review"],
-      ["done", "Cargo workspace", "infra", "Eleven crates, pinned toolchain"],
-      ["done", "Quality gate", "infra", "fmt, clippy -D warnings, tests, cargo-deny, cargo-audit"],
-      ["done", "Windows CI", "infra", "A portable .exe for every push, about 14 minutes; tested on the work PC"],
-      ["done", "GPUI spike", "infra", "Design B on gpui-kit with 100k rows; GO on GPUI (60 Hz scrolling on Windows); screen reader support deferred"],
-      ["done", "Storage layer", "core", "SQLite from day one: rusty.db for user data and journals, cache.db for caches, migrations; session snapshot with visible rows"],
-      ["done", "Diagnostics", "core", "Redacted logs, event ring, memory and performance statistics, a report you save by hand; canary test for personal data"],
-      ["done", "Core model", "core", "Serialisable commands, layout tree, multi-window state and apply(), with property tests"],
-      ["done", "Locations and providers", "core", "Panes work with locations, not raw paths; local disk is the first provider"],
-      ["done", "Record and replay", "core", "Redacted command streams replay against the fake file system; bugs become tests"],
-      ["done", "Fake file system", "infra", "Fault injection: disk full, access denied, locked files, network lost mid-copy; hostile-name corpus"],
-      ["done", "Error model and I/O queues", "core", "One error dialog with recovery actions; priorities and limits per volume"],
-    ],
-    exit: "Done 15 October 2026. The spike passed on the work PC; GPUI stays (D2)." },
-  { id: "alpha", key: "F3", dir: "02-v1-alpha", title: "v1 Alpha", ver: "v0.5", status: "next",
-    goal: "A file manager the owner can use every day on Windows.",
-    items: [
-      ["done", "Component library", "core", "Primitives and Ferrite components on gpui-kit, a gallery, headless UI tests"],
-      ["next", "Tiled panes and tabs", "core", "Two panes with tabs, focus, back and forward (Alt+arrows, mouse side buttons); free splitting still to come"],
-      ["done", "Session restore", "core", "Layout, tabs, paths and cursor come back at start"],
-      ["next", "File list", "core", "Virtualised and streamed; quick filter as you type; sizes in KB–TB; sort by name, extension, date or size (header click or Ctrl+F3–F6); shell icons still to come"],
-      ["next", "Total Commander selection", "core", "Space marks and sizes folders, Insert, right-click marks, Num+ and Num− select by pattern, Num* inverts; right-drag still to come"],
-      ["done", "Drive bar and network drives", "core", "Drive bar and network drives are done, from plan P14"],
-      ["planned", "Context menu", "core", "Native Windows menu on a long right-click, Shift+F10 or the Menu key, with Rusty's actions on top"],
-      ["done", "File operations", "core", "Copy, move, rename, new folder, Recycle Bin, Shift+Del with a warning, plan before acting; Enter and double-click open files"],
-      ["done", "Job queue", "core", "Background jobs with progress and cancel; existing names are skipped; crash-safe journal rolls back at start"],
-      ["next", "Copy engine: Auto and Standard", "core", "Standard done (temp file, size check, rename); Auto mode still to come"],
-      ["planned", "Copy benchmark", "infra", "Rusty against Explorer, robocopy /MT and TeraCopy: one big file, 10,000 small files, the NAS"],
-      ["planned", "Explorer clipboard", "core", "Copy or cut in Rusty, paste in Explorer, and back"],
-      ["planned", "Who locks the file", "core", "Errors name the process that holds a file, with Retry"],
-      ["planned", "Command line", "core", "rusty <path>, --new-tab, rusty cmd <command> to the running instance"],
-      ["next", "Key contexts and per-monitor DPI", "core", "Key contexts done; per-monitor DPI not checked yet"],
-      ["planned", "Pins", "core", "Pinned folders, tabs and files; Ctrl+1…9"],
-      ["planned", "Command palette", "core", "Ctrl+K over commands, pins and folders"],
-      ["next", "Shortcuts and F-key bar", "core", "F-key bar shown; keymap in TOML still to come"],
-      ["done", "Light and dark", "package", "Built-in themes; follows the Windows setting"],
-      ["planned", "Ready for translation", "core", "English only, every string in Fluent files"],
-    ],
-    exit: "Two weeks of daily use on the work PC with no lost or damaged files." },
-  { id: "beta", key: "F4", dir: "03-v1-beta", title: "v1 Beta", ver: "v0.9", status: "planned",
-    goal: "Safe, configurable and pleasant. The module system and theming arrive.",
-    items: [
-      ["planned", "Workspaces", "core", "Saved sets of panes and tabs; Alt+1…9"],
-      ["planned", "Network refresh modes", "core", "Watcher, interval or manual per network location"],
-      ["planned", "Copy modes and profiles", "core", "Parallel and Large files modes; verify, conflicts, I/O priority, bandwidth limit; profiles and rules by destination"],
-      ["planned", "Accessibility basics", "core", "Full keyboard use, visible focus, high-contrast theme, UI scale"],
-      ["planned", "Drag and drop with Explorer", "core", "Both directions; copy by default between drives"],
-      ["next", "Crash-safe jobs and undo", "core", "Job journal rolls back unfinished jobs at start; undo still to come. Each step is marked reversible, compensable or final, and undo only offers what it can really do"],
-      ["planned", "Module registry", "core", "Turn native modules on and off at runtime; safe mode with core only"],
-      ["planned", "Settings window", "core", "Generated from each module's schema; search, live apply, reset to default"],
-      ["planned", "Confirmations and formats", "core", "Total Commander ideas: per-case confirmations, date and size formats, ignore list"],
-      ["planned", "Custom themes", "package", "Colour themes in TOML, light and dark in one family, live reload, contrast check"],
-      ["planned", "Icon themes", "package", "SVG icons by extension, name and folder; shell icons kept for .exe, .lnk and .ico"],
-      ["planned", "Copy path", "module", "Windows, quoted, forward slashes, WSL, UNC, relative, file URL"],
-      ["planned", "Terminal", "module", "Windows Terminal tab, window or split; external command templates"],
-      ["planned", "Folder search", "module", "Fuzzy search inside a folder tree with nucleo"],
-      ["planned", "Frecency jump", "module", "Jump to frequent folders, like zoxide"],
-      ["done", "External viewer and editor", "module", "F3 viewer and F4 editor are done, from plan P12; hex view and large files done, from plan P13; viewer foundation done, from plan P15; extra grammars and content detection done, from plan P15 (A3); rule lexer and Notepad++ UDL import done, from plan P15 (A4, viewer wiring next); search counts, marks and history (model and store) done, from plan P15 (A5)"],
-      ["planned", "Done notifications", "module", "Windows notification when a long operation finishes"],
-      ["planned", "Soak test and start-up benchmark", "infra", "Heap returns to baseline; start-up targets checked on Windows CI"],
-    ],
-    exit: "No open data-safety bugs. Start-up and memory targets met in CI." },
-  { id: "release", key: "F5", dir: "04-v1.0", title: "v1.0", ver: "v1.0", status: "planned",
-    goal: "Replaces Total Commander for daily work, then ships. Parity features (D39) are built to beat TC, not copy it.",
-    items: [
-      ["planned", "Find files", "core", "Name, content and attribute search; results stream into a pane you can work on directly; saved searches"],
-      ["planned", "Virtual collections", "core", "A pane can hold search results, recent changes or files picked from many folders; every command works on them"],
-      ["planned", "Archives as folders", "core", "Zip, 7z and tar (gz, xz, zst): browse, extract and pack through the job engine with a plan, progress and cancel; nested archives; safe extraction"],
-      ["planned", "Multi-rename", "core", "Live preview table with conflicts flagged before anything changes; regex, counters, case, dates; presets; one undo step"],
-      ["planned", "Compare and sync", "core", "Aim: better than Beyond Compare where it counts (D40). Folder compare in the panes as two collections; sync as a plan with undo; cached BLAKE3 hashes; syntax-aware text diff; paged diff for huge and binary files; image compare. Engine: the shared rusty-compare crate"],
-      ["planned", "Checksums", "core", "BLAKE3, SHA-256, SHA-1 and MD5 as background jobs; verify .sha256 and .md5 files; optional hash column"],
-      ["planned", "Properties drawer", "core", "Attributes, timestamps and permissions, editable for the whole selection"],
-      ["planned", "Images in F3", "core", "Zoom and pan, next and previous in the folder, basic EXIF"],
-      ["planned", "Signed builds", "infra", "Code signing for the portable .exe and the installer"],
-      ["planned", "Portable and installer", "infra", "Portable mode when rusty.toml sits next to the .exe"],
-      ["planned", "Total Commander keymap", "package", "Familiar keys for people coming from TC"],
-      ["planned", "Default file manager", "core", "Optional: Win+E and Open folder go to Rusty, with a clean way back"],
-      ["planned", "User guide", "infra", "Keys, commands, settings, themes and modules"],
-    ],
-    exit: "Every target on this page is met on a clean Windows 11 machine, and a week of work runs without opening Total Commander." },
-  { id: "see", key: "F6", dir: "05-v1.1", title: "See and find", ver: "v1.1", status: "planned",
-    goal: "Look inside files and find anything on the disk.",
-    items: [
-      ["planned", "Preview pane", "module", "Images, code with highlighting, text, PDF"],
-      ["planned", "Language packages", "package", "Add languages to the F3 viewer: a tree-sitter grammar built to WebAssembly plus its query files, loaded at runtime; same format as Zed and Helix grammars"],
-      ["planned", "Thumbnails", "module", "Disk cache with a budget; can be turned off and cleared"],
-      ["planned", "Global search", "module", "Like Everything: rusty-indexd reads the MFT and USN journal; substring, regex and fuzzy; ext:, size:, dm: filters. Engine built alongside Alpha"],
-      ["planned", "Column sets", "core", "Saved column layouts, including columns from modules"],
-      ["planned", "Auto switch view", "module", "Rules per path or content, for example thumbnails for photo folders"],
-    ],
-    exit: "Global search answers in under 50 ms on 2 million files." },
-  { id: "power", key: "F7", dir: "06-v1.2", title: "Power tools", ver: "v1.2", status: "planned",
-    goal: "The tools that make Rusty more than Total Commander.",
-    items: [
-      ["planned", "Git", "module", "Status columns, a drawer view and the git.status service"],
-      ["planned", "Duplicates and disk usage", "module", "Duplicate finder and a treemap"],
-      ["planned", "Clipboard history and notes", "module", "Drawer views"],
-      ["planned", "Summon hotkey", "module", "Tray and a global hotkey, quake style"],
-      ["planned", "Theme import", "package", "Convert Zed and VS Code colour themes"],
-    ],
-    exit: "Each module can be turned off without a restart and costs nothing while off." },
-  { id: "platform", key: "F8", dir: "07-v2.0", title: "Open platform", ver: "v2.0", status: "planned",
-    goal: "Other people build features for Rusty.",
-    items: [
-      ["planned", "WASM plugins", "core", "Versioned WIT API, permissions, sandbox, lazy load"],
-      ["planned", "Plugin SDK and dev mode", "infra", "rusty-plugin-sdk, a template, hot reload, a fake host for tests"],
-      ["planned", "New module slots", "core", "Metadata providers, view modes, transforms, automation rules, status and drive badges"],
-      ["planned", "Module packs", "package", "Developer, Photo and Homelab sets installed in one step, permissions shown first"],
-      ["planned", "Everything", "module", "Optional, for people who already run voidtools Everything"],
-      ["planned", "Embedded terminal", "module", "ConPTY in the drawer, following the focused pane"],
-      ["planned", "Remote locations", "module", "SFTP, S3 and rclone as file systems"],
-      ["planned", "Lua scripting", "core", "Scripts on top of the command system"],
-      ["planned", "More languages", "package", "Romanian first"],
-    ],
-    exit: "A third-party plugin is built, installed and updated without touching Rusty's code." },
-];
-
-const LANES = [
-  { k: "core", label: "Core" },
-  { k: "module", label: "Modules" },
-  { k: "package", label: "Look & packages" },
-  { k: "infra", label: "Build & quality" },
-];
-const GROUPS = { design: ["done", "Done"], alpha: ["next", "Now · Version 1"], see: ["", "After v1"] };
-const STATUS = { done: "Done", next: "Now", planned: "Planned" };
-const esc = s => s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-const check = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>';
-const isRel = p => p.id === "release";
-
-const nowIdx = PHASES.findIndex(p => p.status === "next");
-const now = PHASES[nowIdx];
-document.getElementById("now-title").textContent = `${now.title} · ${now.ver}`;
-document.getElementById("now-goal").textContent = now.goal;
-const total = PHASES.reduce((n, p) => n + p.items.length, 0);
-const v1 = PHASES.filter(p => ["alpha", "beta", "release"].includes(p.id)).reduce((n, p) => n + p.items.length, 0);
-document.getElementById("now-stats").innerHTML =
-  `<dt>Phases</dt><dd>${PHASES.length}</dd><dt>Items</dt><dd>${total}</dd><dt>In v1</dt><dd>${v1}</dd>`;
-
-const track = document.getElementById("track");
-track.style.setProperty("--n", PHASES.length);
-track.style.setProperty("--fill", nowIdx / (PHASES.length - 1));
-track.innerHTML = PHASES.map((p, i) => `
-  <li class="stop s-${p.status}${isRel(p) ? " rel" : ""}">
-    <a href="#${p.id}">
-      <span class="tnode"><span>${p.status === "done" ? check : i}</span></span>
-      <span class="tname">${esc(p.title)}</span>
-      <span class="tsub">${p.status === "next" ? "now" : isRel(p) ? "release" : p.ver === "done" ? "done" : p.ver}</span>
-    </a>
-  </li>`).join("");
-
-const shown = new Set(LANES.map(l => l.k));
-document.getElementById("lane-toggle").innerHTML = LANES.map(l =>
-  `<button type="button" class="lane-${l.k}" data-lane="${l.k}" aria-pressed="true"><i></i>${l.label}</button>`).join("");
-
-function render() {
-  const lanes = LANES.filter(l => shown.has(l.k));
-  document.getElementById("timeline").innerHTML = PHASES.map((p, i) => {
-    const g = GROUPS[p.id];
-    const band = g ? `<div class="band b-${g[0] || "planned"}${i ? "" : ""}"><div class="rail"></div><div class="lbl">${g[1]}</div></div>` : "";
-    const cells = lanes.map(l => {
-      const items = p.items.filter(it => it[2] === l.k);
-      return `<div class="lane lane-${l.k}${items.length ? "" : " empty"}">
-        <h3><i></i>${l.label} <em>${items.length || ""}</em></h3>
-        <ul>${items.map(([st, nm, , nt]) => `<li class="item st-${st}"><i class="glyph"></i><div><b>${esc(nm)}</b><span>${esc(nt)}</span></div></li>`).join("")}</ul>
-      </div>`;
-    }).join("");
-    const tag = isRel(p) ? `<span class="tag release">Release</span>` : `<span class="tag">${STATUS[p.status]}</span>`;
-    return `${band}<section class="phase s-${p.status}${isRel(p) ? " rel" : ""}" aria-labelledby="h-${p.id}">
-      <div class="rail"><span class="node"><span>${p.status === "done" ? check : i}</span></span></div>
-      <div class="body" id="${p.id}">
-        <div class="ph-head">
-          <div class="ph-title"><h2 id="h-${p.id}">${esc(p.title)}</h2>${p.ver === "done" ? "" : `<span class="ver">${p.ver}</span>`}${tag}</div>
-          <p>${esc(p.goal)}</p>
-        </div>
-        <div class="lanes" style="--cols:${Math.max(lanes.length, 1)}">${cells}</div>
-        <p class="exit"><b>${p.status === "done" ? "Finished" : "Done when"}</b><span>${esc(p.exit)}</span></p>
-      </div>
-    </section>`;
-  }).join("");
-}
-document.querySelectorAll("#lane-toggle button").forEach(b => b.addEventListener("click", () => {
-  const k = b.dataset.lane;
-  if (shown.has(k) && shown.size === 1) return;
-  shown.has(k) ? shown.delete(k) : shown.add(k);
-  b.setAttribute("aria-pressed", String(shown.has(k)));
-  render();
-}));
-render();
-</script>
