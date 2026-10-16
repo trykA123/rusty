@@ -1,4 +1,4 @@
-use std::time::Instant;
+use std::time::{Duration, Instant};
 
 use windows::Win32::Foundation::{LPARAM, LRESULT, WPARAM};
 use windows::Win32::UI::Shell::{GCS_VERBW, IContextMenu, IContextMenu2, IContextMenu3};
@@ -11,9 +11,12 @@ use windows::core::{Interface, PSTR, PWSTR};
 
 use super::icon;
 use super::menu::{ID_FIRST, LoadedMenu};
-use crate::model::{Item, Node, Submenu, ms_round};
+use super::sta;
+use crate::model::{Item, Node, Shape, Submenu, ms_round};
 
 const MAX_DEPTH: usize = 4;
+const SETTLE_MAX: Duration = Duration::from_millis(1500);
+const SETTLE_QUIET: Duration = Duration::from_millis(150);
 
 pub struct Walker<'a> {
     cm: &'a IContextMenu,
@@ -44,7 +47,7 @@ impl<'a> Walker<'a> {
             return Some(Node::Separator);
         }
         let submenu = (!mii.hSubMenu.is_invalid() && depth < MAX_DEPTH)
-            .then(|| self.submenu(mii.hSubMenu, pos, depth));
+            .then(|| Box::new(self.submenu(mii.hSubMenu, pos, depth)));
         Some(Node::Item(Item {
             id: mii.wID,
             text,
@@ -59,13 +62,18 @@ impl<'a> Walker<'a> {
     }
 
     fn submenu(&self, sub: HMENU, pos: u32, depth: usize) -> Submenu {
-        let items_before_init = item_count(sub) as usize;
+        let before_init = shape(sub);
         let start = Instant::now();
         let init_by = self.init_popup(sub, pos);
         let init_ms = ms_round(start.elapsed().as_secs_f64() * 1000.0);
+        let after_init = shape(sub);
+        let (settled, last_change_ms) = settle(sub, after_init);
         Submenu {
-            items_before_init,
+            before_init,
+            after_init,
+            settled,
             init_ms,
+            last_change_ms,
             init_by,
             children: self.walk(sub, depth + 1),
         }
@@ -117,6 +125,38 @@ impl<'a> Walker<'a> {
         let verb = String::from_utf16_lossy(&buf[..len]);
         (!verb.is_empty()).then_some(verb)
     }
+}
+
+fn shape(hmenu: HMENU) -> Shape {
+    let items: Vec<_> = (0..item_count(hmenu))
+        .filter_map(|pos| read_item(hmenu, pos))
+        .filter(|(mii, _)| !mii.fType.contains(MFT_SEPARATOR))
+        .collect();
+    let blank = items
+        .iter()
+        .filter(|(_, text)| text.trim().is_empty())
+        .count();
+    Shape {
+        items: items.len(),
+        blank,
+    }
+}
+
+fn settle(sub: HMENU, mut last: Shape) -> (Shape, f64) {
+    let start = Instant::now();
+    let mut changed_at = start;
+    while start.elapsed() < SETTLE_MAX {
+        sta::pump(Duration::from_millis(10));
+        let now = shape(sub);
+        if now != last {
+            last = now;
+            changed_at = Instant::now();
+        } else if last.blank == 0 && changed_at.elapsed() >= SETTLE_QUIET {
+            break;
+        }
+    }
+    let last_change_ms = (changed_at - start).as_secs_f64() * 1000.0;
+    (last, ms_round(last_change_ms))
 }
 
 fn item_count(hmenu: HMENU) -> u32 {

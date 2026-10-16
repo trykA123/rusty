@@ -2,7 +2,9 @@ use std::time::Instant;
 
 use anyhow::{Context, bail};
 use windows::Win32::Foundation::HWND;
-use windows::Win32::UI::Shell::{CMF_EXPLORE, CMF_EXTENDEDVERBS, CMF_NORMAL, IContextMenu};
+use windows::Win32::UI::Shell::{
+    CMF_EXPLORE, CMF_EXTENDEDVERBS, CMF_NORMAL, CMF_SYNCCASCADEMENU, IContextMenu,
+};
 use windows::Win32::UI::WindowsAndMessaging::{CreatePopupMenu, DestroyMenu, HMENU};
 
 use super::selection::Selection;
@@ -16,6 +18,7 @@ const ID_LAST: u32 = 0x7FFF;
 pub enum Flags {
     Normal,
     Explore,
+    SyncCascade,
 }
 
 impl Flags {
@@ -23,6 +26,7 @@ impl Flags {
         match self {
             Self::Normal => CMF_NORMAL | CMF_EXTENDEDVERBS,
             Self::Explore => CMF_EXPLORE | CMF_EXTENDEDVERBS,
+            Self::SyncCascade => CMF_NORMAL | CMF_EXTENDEDVERBS | CMF_SYNCCASCADEMENU,
         }
     }
 
@@ -30,6 +34,7 @@ impl Flags {
         match self {
             Self::Normal => "CMF_NORMAL|CMF_EXTENDEDVERBS",
             Self::Explore => "CMF_EXPLORE|CMF_EXTENDEDVERBS",
+            Self::SyncCascade => "CMF_NORMAL|CMF_EXTENDEDVERBS|CMF_SYNCCASCADEMENU",
         }
     }
 }

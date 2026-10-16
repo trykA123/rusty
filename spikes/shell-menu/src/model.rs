@@ -43,7 +43,7 @@ pub struct Item {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub icon: Option<Icon>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub submenu: Option<Submenu>,
+    pub submenu: Option<Box<Submenu>>,
 }
 
 #[derive(Serialize)]
@@ -66,10 +66,19 @@ pub struct RgbaInfo {
 
 #[derive(Serialize)]
 pub struct Submenu {
-    pub items_before_init: usize,
+    pub before_init: Shape,
+    pub after_init: Shape,
+    pub settled: Shape,
     pub init_ms: f64,
+    pub last_change_ms: f64,
     pub init_by: String,
     pub children: Vec<Node>,
+}
+
+#[derive(Serialize, Clone, Copy, Debug, PartialEq, Eq)]
+pub struct Shape {
+    pub items: usize,
+    pub blank: usize,
 }
 
 #[derive(Serialize, Default, Debug, PartialEq)]
@@ -81,7 +90,9 @@ pub struct Stats {
     pub owner_drawn: usize,
     pub icons: usize,
     pub icons_converted: usize,
-    pub submenus_filled_by_init: usize,
+    pub submenus_changed_by_init: usize,
+    pub submenus_changed_later: usize,
+    pub submenu_last_change_ms_max: f64,
     pub submenu_init_ms_total: f64,
     pub submenu_init_ms_max: f64,
 }
@@ -113,8 +124,10 @@ impl Stats {
         }
         if let Some(sub) = &item.submenu {
             self.submenus += 1;
-            let filled = sub.items_before_init == 0 && !sub.children.is_empty();
-            self.submenus_filled_by_init += usize::from(filled);
+            self.submenus_changed_by_init += usize::from(sub.after_init != sub.before_init);
+            self.submenus_changed_later += usize::from(sub.settled != sub.after_init);
+            self.submenu_last_change_ms_max =
+                self.submenu_last_change_ms_max.max(sub.last_change_ms);
             self.submenu_init_ms_total += sub.init_ms;
             self.submenu_init_ms_max = self.submenu_init_ms_max.max(sub.init_ms);
             self.add(&sub.children);
@@ -200,6 +213,7 @@ pub struct PackagedCommand {
     pub verb_id: String,
     pub clsid: String,
     pub applies_to_selection: bool,
+    pub in_classic_menu: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub probe: Option<CommandProbe>,
 }
@@ -236,21 +250,24 @@ mod tests {
             default: false,
             owner_drawn: false,
             icon: None,
-            submenu,
+            submenu: submenu.map(Box::new),
         })
     }
 
     fn tree() -> Vec<Node> {
         let send_to = Submenu {
-            items_before_init: 0,
+            before_init: Shape { items: 1, blank: 1 },
+            after_init: Shape { items: 1, blank: 1 },
+            settled: Shape { items: 2, blank: 0 },
             init_ms: 2.5,
+            last_change_ms: 40.0,
             init_by: "IContextMenu3".into(),
             children: vec![item("&Desktop", None, None), Node::Separator],
         };
         vec![
             item("&Copy", Some("copy"), None),
             Node::Separator,
-            item("Se&nd to", None, Some(send_to)),
+            item("&Send to", None, Some(send_to)),
         ]
     }
 
@@ -260,7 +277,9 @@ mod tests {
         assert_eq!(stats.items, 3);
         assert_eq!(stats.separators, 2);
         assert_eq!(stats.submenus, 1);
-        assert_eq!(stats.submenus_filled_by_init, 1);
+        assert_eq!(stats.submenus_changed_by_init, 0);
+        assert_eq!(stats.submenus_changed_later, 1);
+        assert_eq!(stats.submenu_last_change_ms_max, 40.0);
         assert_eq!(stats.verbs, 1);
         assert_eq!(stats.submenu_init_ms_max, 2.5);
     }
@@ -274,7 +293,7 @@ mod tests {
 
     #[test]
     fn plain_text_strips_access_keys_and_accelerators() {
-        assert_eq!(plain_text("Se&nd to"), "Send to");
+        assert_eq!(plain_text("&Send to"), "Send to");
         assert_eq!(plain_text("A && B\tCtrl+C"), "A & B");
     }
 }

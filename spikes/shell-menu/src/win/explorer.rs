@@ -37,7 +37,11 @@ pub fn probe(selection: &Selection, classic: &[Node]) -> ExplorerReport {
             }
         })
         .collect();
-    let packaged = packaged::probe(selection, items.as_ref().ok());
+    let packaged = packaged::probe(&packaged::Scope {
+        selection,
+        items: items.as_ref().ok(),
+        classic,
+    });
     ExplorerReport {
         registry_keys,
         registry,

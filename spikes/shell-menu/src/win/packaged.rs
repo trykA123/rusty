@@ -7,14 +7,20 @@ use windows::core::HSTRING;
 use super::explorer::probe_command;
 use super::selection::Selection;
 use crate::manifest::{MenuVerb, applies, context_menu_verbs};
-use crate::model::{PackagedCommand, PackagedReport};
+use crate::model::{Node, PackagedCommand, PackagedReport, find};
 
 struct Package {
     name: String,
     root: PathBuf,
 }
 
-pub fn probe(selection: &Selection, items: Option<&IShellItemArray>) -> PackagedReport {
+pub struct Scope<'a> {
+    pub selection: &'a Selection,
+    pub items: Option<&'a IShellItemArray>,
+    pub classic: &'a [Node],
+}
+
+pub fn probe(scope: &Scope) -> PackagedReport {
     let packages = match packages() {
         Ok(list) => list,
         Err(e) => {
@@ -34,7 +40,7 @@ pub fn probe(selection: &Selection, items: Option<&IShellItemArray>) -> Packaged
         };
         manifests_read += 1;
         for verb in context_menu_verbs(&xml).unwrap_or_default() {
-            commands.push(command(package, verb, selection, items));
+            commands.push(command(package, verb, scope));
         }
     }
     PackagedReport {
@@ -45,23 +51,27 @@ pub fn probe(selection: &Selection, items: Option<&IShellItemArray>) -> Packaged
     }
 }
 
-fn command(
-    package: &Package,
-    verb: MenuVerb,
-    selection: &Selection,
-    items: Option<&IShellItemArray>,
-) -> PackagedCommand {
-    let applies_to_selection = selection
+fn command(package: &Package, verb: MenuVerb, scope: &Scope) -> PackagedCommand {
+    let applies_to_selection = scope
+        .selection
         .entries
         .iter()
         .all(|e| applies(&verb.item_type, e.is_dir, e.extension.as_deref()));
-    let probe = applies_to_selection.then(|| probe_command(&verb.clsid, None, items));
+    let probe = applies_to_selection.then(|| probe_command(&verb.clsid, None, scope.items));
+    let braced = format!("{{{}}}", verb.clsid.trim_matches(['{', '}']));
+    let in_classic_menu = find(scope.classic, &|i| {
+        i.verb
+            .as_deref()
+            .is_some_and(|v| v.eq_ignore_ascii_case(&braced))
+    })
+    .is_some();
     PackagedCommand {
         package: package.name.clone(),
         item_type: verb.item_type,
         verb_id: verb.verb_id,
         clsid: verb.clsid,
         applies_to_selection,
+        in_classic_menu,
         probe,
     }
 }

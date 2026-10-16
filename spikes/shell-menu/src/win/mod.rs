@@ -22,9 +22,10 @@ pub fn run(args: &Args) -> anyhow::Result<Report> {
 
 fn collect(args: &Args, owner: HWND) -> anyhow::Result<Report> {
     let selection = Selection::parse(&args.paths)?;
-    let explore = LoadedMenu::query(&selection, owner, Flags::Explore)?.walk();
     let normal = LoadedMenu::query(&selection, owner, Flags::Normal)?;
     let normal_pass = normal.walk();
+    let explore = LoadedMenu::query(&selection, owner, Flags::Explore)?.walk();
+    let sync = LoadedMenu::query(&selection, owner, Flags::SyncCascade)?.walk();
     let explorer_commands = args
         .explorer_commands
         .then(|| explorer::probe(&selection, &normal_pass.menu));
@@ -38,7 +39,7 @@ fn collect(args: &Args, owner: HWND) -> anyhow::Result<Report> {
             .iter()
             .map(|e| e.path.display().to_string())
             .collect(),
-        passes: vec![normal_pass, explore],
+        passes: vec![normal_pass, explore, sync],
         invoke,
         explorer_commands,
     })
