@@ -38,7 +38,7 @@ A long right-click, the Menu key or Shift+F10 opens the Windows context menu for
 | M5 | wiring and Ferrite actions | ui-builder | medium | M3, M4 | UI tests with the fake provider; owner tries it on Windows | done |
 | M7 | F3 and F4 context menu per kind (D51), on the M4 component | ui-builder | medium | M5 | UI tests per kind: right-click, Menu key, Shift+F10, each item dispatches its action | done |
 | M7b | Missing viewer actions for D51 items: Find selection, Copy path:line, tree Copy value and Copy key, table Copy column, Markdown Copy and Copy link, image Copy image and Copy path; then add them to the viewer menu | ui-builder | medium | M7 | UI tests per action and per menu item | done (92f1000) |
-| M6 | review | reviewer (Opus high) | high | M5, M7 | verdict | blocked |
+| M6 | review | reviewer (Opus high) | high | M5, M7 | verdict | in progress |
 
 ## Done when
 
