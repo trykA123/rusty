@@ -30,8 +30,8 @@ A long right-click, the Menu key or Shift+F10 opens the Windows context menu for
 
 | Atom | Component | Role | Effort | After | Check | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| M1 | spike: provider on Windows | api-builder (Opus high) | high | — | Windows CI job prints the menu tree for a `.zip`, a folder and 3 files; reachable Windows 11 commands listed | ready |
-| M2 | `ShellMenu` model + filter | Red checker, Green orchestrator | medium | — | `cargo test` model tests | ready |
+| M1 | spike: provider on Windows | api-builder (Opus high) | high | — | Windows CI job prints the menu tree for a `.zip`, a folder and 3 files; reachable Windows 11 commands listed | running |
+| M2 | `ShellMenu` model + filter | Red checker, Green orchestrator | medium | — | `cargo test` model tests | done |
 | M3 | `shell_menu` provider (STA thread, lazy submenus, icons, invoke, classic) | api-builder (Opus high) | high | M1, M2 | Windows CI tests | blocked |
 | M4 | `ContextMenu` component per D46 | ui-builder-high | high | M2 | headless UI tests, gallery screenshots both themes | blocked |
 | M5 | wiring and Ferrite actions | ui-builder | medium | M3, M4 | UI tests with the fake provider; owner tries it on Windows | blocked |
@@ -47,3 +47,4 @@ A long right-click, the Menu key or Shift+F10 opens the Windows context menu for
 ## Log
 
 - 2026-10-16 — Plan written after the owner picked the designer's recommendation (D46). Prototype: https://claude.ai/artifact/3yRKtiJ1xaYjnW45Dqz6xL
+- 2026-10-16 — M2 (8373238) in `rusty_core::shell_menu`; review PASS WITH FIXES (disabled parents, selection kept by path, empty text skipped, `set_submenu`, Classic menu action) fixed in dbbd4f2; merged. M1 spike running on Windows CI.
