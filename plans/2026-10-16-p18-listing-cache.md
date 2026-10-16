@@ -43,6 +43,7 @@ From docs/architecture.md ("Speed: caching, lazy loading, pre-warming"), which a
 | C5 | network timeout and offline state (D5) | ui-builder-high | high | C2 | fake fs with a stalled share | blocked |
 | C6 | disk cache (D6) | api-builder | medium | C1 | store tests | blocked |
 | C7 | budgets in diagnostics and soak test (D7) | api-builder | medium | C1–C6 | soak test in CI | blocked |
+| C9 | native Windows listing: `FindFirstFileExW` with `FindExInfoBasic` and `FIND_FIRST_EX_LARGE_FETCH` (architecture "Listing folders" phase 1), benchmarked against `std::fs::read_dir` and Explorer on a share | api-builder (Opus high) | high | — | Windows CI benchmark on a local folder of 50k entries; owner timing on the mapped share | ready |
 | C8 | review | reviewer (Opus high) | high | all | verdict | blocked |
 
 ## Done when
@@ -56,3 +57,4 @@ From docs/architecture.md ("Speed: caching, lazy loading, pre-warming"), which a
 
 - 2026-10-16 — Plan written after the owner's network test.
 - 2026-10-16 — C1 (f40ec96): `ListingCache` over `Arc<[FsEntry]>`, 39 tests. Review PASS WITH FIXES: patch outside the lock, pinned byte counter, conditional put; sort keys stay in the pane; volume serial filled by C2. Fixes running.
+- 2026-10-16 — Owner: the mapped network folder takes 5–8 s to list; scroll is very fast, no freezes. The local provider still lists through `std::fs::read_dir`, not the planned `FindFirstFileExW` large fetch: C9 added. Baseline asked: entry count and Explorer time.
