@@ -24,7 +24,7 @@ All decided (D52, D43, D45); workers never reopen them.
 | V1 | Side sheet component (D1), gallery page | ui-builder-high | high | — | UI tests: sides, resize, snap at 1100 px, reduced motion; screenshots both themes | done |
 | V2 | Folder profile service (D3) in rusty-fs | api-builder (Opus medium) | medium | — | fake fs tests: progress, cancel, top 10, kinds cap, skipped; property test on totals | done |
 | V3 | Preview host: toggle, follow, files read-only, folder layout (D2, D4, D6) | ui-builder-high | high | V1, V2 | UI tests: debounce, cancel, Tab jump, each kind; screenshots | ready |
-| V4 | Browse mode (D5) | ui-builder | medium | V3 | UI tests: focus in and out, Enter on folder and file, F3, double-click | blocked |
+| V4 | Browse mode (D5) | ui-builder | medium | V3 | UI tests: focus in and out, Enter on folder and file, F3, double-click | ready |
 | V5 | Review | reviewer (Opus high) | high | all | verdict | blocked |
 
 ## Done when
@@ -37,3 +37,4 @@ All decided (D52, D43, D45); workers never reopen them.
 - 2026-10-16 — Plan written after the owner picked direction 1 and accepted the revised prototype (tree first, opaque headers, browse and open).
 - 2026-10-16 — V2 (cd6601a) merged: `folder_profile` + `spawn_profile` (Idle priority, cancel on drop) in rusty-fs, `ProfileCache` (256, keyed by location + change time) in rusty-cache. For V3: invalidate cached profiles on watch events too (a folder's change time ignores deep edits); never wait for a final snapshot after a drop.
 - 2026-10-16 — V1 (ef1db36) merged: `rusty_ui::side_sheet` (SheetFrame, SheetState, SideSheet builder, Ctrl+[ / Ctrl+] actions). Accepted: snap at body width ≤ 1100 px; `shadows.sheet` replaced with symmetric D52 values plus `sheet_ring`; grip uses `colors.faint` (3.9–4.2:1). V3 must call `side_sheet::bind_keys` and `on_resize_keys`.
+- 2026-10-16 — V3 (6ca8bb6, review fixes e41769f) merged: Ctrl+Q and card button; 150 ms follow with load ids; files via the F3 path read-only; folder tree first (lazy, 2,000 cap cut in the worker), stats, types, largest; ProfileCache with watch invalidation (one drop for batches over 64); Esc clears filter, then stops the scan. Open: duplicate one-line header inside F3 bodies; no F-key Preview chip; 1440 px unchecked.
