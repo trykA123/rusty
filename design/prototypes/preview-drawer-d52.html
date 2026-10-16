@@ -1,0 +1,1152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Preview drawer directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Chakra+Petch:wght@600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: light;
+  --page-bg: oklch(96.2% 0.005 260);
+  --page-surface: oklch(99.2% 0.002 260);
+  --page-line: oklch(88% 0.008 260);
+  --page-text: oklch(21% 0.012 260);
+  --page-muted: oklch(46% 0.02 260);
+  --page-accent: oklch(50% 0.18 262);
+  --page-sel: oklch(93% 0.035 262);
+  --page-rec: oklch(56% 0.168 42);
+  --font-page: "Archivo", "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --fs-12: 0.75rem; --fs-13: 0.8125rem; --fs-14: 0.875rem; --fs-16: 1rem; --fs-20: 1.25rem; --fs-24: 1.5rem;
+  --s1: 2px; --s2: 4px; --s3: 6px; --s4: 8px; --s5: 10px; --s6: 12px; --s7: 16px; --s8: 24px; --s9: 32px;
+  --r-sm: 4px; --r-md: 6px; --r-lg: 8px; --r-xl: 12px;
+  --dur-fast: 120ms; --dur: 180ms; --dur-slow: 240ms;
+  --ease-out: cubic-bezier(.2, .8, .2, 1); --ease-in: cubic-bezier(.5, 0, .75, 0);
+  --z-pop: 10; --z-sheet: 20; --z-toast: 25; --z-toolbar: 30;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --page-bg: oklch(12% 0.008 260); --page-surface: oklch(16% 0.008 260); --page-line: oklch(28% 0.012 260);
+    --page-text: oklch(93% 0.006 260); --page-muted: oklch(72% 0.016 260); --page-accent: oklch(72% 0.13 262);
+    --page-sel: oklch(30% 0.07 262); --page-rec: oklch(72% 0.143 42);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page-bg: oklch(12% 0.008 260); --page-surface: oklch(16% 0.008 260); --page-line: oklch(28% 0.012 260);
+  --page-text: oklch(93% 0.006 260); --page-muted: oklch(72% 0.016 260); --page-accent: oklch(72% 0.13 262);
+  --page-sel: oklch(30% 0.07 262); --page-rec: oklch(72% 0.143 42);
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--page-bg); color: var(--page-text); font-family: var(--font-page); font-size: var(--fs-16); line-height: 1.5; -webkit-font-smoothing: antialiased; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--page-accent); outline-offset: 2px; }
+kbd { font-family: var(--font-mono); font-size: var(--fs-12); }
+
+.page { max-width: 1504px; margin-inline: auto; padding-block: var(--s7) 96px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.head h1 { font-size: var(--fs-24); line-height: 1.2; margin: 0; font-weight: 700; }
+.head p { margin: var(--s2) 0 0; color: var(--page-muted); max-width: 86ch; font-size: var(--fs-14); }
+.toolbar { position: sticky; top: 0; z-index: var(--z-toolbar); display: flex; flex-wrap: wrap; gap: var(--s4) var(--s7); align-items: center; padding-block: var(--s4); margin-block: var(--s4) 0; background: var(--page-bg); border-bottom: 1px solid var(--page-line); }
+.group { display: flex; align-items: center; gap: var(--s4); flex-wrap: wrap; }
+.group-label { font-size: var(--fs-12); color: var(--page-muted); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+.seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--page-line); border-radius: var(--r-md); background: var(--page-surface); padding: var(--s1); gap: var(--s1); }
+.seg button { border: 0; background: transparent; padding: var(--s2) var(--s5); min-height: 36px; min-width: 36px; border-radius: var(--r-sm); cursor: pointer; font-size: var(--fs-14); color: var(--page-muted); display: inline-flex; align-items: center; gap: var(--s3); }
+.seg button:hover { color: var(--page-text); }
+.seg button[aria-pressed="true"] { background: var(--page-sel); color: var(--page-text); font-weight: 600; }
+.badge { font-size: var(--fs-12); font-weight: 600; color: var(--page-rec); border: 1px solid currentColor; border-radius: var(--r-sm); padding: 0 var(--s2); line-height: 16px; }
+.recline { flex-basis: 100%; margin: 0; font-size: var(--fs-14); color: var(--page-muted); padding-left: var(--s4); border-left: 3px solid var(--page-rec); }
+.recline b { color: var(--page-text); }
+.hint { font-size: var(--fs-12); color: var(--page-muted); margin: 0; flex-basis: 100%; }
+.dir-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s2) var(--s6); margin-top: var(--s7); }
+.dir-head h2 { margin: 0; font-size: var(--fs-20); line-height: 1.25; }
+.dir-head p { margin: 0; color: var(--page-muted); font-size: var(--fs-14); max-width: 110ch; }
+.stage { margin-top: var(--s6); overflow: hidden; border-radius: var(--r-lg); padding: var(--s1); }
+.stage.actual { overflow-x: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
+.scaler { transform-origin: 0 0; }
+.meter { margin: var(--s4) 0 0; font-size: var(--fs-12); color: var(--page-muted); font-family: var(--font-mono); }
+.notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--s6); margin-top: var(--s7); }
+.note { background: var(--page-surface); border: 1px solid var(--page-line); border-radius: var(--r-lg); padding: var(--s6) var(--s7); }
+.note h3 { margin: 0 0 var(--s2); font-size: var(--fs-14); }
+.note p { font-size: var(--fs-14); color: var(--page-muted); margin: 0; overflow-wrap: anywhere; }
+.note.trade { border-left: 3px solid var(--page-accent); }
+.rec { margin-top: var(--s9); padding: var(--s7) var(--s8); border: 1px solid var(--page-line); border-left: 3px solid var(--page-rec); border-radius: var(--r-lg); background: var(--page-surface); }
+.rec h2 { margin: 0; font-size: var(--fs-16); }
+.rec p { margin: var(--s3) 0 0; font-size: var(--fs-14); color: var(--page-muted); max-width: 92ch; }
+.rec strong { color: var(--page-text); }
+@media (max-width: 640px) { .group-label { display: none; } .seg button { padding-inline: var(--s4); } .rec { padding: var(--s6); } }
+
+/* ---------- window ---------- */
+.win {
+  --ui: "Segoe UI Variable Text", "Segoe UI", "Inter", sans-serif; --mono: "Cascadia Mono", "JetBrains Mono", ui-monospace, monospace;
+  --w-mica: light-dark(oklch(93.8% 0.012 250), oklch(15.5% 0.014 255));
+  --w-mica-2: light-dark(oklch(94.5% 0.014 60), oklch(17% 0.012 230));
+  --w-surface: light-dark(oklch(99.3% 0.002 260), oklch(20.5% 0.01 260));
+  --w-field: light-dark(oklch(96.5% 0.006 260), oklch(17.5% 0.01 260));
+  --w-line: light-dark(oklch(88% 0.01 260), oklch(29% 0.012 260));
+  --w-line-strong: light-dark(oklch(74% 0.012 260), oklch(46% 0.014 260));
+  --w-text: light-dark(oklch(20% 0.012 260), oklch(94% 0.005 260));
+  --w-muted: light-dark(oklch(44% 0.02 260), oklch(73% 0.015 260));
+  --w-faint: light-dark(oklch(48% 0.016 260), oklch(68% 0.014 260));
+  --w-cur: light-dark(oklch(92% 0.04 262), oklch(31% 0.07 262));
+  --w-accent: light-dark(oklch(50% 0.18 262), oklch(72% 0.13 262));
+  --w-accent-text: light-dark(oklch(46% 0.17 262), oklch(80% 0.1 262));
+  --w-on-accent: light-dark(oklch(99% 0.003 262), oklch(16% 0.02 262));
+  --w-mark: light-dark(oklch(50% 0.2 30), oklch(76% 0.15 30));
+  --w-ok: light-dark(oklch(46% 0.13 150), oklch(76% 0.13 150));
+  --k-folder: light-dark(oklch(62% 0.13 78), oklch(80% 0.11 85));
+  --k-code: light-dark(oklch(50% 0.15 262), oklch(76% 0.1 262));
+  --k-img: light-dark(oklch(52% 0.15 340), oklch(75% 0.11 340));
+  --k-arc: light-dark(oklch(52% 0.12 45), oklch(75% 0.1 45));
+  --k-exe: light-dark(oklch(50% 0.12 150), oklch(75% 0.1 150));
+  --k-sheet: light-dark(oklch(50% 0.12 155), oklch(76% 0.11 155));
+  --k-font: light-dark(oklch(50% 0.12 200), oklch(78% 0.09 200));
+  --syn-kw: light-dark(oklch(48% 0.16 300), oklch(76% 0.12 300));
+  --syn-ty: light-dark(oklch(48% 0.1 195), oklch(80% 0.09 195));
+  --syn-fn: light-dark(oklch(48% 0.15 255), oklch(78% 0.1 255));
+  --syn-str: light-dark(oklch(46% 0.12 145), oklch(80% 0.12 145));
+  --syn-num: light-dark(oklch(50% 0.13 55), oklch(82% 0.1 70));
+  --syn-com: light-dark(oklch(48% 0.015 260), oklch(66% 0.015 260));
+  --syn-mac: light-dark(oklch(48% 0.16 20), oklch(76% 0.13 25));
+  --card-shadow: 0 1px 2px light-dark(oklch(20% 0.02 260 / .08), oklch(0% 0 0 / .4)), 0 8px 24px -12px light-dark(oklch(20% 0.02 260 / .22), oklch(0% 0 0 / .6));
+  --sheet-shadow: 0 0 0 1px var(--w-line), 0 28px 60px -20px light-dark(oklch(20% 0.02 260 / .42), oklch(0% 0 0 / .85));
+  --pop-shadow: 0 0 0 1px var(--w-line), 0 18px 40px -16px light-dark(oklch(20% 0.02 260 / .35), oklch(0% 0 0 / .7));
+  position: relative; display: flex; flex-direction: column; overflow: hidden;
+  border-radius: var(--r-lg); font-family: var(--ui); font-size: var(--fs-13); line-height: 1.3; color: var(--w-text);
+  background: radial-gradient(120% 90% at 0% 0%, var(--w-mica) 0%, transparent 60%), radial-gradient(100% 100% at 100% 100%, var(--w-mica-2) 0%, transparent 70%), var(--w-mica);
+  box-shadow: 0 0 0 1px light-dark(oklch(80% 0.01 260), oklch(32% 0.012 260)), 0 32px 64px -24px light-dark(oklch(20% 0.02 260 / .35), oklch(0% 0 0 / .75));
+  user-select: none;
+}
+.win:focus-visible { outline: 2px solid var(--w-accent); outline-offset: 3px; }
+:where(.win) button { border: 0; background: none; padding: 0; cursor: pointer; font-size: inherit; text-align: left; color: inherit; }
+:where(.win) button:focus-visible { outline: 2px solid var(--w-accent); outline-offset: 1px; }
+.win svg.i { width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+.win svg.i.sm { width: 14px; height: 14px; }
+.win .num { font-variant-numeric: tabular-nums; }
+.win .muted { color: var(--w-muted); }
+.ellip { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.t-dir, .t-up { color: var(--k-folder); } .t-code { color: var(--k-code); } .t-img { color: var(--k-img); } .t-arc { color: var(--k-arc); }
+.t-exe { color: var(--k-exe); } .t-sheet { color: var(--k-sheet); } .t-font { color: var(--k-font); } .t-doc, .t-faint, .t-disc { color: var(--w-muted); }
+.kbdc { font-family: var(--mono); font-size: var(--fs-12); padding: 0 var(--s2); border-radius: var(--r-sm); border: 1px solid var(--w-line); border-bottom-width: 2px; color: var(--w-muted); background: var(--w-surface); line-height: 17px; white-space: nowrap; }
+
+.tb { height: 46px; flex: none; display: flex; align-items: center; gap: var(--s6); padding-inline: var(--s4) 0; }
+.appbtn { display: inline-flex; align-items: center; gap: var(--s3); padding: var(--s2) var(--s4) var(--s2) var(--s2); border-radius: var(--r-lg); }
+.appbtn .wm { font-family: "Chakra Petch", var(--ui); font-weight: 600; font-size: var(--fs-14); letter-spacing: .01em; }
+.search { margin-inline: auto; width: min(520px, 40%); height: 32px; display: flex; align-items: center; gap: var(--s4); padding-inline: var(--s6) var(--s3); border-radius: 16px; background: var(--w-surface); box-shadow: 0 0 0 1px var(--w-line); color: var(--w-muted); }
+.search .ph { flex: 1; }
+.ctl { display: flex; align-self: stretch; }
+.ctl span { width: 46px; display: grid; place-items: center; color: var(--w-muted); }
+
+.body { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); gap: var(--s4); padding: 0 var(--s4); position: relative; }
+.card { display: flex; flex-direction: column; min-width: 0; min-height: 0; overflow: hidden; background: var(--w-surface); border-radius: var(--r-lg); box-shadow: 0 0 0 1px var(--w-line); }
+.card.on { box-shadow: 0 0 0 1.5px var(--w-accent), var(--card-shadow); }
+.chead { height: 42px; flex: none; display: flex; align-items: center; gap: var(--s3); padding-inline: var(--s4); min-width: 0; }
+.pill { height: 28px; display: inline-flex; align-items: center; gap: var(--s3); padding-inline: var(--s5); border-radius: 14px; color: var(--w-muted); white-space: nowrap; min-width: 0; }
+.pill.on { background: var(--w-field); color: var(--w-text); font-weight: 600; box-shadow: inset 0 0 0 1px var(--w-line); }
+.card.on .pill.on { background: var(--w-cur); box-shadow: none; }
+.sp { flex: 1; }
+.cbtn { height: 28px; display: inline-flex; align-items: center; gap: var(--s3); padding-inline: var(--s4); border-radius: 14px; color: var(--w-muted); white-space: nowrap; box-shadow: inset 0 0 0 1px var(--w-line); }
+.cbtn:hover { color: var(--w-text); background: var(--w-field); }
+.cbtn[aria-pressed="true"] { background: var(--w-cur); color: var(--w-accent-text); box-shadow: inset 0 0 0 1px var(--w-accent); font-weight: 600; }
+.drv { display: inline-flex; align-items: center; gap: var(--s3); height: 28px; padding-inline: var(--s4); border-radius: var(--r-md); box-shadow: inset 0 0 0 1px var(--w-line); white-space: nowrap; }
+.drv b { font-weight: 600; }
+.crumb { margin: 0 var(--s4) var(--s3); height: 30px; flex: none; display: flex; align-items: center; gap: var(--s2); padding-inline: var(--s4); border-radius: var(--r-md); background: var(--w-field); color: var(--w-muted); white-space: nowrap; overflow: hidden; }
+.crumb .last { color: var(--w-text); font-weight: 600; }
+.crumb svg { color: var(--w-faint); }
+.lw { container: lw / inline-size; flex: 1; min-height: 0; min-width: 0; display: flex; flex-direction: column; }
+.cols, .row { display: grid; grid-template-columns: 20px minmax(0, 1fr) 44px 76px 128px; column-gap: var(--s4); align-items: center; padding-inline: var(--s5); }
+.cols { height: 26px; flex: none; color: var(--w-muted); font-size: var(--fs-12); margin-inline: var(--s2); }
+.cols .r, .row .sz, .row .dt { text-align: right; }
+.rows { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding-inline: var(--s2); scrollbar-width: thin; }
+.row { width: 100%; height: 28px; border-radius: var(--r-md); position: relative; white-space: nowrap; }
+.row .nm { display: flex; align-items: center; gap: var(--s4); min-width: 0; }
+.row .nm span:last-child { overflow: hidden; text-overflow: ellipsis; }
+.row.dir .nm span:last-child { font-weight: 600; }
+.row .ex, .row .sz, .row .dt { color: var(--w-muted); }
+.row .sz.got { color: var(--w-text); }
+.row.cur { box-shadow: inset 0 0 0 1px var(--w-line); }
+.card.on .row.cur { background: var(--w-cur); box-shadow: none; }
+.card.on .row.cur::before { content: ""; position: absolute; left: 0; top: 7px; bottom: 7px; width: 3px; border-radius: 2px; background: var(--w-accent); }
+@container lw (max-width: 520px) { .cols, .row { grid-template-columns: 20px minmax(0, 1fr) 40px 72px; } .dt { display: none; } }
+@container lw (max-width: 340px) { .cols, .row { grid-template-columns: 18px minmax(0, 1fr) 68px; } .ex { display: none; } }
+.cfoot { height: 30px; flex: none; display: flex; align-items: center; gap: var(--s4); padding-inline: var(--s6); color: var(--w-muted); font-size: var(--fs-12); border-top: 1px solid var(--w-line); white-space: nowrap; overflow: hidden; }
+.cfoot .r { margin-left: auto; }
+
+.fkeys { height: 48px; flex: none; display: flex; align-items: center; justify-content: center; gap: var(--s3); padding-inline: var(--s4); min-width: 0; }
+.fk { display: inline-flex; align-items: center; gap: var(--s3); height: 30px; padding: 0 var(--s4) 0 var(--s1); border-radius: 15px; background: var(--w-surface); box-shadow: 0 0 0 1px var(--w-line); white-space: nowrap; flex: none; }
+.fk kbd { min-width: 28px; height: 24px; padding-inline: var(--s3); display: grid; place-items: center; border-radius: 12px; background: var(--w-field); color: var(--w-accent-text); font-family: var(--mono); font-weight: 500; }
+.fk.pvk[aria-pressed="true"] { box-shadow: 0 0 0 1.5px var(--w-accent); }
+.fk.pvk[aria-pressed="true"] kbd { background: var(--w-accent); color: var(--w-on-accent); }
+.fksep { width: 1px; height: 20px; background: var(--w-line); margin-inline: var(--s2); flex: none; }
+.fkhints { display: inline-flex; align-items: center; gap: var(--s5); height: 30px; padding: 0 var(--s5) 0 var(--s2); border-radius: 15px; background: var(--w-cur); box-shadow: inset 0 0 0 1px var(--w-accent); white-space: nowrap; font-size: var(--fs-12); flex: none; }
+.fkhints .lyr { height: 24px; display: inline-flex; align-items: center; padding-inline: var(--s4); border-radius: 12px; background: var(--w-accent); color: var(--w-on-accent); font-weight: 600; }
+.win.narrow.d2.open .fk:not(.pvk):not(.f3) span { display: none; }
+.win.narrow.d2.open .fk:not(.pvk):not(.f3) { padding-right: var(--s1); }
+.win.xnarrow .chead .pill:not(.on) { display: none; }
+.win.narrow .cbtn .lbl { display: none; }
+
+.toast { position: absolute; left: 50%; bottom: 60px; z-index: var(--z-toast); display: inline-flex; align-items: center; gap: var(--s4); padding: var(--s3) var(--s6) var(--s3) var(--s3); border-radius: 18px; background: var(--w-surface); box-shadow: var(--pop-shadow); white-space: nowrap; opacity: 0; transform: translate(-50%, 8px); transition: opacity var(--dur) var(--ease-out), transform var(--dur) var(--ease-out); pointer-events: none; }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+.toast .tic { width: 26px; height: 26px; display: grid; place-items: center; border-radius: 13px; background: var(--w-cur); color: var(--w-accent-text); }
+
+/* drawer pieces shared by all directions */
+.pvh { display: flex; align-items: center; gap: var(--s5); min-width: 0; flex: 1; }
+.pvic { width: 32px; height: 32px; border-radius: var(--r-lg); display: grid; place-items: center; background: var(--w-field); box-shadow: inset 0 0 0 1px var(--w-line); flex: none; }
+.pvt { display: flex; flex-direction: column; min-width: 0; }
+.pvt b { font-weight: 600; font-size: var(--fs-14); }
+.pvt small { color: var(--w-muted); font-size: var(--fs-12); }
+.pvh.compact .pvic { width: 26px; height: 26px; border-radius: var(--r-md); }
+.pvh.compact .pvt b { font-size: var(--fs-13); }
+.kchip { font-size: var(--fs-12); padding: 0 var(--s4); line-height: 22px; border-radius: 11px; background: var(--w-field); color: var(--w-muted); box-shadow: inset 0 0 0 1px var(--w-line); white-space: nowrap; flex: none; }
+.follows { font-size: var(--fs-12); color: var(--w-muted); white-space: nowrap; display: inline-flex; align-items: center; gap: var(--s2); }
+.follows b { color: var(--w-text); font-weight: 600; }
+.xbtn { display: inline-flex; align-items: center; gap: var(--s3); height: 28px; padding: 0 var(--s2) 0 var(--s3); border-radius: var(--r-md); color: var(--w-muted); flex: none; white-space: nowrap; }
+.xbtn:hover { background: var(--w-field); color: var(--w-text); }
+.pv { flex: 1; min-height: 0; overflow: auto; container: pv / inline-size; padding: var(--s6) var(--s7) var(--s7); scrollbar-width: thin; transition: opacity var(--dur-fast) var(--ease-out); }
+.pv.stale { opacity: .6; }
+.hk { display: inline-flex; align-items: center; gap: var(--s2); white-space: nowrap; }
+.grip { position: absolute; z-index: 3; touch-action: none; }
+.grip.v { cursor: col-resize; width: 12px; }
+.grip.h { cursor: row-resize; height: 12px; }
+.grip::after { content: ""; position: absolute; left: 50%; top: 50%; border-radius: 2px; background: var(--w-line-strong); transition: transform var(--dur-fast) var(--ease-out); }
+.grip.v::after { width: 4px; height: 36px; margin: -18px 0 0 -2px; }
+.grip.h::after { width: 40px; height: 4px; margin: -2px 0 0 -20px; }
+.grip:hover::after, .grip.drag::after, .grip:focus-visible::after { background: var(--w-accent); }
+.grip.v:hover::after, .grip.v.drag::after { transform: scaleY(1.3); }
+.grip.h:hover::after, .grip.h.drag::after { transform: scaleX(1.3); }
+
+/* direction 1: side sheet over the passive pane */
+.sheet { position: absolute; top: 0; bottom: 0; z-index: var(--z-sheet); display: flex; flex-direction: column; background: var(--w-surface); border-radius: var(--r-xl); box-shadow: var(--sheet-shadow); min-width: 0; }
+.sheet.at-r { right: var(--s4); }
+.sheet.at-l { left: var(--s4); }
+.sheet .grip { top: 0; bottom: 0; }
+.sheet.at-r .grip { left: -6px; }
+.sheet.at-l .grip { right: -6px; }
+.dhead { display: flex; align-items: center; gap: var(--s5); padding: var(--s5) var(--s4) var(--s5) var(--s6); border-bottom: 1px solid var(--w-line); min-height: 56px; flex: none; min-width: 0; }
+.dfoot { display: flex; align-items: center; gap: var(--s6); height: 34px; flex: none; padding-inline: var(--s6); border-top: 1px solid var(--w-line); background: var(--w-field); border-radius: 0 0 var(--r-xl) var(--r-xl); color: var(--w-muted); font-size: var(--fs-12); white-space: nowrap; overflow: hidden; }
+.win.xnarrow .sheet .kchip { display: none; }
+
+/* direction 2: bottom drawer */
+.bdrawer { flex: none; position: relative; margin: var(--s4) var(--s4) 0; display: flex; flex-direction: column; background: var(--w-surface); border-radius: var(--r-lg); box-shadow: 0 0 0 1px var(--w-line), var(--card-shadow); min-height: 0; }
+.bdrawer .grip { left: 0; right: 0; top: -10px; }
+.bdrawer .dhead { min-height: 46px; padding-block: var(--s3); }
+.bdrawer .pvic { width: 28px; height: 28px; }
+.segm { display: inline-flex; gap: var(--s1); padding: var(--s1); border-radius: 14px; background: var(--w-field); flex: none; }
+.segm button { height: 22px; padding-inline: var(--s4); border-radius: 11px; color: var(--w-muted); white-space: nowrap; font-size: var(--fs-12); }
+.segm button[aria-pressed="true"] { background: var(--w-surface); color: var(--w-text); font-weight: 600; box-shadow: 0 0 0 1px var(--w-line); }
+.bdrawer.peek .fsec, .bdrawer.peek .pv > :not(.fold) { display: none; }
+.bdrawer.peek .pv { overflow: hidden; padding-block: var(--s4); }
+.bdrawer.peek .stat .sub { display: none; }
+.bdrawer.peek .pv::after { content: attr(data-peek); color: var(--w-muted); font-size: var(--fs-12); }
+.bdrawer.peek .pv:has(.fold)::after { content: none; }
+
+/* direction 3: passive pane becomes the preview */
+.card.qv .chead .pill.on { background: var(--w-field); color: var(--w-text); box-shadow: inset 0 0 0 1px var(--w-line); }
+.qvwrap { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.qvh { padding: var(--s2) var(--s6) var(--s5); border-bottom: 1px solid var(--w-line); flex: none; display: flex; align-items: center; gap: var(--s4); }
+.splitchip { font-size: var(--fs-12); color: var(--w-muted); padding: 0 var(--s3); white-space: nowrap; }
+.gut { top: 0; bottom: 0; }
+.cfoot.hints { gap: var(--s6); }
+
+/* direction 4: split inside the active card */
+.split { flex: 1; min-height: 0; display: flex; position: relative; }
+.split > .lw { flex: 0 0 54%; }
+.split > .grip { position: relative; flex: none; z-index: 2; }
+.split > .grip.v { width: 9px; }
+.split > .grip.h { height: 9px; width: auto; }
+.inpv { flex: 1; min-width: 0; min-height: 0; display: flex; flex-direction: column; background: var(--w-field); border-left: 1px solid var(--w-line); }
+.win.narrow .split { flex-direction: column; }
+.win.narrow .inpv { border-left: 0; border-top: 1px solid var(--w-line); }
+.pvbar { display: flex; align-items: center; gap: var(--s4); padding: var(--s3) var(--s3) var(--s3) var(--s5); border-bottom: 1px solid var(--w-line); min-height: 46px; flex: none; min-width: 0; }
+.pvfoot { display: flex; align-items: center; gap: var(--s5); height: 30px; flex: none; padding-inline: var(--s5); border-top: 1px solid var(--w-line); color: var(--w-muted); font-size: var(--fs-12); white-space: nowrap; overflow: hidden; }
+.inpv .pv { padding: var(--s5) var(--s6) var(--s6); }
+.inpv .kchip { display: none; }
+
+/* entrance and exit, transform and opacity only */
+@keyframes inR { from { opacity: 0; transform: translateX(28px); } to { opacity: 1; transform: none; } }
+@keyframes inL { from { opacity: 0; transform: translateX(-28px); } to { opacity: 1; transform: none; } }
+@keyframes inU { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@keyframes inF { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes sweep { from { transform: translateX(-100%); } to { transform: translateX(340%); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+.sheet.at-r.enter { animation: inR var(--dur-slow) var(--ease-out) both; }
+.sheet.at-l.enter { animation: inL var(--dur-slow) var(--ease-out) both; }
+.bdrawer.enter { animation: inU var(--dur-slow) var(--ease-out) both; }
+.qvwrap.enter, .inpv.enter { animation: inF var(--dur) var(--ease-out) both; }
+.sheet.at-r.leave { animation: inR 160ms var(--ease-in) reverse both; }
+.sheet.at-l.leave { animation: inL 160ms var(--ease-in) reverse both; }
+.bdrawer.leave { animation: inU 160ms var(--ease-in) reverse both; }
+.qvwrap.leave, .inpv.leave { animation: inF 140ms var(--ease-in) reverse both; }
+.pv .swap { animation: fade var(--dur-fast) var(--ease-out) both; }
+
+/* preview content: folder */
+.fold { display: grid; gap: var(--s7); align-content: start; }
+.fstats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s4); }
+.stat { padding: var(--s5) var(--s6); border-radius: var(--r-lg); background: var(--w-field); box-shadow: inset 0 0 0 1px var(--w-line); min-width: 0; }
+.inpv .stat { background: var(--w-surface); }
+.stat small { display: block; color: var(--w-muted); font-size: var(--fs-12); white-space: nowrap; }
+.stat b { display: block; font-size: var(--fs-16); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.stat .sub { color: var(--w-muted); font-size: var(--fs-12); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+.stat.size { grid-column: 1 / -1; position: relative; overflow: hidden; }
+.stat.size b { font-size: var(--fs-24); line-height: 1.15; }
+.scan { display: flex; align-items: center; gap: var(--s3); color: var(--w-muted); font-size: var(--fs-12); margin-top: var(--s2); min-height: 22px; white-space: nowrap; }
+.scan .ok { color: var(--w-ok); display: inline-flex; align-items: center; gap: var(--s2); }
+.mini { display: inline-flex; align-items: center; gap: var(--s2); height: 22px; padding: 0 var(--s3) 0 var(--s2); border-radius: 11px; box-shadow: inset 0 0 0 1px var(--w-line); background: var(--w-surface); color: var(--w-text); font-size: var(--fs-12); }
+.win .mini:hover { box-shadow: inset 0 0 0 1px var(--w-line-strong); }
+.spinner { width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--w-line); border-top-color: var(--w-accent); animation: spin 900ms linear infinite; flex: none; }
+.sbar { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; overflow: hidden; }
+.sbar i { display: block; width: 30%; height: 100%; background: var(--w-accent); border-radius: 2px; animation: sweep 1.6s linear infinite; }
+.fsec { min-width: 0; }
+.fsec h4 { margin: 0 0 var(--s3); font-size: var(--fs-12); font-weight: 600; color: var(--w-muted); display: flex; gap: var(--s3); align-items: center; position: sticky; top: 0; background: inherit; }
+.fsec h4 .r { margin-left: auto; font-weight: 400; }
+.trow { display: grid; grid-template-columns: 56px 52px 70px minmax(40px, 1fr); gap: var(--s4); align-items: center; height: 24px; }
+.ext { display: inline-flex; align-items: center; gap: var(--s3); font-family: var(--mono); font-size: var(--fs-12); }
+.ext::before { content: ""; width: 8px; height: 8px; border-radius: 2px; background: var(--c); flex: none; }
+.trow .num { text-align: right; color: var(--w-muted); font-size: var(--fs-12); }
+.trow .num.s { color: var(--w-text); }
+.tbar { height: 8px; border-radius: 4px; background: var(--w-field); box-shadow: inset 0 0 0 1px var(--w-line); overflow: hidden; }
+.inpv .tbar { background: var(--w-surface); }
+.tbar i { display: block; height: 100%; background: var(--c); transform-origin: left center; }
+.largest { list-style: none; margin: 0; padding: 0; }
+.largest li { display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; gap: var(--s4); align-items: center; height: 24px; }
+.largest .rk { color: var(--w-muted); font-size: var(--fs-12); text-align: right; }
+.largest .lp { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; direction: rtl; text-align: left; }
+.largest .lp bdi { direction: ltr; }
+.largest .dirp { color: var(--w-muted); }
+.largest .sz { font-size: var(--fs-12); }
+.largest li.ph span:nth-child(2) { height: 8px; border-radius: 4px; background: var(--w-field); box-shadow: inset 0 0 0 1px var(--w-line); width: 70%; }
+.tree { display: flex; flex-direction: column; }
+.tn { display: grid; grid-template-columns: 14px 16px minmax(0, 1fr) auto; align-items: center; gap: var(--s3); width: 100%; height: 24px; padding-left: calc(var(--d) * 16px + 2px); padding-right: var(--s3); border-radius: var(--r-md); white-space: nowrap; }
+.win .tn:hover { background: var(--w-field); }
+.inpv .tn:hover { background: var(--w-surface); }
+.tn .n { overflow: hidden; text-overflow: ellipsis; }
+.tn.dir .n { font-weight: 600; }
+.tn .s { color: var(--w-muted); font-size: var(--fs-12); }
+.tn .chev { color: var(--w-muted); display: grid; place-items: center; }
+.tn.more .n { color: var(--w-muted); font-weight: 400; font-style: italic; }
+@container pv (min-width: 500px) {
+  .fstats { grid-template-columns: minmax(0, 1.6fr) repeat(3, minmax(0, 1fr)); }
+  .stat.size { grid-column: auto; }
+}
+@container pv (min-width: 760px) {
+  .fold { grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr) minmax(0, 1.1fr); grid-template-rows: auto minmax(0, 1fr); height: 100%; }
+  .fstats { grid-column: 1 / -1; }
+  .fsec { min-height: 0; overflow: auto; scrollbar-width: thin; padding-right: var(--s2); }
+}
+
+/* preview content: files */
+.code, .json, .hex, .txt { font-variant-ligatures: none; }
+.code { display: flex; font-family: var(--mono); font-size: var(--fs-12); line-height: 19px; min-width: 0; }
+.code .gut-n { color: var(--w-faint); text-align: right; padding-right: var(--s6); user-select: none; flex: none; }
+.code pre { margin: 0; font: inherit; white-space: pre; overflow: hidden; min-width: 0; }
+.kw { color: var(--syn-kw); } .ty { color: var(--syn-ty); } .fn { color: var(--syn-fn); } .str { color: var(--syn-str); }
+.nu { color: var(--syn-num); } .com { color: var(--syn-com); font-style: italic; } .mac { color: var(--syn-mac); }
+.json { font-family: var(--mono); font-size: var(--fs-12); line-height: 22px; }
+.jr { display: flex; align-items: center; padding-left: calc(var(--d) * 16px); white-space: nowrap; min-width: 0; }
+.jt, .jt0 { width: 18px; height: 18px; display: grid; place-items: center; color: var(--w-muted); flex: none; border-radius: var(--r-sm); }
+.win .jt:hover { background: var(--w-field); }
+.jk { color: var(--syn-fn); } .jp, .jb { color: var(--w-muted); }
+.jm { color: var(--w-muted); font-family: var(--ui); margin-inline: var(--s3); font-size: var(--fs-12); }
+.csv { border-collapse: separate; border-spacing: 0; font-size: var(--fs-12); width: 100%; }
+.csv th, .csv td { padding: 0 var(--s5); height: 24px; text-align: left; white-space: nowrap; border-bottom: 1px solid var(--w-line); }
+.csv th { position: sticky; top: calc(var(--s6) * -1); background: var(--w-surface); color: var(--w-muted); font-weight: 600; }
+.inpv .csv th { background: var(--w-field); }
+.csv td.n, .csv th.n { text-align: right; font-variant-numeric: tabular-nums; }
+.csv td:first-child, .csv th:first-child { color: var(--w-muted); text-align: right; width: 1%; }
+.subnote { color: var(--w-muted); font-size: var(--fs-12); margin: var(--s4) 0 0; }
+.md { font-size: var(--fs-13); line-height: 1.55; max-width: 72ch; user-select: text; }
+.md h1 { font-size: var(--fs-20); margin: 0 0 var(--s4); line-height: 1.2; }
+.md h2 { font-size: var(--fs-14); margin: var(--s7) 0 var(--s3); }
+.md p, .md ul { margin: 0 0 var(--s4); }
+.md ul { padding-left: 1.2em; }
+.md code { font-family: var(--mono); font-size: var(--fs-12); background: var(--w-field); border-radius: var(--r-sm); padding: 0 var(--s2); box-shadow: inset 0 0 0 1px var(--w-line); }
+.md pre { font-family: var(--mono); font-size: var(--fs-12); background: var(--w-field); border-radius: var(--r-md); padding: var(--s5) var(--s6); margin: 0 0 var(--s4); box-shadow: inset 0 0 0 1px var(--w-line); }
+.md blockquote { margin: 0; padding-left: var(--s6); border-left: 3px solid var(--w-line-strong); color: var(--w-muted); }
+.inpv .md code, .inpv .md pre { background: var(--w-surface); }
+.img { margin: 0; display: grid; gap: var(--s5); }
+.imgbox { border-radius: var(--r-lg); overflow: hidden; box-shadow: 0 0 0 1px var(--w-line); line-height: 0; }
+.imgbox svg { width: 100%; height: auto; display: block; }
+.img figcaption { display: flex; flex-wrap: wrap; gap: var(--s2) var(--s6); color: var(--w-muted); font-size: var(--fs-12); }
+.img figcaption b { color: var(--w-text); font-weight: 600; }
+.exif { display: grid; grid-template-columns: max-content 1fr; gap: var(--s2) var(--s6); margin: 0; font-size: var(--fs-12); }
+.exif dt { color: var(--w-muted); } .exif dd { margin: 0; }
+@container pv (min-width: 760px) { .img { grid-template-columns: minmax(0, 2fr) minmax(220px, 1fr); align-items: start; } .img .imgbox { grid-row: span 2; } }
+.arch { display: grid; }
+.arow { display: grid; grid-template-columns: 18px minmax(0, 1fr) 70px 70px; gap: var(--s4); align-items: center; height: 24px; white-space: nowrap; }
+.arow.h { color: var(--w-muted); font-size: var(--fs-12); border-bottom: 1px solid var(--w-line); margin-bottom: var(--s2); }
+.arow .num { text-align: right; font-size: var(--fs-12); }
+.arow .num.m { color: var(--w-muted); }
+.arow .p { overflow: hidden; text-overflow: ellipsis; }
+.arow .p span { color: var(--w-muted); }
+.asum { display: flex; flex-wrap: wrap; gap: var(--s2) var(--s6); color: var(--w-muted); font-size: var(--fs-12); margin-bottom: var(--s5); }
+.asum b { color: var(--w-text); font-weight: 600; }
+.fontp { font-family: "Archivo", sans-serif; display: grid; gap: var(--s5); }
+.fontp .f1 { font-size: 34px; font-weight: 750; line-height: 1.05; font-stretch: 112%; letter-spacing: -.01em; }
+.fontp .f2 { font-size: var(--fs-20); font-weight: 500; line-height: 1.25; }
+.fontp .f3 { font-size: var(--fs-14); line-height: 1.5; color: var(--w-muted); overflow-wrap: anywhere; }
+.fontp .wts { display: flex; flex-wrap: wrap; gap: var(--s2) var(--s6); font-size: var(--fs-16); }
+.fontp .axes { font-family: var(--ui); font-size: var(--fs-12); color: var(--w-muted); display: flex; flex-wrap: wrap; gap: var(--s2) var(--s6); }
+.hex { font-family: var(--mono); font-size: var(--fs-12); line-height: 20px; white-space: pre; }
+.hex .o { color: var(--w-faint); } .hex .z { color: var(--w-faint); opacity: .7; } .hex .h { color: var(--w-accent-text); font-weight: 700; } .hex .a { color: var(--w-muted); }
+.txt { font-family: var(--mono); font-size: var(--fs-12); line-height: 19px; white-space: pre; }
+.txt .ts { color: var(--w-faint); } .txt .wn { color: var(--w-mark); font-weight: 700; } .txt .in { color: var(--w-ok); }
+
+@media (prefers-reduced-motion: reduce) {
+  .win .sheet.enter, .win .bdrawer.enter, .win .qvwrap.enter, .win .inpv.enter { animation-name: fade; }
+  .win .sheet.leave, .win .bdrawer.leave, .win .qvwrap.leave, .win .inpv.leave { animation-name: fade; }
+  .win .sbar i, .win .spinner { animation: none; }
+  .win .toast { transition: opacity var(--dur) linear; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="head">
+    <h1>Ferrite preview drawer: four directions (D52)</h1>
+    <p>A live preview of whatever is under the cursor in the active pane, without leaving the panes. Folders show a background size count, counts, last change, types, the 10 largest files and a collapsible tree. Files show the F3 views read-only. The preview follows the cursor after a 150 ms pause, so holding an arrow key loads only where you stop.</p>
+  </header>
+
+  <nav class="toolbar" aria-label="Prototype controls">
+    <div class="group"><span class="group-label" id="lbl-d">Direction</span>
+      <div class="seg" role="group" aria-labelledby="lbl-d" id="seg-d">
+        <button type="button" data-d="1" aria-pressed="true">1 <span class="badge">Pick</span></button>
+        <button type="button" data-d="2" aria-pressed="false">2</button>
+        <button type="button" data-d="3" aria-pressed="false">3</button>
+        <button type="button" data-d="4" aria-pressed="false">4</button>
+      </div>
+    </div>
+    <div class="group"><span class="group-label" id="lbl-w">Window</span>
+      <div class="seg" role="group" aria-labelledby="lbl-w" id="seg-w">
+        <button type="button" data-w="1440" aria-pressed="true">1440</button>
+        <button type="button" data-w="1280" aria-pressed="false">1280</button>
+        <button type="button" data-w="1100" aria-pressed="false">1100</button>
+        <button type="button" data-w="900" aria-pressed="false">900</button>
+      </div>
+    </div>
+    <div class="group"><span class="group-label" id="lbl-t">Theme</span>
+      <div class="seg" role="group" aria-labelledby="lbl-t" id="seg-t">
+        <button type="button" data-t="auto" aria-pressed="true">Auto</button>
+        <button type="button" data-t="light" aria-pressed="false">Light</button>
+        <button type="button" data-t="dark" aria-pressed="false">Dark</button>
+      </div>
+    </div>
+    <div class="group"><span class="group-label" id="lbl-s">Scale</span>
+      <div class="seg" role="group" aria-labelledby="lbl-s" id="seg-s">
+        <button type="button" data-s="fit" aria-pressed="true">Fit</button>
+        <button type="button" data-s="1" aria-pressed="false">100%</button>
+      </div>
+    </div>
+    <p class="recline"><b>Recommended: 1.</b> One drawer component shared with the settings sheet (D43), full height for code, trees and the top-10 list, and a width that does not depend on the pane split.</p>
+    <p class="hint">Keys 1–4 pick a direction. Inside the window: ↑ ↓ Home End move the cursor · Tab switches panes · Q or Ctrl+Q opens and closes · [ and ] resize · Enter or F3 opens · Esc stops a folder scan. Shift+Tab leaves the window.</p>
+  </nav>
+
+  <main>
+    <section aria-labelledby="dtitle">
+      <div class="dir-head"><h2 id="dtitle">Direction 1</h2><p id="didea"></p></div>
+      <div class="stage" id="stage"><div class="scaler" id="scaler"></div></div>
+      <p class="meter" id="meter" aria-live="polite"></p>
+      <div class="notes" id="notes"></div>
+    </section>
+
+    <aside class="rec" aria-labelledby="rec-title">
+      <h2 id="rec-title">My recommendation: direction 1</h2>
+      <p><strong>Build the side sheet over the passive pane.</strong> It is the drawer the owner asked for, and it is the same component as the settings sheet (D43): one opaque surface, one grip, one footer strip for key hints. Full height suits what a preview mostly shows: code, JSON trees, the 10 largest files and the folder tree. Its width is its own, so a narrow peek or a wide reading view does not move the pane splitter.</p>
+      <p>Tab keeps working: the sheet jumps to the other side, so it always covers the passive pane and never the cursor it follows. At 1100 px and below it snaps exactly over the passive card, which is what direction 3 does anyway.</p>
+      <p><strong>Fallbacks.</strong> Direction 3 is the cheapest to build (a pane mode, no overlay) and the most familiar to Total Commander users; take it if the sheet's overlap with settings feels crowded. Direction 2 is the only one that keeps both panes visible, but code and images get a short, wide box. Direction 4 keeps everything in view and is the most cramped.</p>
+    </aside>
+  </main>
+</div>
+
+<script>
+(() => {
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const P = (d) => `<path d="${d}"/>`;
+  const FILE = P("M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z") + P("M14 2v4a2 2 0 0 0 2 2h4");
+  const RECT = '<rect width="18" height="18" x="3" y="3" rx="2"/>';
+  const ICON = {
+    dir: P("M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"),
+    up: '<polyline points="14 9 9 4 4 9"/>' + P("M20 20h-7a4 4 0 0 1-4-4V4"),
+    doc: FILE + P("M10 9H8") + P("M16 13H8") + P("M16 17H8"),
+    code: FILE + P("m10 13-2 2 2 2") + P("m14 17 2-2-2-2"),
+    img: FILE + '<circle cx="10" cy="12" r="2"/>' + P("m20 17-1.3-1.3a2.4 2.4 0 0 0-3.4 0L9 22"),
+    arc: FILE + P("M10 12v-1") + P("M10 18v-2") + P("M10 7V6") + '<circle cx="10" cy="20" r="2"/>',
+    exe: '<rect x="2" y="4" width="20" height="16" rx="2"/>' + P("M10 4v4") + P("M2 8h20") + P("M6 4v4"),
+    sheet: FILE + P("M8 13h8") + P("M8 17h8") + P("M12 13v4"),
+    font: P("M12 4v16") + P("M4 7V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2") + P("M9 20h6"),
+    faint: FILE,
+    search: '<circle cx="11" cy="11" r="8"/>' + P("m21 21-4.3-4.3"),
+    chevD: P("m6 9 6 6 6-6"), chevR: P("m9 18 6-6-6-6"),
+    min: P("M5 12h14"), max: '<rect x="5" y="5" width="14" height="14" rx="2"/>', x: P("M18 6 6 18") + P("m6 6 12 12"),
+    plus: P("M5 12h14") + P("M12 5v14"),
+    hdd: '<line x1="22" x2="2" y1="12" y2="12"/>' + P("M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"),
+    net: '<rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/>' + P("M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3") + P("M12 12V8"),
+    check: P("M20 6 9 17l-5-5"),
+    eye: P("M2.06 12.35a1 1 0 0 1 0-.7 10.75 10.75 0 0 1 19.88 0 1 1 0 0 1 0 .7 10.75 10.75 0 0 1-19.88 0") + '<circle cx="12" cy="12" r="3"/>',
+    panelR: RECT + P("M15 3v18"), panelL: RECT + P("M9 3v18"), panelB: RECT + P("M3 15h18"), cols: RECT + P("M12 3v18"),
+    square: '<rect x="6" y="6" width="12" height="12" rx="1.5"/>',
+    play: '<polygon points="7 4 19 12 7 20 7 4"/>',
+    refresh: P("M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8") + P("M21 3v5h-5") + P("M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16") + P("M8 16H3v5"),
+    open: P("M15 3h6v6") + P("M10 14 21 3") + P("M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"),
+  };
+  const ic = (n, cls = "") => `<svg class="i ${cls}" viewBox="0 0 24 24" aria-hidden="true">${ICON[n] || ICON.faint}</svg>`;
+  const LOGO = '<svg width="22" height="22" viewBox="0 0 256 256" aria-hidden="true"><rect x="8" y="8" width="240" height="240" rx="54" fill="#2a2d32"/><path d="M51.3 105.28H39.17V92.34H51.3V78.45L64.25 65.5H87.31V78.18H70.86L66.27 82.63V92.34H87.31V105.28H66.54V159.5H51.3Z" fill="#EEEAE3"/><path d="M98.31 146.15V105.82L111.66 92.34H148.21L161.83 105.82V130.91H113.55V141.7L118.68 146.82H141.74L146.59 141.83V137.79H161.7V146.42L148.62 159.5H111.53ZM146.59 119.72V110.41L141.33 105.02H118.81L113.55 110.41V119.72Z" fill="#EEEAE3"/><rect x="172.83" y="168.5" width="44" height="18" rx="3" fill="#E8601F"/></svg>';
+  const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  const fmt = (n) => Math.round(n).toLocaleString("en-US");
+  const UNIT = { K: 1024, M: 1024 ** 2, G: 1024 ** 3, T: 1024 ** 4 };
+  const b = (s) => { const m = /^([\d.]+)([KMGT]?)$/.exec(s); return m ? parseFloat(m[1]) * (UNIT[m[2]] || 1) : 0; };
+  function fmtB(n) {
+    if (n < 1024) return `${Math.round(n)} B`;
+    if (n < UNIT.M) return `${(n / UNIT.K).toFixed(n < 10 * UNIT.K ? 1 : 0)} KB`;
+    if (n < UNIT.G) return `${(n / UNIT.M).toFixed(n < 100 * UNIT.M ? 1 : 0)} MB`;
+    if (n < UNIT.T) return `${(n / UNIT.G).toFixed(2)} GB`;
+    return `${(n / UNIT.T).toFixed(2)} TB`;
+  }
+
+  const WH = 780;
+  const DEBOUNCE = 150;
+  const EXT_C = { png: "img", jpg: "img", svg: "img", ico: "img", cr3: "img", xmp: "img", mp4: "img", rs: "code", toml: "code", json: "code", snap: "code", md: "code", d: "code", rlib: "arc", rmeta: "arc", zip: "arc", "7z": "arc", iso: "arc", exe: "exe", pdb: "exe", msi: "exe", dll: "exe", ttf: "font" };
+  const extColor = (x) => `var(--k-${EXT_C[x] || "faint"}, var(--w-line-strong))`;
+
+  const FOLD = {
+    work: { path: "D:\\work", total: "31.6G", files: 212480, dirs: 18902, changed: "2026-10-16 09:41", dur: 5200,
+      types: [["rlib", 4210, "11.2G"], ["pdb", 380, "8.4G"], ["mp4", 14, "5.2G"], ["exe", 96, "4.1G"], ["png", 2210, "1.3G"], ["rs", 18240, "212M"]],
+      largest: ["sites/recordings/demo-0.4-4k.mp4:1.9G", "sites/recordings/demo-0.3-4k.mp4:1.4G", "ferrite/target/release/ferrite.pdb:612M", "scratch/vm/win11-test.vhdx:588M", "ferrite/target/debug/ferrite.pdb:540M", "ferrite/target/debug/deps/libgpui-3c1e.rlib:418M", "ferrite/target/release/deps/libgpui-9a02.rlib:396M", "sites/recordings/tab-switch.mp4:322M", "ferrite/target/debug/deps/libwindows-77f1.rlib:301M", "scratch/dumps/ferrite-crash-1012.dmp:244M"],
+      tree: [["ferrite", "7.3G", [["target", "6.84G", null], ["assets", "412M", null], ["crates", "38.4M", null], ["docs", "6.1M", null]]], ["sites", "20.6G", [["recordings", "18.9G", null], ["blog", "1.7G", null]]], ["scratch", "1.8G", null], ["notes", "22M", null], ["todo.md", "3.2K"]] },
+    assets: { path: "D:\\work\\ferrite\\assets", total: "412.3M", files: 1284, dirs: 46, changed: "2026-10-15 22:41", dur: 1500,
+      types: [["png", 612, "198M"], ["jpg", 88, "141M"], ["ttf", 24, "38M"], ["svg", 401, "8.2M"], ["ico", 12, "1.1M"]],
+      largest: ["screens/hero-dark-5k.png:24.1M", "screens/hero-light-5k.png:23.8M", "photos/sinaia-ridge.jpg:9.6M", "photos/bucegi-dawn.jpg:8.9M", "screens/panes-1440-dark.png:6.2M", "screens/panes-1440-light.png:6.1M", "screens/settings-sheet.png:4.9M", "photos/omu-fog.jpg:4.4M", "fonts/Archivo-Variable.ttf:812K", "fonts/Inter-Variable.ttf:804K"],
+      tree: [["screens", "221M", [["hero-dark-5k.png", "24.1M"], ["hero-light-5k.png", "23.8M"], ["panes-1440-dark.png", "6.2M"], ["settings-sheet.png", "4.9M"]], 118], ["photos", "141M", [["sinaia-ridge.jpg", "9.6M"], ["bucegi-dawn.jpg", "8.9M"]], 86], ["fonts", "38M", null], ["icons", "9.3M", [["lucide", "8.2M", null], ["app", "1.1M", [["ferrite.ico", "412K"], ["ferrite-256.png", "88K"]]]]], ["cursors", "1.4M", null], ["LICENSE-assets.txt", "2.1K"]] },
+    crates: { path: "D:\\work\\ferrite\\crates", total: "38.4M", files: 1902, dirs: 214, changed: "2026-10-16 09:12", dur: 1100,
+      types: [["rs", 1240, "21.2M"], ["snap", 310, "11.8M"], ["json", 120, "3.4M"], ["md", 88, "1.1M"], ["toml", 64, "212K"]],
+      largest: ["rusty-ui/tests/snapshots/main_window__dark.snap:1.9M", "rusty-ui/tests/snapshots/main_window__light.snap:1.9M", "rusty-preview/tests/fixtures/big.json:1.2M", "rusty-core/src/jobs/engine.rs:214K", "rusty-ui/src/pane/list.rs:188K", "rusty-fs/src/win/shell_menu.rs:142K", "rusty-preview/src/syntax/rust.rs:131K", "rusty-keymap/src/default.rs:96K", "rusty-ui/src/viewer/text.rs:91K", "rusty-core/src/jobs/tests.rs:62K"],
+      tree: [["rusty-core", "6.2M", [["src", "5.8M", [["jobs", "1.1M", null], ["lib.rs", "4.1K"], ["config.rs", "22K"]]], ["Cargo.toml", "1.2K"]]], ["rusty-ui", "21.4M", [["src", "4.9M", null], ["tests", "16.5M", null], ["Cargo.toml", "1.6K"]]], ["rusty-preview", "5.1M", null], ["rusty-fs", "3.9M", null], ["rusty-keymap", "1.8M", null]] },
+    docs: { path: "D:\\work\\ferrite\\docs", total: "6.1M", files: 142, dirs: 12, changed: "2026-10-16 08:55", dur: 800,
+      types: [["png", 31, "3.6M"], ["md", 96, "2.2M"], ["svg", 9, "212K"]],
+      largest: ["img/panes-dark.png:612K", "img/panes-light.png:598K", "img/viewer.png:441K", "decisions.md:188K", "img/copy-pill.png:212K", "plans/P20-tree-folds.md:96K", "plans/P17-context-menu.md:88K", "roadmap.md:61K", "img/settings.png:58K", "keymap.md:41K"],
+      tree: [["plans", "640K", [["P17-context-menu.md", "88K"], ["P20-tree-folds.md", "96K"]], 21], ["img", "3.8M", null], ["decisions.md", "188K"], ["roadmap.md", "61K"], ["keymap.md", "41K"]] },
+    target: { path: "D:\\work\\ferrite\\target", total: "6.84G", files: 64210, dirs: 3120, changed: "2026-10-16 09:40", dur: 3800,
+      types: [["rlib", 3480, "3.1G"], ["pdb", 42, "1.6G"], ["rmeta", 3480, "1.2G"], ["exe", 18, "412M"], ["d", 3480, "18M"]],
+      largest: ["release/ferrite.pdb:612M", "debug/ferrite.pdb:540M", "debug/deps/libgpui-3c1e.rlib:418M", "release/deps/libgpui-9a02.rlib:396M", "debug/deps/libwindows-77f1.rlib:301M", "debug/ferrite.exe:188M", "release/deps/libwindows-1b0e.rlib:162M", "debug/incremental/ferrite-2q9x/s-h1.bin:141M", "debug/deps/libtree_sitter-e2.rlib:96M", "release/ferrite.exe:41M"],
+      tree: [["debug", "4.9G", [["deps", "3.4G", null], ["incremental", "1.2G", null], ["build", "112M", null], ["ferrite.exe", "188M"], ["ferrite.pdb", "540M"]]], ["release", "1.8G", [["deps", "1.1G", null], ["ferrite.exe", "41M"], ["ferrite.pdb", "612M"]]], [".rustc_info.json", "1.2K"], ["CACHEDIR.TAG", "177"]] },
+    zarch: { path: "Z:\\archive", total: "1.31T", files: 418220, dirs: 9880, changed: "2026-10-15 08:12", dur: 7000,
+      types: [["cr3", 61200, "702G"], ["mp4", 1840, "391G"], ["jpg", 210400, "148G"], ["7z", 96, "61G"], ["iso", 31, "88G"]],
+      largest: ["video/2025-wedding-cam-a.mp4:62G", "video/2025-wedding-cam-b.mp4:58G", "video/sinaia-drone-raw.mp4:41G", "old-phones/pixel6-backup.7z:28G", "2026-10/Sinaia-2026-10.7z:2.4G", "iso/Windows11_25H2_x64.iso:5.4G", "iso/ubuntu-26.04.iso:6.1G", "2026-09/raw/DSCF2201.cr3:61M", "2026-09/raw/DSCF2202.cr3:61M", "2026-09/raw/DSCF2203.cr3:60M"],
+      tree: [["2026-10", "21.0G", null], ["2026-09", "84.2G", null], ["2026-08", "112G", null], ["video", "391G", null], ["old-phones", "61G", null], ["iso", "88G", null]] },
+    installers: { path: "Z:\\archive\\2026-10\\installers", total: "1.21G", files: 28, dirs: 3, changed: "2026-10-02 18:10", dur: 900,
+      types: [["exe", 19, "702M"], ["msi", 6, "488M"], ["zip", 3, "33M"]],
+      largest: ["vs_BuildTools.exe:412M", "dotnet-sdk-9.0.msi:261M", "OBS-Studio-31.1.exe:152M", "Git-2.51-64-bit.exe:68M", "python-3.14.msi:44M", "bios-x670e-3201.zip:33M", "PowerToys-0.95.exe:31M", "rustup-init.exe:9.0M", "WizTree_4.21.exe:6.8M", "Everything-1.5.exe:2.2M"],
+      tree: [["drivers", "188M", null], ["dev", "620M", null], ["vs_BuildTools.exe", "412M"], ["rustup-init.exe", "9.0M"]] },
+    photos: { path: "Z:\\archive\\2026-10\\photos", total: "18.6G", files: 2412, dirs: 21, changed: "2026-10-12 19:01", dur: 4400,
+      types: [["cr3", 1188, "14.1G"], ["jpg", 1188, "4.3G"], ["xmp", 36, "1.2M"]],
+      largest: ["sinaia/raw/DSCF4131.cr3:62M", "sinaia/raw/DSCF4130.cr3:62M", "sinaia/raw/DSCF4128.cr3:61M", "sinaia/raw/DSCF4102.cr3:61M", "bucegi/raw/DSCF4210.cr3:60M", "bucegi/raw/DSCF4208.cr3:60M", "bucegi/raw/DSCF4207.cr3:59M", "sinaia/raw/DSCF4099.cr3:59M", "bucegi/raw/DSCF4201.cr3:59M", "sinaia/raw/DSCF4098.cr3:58M"],
+      tree: [["sinaia", "11.2G", [["raw", "8.6G", null], ["jpg", "2.6G", null]]], ["bucegi", "7.4G", null], ["picks.xmp", "41K"]] },
+    shots: { path: "Z:\\archive\\2026-10\\screenshots", total: "742M", files: 611, dirs: 4, changed: "2026-10-14 21:20", dur: 900,
+      types: [["png", 588, "731M"], ["jpg", 23, "11M"]],
+      largest: ["2026-10-14 211845.png:6.1M", "2026-10-14 211802.png:5.9M", "2026-10-13 223010.png:4.8M", "2026-10-12 101510.png:4.4M", "2026-10-11 184402.png:3.9M", "2026-10-10 093311.png:3.6M", "2026-10-09 212201.png:3.2M", "2026-10-08 120012.png:2.9M", "2026-10-07 080808.png:2.7M", "2026-10-05 161616.png:2.4M"],
+      tree: [["ferrite", "402M", null], ["games", "288M", null], ["misc", "52M", null]] },
+  };
+  for (const f of Object.values(FOLD)) {
+    f.totalB = b(f.total);
+    f.types = f.types.map(([x, c, s]) => ({ x, c, s: b(s) }));
+    const sum = f.types.reduce((a, t) => a + t.s, 0);
+    const cnt = f.types.reduce((a, t) => a + t.c, 0);
+    if (f.totalB - sum > f.totalB * 0.005) f.types.push({ x: "other", c: Math.max(Math.ceil(f.files * 0.01), f.files - cnt), s: f.totalB - sum });
+    f.largest = f.largest.map((s) => { const i = s.lastIndexOf(":"); return { p: s.slice(0, i), s: b(s.slice(i + 1)) }; });
+  }
+
+  const E = (n, x, kind, t, s, d, extra = {}) => ({ n, x, kind, t, s, d, ...extra });
+  const FILES = {
+    L: [
+      E("..", "", "folder", "up", "", "", { up: true, fid: "work" }),
+      E("assets", "", "folder", "dir", "", "2026-10-15 22:41", { dir: true, fid: "assets" }),
+      E("crates", "", "folder", "dir", "", "2026-10-16 09:12", { dir: true, fid: "crates" }),
+      E("docs", "", "folder", "dir", "", "2026-10-16 08:55", { dir: true, fid: "docs" }),
+      E("target", "", "folder", "dir", "", "2026-10-16 09:40", { dir: true, fid: "target" }),
+      E("Archivo-Variable", "ttf", "font", "font", "812K", "2026-09-02 10:14"),
+      E("config", "json", "json", "code", "2.4K", "2026-10-16 08:02"),
+      E("ferrite", "exe", "hex", "exe", "41.2M", "2026-10-16 09:40"),
+      E("hero-2560", "jpg", "image", "img", "1.9M", "2026-10-12 07:41", { hue: 240 }),
+      E("main", "rs", "code", "code", "1.1K", "2026-10-16 09:31"),
+      E("README", "md", "md", "doc", "4.0K", "2026-10-15 21:10"),
+      E("release-0.4.2", "zip", "archive", "arc", "18.4M", "2026-10-15 07:30"),
+      E("sales-q3", "csv", "csv", "sheet", "96K", "2026-10-08 11:30"),
+      E("setup", "log", "text", "doc", "18.2K", "2026-10-09 21:44"),
+    ],
+    R: [
+      E("..", "", "folder", "up", "", "", { up: true, fid: "zarch" }),
+      E("installers", "", "folder", "dir", "", "2026-10-02 18:10", { dir: true, fid: "installers" }),
+      E("photos", "", "folder", "dir", "", "2026-10-12 19:01", { dir: true, fid: "photos" }),
+      E("screenshots", "", "folder", "dir", "", "2026-10-14 21:20", { dir: true, fid: "shots" }),
+      E("backup-manifest", "json", "json", "code", "12.4K", "2026-10-15 06:00"),
+      E("bios-x670e-3201", "zip", "archive", "arc", "33.0M", "2026-10-01 21:40"),
+      E("IMG_4102", "jpg", "image", "img", "5.1M", "2026-10-11 10:02", { hue: 150 }),
+      E("notes-2026-09", "md", "md", "doc", "3.1K", "2026-09-30 22:10"),
+      E("router-config-2026-10-02", "bak", "hex", "faint", "64K", "2026-10-02 20:45"),
+    ],
+  };
+  const PANE = {
+    L: { drive: "D", label: "Work", kind: "hdd", path: ["D:", "work", "ferrite"], win: "D:\\work\\ferrite", tabs: ["ferrite", "Downloads"], free: "28.0 GB free" },
+    R: { drive: "Z", label: "media", kind: "net", path: ["Z:", "archive", "2026-10"], win: "Z:\\archive\\2026-10", tabs: ["2026-10", "photos"], free: "1.92 TB free" },
+  };
+
+  const DIRS = {
+    1: { idea: "A sheet slides in over the passive pane, like the settings sheet (D43). Its width is its own; the active pane stays fully in view.", icon: () => (state.side === "L" ? "panelR" : "panelL"),
+      notes: [
+        ["Open and close", "Ctrl+Q or the Preview button in the active card's header. The F-key bar shows the same toggle next to F10. The sheet slides in from the passive side; Ctrl+Q or × closes it."],
+        ["Resize", "Drag the grip on the sheet's inner edge, or Ctrl+[ and Ctrl+] in 48 px steps ([ and ] here). It may overlap the active card but never leaves it under 360 px."],
+        ["1100 px and below", "The sheet snaps exactly over the passive card, edge to edge, so no sliver of the covered list shows. At 900 px the kind chip goes and the hints keep only keys."],
+        ["Tab and focus", "Tab still switches panes. The sheet jumps to the other side so it always covers the passive pane and previews the new active cursor. Focus never enters the sheet."],
+        ["Key hints", "A footer strip inside the sheet, the same place as the settings sheet's footer."],
+        ["Trade-off", "Hides most of the passive pane, the usual copy target, while open. Costs little: it is the settings sheet with different content."],
+      ] },
+    2: { idea: "A drawer docks above the F-key bar and spans both panes. Both lists stay visible; they give up rows.", icon: () => "panelB",
+      notes: [
+        ["Open and close", "Ctrl+Q or the Preview button in the active card's header. The drawer rises from the F-key bar; the panes get shorter at once, without animating their height."],
+        ["Resize", "Drag the top grip, or pick Peek, Half or Tall in the header (Ctrl+Shift+Q cycles). Peek shows only the folder totals or a one-line file summary. [ and ] step the height."],
+        ["1100 px and below", "Folder sections stack in two rows instead of three columns. The F-key labels fold to keys only, so the preview hints still fit next to them."],
+        ["Tab and focus", "The drawer stays put. A 'follows' label in its header names the pane it previews; Tab switches that pane."],
+        ["Key hints", "In the F-key bar as a Preview layer, right under the drawer, like the copy pill next to F10."],
+        ["Trade-off", "The only direction that keeps both panes visible, and folder summaries read well across the width. Code, images and trees get a short, wide box, and each list loses about a third of its rows."],
+      ] },
+    3: { idea: "Total Commander's Quick View, modernised: the passive card itself becomes the preview. No overlay and no new surface.", icon: () => "eye",
+      notes: [
+        ["Open and close", "Ctrl+Q, as in Total Commander, or the eye button in the active card's header. The passive card keeps its frame; its list fades out and the preview fades in."],
+        ["Resize", "It is the pane splitter: drag the gap between the cards, or [ and ] in 5 % steps from 30 to 70 %. A double-click on the gap resets 50 : 50."],
+        ["1100 px and below", "Nothing new: it is a pane, so it narrows with the window. Inactive tabs fold away and the card footer keeps only keys."],
+        ["Tab and focus", "Tab switches panes: the old preview turns back into its list, and the other card becomes the preview."],
+        ["Key hints", "In the card footer, where the pane's item count and free space usually sit."],
+        ["Trade-off", "Cheapest to build (a pane mode) and the most familiar to TC users. Its width is the pane split, so a narrow peek means moving the splitter."],
+      ] },
+    4: { idea: "The active card splits: list beside preview, inside the same card. The passive pane is untouched.", icon: () => "cols",
+      notes: [
+        ["Open and close", "Ctrl+Q or the split button in the active card's header. The list keeps Name and Size; the preview takes the rest of the card."],
+        ["Resize", "Drag the inner splitter, or [ and ] to give the list 30 to 75 % of the card."],
+        ["1100 px and below", "The split stacks: list on top, preview underneath, still inside the active card."],
+        ["Tab and focus", "The preview moves into the other card on Tab, so it always sits beside the cursor it follows."],
+        ["Key hints", "A thin footer under the preview, inside the card; at 900 px it keeps only the keys."],
+        ["Trade-off", "Everything stays visible and the preview sits right beside the cursor. List and preview each get half a card, which is the most cramped for code and tables."],
+      ] },
+  };
+
+  const state = { d: 1, theme: "auto", ww: 1440, scale: "fit", open: true, side: "L", cur: { L: 4, R: 2 }, sDelta: 0, bdFrac: 0.42, pvFrac3: 0.5, lFrac: 0.54, moves: 0, loads: 0, enter: false };
+  const scans = {};
+  const collapsedJson = new Set(["/keys"]);
+  const openTree = {};
+  let loadTimer = 0, tickTimer = 0, toastTimer = 0, shownFid = null, curScale = 1;
+
+  const other = (s) => (s === "L" ? "R" : "L");
+  const entry = () => FILES[state.side][state.cur[state.side]];
+  const narrow = () => state.ww <= 1100;
+  const xnarrow = () => state.ww <= 900;
+  const bodyW = () => state.ww - 16;
+  const cardW = () => (bodyW() - 8) / 2;
+  const sideName = (s) => (s === "L" ? "left" : "right");
+
+  /* ---------- scan model ---------- */
+  function scanOf(fid) {
+    if (!scans[fid]) scans[fid] = { start: performance.now(), dur: FOLD[fid].dur, stopped: null };
+    return scans[fid];
+  }
+  const prog = (s) => (s.stopped != null ? s.stopped : Math.min(1, (performance.now() - s.start) / s.dur));
+  const MON = "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(" ");
+  const ease = (p) => 1 - (1 - p) * (1 - p);
+
+  /* ---------- shell ---------- */
+  const crumbs = (path) => path.map((s, i) => `<span class="${i === path.length - 1 ? "last" : ""}">${esc(s)}</span>`).join(ic("chevR", "sm"));
+  function rowHtml(side, f, i) {
+    const cls = ["row", f.dir || f.up ? "dir" : "", i === state.cur[side] ? "cur" : ""].join(" ");
+    const s = f.fid && scans[f.fid] && prog(scans[f.fid]) >= 1 && !f.up ? `<span class="sz num got">${fmtB(FOLD[f.fid].totalB)}</span>` : `<span class="sz num">${f.dir ? "&lt;DIR&gt;" : f.up ? "" : fmtB(b(f.s))}</span>`;
+    return `<button type="button" class="${cls}" role="option" aria-selected="${i === state.cur[side]}" tabindex="-1" data-side="${side}" data-i="${i}"><span></span><span class="nm"><span class="t-${f.t}" style="display:contents">${ic(f.t)}</span><span>${esc(f.dir ? `[${f.n}]` : f.n)}</span></span><span class="ex">${f.x}</span>${s}<span class="dt num">${f.d}</span></button>`;
+  }
+  function listHtml(side) {
+    return `<div class="lw"><div class="cols" aria-hidden="true"><span></span><span>Name ↑</span><span class="ex">Ext</span><span class="r">Size</span><span class="r dt">Date</span></div>
+      <div class="rows" id="rows-${side}" role="listbox" aria-label="${sideName(side)} pane files">${FILES[side].map((f, i) => rowHtml(side, f, i)).join("")}</div></div>`;
+  }
+  function chead(side, active) {
+    const p = PANE[side];
+    const tabs = p.tabs.map((t, i) => `<span class="pill${i === 0 ? " on" : ""}">${ic("dir", "sm")}<span class="ellip">${esc(t)}</span></span>`).join("") + `<span class="pill">${ic("plus", "sm")}</span>`;
+    const btn = active ? `<button type="button" class="cbtn" data-act="toggle" aria-pressed="${state.open}" aria-label="Preview (Ctrl+Q)">${ic(DIRS[state.d].icon(), "sm")}<span class="lbl">Preview</span><span class="kbdc lbl">Ctrl Q</span></button>` : "";
+    return `<div class="chead">${tabs}<span class="sp"></span>${btn}<span class="drv">${ic(p.kind, "sm")}<b>${p.drive}:</b><span class="muted">${p.label}</span>${ic("chevD", "sm")}</span></div>`;
+  }
+  const hintList = () => [["Enter F3", "Open"], ...(entry().kind === "folder" ? [["Esc", "Stop scan"]] : []), ["[ ]", state.d === 2 ? "Height" : "Width"], ["Ctrl Q", "Close"]];
+  const hintsHtml = (keysOnly) => hintList().map(([k, l]) => `<span class="hk">${k.split(" ").map((x) => `<span class="kbdc">${x}</span>`).join("")}${keysOnly ? "" : ` ${l}`}</span>`).join("");
+
+  function card(side) {
+    const active = side === state.side;
+    const p = PANE[side];
+    if (state.d === 3 && state.open && !active) {
+      return `<section class="card qv" data-side="${side}" aria-label="Quick view">
+        <div class="chead"><span class="pill on">${ic("eye", "sm")}Quick view</span><span class="follows">of the <b>${sideName(state.side)}</b> pane</span><span class="sp"></span><span class="splitchip num" id="splitchip"></span><button type="button" class="xbtn" data-act="close" aria-label="Close quick view (Ctrl+Q)">${ic("x", "sm")}<span class="kbdc">Ctrl Q</span></button></div>
+        <div class="qvwrap${state.enter ? " enter" : ""}" id="drawer">
+          <div class="crumb" id="qvcrumb"></div>
+          <div class="qvh"><div class="pvh" id="pvh"></div></div>
+          <div class="pv" id="pv"></div>
+        </div>
+        <div class="cfoot hints" id="pvf"></div></section>`;
+    }
+    let inner = listHtml(side);
+    if (state.d === 4 && state.open && active) {
+      const g = narrow() ? "h" : "v";
+      inner = `<div class="split" id="split">${inner}<div class="grip ${g}" data-grip="d4" role="separator" aria-orientation="${g === "v" ? "vertical" : "horizontal"}" aria-label="Resize preview"></div>
+        <section class="inpv${state.enter ? " enter" : ""}" id="drawer" aria-label="Preview"><header class="pvbar"><div class="pvh compact" id="pvh"></div><button type="button" class="xbtn" data-act="close" aria-label="Close preview (Ctrl+Q)">${ic("x", "sm")}</button></header><div class="pv" id="pv"></div><footer class="pvfoot" id="pvf"></footer></section></div>`;
+    }
+    const foot = `<span>${FILES[side].length - 1} items</span><span class="r num">${p.free}</span>`;
+    return `<section class="card${active ? " on" : ""}" data-side="${side}" aria-label="${sideName(side)} pane">${chead(side, active)}<div class="crumb">${crumbs(p.path)}</div>${inner}<div class="cfoot">${foot}</div></section>`;
+  }
+  function sheet() {
+    if (state.d !== 1 || !state.open) return "";
+    const at = other(state.side) === "R" ? "at-r" : "at-l";
+    return `<aside class="sheet ${at}${state.enter ? " enter" : ""}" id="drawer" aria-label="Preview">
+      <div class="grip v" data-grip="d1" role="separator" aria-orientation="vertical" aria-label="Resize preview"></div>
+      <header class="dhead"><div class="pvh" id="pvh"></div><button type="button" class="xbtn" data-act="close" aria-label="Close preview (Ctrl+Q)">${ic("x", "sm")}<span class="kbdc">Ctrl Q</span></button></header>
+      <div class="pv" id="pv"></div>
+      <footer class="dfoot" id="pvf"></footer></aside>`;
+  }
+  function bottom() {
+    if (state.d !== 2 || !state.open) return "";
+    const pre = [["Peek", 0.23], ["Half", 0.42], ["Tall", 0.66]];
+    return `<section class="bdrawer${state.enter ? " enter" : ""}" id="drawer" aria-label="Preview">
+      <div class="grip h" data-grip="d2" role="separator" aria-orientation="horizontal" aria-label="Resize preview"></div>
+      <header class="dhead"><div class="pvh" id="pvh"></div><span class="follows">follows <b>${sideName(state.side)}</b></span>
+        <span class="segm" role="group" aria-label="Drawer height">${pre.map(([l, f]) => `<button type="button" data-h="${f}" aria-pressed="false">${l}</button>`).join("")}</span>
+        <button type="button" class="xbtn" data-act="close" aria-label="Close preview (Ctrl+Q)">${ic("x", "sm")}<span class="kbdc">Ctrl Q</span></button></header>
+      <div class="pv" id="pv" data-peek=""></div></section>`;
+  }
+  function fkeys() {
+    const list = [["F3", "View", "f3"], ["F4", "Edit"], ["F5", "Copy"], ["F6", "Move"], ["F7", "New folder"], ["F8", "Delete"]];
+    const hints = state.d === 2 && state.open ? `<span class="fkhints" id="pvf"></span>` : "";
+    return `<footer class="fkeys">${list.map(([k, l, c]) => `<span class="fk ${c || ""}"><kbd>${k}</kbd><span>${l}</span></span>`).join("")}<span class="fksep"></span><button type="button" class="fk pvk" data-act="toggle" aria-pressed="${state.open}"><kbd>Ctrl Q</kbd><span>Preview</span></button>${hints}</footer>`;
+  }
+  function winHtml() {
+    const cls = ["win", `d${state.d}`, narrow() ? "narrow" : "", xnarrow() ? "xnarrow" : "", state.open ? "open" : ""].join(" ");
+    const gut = state.d === 3 && state.open ? `<div class="grip v gut" data-grip="d3" role="separator" aria-orientation="vertical" aria-label="Pane splitter"></div>` : "";
+    return `<div class="${cls}" id="win" tabindex="0" role="application" aria-roledescription="window mockup" aria-label="Ferrite window, direction ${state.d}. Arrow keys move the cursor, Tab switches panes, Q toggles the preview." style="width:${state.ww}px;height:${WH}px">
+      <header class="tb"><span class="appbtn">${LOGO}<span class="wm">Ferrite</span>${ic("chevD", "sm")}</span><span class="search">${ic("search", "sm")}<span class="ph ellip">Search files, folders and commands</span><span class="kbdc">Ctrl K</span></span><span class="ctl" aria-hidden="true"><span>${ic("min", "sm")}</span><span>${ic("max", "sm")}</span><span>${ic("x", "sm")}</span></span></header>
+      <div class="body" id="body">${card("L")}${card("R")}${sheet()}${gut}</div>
+      ${bottom()}
+      ${fkeys()}
+      <div class="toast" id="toast" role="status"></div></div>`;
+  }
+
+  /* ---------- sizes ---------- */
+  const sheetW = () => {
+    const base = narrow() ? cardW() : Math.round(bodyW() * 0.42);
+    return Math.max(320, Math.min(bodyW() - 360, base + state.sDelta));
+  };
+  const bdH = () => Math.round(state.bdFrac * (WH - 46 - 48));
+  function applySizes() {
+    const win = $("#win"); if (!win) return;
+    const dr = $("#drawer");
+    if (state.d === 1 && dr) dr.style.width = `${sheetW()}px`;
+    if (state.d === 2 && dr) {
+      dr.style.height = `${bdH()}px`;
+      dr.classList.toggle("peek", state.bdFrac < 0.27);
+      $$(".segm button", dr).forEach((x) => x.setAttribute("aria-pressed", String(Math.abs(parseFloat(x.dataset.h) - state.bdFrac) < 0.01)));
+    }
+    if (state.d === 3) {
+      const body = $("#body"); const g = $(".gut");
+      const lf = state.open ? (state.side === "L" ? 1 - state.pvFrac3 : state.pvFrac3) : 0.5;
+      body.style.gridTemplateColumns = `minmax(0, ${lf}fr) minmax(0, ${1 - lf}fr)`;
+      if (g) g.style.left = `${8 + (bodyW() - 8) * lf + 4 - 6}px`;
+      const chip = $("#splitchip"); if (chip) { const a = Math.round((1 - state.pvFrac3) * 100); chip.textContent = `${a} : ${100 - a}`; }
+    }
+    if (state.d === 4) { const lw = $("#split > .lw"); if (lw) lw.style.flexBasis = `${state.lFrac * 100}%`; }
+  }
+
+  /* ---------- preview ---------- */
+  const KIND = { folder: "Folder", code: "Code", json: "JSON tree", csv: "Table", md: "Markdown", image: "Image", archive: "Archive", font: "Font", hex: "Hex", text: "Text" };
+  function metaLine(f) {
+    if (f.kind === "folder") return esc(FOLD[f.fid].path);
+    const k = { code: "Rust · 31 lines", json: "JSON · UTF-8", csv: "CSV · 4 columns · 1,204 rows", md: "Markdown", image: "JPEG · 2560 × 1440", archive: "ZIP · 38 entries", font: "TrueType, variable", hex: f.x === "exe" ? "PE x64 executable" : "Binary", text: "Text · 412 lines" }[f.kind];
+    return `${fmtB(b(f.s))} · ${f.d} · ${k}`;
+  }
+  function headHtml(f) {
+    const name = f.up ? `.. (${FOLD[f.fid].path.split("\\").pop()})` : f.x ? `${f.n}.${f.x}` : f.n;
+    return `<span class="pvic t-${f.t}">${ic(f.up ? "dir" : f.t)}</span><span class="pvt"><b class="ellip">${esc(name)}</b><small class="ellip">${metaLine(f)}</small></span><span class="kchip">${KIND[f.kind]}</span>`;
+  }
+  function paintHead() {
+    const f = entry();
+    const h = $("#pvh"); if (h) h.innerHTML = headHtml(f);
+    const c = $("#qvcrumb"); if (c) c.innerHTML = ic("eye", "sm") + crumbs([...PANE[state.side].path, f.up ? ".." : f.x ? `${f.n}.${f.x}` : f.n]);
+    const ft = $("#pvf");
+    if (ft) ft.innerHTML = state.d === 2 ? `<span class="lyr">Preview</span>${hintsHtml(false)}` : state.d === 4 ? hintsHtml(xnarrow()) : hintsHtml(state.d === 1 ? xnarrow() : narrow());
+    const pv = $("#pv"); if (pv && state.d === 2) pv.dataset.peek = f.kind === "folder" ? "" : `${KIND[f.kind]} · ${metaLine(f).replace(/<[^>]+>/g, "")} · Half or Tall shows the content`;
+  }
+  function schedule() {
+    state.moves++;
+    paintHead();
+    const pv = $("#pv"); if (!pv) { meter(); return; }
+    pv.classList.add("stale");
+    clearTimeout(loadTimer);
+    loadTimer = setTimeout(load, DEBOUNCE);
+    meter();
+  }
+  function load() {
+    const pv = $("#pv"); if (!pv) return;
+    const f = entry();
+    state.loads++;
+    clearTimeout(tickTimer);
+    shownFid = f.kind === "folder" ? f.fid : null;
+    pv.classList.remove("stale");
+    pv.scrollTop = 0;
+    pv.innerHTML = `<div class="swap">${bodyHtml(f)}</div>`;
+    if (pv.firstElementChild.firstElementChild?.classList.contains("fold")) pv.replaceChildren(pv.firstElementChild.firstElementChild);
+    if (shownFid) tick();
+    meter();
+  }
+  function meter() {
+    const m = $("#meter");
+    if (m) m.textContent = `Cursor moves ${state.moves} · previews loaded ${state.loads} · debounce ${DEBOUNCE} ms · scans in background ${Object.values(scans).filter((s) => prog(s) < 1 && s.stopped == null).length}`;
+  }
+
+  function bodyHtml(f) {
+    switch (f.kind) {
+      case "folder": return folderHtml(f.fid);
+      case "code": return codeHtml();
+      case "json": return `<div class="json" id="json">${jsonHtml()}</div>`;
+      case "csv": return csvHtml();
+      case "md": return mdHtml();
+      case "image": return imageHtml(f);
+      case "archive": return archiveHtml();
+      case "font": return fontHtml();
+      case "hex": return hexHtml();
+      default: return textHtml();
+    }
+  }
+
+  function folderHtml(fid) {
+    const f = FOLD[fid]; scanOf(fid);
+    return `<div class="fold" data-fid="${fid}">
+      <div class="fstats" id="fstats"></div>
+      <section class="fsec"><h4>By type<span class="r" id="tcount"></span></h4><div id="ftypes"></div></section>
+      <section class="fsec"><h4>Largest files<span class="r">top 10</span></h4><ol class="largest" id="flarge"></ol></section>
+      <section class="fsec"><h4>Contents<span class="r">${f.tree.length} items</span></h4><div class="tree" id="ftree" role="tree">${treeHtml(fid)}</div></section></div>`;
+  }
+  function tick() {
+    const fid = shownFid; if (!fid || !$("#fstats")) return;
+    const f = FOLD[fid], s = scanOf(fid), p = prog(s), done = p >= 1, stopped = s.stopped != null;
+    const k = ease(p);
+    const state1 = done ? `<span class="ok">${ic("check", "sm")}Done in ${(s.dur / 1000).toFixed(1)} s</span><span>· cached</span><button type="button" class="mini" data-act="rescan" aria-label="Rescan" title="Rescan">${ic("refresh", "sm")}</button>`
+      : stopped ? `<span>Stopped, partial</span><button type="button" class="mini" data-act="resume">${ic("play", "sm")}Resume</button>`
+      : `<span class="spinner" aria-hidden="true"></span><span>Counting</span><button type="button" class="mini" data-act="stop"><span class="kbdc">Esc</span>Stop</button>`;
+    $("#fstats").innerHTML = `
+      <div class="stat size"><small>Total size${done ? "" : " so far"}</small><b class="num">${fmtB(f.totalB * k)}</b><div class="scan">${state1}</div>${!done && !stopped ? '<div class="sbar" aria-hidden="true"><i></i></div>' : ""}</div>
+      <div class="stat"><small>Files</small><b class="num">${fmt(f.files * p)}</b><span class="sub">${done ? "all levels" : "so far"}</span></div>
+      <div class="stat"><small>Folders</small><b class="num">${fmt(f.dirs * Math.min(1, p * 1.25))}</b><span class="sub">${f.tree.filter((n) => n.length > 2).length} at top</span></div>
+      <div class="stat"><small>Last change</small><b class="num">${MON[+f.changed.slice(5, 7) - 1]} ${+f.changed.slice(8, 10)}</b><span class="sub">${f.changed.slice(11)} · ${done ? "newest file" : "folder date"}</span></div>`;
+    const types = f.types.map((t) => ({ ...t, sv: t.s * k, cv: t.c * p })).sort((a, z) => z.sv - a.sv);
+    const max = Math.max(...types.map((t) => t.sv), 1);
+    $("#ftypes").innerHTML = types.map((t) => `<div class="trow" style="--c:${extColor(t.x)}"><span class="ext">.${t.x}</span><span class="num">${fmt(t.cv)}</span><span class="num s">${fmtB(t.sv)}</span><span class="tbar" role="img" aria-label="${Math.round((t.sv / Math.max(f.totalB * k, 1)) * 100)} percent"><i style="transform:scaleX(${(t.sv / max).toFixed(3)})"></i></span></div>`).join("");
+    $("#tcount").textContent = `${types.length} kinds`;
+    const n = done ? 10 : Math.min(10, Math.floor(p * 12));
+    $("#flarge").innerHTML = f.largest.slice(0, n).map((l, i) => {
+      const cut = l.p.lastIndexOf("/");
+      return `<li><span class="rk num">${i + 1}</span><span class="lp" title="${esc(l.p)}"><bdi><span class="dirp">${esc(l.p.slice(0, cut + 1))}</span><b>${esc(l.p.slice(cut + 1))}</b></bdi></span><span class="sz num">${fmtB(l.s)}</span></li>`;
+    }).join("") + Array.from({ length: 10 - n }, (_, i) => `<li class="ph" aria-hidden="true"><span class="rk num">${n + i + 1}</span><span></span><span></span></li>`).join("");
+    $$("#ftree .tn.dir .s").forEach((el) => { el.textContent = done ? el.dataset.s : "…"; });
+    if (done) {
+      const row = $$(".row").find((r) => FILES[r.dataset.side][r.dataset.i].fid === fid && !FILES[r.dataset.side][r.dataset.i].up);
+      if (row) { const c = $(".sz", row); c.textContent = fmtB(f.totalB); c.classList.add("got"); }
+    }
+    meter();
+    if (!done && !stopped) tickTimer = setTimeout(tick, 100);
+  }
+  function treeHtml(fid) {
+    const open = openTree[fid] || (openTree[fid] = new Set([FOLD[fid].tree[0][0]]));
+    const done = scans[fid] && prog(scans[fid]) >= 1;
+    const out = [];
+    const walk = (nodes, depth, base) => nodes.forEach((n) => {
+      const [name, size, kids, more] = n;
+      const isDir = n.length > 2;
+      const path = base + "/" + name;
+      const exp = Array.isArray(kids) && open.has(path.slice(1));
+      const chev = Array.isArray(kids) ? ic(exp ? "chevD" : "chevR", "sm") : "";
+      const t = isDir ? "dir" : (EXT_C[name.split(".").pop()] || "faint");
+      out.push(`<button type="button" class="tn${isDir ? " dir" : ""}" role="treeitem" ${Array.isArray(kids) ? `aria-expanded="${exp}" data-tp="${esc(path.slice(1))}"` : ""} style="--d:${depth}"><span class="chev">${chev}</span><span class="t-${t}" style="display:contents">${ic(isDir ? "dir" : t === "img" ? "img" : t === "code" ? "code" : "faint", "sm")}</span><span class="n">${esc(name)}</span><span class="s num" ${isDir ? `data-s="${fmtB(b(size))}"` : ""}>${isDir && !done ? "…" : fmtB(b(size))}</span></button>`);
+      if (exp) { walk(kids, depth + 1, path); if (more) out.push(`<span class="tn more" style="--d:${depth + 1}"><span></span><span></span><span class="n">and ${more} more</span><span></span></span>`); }
+    });
+    walk(FOLD[fid].tree, 0, "");
+    return out.join("");
+  }
+
+  const KW = new Set("use fn let mut if else match return pub mod struct impl enum for in while loop as self Self crate super true false const static where move ref".split(" "));
+  function hl(line) {
+    if (/^\s*\/\//.test(line)) return `<span class="com">${esc(line)}</span>`;
+    if (/^\s*#\[/.test(line)) return `<span class="mac">${esc(line)}</span>`;
+    return line.replace(/("(?:[^"\\]|\\.)*")|(\b\d[\d_]*\b)|([A-Za-z_]\w*!)|([A-Za-z_]\w*)|([^"\w]+)/g, (m, s, n, mac, id, o, off) => {
+      if (s) return `<span class="str">${esc(s)}</span>`;
+      if (n) return `<span class="nu">${n}</span>`;
+      if (mac) return `<span class="mac">${esc(mac)}</span>`;
+      if (id) { if (KW.has(id)) return `<span class="kw">${id}</span>`; if (/^[A-Z]/.test(id)) return `<span class="ty">${id}</span>`; if (line[off + id.length] === "(") return `<span class="fn">${id}</span>`; return id; }
+      return esc(o || m);
+    });
+  }
+  const MAIN_RS = [
+    "use std::path::PathBuf;",
+    "use ferrite_core::{App, Config, PaneSide};",
+    "use ferrite_ui::window::MainWindow;",
+    "",
+    "/// Entry point: load config, open both panes, run.",
+    "fn main() -> anyhow::Result<()> {",
+    "    let cfg = Config::load_or_default()?;",
+    "    let start = std::env::args().nth(1).map(PathBuf::from);",
+    "    let mut app = App::new(cfg);",
+    "    if let Some(dir) = start {",
+    "        app.open(PaneSide::Left, &dir)?;",
+    "    }",
+    "    app.preview().debounce_ms(150);",
+    "    log::info!(\"starting with {} tabs\", app.tab_count());",
+    "    MainWindow::run(app)",
+    "}",
+    "",
+    "#[cfg(test)]",
+    "mod tests {",
+    "    use super::*;",
+    "",
+    "    #[test]",
+    "    fn opens_on_the_left() {",
+    "        let app = App::new(Config::default());",
+    "        assert_eq!(app.active(), PaneSide::Left);",
+    "    }",
+    "",
+    "    #[test]",
+    "    fn preview_waits_150_ms() {",
+    "        assert_eq!(App::default().preview().delay(), 150);",
+    "    }",
+    "}",
+  ];
+  const codeHtml = () => `<div class="code"><div class="gut-n">${MAIN_RS.map((_, i) => `<div>${i + 1}</div>`).join("")}</div><pre>${MAIN_RS.map((l) => hl(l) || " ").join("\n")}</pre></div>`;
+
+  const CONFIG = { theme: "auto", density: "compact", panes: { left: "D:\\work\\ferrite", right: "Z:\\archive\\2026-10", sort: ["name", "asc"], show_hidden: false }, preview: { enabled: true, side: "passive", debounce_ms: 150, max_text_kb: 512, folder_scan: { background: true, max_parallel: 2 } }, keys: { "Ctrl+Q": "preview.toggle", F3: "view", F4: "edit" } };
+  function jval(v) {
+    if (typeof v === "string") return `<span class="str">"${esc(v.replace(/\\/g, "\\\\"))}"</span>`;
+    if (typeof v === "number") return `<span class="nu">${v}</span>`;
+    return `<span class="kw">${v}</span>`;
+  }
+  function jsonHtml() {
+    const out = [];
+    const rows = (v, key, path, depth, last) => {
+      const k = key == null || typeof key === "number" ? "" : `<span class="jk">"${esc(key)}"</span><span class="jp">:&nbsp;</span>`;
+      const comma = last ? "" : '<span class="jp">,</span>';
+      if (v === null || typeof v !== "object") { out.push(`<div class="jr" style="--d:${depth}"><span class="jt0"></span>${k}${jval(v)}${comma}</div>`); return; }
+      const arr = Array.isArray(v); const items = arr ? v.map((x, i) => [i, x]) : Object.entries(v); const col = collapsedJson.has(path);
+      const o = arr ? "[" : "{", c = arr ? "]" : "}";
+      out.push(`<div class="jr" style="--d:${depth}"><button type="button" class="jt" data-jp="${esc(path)}" aria-expanded="${!col}" aria-label="${col ? "Expand" : "Collapse"} ${esc(key ?? "root")}">${ic(col ? "chevR" : "chevD", "sm")}</button>${k}<span class="jb">${o}</span>${col ? `<span class="jm">${items.length} ${arr ? "items" : "keys"}</span><span class="jb">${c}</span>${comma}` : ""}</div>`);
+      if (!col) { items.forEach(([kk, vv], i) => rows(vv, kk, `${path}/${kk}`, depth + 1, i === items.length - 1)); out.push(`<div class="jr" style="--d:${depth}"><span class="jt0"></span><span class="jb">${c}</span>${comma}</div>`); }
+    };
+    rows(CONFIG, null, "", 0, true);
+    return out.join("");
+  }
+  const CSV = [["2026-07-01", "North", 1204, "48,160.00"], ["2026-07-01", "South", 988, "39,520.00"], ["2026-07-08", "North", 1311, "52,440.00"], ["2026-07-08", "West", 640, "25,600.00"], ["2026-07-15", "East", 1022, "40,880.00"], ["2026-07-15", "South", 1090, "43,600.00"], ["2026-07-22", "North", 1418, "56,720.00"], ["2026-07-22", "West", 702, "28,080.00"], ["2026-07-29", "East", 1150, "46,000.00"], ["2026-08-05", "North", 1376, "55,040.00"], ["2026-08-05", "South", 1012, "40,480.00"], ["2026-08-12", "West", 733, "29,320.00"], ["2026-08-12", "East", 1201, "48,040.00"], ["2026-08-19", "North", 1455, "58,200.00"]];
+  const csvHtml = () => `<table class="csv"><thead><tr><th>#</th><th>date</th><th>region</th><th class="n">units</th><th class="n">revenue</th></tr></thead><tbody>${CSV.map((r, i) => `<tr><td class="num">${i + 1}</td><td class="num">${r[0]}</td><td>${r[1]}</td><td class="n">${fmt(r[2])}</td><td class="n">${r[3]}</td></tr>`).join("")}</tbody></table><p class="subnote">Showing 14 of 1,204 rows. F3 opens the full table with sorting.</p>`;
+  const mdHtml = () => `<article class="md"><h1>Ferrite</h1><p>A keyboard-first dual-pane file manager for Windows. Total Commander's habits, a 2027 look.</p><h2>Keys</h2><ul><li><code>Tab</code> switches panes, <code>Ctrl+Q</code> shows the preview.</li><li><code>F3</code> views, <code>F4</code> edits, <code>F5</code> copies to the other pane.</li><li><code>Ctrl+K</code> finds any file, folder or command.</li></ul><h2>Build</h2><pre>cargo build --release -p ferrite</pre><blockquote>Linux builds are manual for now; Windows is the target.</blockquote></article>`;
+  function imageHtml(f) {
+    const h = f.hue || 240;
+    const sky1 = `oklch(70% 0.09 ${h})`, sky2 = "oklch(88% 0.07 70)", m1 = `oklch(62% 0.05 ${h + 10})`, m2 = `oklch(47% 0.05 ${h - 10})`, m3 = `oklch(33% 0.04 ${h - 40})`, sun = "oklch(96% 0.07 90)";
+    const id = `g${h}`;
+    return `<figure class="img"><div class="imgbox"><svg viewBox="0 0 320 180" role="img" aria-label="Photo preview: mountains at dawn"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${sky1}"/><stop offset=".75" stop-color="${sky2}"/></linearGradient><linearGradient id="${id}w" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${m2}"/><stop offset="1" stop-color="${m3}"/></linearGradient></defs><rect width="320" height="180" fill="url(#${id})"/><circle cx="226" cy="74" r="16" fill="${sun}"/><path d="M0 104 L48 70 L82 92 L128 52 L170 88 L214 64 L262 96 L320 72 V180 H0Z" fill="${m1}"/><path d="M0 124 L60 96 L104 116 L150 90 L206 122 L250 104 L320 120 V180 H0Z" fill="${m2}"/><path d="M0 140 L320 140 V180 H0Z" fill="url(#${id}w)"/><path d="M0 140 L40 128 L92 138 L140 126 L200 140Z" fill="${m3}"/></svg></div>
+      <figcaption><span><b>2560 × 1440</b></span><span>JPEG · sRGB</span><span>Fit · ${f.hue === 150 ? "18" : "24"} %</span></figcaption>
+      <dl class="exif"><dt>Camera</dt><dd>Fujifilm X-T5</dd><dt>Lens</dt><dd>XF 16–55 mm f/2.8 at 23 mm</dd><dt>Exposure</dt><dd>1/250 s · f/8 · ISO 200</dd><dt>Taken</dt><dd>${f.d}</dd></dl></figure>`;
+  }
+  const ARCH = [["dir", "ferrite-0.4.2/", "", ""], ["exe", "ferrite-0.4.2/ferrite.exe", "41.2M", "16.1M"], ["faint", "ferrite-0.4.2/ferrite.pdb", "9.8M", "2.2M"], ["doc", "ferrite-0.4.2/README.md", "4.0K", "1.8K"], ["doc", "ferrite-0.4.2/LICENSE", "1.1K", "640"], ["dir", "ferrite-0.4.2/themes/", "", ""], ["code", "ferrite-0.4.2/themes/default.toml", "3.4K", "1.2K"], ["code", "ferrite-0.4.2/themes/contrast.toml", "3.1K", "1.1K"], ["dir", "ferrite-0.4.2/fonts/", "", ""], ["font", "ferrite-0.4.2/fonts/Archivo-Variable.ttf", "812K", "511K"], ["font", "ferrite-0.4.2/fonts/JetBrainsMono.ttf", "300K", "164K"]];
+  const archiveHtml = () => `<div class="asum"><span><b>38</b> entries</span><span><b>18.4 MB</b> packed</span><span><b>52.1 MB</b> unpacked</span><span>Deflate · no password</span></div>
+    <div class="arch"><div class="arow h"><span></span><span>Path</span><span class="num">Size</span><span class="num">Packed</span></div>${ARCH.map(([t, p, s, z]) => { const cut = p.replace(/\/$/, "").lastIndexOf("/"); return `<div class="arow"><span class="t-${t}" style="display:contents">${ic(t === "dir" ? "dir" : t, "sm")}</span><span class="p"><span>${esc(p.slice(0, cut + 1))}</span>${esc(p.slice(cut + 1))}</span><span class="num">${s ? fmtB(b(s)) : ""}</span><span class="num m">${z ? fmtB(b(z)) : ""}</span></div>`; }).join("")}</div><p class="subnote">Enter opens the archive as a folder; F3 lists all 38 entries.</p>`;
+  const fontHtml = () => `<div class="fontp"><div class="f1">Ferrite moves files</div><div class="f2">The quick brown fox jumps over the lazy dog</div><div class="f3">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789 ăâîșț ĂÂÎȘȚ &amp;@#%?!</div>
+    <div class="wts"><span style="font-weight:200">Thin</span><span style="font-weight:400">Regular</span><span style="font-weight:600">Semibold</span><span style="font-weight:800">Black</span><span style="font-stretch:70%">Condensed</span><span style="font-stretch:125%">Expanded</span></div>
+    <div class="axes"><span>Archivo Variable</span><span>wght 100–900</span><span>wdth 62–125</span><span>1,042 glyphs</span><span>OFL 1.1</span></div></div>`;
+  function hexHtml() {
+    const bytes = new Array(224).fill(0);
+    const set = (o, arr) => arr.forEach((x, i) => { bytes[o + i] = x; });
+    set(0, [0x4d, 0x5a, 0x90, 0, 3, 0, 0, 0, 4, 0, 0, 0, 0xff, 0xff, 0, 0, 0xb8, 0, 0, 0, 0, 0, 0, 0, 0x40]);
+    set(0x3c, [0x80, 0, 0, 0]);
+    set(0x40, [0x0e, 0x1f, 0xba, 0x0e, 0x00, 0xb4, 0x09, 0xcd, 0x21, 0xb8, 0x01, 0x4c, 0xcd, 0x21]);
+    set(0x4e, [..."This program cannot be run in DOS mode.\r\r\n$"].map((c) => c.charCodeAt(0)));
+    set(0x80, [0x50, 0x45, 0, 0, 0x64, 0x86, 0x07, 0x00, 0x3a, 0x1f, 0x2c, 0x67]);
+    set(0x98, [0x0b, 0x02, 0x0e, 0x26, 0x00, 0x9c, 0x7a, 0x01]);
+    const hot = new Set([0, 1, 0x80, 0x81]);
+    const lines = [];
+    for (let o = 0; o < bytes.length; o += 16) {
+      const row = bytes.slice(o, o + 16);
+      const hx = row.map((x, i) => `<span class="${hot.has(o + i) ? "h" : x === 0 ? "z" : ""}">${x.toString(16).padStart(2, "0").toUpperCase()}</span>${i === 7 ? "  " : " "}`).join("");
+      const as = row.map((x) => (x >= 32 && x < 127 ? esc(String.fromCharCode(x)) : ".")).join("");
+      lines.push(`<span class="o">${o.toString(16).padStart(8, "0").toUpperCase()}</span>  ${hx} <span class="a">${as}</span>`);
+    }
+    return `<div class="hex">${lines.join("\n")}</div><p class="subnote">PE header at 0x80 · machine x64 · 7 sections. F3 opens the full hex view.</p>`;
+  }
+  const LOG = [["09:41:02.118", "in", "INFO", "config loaded from ferrite.toml"], ["09:41:02.140", "in", "INFO", "left pane D:\\work\\ferrite (14 items)"], ["09:41:02.162", "in", "INFO", "right pane Z:\\archive\\2026-10 (9 items)"], ["09:41:02.410", "wn", "WARN", "Z: is a network drive, folder scans run at low priority"], ["09:41:03.002", "in", "INFO", "preview: debounce 150 ms, 2 scans max"], ["09:41:07.880", "in", "INFO", "scan D:\\work\\ferrite\\target done in 3.8 s"], ["09:42:11.505", "in", "INFO", "copy job #12 queued (3 files, 2.4 GB)"], ["09:42:40.020", "in", "INFO", "copy job #12 done, verified"], ["09:44:15.311", "wn", "WARN", "shell menu: 7-Zip handler took 212 ms"]];
+  const textHtml = () => `<div class="txt">${LOG.map(([t, c, l, m]) => `<span class="ts">${t}</span> <span class="${c}">${l.padEnd(5)}</span> ${esc(m)}`).join("\n")}</div>`;
+
+  /* ---------- render and interaction ---------- */
+  function render() {
+    clearTimeout(tickTimer); clearTimeout(loadTimer);
+    $("#scaler").innerHTML = winHtml();
+    applySizes();
+    for (const sd of ["L", "R"]) { const rows = $(`#rows-${sd}`), r = rows && $(`.row[data-i="${state.cur[sd]}"]`, rows); if (r && r.offsetTop + r.offsetHeight > rows.clientHeight) rows.scrollTop = r.offsetTop + r.offsetHeight - rows.clientHeight + 28; }
+    paintHead();
+    load();
+    state.enter = false;
+    fit();
+    syncControls();
+  }
+  function syncControls() {
+    $$("#seg-d button").forEach((x) => x.setAttribute("aria-pressed", String(+x.dataset.d === state.d)));
+    $$("#seg-w button").forEach((x) => x.setAttribute("aria-pressed", String(+x.dataset.w === state.ww)));
+    $$("#seg-t button").forEach((x) => x.setAttribute("aria-pressed", String(x.dataset.t === state.theme)));
+    $$("#seg-s button").forEach((x) => x.setAttribute("aria-pressed", String(x.dataset.s === state.scale)));
+    $("#dtitle").textContent = `Direction ${state.d}${state.d === 1 ? " (recommended)" : ""}`;
+    $("#didea").textContent = DIRS[state.d].idea;
+    $("#notes").innerHTML = DIRS[state.d].notes.map(([h, p]) => `<div class="note${h === "Trade-off" ? " trade" : ""}"><h3>${h}</h3><p>${p}</p></div>`).join("");
+  }
+  function fit() {
+    const st = $("#stage"), sc = $("#scaler");
+    st.classList.toggle("actual", state.scale === "1");
+    const avail = st.clientWidth - 4;
+    curScale = state.scale === "fit" ? Math.min(1, avail / state.ww) : 1;
+    sc.style.width = `${state.ww}px`;
+    sc.style.transform = curScale < 1 ? `scale(${curScale})` : "";
+    st.style.height = `${Math.ceil(WH * curScale) + 8}px`;
+  }
+  function setOpen(v) {
+    if (v === state.open) return;
+    if (!v) {
+      const dr = $("#drawer");
+      const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (dr && !reduce) { dr.classList.remove("enter"); dr.classList.add("leave"); setTimeout(() => { state.open = false; render(); focusWin(); }, 150); return; }
+      state.open = false;
+    } else { state.open = true; state.enter = true; }
+    render(); focusWin();
+  }
+  const focusWin = () => $("#win")?.focus({ preventScroll: true });
+  function moveCursor(to) {
+    const list = FILES[state.side];
+    const n = Math.max(0, Math.min(list.length - 1, to));
+    if (n === state.cur[state.side]) return;
+    const rows = $(`#rows-${state.side}`);
+    $$(".row", rows).forEach((r) => { const on = +r.dataset.i === n; r.classList.toggle("cur", on); r.setAttribute("aria-selected", String(on)); });
+    state.cur[state.side] = n;
+    const r = $(`.row[data-i="${n}"]`, rows);
+    if (r) { if (r.offsetTop < rows.scrollTop) rows.scrollTop = r.offsetTop; else if (r.offsetTop + r.offsetHeight > rows.scrollTop + rows.clientHeight) rows.scrollTop = r.offsetTop + r.offsetHeight - rows.clientHeight; }
+    if (state.open) schedule(); else { state.moves++; meter(); }
+  }
+  function switchSide(to) {
+    state.side = to || other(state.side);
+    if (state.open && state.d !== 2) state.enter = true;
+    render(); focusWin();
+  }
+  function resize(dir) {
+    if (state.d === 1) state.sDelta += dir * 48;
+    if (state.d === 2) state.bdFrac = Math.max(0.16, Math.min(0.72, state.bdFrac + dir * 0.08));
+    if (state.d === 3) state.pvFrac3 = Math.max(0.3, Math.min(0.7, state.pvFrac3 + dir * 0.05));
+    if (state.d === 4) state.lFrac = Math.max(0.3, Math.min(0.75, state.lFrac - dir * 0.05));
+    if (state.d === 1) { const w = sheetW(); state.sDelta = w - (narrow() ? cardW() : Math.round(bodyW() * 0.42)); }
+    applySizes();
+  }
+  function toast(html) {
+    const t = $("#toast"); if (!t) return;
+    t.innerHTML = html; t.classList.add("show");
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove("show"), 1700);
+  }
+  function stopScan() {
+    const f = entry(); if (f.kind !== "folder") return false;
+    const s = scanOf(f.fid); const p = prog(s);
+    if (p >= 1 || s.stopped != null) return false;
+    s.stopped = p; clearTimeout(tickTimer); tick(); return true;
+  }
+
+  document.addEventListener("keydown", (e) => {
+    const inWin = document.activeElement && document.activeElement.closest && document.activeElement.closest("#win");
+    if (!inWin && !e.ctrlKey && !e.altKey && !e.metaKey && /^[1-4]$/.test(e.key)) {
+      if (e.target.closest && e.target.closest("input, textarea")) return;
+      state.d = +e.key; state.enter = state.open; render(); return;
+    }
+    if (!inWin) return;
+    const k = e.key;
+    if (/^[1-4]$/.test(k) && !e.ctrlKey) { state.d = +k; state.enter = state.open; render(); focusWin(); e.preventDefault(); return; }
+    if (k === "ArrowDown") { moveCursor(state.cur[state.side] + 1); e.preventDefault(); }
+    else if (k === "ArrowUp") { moveCursor(state.cur[state.side] - 1); e.preventDefault(); }
+    else if (k === "Home") { moveCursor(0); e.preventDefault(); }
+    else if (k === "End") { moveCursor(FILES[state.side].length - 1); e.preventDefault(); }
+    else if (k === "PageDown") { moveCursor(state.cur[state.side] + 8); e.preventDefault(); }
+    else if (k === "PageUp") { moveCursor(state.cur[state.side] - 8); e.preventDefault(); }
+    else if (k === "Tab" && !e.shiftKey) { switchSide(); e.preventDefault(); }
+    else if ((k === "q" || k === "Q") && !e.altKey && !e.shiftKey) { setOpen(!state.open); e.preventDefault(); }
+    else if ((k === "q" || k === "Q") && e.ctrlKey && e.shiftKey && state.d === 2 && state.open) { const pre = [0.23, 0.42, 0.66]; const i = pre.findIndex((x) => Math.abs(x - state.bdFrac) < 0.01); state.bdFrac = pre[(i + 1) % 3]; applySizes(); e.preventDefault(); }
+    else if (k === "[" || k === "]") { if (state.open) resize(k === "]" ? 1 : -1); e.preventDefault(); }
+    else if (k === "Escape") { if (state.open) stopScan(); e.preventDefault(); }
+    else if (k === "Enter" || k === "F3") {
+      const f = entry();
+      const name = f.up ? ".." : f.x ? `${f.n}.${f.x}` : f.n;
+      const msg = f.kind === "folder" ? (k === "Enter" ? `Enter goes into <b>${esc(name)}</b>; the preview follows the new cursor` : `F3 on a folder opens the full scan view of <b>${esc(name)}</b>`) : `${k} opens <b>${esc(name)}</b> in the full viewer`;
+      toast(`<span class="tic">${ic("open", "sm")}</span><span>${msg}</span>`);
+      e.preventDefault();
+    }
+  });
+
+  document.addEventListener("click", (e) => {
+    const t = e.target.closest("button, [data-d], [data-w], [data-t], [data-s]"); if (!t) return;
+    if (t.dataset.d && t.closest("#seg-d")) { state.d = +t.dataset.d; state.enter = state.open; render(); return; }
+    if (t.dataset.w && t.closest("#seg-w")) { state.ww = +t.dataset.w; state.sDelta = 0; render(); return; }
+    if (t.dataset.t && t.closest("#seg-t")) { state.theme = t.dataset.t; if (state.theme === "auto") document.documentElement.removeAttribute("data-theme"); else document.documentElement.dataset.theme = state.theme; syncControls(); return; }
+    if (t.dataset.s && t.closest("#seg-s")) { state.scale = t.dataset.s; fit(); syncControls(); return; }
+    if (!t.closest("#win")) return;
+    const act = t.dataset.act;
+    if (act === "toggle") { setOpen(!state.open); return; }
+    if (act === "close") { setOpen(false); return; }
+    if (act === "stop") { stopScan(); focusWin(); return; }
+    if (act === "resume") { const s = scanOf(entry().fid); const p = s.stopped; s.stopped = null; s.start = performance.now() - p * s.dur; tick(); focusWin(); return; }
+    if (act === "rescan") { scans[entry().fid] = null; delete scans[entry().fid]; load(); focusWin(); return; }
+    if (t.dataset.h) { state.bdFrac = parseFloat(t.dataset.h); applySizes(); focusWin(); return; }
+    if (t.dataset.jp !== undefined) { const p = t.dataset.jp; collapsedJson.has(p) ? collapsedJson.delete(p) : collapsedJson.add(p); $("#json").innerHTML = jsonHtml(); focusWin(); return; }
+    if (t.dataset.tp !== undefined) { const fid = shownFid; const set = openTree[fid]; set.has(t.dataset.tp) ? set.delete(t.dataset.tp) : set.add(t.dataset.tp); $("#ftree").innerHTML = treeHtml(fid); focusWin(); return; }
+    if (t.classList.contains("row")) {
+      const side = t.dataset.side, i = +t.dataset.i;
+      if (side !== state.side) { state.cur[side] = i; switchSide(side); return; }
+      moveCursor(i); focusWin();
+    }
+  });
+  document.addEventListener("dblclick", (e) => { if (e.target.closest(".gut")) { state.pvFrac3 = 0.5; applySizes(); } });
+
+  document.addEventListener("pointerdown", (e) => {
+    const g = e.target.closest(".grip"); if (!g) return;
+    e.preventDefault(); g.setPointerCapture(e.pointerId); g.classList.add("drag");
+    const sx = e.clientX, sy = e.clientY;
+    const start = { s: state.sDelta, bd: state.bdFrac, q: state.pvFrac3, l: state.lFrac };
+    const kind = g.dataset.grip;
+    const card = g.closest(".card");
+    const cw = card ? (narrow() ? $("#split").clientHeight : card.clientWidth) : 1;
+    const move = (ev) => {
+      const dx = (ev.clientX - sx) / curScale, dy = (ev.clientY - sy) / curScale;
+      if (kind === "d1") state.sDelta = start.s + (other(state.side) === "R" ? -dx : dx);
+      if (kind === "d2") state.bdFrac = Math.max(0.16, Math.min(0.72, start.bd - dy / (WH - 94)));
+      if (kind === "d3") state.pvFrac3 = Math.max(0.3, Math.min(0.7, start.q + (state.side === "L" ? -dx : dx) / (bodyW() - 8)));
+      if (kind === "d4") state.lFrac = Math.max(0.3, Math.min(0.75, start.l + (narrow() ? dy : dx) / cw));
+      if (kind === "d1") { const w = sheetW(); state.sDelta = w - (narrow() ? cardW() : Math.round(bodyW() * 0.42)); }
+      applySizes();
+    };
+    const up = () => { g.classList.remove("drag"); g.removeEventListener("pointermove", move); g.removeEventListener("pointerup", up); g.removeEventListener("pointercancel", up); focusWin(); };
+    g.addEventListener("pointermove", move); g.addEventListener("pointerup", up); g.addEventListener("pointercancel", up);
+  });
+
+  window.addEventListener("resize", fit);
+
+  const hp = new URLSearchParams(location.hash.slice(1));
+  if (hp.get("d")) state.d = Math.min(4, Math.max(1, +hp.get("d")));
+  if (hp.get("w")) state.ww = +hp.get("w");
+  if (hp.get("s")) state.side = hp.get("s") === "R" ? "R" : "L";
+  if (hp.get("c")) state.cur[state.side] = +hp.get("c");
+  if (hp.get("o") === "0") state.open = false;
+  if (hp.get("bd")) state.bdFrac = +hp.get("bd");
+  if (hp.get("t")) { state.theme = hp.get("t"); if (state.theme !== "auto") document.documentElement.dataset.theme = state.theme; }
+  render();
+  if (!hp.get("nofocus")) focusWin();
+})();
+</script>
+</body>
+</html>
