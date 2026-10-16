@@ -35,9 +35,9 @@ A long right-click, the Menu key or Shift+F10 opens the Windows context menu for
 | M2 | `ShellMenu` model + filter | Red checker, Green orchestrator | medium | — | `cargo test` model tests | done |
 | M3 | `shell_menu` provider (STA thread, lazy submenus, icons, invoke, classic) | api-builder (Opus high) | high | M1, M2 | Windows CI tests | done |
 | M4 | `ContextMenu` component per D46 | ui-builder-high | high | M2 | headless UI tests, gallery screenshots both themes | done |
-| M5 | wiring and Ferrite actions | ui-builder | medium | M3, M4 | UI tests with the fake provider; owner tries it on Windows | ready |
-| M7 | F3 and F4 context menu per kind (D51), on the M4 component | ui-builder | medium | M5 | UI tests per kind: right-click, Menu key, Shift+F10, each item dispatches its action | blocked |
-| M7b | Missing viewer actions for D51 items: Find selection, Copy path:line, tree Copy value and Copy key, table Copy column, Markdown Copy and Copy link, image Copy image and Copy path; then add them to the viewer menu | ui-builder | medium | M7 | UI tests per action and per menu item | blocked |
+| M5 | wiring and Ferrite actions | ui-builder | medium | M3, M4 | UI tests with the fake provider; owner tries it on Windows | done |
+| M7 | F3 and F4 context menu per kind (D51), on the M4 component | ui-builder | medium | M5 | UI tests per kind: right-click, Menu key, Shift+F10, each item dispatches its action | done |
+| M7b | Missing viewer actions for D51 items: Find selection, Copy path:line, tree Copy value and Copy key, table Copy column, Markdown Copy and Copy link, image Copy image and Copy path; then add them to the viewer menu | ui-builder | medium | M7 | UI tests per action and per menu item | ready |
 | M6 | review | reviewer (Opus high) | high | M5, M7 | verdict | blocked |
 
 ## Done when
@@ -55,3 +55,4 @@ A long right-click, the Menu key or Shift+F10 opens the Windows context menu for
 - 2026-10-16 — M4 (88d5579, review fixes 306d3f3) and M3 (499874b, review fixes 3a75452; Windows run 38855214205 green) merged. M3 timings on the runner: open 350–780 ms, Send to fill ~436 ms (the fill blocks past the 250 ms budget and still returns Filled; revisit in M5 with an async fill). M5 contract: the UI polls `Pending` with `wait_timeout`, never blocks; restore focus via `ContextMenuInput.restore`; call `context_menu::bind_keys` in init.
 - 2026-10-16 — M7 added: the owner asked for a context menu in the F3 viewer (D51).
 - 2026-10-16 — M7 (06cc311) built: viewer menu per kind on existing actions only. Deferred to M7b because no action exists yet: Find selection, Copy path:line, tree Copy value and key, table Copy column, Markdown Copy and Copy link, image Copy image and Copy path. A Markdown file with no link under the pointer has no menu until M7b. Review PASS WITH FIXES; fixes running.
+- 2026-10-16 — M7 review fixes (f06bf3a) merged: stale Markdown link cleared in capture phase, build_action errors assert and show a header note, a re-entrant update panic on window-handled items fixed with window.defer, 16 viewer menu tests. M5 was merged earlier (d798384).
