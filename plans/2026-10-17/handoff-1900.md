@@ -48,3 +48,10 @@ Paths: `<worktrees>` is the `.crew` folder next to the repo; `<targets>` is `<wo
 - The publish hook inspects the whole shell command, including heredoc text: run clippy, the tests and the publish as three separate calls, and write files that mention those commands with the editor, not a heredoc.
 - Merge with `--no-commit`, run the gate, then commit the merge; never commit a merge before the gate.
 - Keymap count and snapshot conflicts between parallel atoms are expected: sum the added entries and check `.snap.new` diffs before accepting.
+
+## Stopped agents (19:15)
+
+- P23 B1 stopped on p23-b1 (WIP commit, notes in `plans/2026-10-17/wip-p23-b1.md`): flags and tests done; three clippy errors in `rusty-app/src/metrics` and the gate left.
+- P22 review fixes stopped on p22-review-fixes (WIP commit, notes in `plans/2026-10-17/wip-p22-review-fixes.md`): all 8 findings fixed with tests; clippy, `xtask size` and the gate left. New issue to fix before release: if `ferrite.toml` is deleted while Ferrite runs and the user then saves from the sheet, the file comes back with only that one key and every other setting falls back to its default on the next load. Fix: a sheet save into a missing file writes the full current settings (as S1's completion would).
+- P19 L7a: see `plans/2026-10-17/wip-p19-l7a.md` on p19-l7a once it confirms.
+- Delete the `wip-*.md` notes from each branch before merging to main.
