@@ -21,6 +21,7 @@ All decided (D52, D43, D45); workers never reopen them.
 - **D8 — F3 on a folder (2026-10-17, owner).** F3 on a folder row opens the preview sheet on that folder (as Ctrl+Q does); if the sheet is already open, it moves focus into it (browse mode). Ctrl+Q stays.
 - **D9 — Esc closes the preview (2026-10-17, owner).** Like the settings sheet. In browse mode, Esc closes the sheet and returns focus to the list. In the list with the sheet open, Esc first clears the filter, then stops a running scan, then closes the sheet.
 - **D10 — F3 replaces Ctrl+Q (2026-10-17, owner).** Remove the Ctrl+Q binding (`pane.toggle_preview`, and `preview.toggle` in the sheet) and the preview pill/card button. The preview opens with F3 on a folder (D8); once open it still follows the cursor, so a file under the cursor shows its read-only preview; Esc closes it (D9); Ctrl+Shift+Q stays for browse mode unless the owner says otherwise. Update keymap.toml, the registry and snapshots, the F-key bar and any hint that mentions Ctrl+Q.
+- **D11 — Browsing folders inside the preview (2026-10-17, owner).** In browse mode: Enter on a folder opens it inside the preview (the preview's root becomes that folder; a breadcrumb shows the path; Backspace goes up; the active pane does not move). Shift+Enter opens the folder in the active pane (today's Enter). Enter on a file opens it read-only in the preview; Shift+Enter reveals it in the pane. → / ← open and close a folder as a tree in place, Alt+→ / Alt+← open or close everything below it (as the viewer tree, P20 D1, bounded by the tree's row cap). Space works as in the list: it marks the row and counts the folder's size, shown on the row. All keys are commands in keymap.toml.
 
 ## Atoms
 
@@ -34,6 +35,7 @@ All decided (D52, D43, D45); workers never reopen them.
 | V6 | Live folder profile: subtree watch while shown, counts patched from events, full recount only on overflow or Ctrl+R, "counted at" time (D7) | api-builder (Opus high) | high | V5 | fake fs tests: a write deep in the tree updates totals within 1 s; overflow triggers one recount; no recount loop on a busy share | done |
 | V7 | F3 on a folder opens the preview (D8); Esc closes the sheet (D9) | ui-builder (Opus medium) | medium | V5 | UI tests: F3 on a folder opens or focuses the sheet on it; F3 on a file unchanged; Esc in browse mode closes the sheet and returns focus; Esc in the list closes it only after the filter is clear and no scan runs | done |
 | V8 | Remove Ctrl+Q and the preview pill/button; F3 is the way in (D10) | ui-builder (Opus medium) | medium | V7 | UI tests: Ctrl+Q does nothing, F3 on a folder opens, the sheet still follows the cursor onto files; snapshots updated | ready |
+| V9 | Browse folders inside the preview (D11): Enter in, Backspace up, breadcrumb, Shift+Enter to the pane, tree keys, Space size | ui-builder-high | high | V8 | UI tests for each key; screenshots of a nested folder and a counted size, both themes | ready |
 
 ## Done when
 
@@ -54,3 +56,4 @@ All decided (D52, D43, D45); workers never reopen them.
 - 2026-10-17 — V7 merged (bbcaf8f): F3 on a folder opens the sheet on it (list keeps focus) or, if it already shows that folder, moves focus in; F3 on a file opens the viewer; browse-mode Esc (`preview.leave`, now labelled Close preview) closes the sheet; list Esc clears the filter, then stops a scan, then closes the sheet; footer shows Recount (Ctrl+R) and Close (Esc). Open: there is no `..` row yet (needs its own guard when added); the list footer shows "Esc Stop scan" even with no scan; Markdown links and archive bodies still take Esc first.
 - 2026-10-17 — Status closed: V3 (merged 6ca8bb6 + e41769f) was done but still marked ready.
 - 2026-10-17 — Owner on alpha-17c: the live preview during a copy works and looks good; F3 on folders is enough, so Ctrl+Q and the pill go (D10, V8).
+- 2026-10-17 — Owner: in the preview, Enter should open a folder inside the preview, Shift+Enter in the pane, Space should work there too, and a key should open a folder as a tree (D11, V9). Interpretation of Space (mark + count size, as in the list) to be confirmed with the owner when V9 starts.
