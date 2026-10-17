@@ -32,7 +32,7 @@ A Cargo workspace; dependencies point down the table.
 
 ## One command system
 
-Every action is a typed command with a stable id, for example `pane.open-tab { path }`, `path.copy { as: Wsl }`, `drawer.add { view: Compare }`, `files.recycle { selection }`.
+Every action is a typed command with a stable id, for example `pane.open_tab { path }`, `path.copy { as: Wsl }`, `drawer.add { view: Compare }`, `files.recycle { selection }`.
 
 - Shortcuts, the F-key bar, the Ctrl+K palette, menus, the drawer, macros and plugins all dispatch the same commands.
 - A command is **validated** (arguments, current state), **planned** (what exactly will happen), optionally **confirmed**, then **executed** as effects.
@@ -47,7 +47,7 @@ Structure that is cheap now and expensive to add later (D21). Most of it is type
 | Foundation | What it means | Phase |
 | --- | --- | --- |
 | **Locations, not paths** | Panes work with `Location { provider, path }`. Local disks, UNC shares, archives, SFTP and search results are providers that declare what they support (write, watch, recycle, rename) | Foundation |
-| **Serialisable commands** | Every command round-trips through text (`pane.open-tab { path: "…" }`), so macros, the command line, plugins and replay share one format | Foundation |
+| **Serialisable commands** | Every command round-trips through text (`pane.open_tab { path: "…" }`), so macros, the command line, plugins and replay share one format | Foundation |
 | **Record and replay** | The redacted command stream can be recorded and replayed against the fake file system; a reported bug becomes a test | Foundation |
 | **Fake file system with fault injection** | Disk full, access denied, sharing violation, file locked, network lost halfway through a copy; used by the job engine tests on Linux CI | Foundation |
 | **Hostile names** | Long paths (`\\?\`), names that are invalid UTF-16, `CON` and `NUL`, trailing dots and spaces, Windows case-insensitive comparison; a corpus of such names runs in CI | Foundation |

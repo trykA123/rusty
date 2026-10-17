@@ -13,7 +13,7 @@ There are two kinds:
 | **Package** | Data only (TOML, images) | No | Themes, keymaps, command macros, column presets, file-type icons |
 | **Extension** | A WebAssembly component plus a manifest | Yes, sandboxed | Previewers, drawer views, remote file systems, search sources, columns, commands |
 
-Macros in packages are sequences of built-in commands (`pane.open-tab`, `path.copy`, `terminal.open`), which covers most personal automation without code. There is no separate scripting language in v1; that keeps one model and one security boundary.
+Macros in packages are sequences of built-in commands (`pane.open_tab`, `path.copy`, `terminal.open`), which covers most personal automation without code. There is no separate scripting language in v1; that keeps one model and one security boundary.
 
 ## Extension points
 
