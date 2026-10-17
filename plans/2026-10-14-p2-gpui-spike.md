@@ -34,10 +34,10 @@ Find out with numbers whether GPUI with `gpui-kit` can carry Rusty: design B's l
 | S2 | `spike-shell` | T4 | orchestrator | high | S1 | window opens on Linux; screenshot reviewed by orchestrator | done |
 | S3 | `spike-list` | T4 | orchestrator | high | S2 | headless test passes; manual scroll smooth | done |
 | S4 | `spike-metrics` | T2 | ui-builder | medium | S3 | `spike --metrics` prints valid JSON | done |
-| S5 | `fuzzy-bench` | T3 | api-builder | xhigh | G1 | `cargo bench -p fuzzy-bench` prints the table | running |
+| S5 | `fuzzy-bench` | T3 | api-builder | xhigh | G1 | `cargo bench -p fuzzy-bench` prints the table | done |
 | S6 | `a11y-probe` | T2 | ui-builder | high | S3 | headless test finds list rows with names | done |
-| S7 | Windows run | — | orchestrator | — | S4, S6 | CI job uploads metrics JSON; owner runs on work PC | running |
-| G2 | go or no-go | — | orchestrator + owner | — | S1–S7 | `docs/spike/results.md` written; D2 updated | blocked |
+| S7 | Windows run | — | orchestrator | — | S4, S6 | CI job uploads metrics JSON; owner runs on work PC | done |
+| G2 | go or no-go | — | orchestrator + owner | — | S1–S7 | `docs/spike/results.md` written; D2 updated | done |
 
 S5 runs in parallel with S1–S4.
 
@@ -79,3 +79,4 @@ S5 runs in parallel with S1–S4.
 - 2026-10-15 — D27 adapter action done: the spike vendors `gpui-pre-windows` 0.3.9 (`spikes/gpui-b/vendor/`, `[patch.crates-io]`) and `get_adapter` enumerates with `EnumAdapterByGpuPreference(MINIMUM_POWER)`; `FERRITE_GPU=default|high-performance` overrides it for A/B runs. CI run 38677189477 green (exe 17.6 MB); the runner has only the Basic Render Driver, so its numbers (first frame 546 / 313 / 308 ms, working set 59–60 MB) say nothing about the GPU choice. The work-PC run decides.
 - 2026-10-15 — Linux memory broken down (headless cage, non-LTO build; `docs/spike/metrics/linux-cage-memory-*.txt`): RSS 86 MB = 27 MB private (anon) + 59 MB file-backed code. File-backed: the 39 MB non-LTO binary (25 MB resident), Mesa's `libLLVM` (15 MB) and `libgallium` (8 MB). 100k rows per pane add ~1.5 MB. `gpui-pre-wgpu` 0.3.9 creates its wgpu instance with `VULKAN | GL` hard-coded (`wgpu_context.rs:474`, ignores `WGPU_BACKEND`), so the GL backend loads gallium and LLVM even though rendering uses Vulkan: ~24 MB of shared, clean pages. For G2: measure the target as private memory (Linux anon RSS, Windows private bytes), which is 27–29 MB on Linux; patching the instance to Vulkan-first would drop RSS to about 62 MB on Linux (D30: Linux is secondary).
 - 2026-10-15 — G2 passed. The owner found scrolling smooth on the 60 Hz work-PC monitor and agrees with GO for GPUI (D2 validated). Narrator read nothing on the list; the owner does not need a screen reader now, so it becomes a follow-up, not a blocker. The owner also asked for a title bar that looks like the app (D36, P7).
+- 2026-10-17 — Statuses closed: S5 (docs/spike/fuzzy-bench.md), S7 (owner's work-PC run, 2026-10-15) and G2 (GO, logged 2026-10-15) were done but still marked open.

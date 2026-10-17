@@ -12,7 +12,7 @@ Kinds: **core** is always on; **module** can be turned off; **package** is data 
 | Warm start | ≤ 150 ms |
 | Summon from tray (v1.2) | ≤ 50 ms |
 | RAM, two panes, idle | < 80 MB |
-| Portable `.exe` | < 30 MB |
+| Portable `.exe` | no limit (D44); CI guard 160 MiB |
 
 ## Design · done
 

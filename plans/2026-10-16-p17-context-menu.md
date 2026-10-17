@@ -31,7 +31,7 @@ A long right-click, the Menu key or Shift+F10 opens the Windows context menu for
 
 | Atom | Component | Role | Effort | After | Check | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| M1 | spike: provider on Windows | api-builder (Opus high) | high | — | Windows CI job prints the menu tree for a `.zip`, a folder and 3 files; reachable Windows 11 commands listed | running |
+| M1 | spike: provider on Windows | api-builder (Opus high) | high | — | Windows CI job prints the menu tree for a `.zip`, a folder and 3 files; reachable Windows 11 commands listed | done |
 | M2 | `ShellMenu` model + filter | Red checker, Green orchestrator | medium | — | `cargo test` model tests | done |
 | M3 | `shell_menu` provider (STA thread, lazy submenus, icons, invoke, classic) | api-builder (Opus high) | high | M1, M2 | Windows CI tests | done |
 | M4 | `ContextMenu` component per D46 | ui-builder-high | high | M2 | headless UI tests, gallery screenshots both themes | done |
@@ -58,3 +58,4 @@ A long right-click, the Menu key or Shift+F10 opens the Windows context menu for
 - 2026-10-16 — M7 review fixes (f06bf3a) merged: stale Markdown link cleared in capture phase, build_action errors assert and show a header note, a re-entrant update panic on window-handled items fixed with window.defer, 16 viewer menu tests. M5 was merged earlier (d798384).
 - 2026-10-16 — M7b merged (92f1000): Find selection, Copy path:line, tree Copy value (refuses shortened values) and Copy key, table Copy column, Markdown Copy and Copy link, image Copy image (PNG only on Windows) and Copy path. Released in alpha-2026-10-16k with M7 and L4. Open: Ctrl+C image inside the preview drawer is unchecked. Next: M6 review of M5 and M7.
 - 2026-10-16 — M6 review PASS WITH FIXES; fixes merged (p17-m6-fixes, CI 38937246695 green): the Windows menu refuses names Win32 would rewrite (trailing dot or space, device names) so a shell verb can never hit another file; viewer right-click targets the clicked tree row or table cell; Retry resends a failed submenu; dropped prefetch opens are cancelled before the shell builds them; Linux shows only working Ferrite actions; long-press marks the pressed row; tree Copy value walk is bounded by the cap. Deferred: Find selection and Copy path:line in the paged large-file view.
+- 2026-10-17 — Status closed: M1 (merged 164bd28; decisions D5, D7 came from it) was done but still marked running.
