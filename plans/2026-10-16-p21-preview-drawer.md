@@ -19,6 +19,7 @@ All decided (D52, D43, D45); workers never reopen them.
 
 - **D7 — Live profile (2026-10-17, owner).** While the sheet shows a folder, Ferrite watches its whole subtree (ReadDirectoryChangesW with subtree on Windows; Linux may stay at the current behaviour). Changes patch the totals, types and largest files from the events (stat only the changed paths); the sheet refreshes at most every 250 ms. A full recount runs only on watcher overflow, on Ctrl+R in the sheet, or when the cached profile is older than the last overflow. The sheet shows "counted at HH:MM:SS" and "live" while watching.
 - **D8 — F3 on a folder (2026-10-17, owner).** F3 on a folder row opens the preview sheet on that folder (as Ctrl+Q does); if the sheet is already open, it moves focus into it (browse mode). Ctrl+Q stays.
+- **D9 — Esc closes the preview (2026-10-17, owner).** Like the settings sheet. In browse mode, Esc closes the sheet and returns focus to the list. In the list with the sheet open, Esc first clears the filter, then stops a running scan, then closes the sheet.
 
 ## Atoms
 
@@ -30,7 +31,7 @@ All decided (D52, D43, D45); workers never reopen them.
 | V4 | Browse mode (D5) | ui-builder | medium | V3 | UI tests: focus in and out, Enter on folder and file, F3, double-click | done |
 | V5 | Review | reviewer (Opus high) | high | all | verdict | done |
 | V6 | Live folder profile: subtree watch while shown, counts patched from events, full recount only on overflow or Ctrl+R, "counted at" time (D7) | api-builder (Opus high) | high | V5 | fake fs tests: a write deep in the tree updates totals within 1 s; overflow triggers one recount; no recount loop on a busy share | ready |
-| V7 | F3 on a folder opens the preview (D8) | ui-builder (Opus medium) | medium | V5 | UI tests: F3 on a folder opens or focuses the sheet on it; F3 on a file unchanged | ready |
+| V7 | F3 on a folder opens the preview (D8); Esc closes the sheet (D9) | ui-builder (Opus medium) | medium | V5 | UI tests: F3 on a folder opens or focuses the sheet on it; F3 on a file unchanged; Esc in browse mode closes the sheet and returns focus; Esc in the list closes it only after the filter is clear and no scan runs | ready |
 
 ## Done when
 
@@ -46,3 +47,4 @@ All decided (D52, D43, D45); workers never reopen them.
 - 2026-10-16 — V4 (bccbb72, 960d6fa) merged: Ctrl+Shift+Q browse (opens the sheet if closed), ↑ ↓ across tree and largest, ← → fold, Enter navigates or reveals then returns focus to the list, F3 views, file bodies get focus under the Viewer context. Open: bodies that own Esc/Tab (Markdown links, archive) take those keys first; F3 on a folder row does nothing.
 - 2026-10-16 — V4 review fixes (a86af11) merged: focus kept across file and folder reloads, spot keyed by tree node, first row selected after Ctrl+Shift+Q on a closed sheet, parameter structs. V5 done through the V3 and V4 reviews. Open: a reloaded folder tree comes back collapsed.
 - 2026-10-17 — Owner, on alpha-17b: the folder profile stayed at 601.2 GB / 1,313,827 files while a copy kept writing deep inside for minutes (cache keyed by the folder's change time, watcher not recursive). Decided D7 (live subtree watch, patched counts, refresh every 250 ms; a full recount every second would cost minutes per pass on 1.3 M files) and D8 (F3 on a folder opens the preview). V6, V7 added.
+- 2026-10-17 — Owner: Esc does not close the preview sheet. It was never bound (browse-mode Esc only returns focus; list Esc clears the filter), unlike the settings sheet. Decided D9, folded into V7.
