@@ -3,9 +3,15 @@ use std::path::{Path, PathBuf};
 
 use tempfile::TempDir;
 
+use super::complete::{
+    Ledger, Reconciled, UNUSED_NOTE, complete_text, mark_unused, reconcile, upgrade_text,
+};
 use super::*;
 use crate::backup_path;
 
+mod complete;
+mod complete_props;
+mod complete_store;
 mod model;
 mod parse;
 mod props;
