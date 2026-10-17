@@ -4,6 +4,8 @@ Open bugs found by the owner or by reviews that are parked on purpose. Each line
 
 ## Open
 
+- **2026-10-17 · REGRESSION, top priority: Enter does nothing on the focused Cancel button of the delete dialog (owner, alpha-2026-10-17c, Windows 11).** Space on a folder, Delete, focus starts on Cancel, Enter repeatedly: nothing happens (Windows then offered Sticky Keys, which it does after Shift is pressed five times). Suspects, in order: P20 K2 B1 moved dialog keys to shared `Dialog`/`DialogButton` contexts; P20 K3 builds them from keymap.toml; P20 K6 binds user keys last. Check `dialog_focus::Press` (Enter/Space on a focused button) in both confirm and prompt dialogs, on Windows, and add a UI test that presses Enter on each button of the delete dialog.
+- **2026-10-17 · Shortcuts page search by key fails for "ctrl+f5" (owner, alpha-2026-10-17c).** Search matches the keymap form (`ctrl-f5`) but not the shown form (`Ctrl+F5`). Normalise the query: case-insensitive, `+` and `-` and spaces equivalent, modifier order free.
 - **2026-10-17 · The app menu always says "Installed"** (`rusty-app/src/app_menu/mod.rs:19`) while the shipped `.exe` is portable (D3); portable mode (D10) is not built. Fixed by P19 L7b (word removed until portable mode exists).
 - **2026-10-17 · Settings rows marked "Not applied yet": font, font size, light and dark theme names, terminal provider and command.** They are saved but not used anywhere. Needs a plan (theme loader D16, font settings, terminal providers).
 - **2026-10-17 · A long Recycle pauses only when it ends** (P19 L4b log). Pause and Resume work for copy and move; Recycle Bin batches are one shell call.

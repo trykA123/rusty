@@ -26,6 +26,7 @@ Paths: `<worktrees>` is the `.crew` folder next to the repo; `<targets>` is `<wo
 
 ## Next, in order
 
+0. First: the Enter-on-Cancel regression in the delete dialog (top of `docs/bugs.md`), then the Shortcuts search by key bug; then P21 V8 (remove Ctrl+Q and the pill).
 1. Merge the three running branches as above. Watch Windows CI after each publish.
 2. Cut alpha-2026-10-17c only after the P22 review fixes are merged and CI is green (it writes the owner's ferrite.toml). Pattern: download the `ferrite-windows-x64-<sha>` artifact, zip with Python (`zip` is not installed), create the pre-release with `gh`, check the zip URL returns 200. Notes: Shortcuts page, complete live ferrite.toml, live folder preview, F3 on folders, Esc closes the preview.
 3. P19 L7b (keys, quit flush, "Installed" word): row in the P19 plan.
