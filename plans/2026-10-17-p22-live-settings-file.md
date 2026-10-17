@@ -23,7 +23,7 @@ All decided (D56, L6 decision B); workers never reopen them.
 | Atom | What | Role | Effort | After | Check | Status |
 | --- | --- | --- | --- | --- | --- | --- |
 | S1 | Complete file and defaults ledger, upgrade rewrite, removed-key comments (D1–D3) | orchestrator or Opus high | high | — | store tests: comments and order kept byte-for-byte, user keys untouched, following keys updated, ledger migration | done |
-| S2 | Live reload of ferrite.toml (D4) | Opus medium | medium | S1 | app tests: edit on disk applies, invalid kept and reported, no echo after a sheet save | ready |
+| S2 | Live reload of ferrite.toml (D4) | Opus medium | medium | S1 | app tests: edit on disk applies, invalid kept and reported, no echo after a sheet save | done |
 | S3 | Row state, reset, upgrade notice, layout and F3 fixes (D5–D7) | ui-builder-high | high | S1, S2, P20 K5 | UI tests and screenshots, both themes | blocked |
 | S4 | Review | reviewer (Opus high) | high | all | verdict | blocked |
 
@@ -38,3 +38,4 @@ All decided (D56, L6 decision B); workers never reopen them.
 
 - 2026-10-17 — Plan written after the owner's alpha-17b test (settings sheet praised; rows move when the TOML key appears; F3 opens line 1 for keys not in the file) and the owner's decision that the file holds everything, live, with fine control (D56). Starts after P20 K5 merges, since both touch the settings sheet.
 - 2026-10-17 — S1 merged (99e3e6d): `reconcile` = upgrade, complete, mark unused, then a safety check that refuses any result that loses a value; ledger in `ferrite.db` V3 (`settings_defaults`, canonical TOML values); start-up runs it on a thread before the window, writes only on change through the store's atomic write and session `.bak`, records the ledger after the write; unparsable files are never touched; `default_changes` kept on the start state for S3. 59 new tests incl. a proptest. Keys with no default (`terminal.command`, `editor.path`, `[experimental]`) are not written; a key deleted by hand comes back with the current default.
+- 2026-10-17 — S2 merged (40a6b8d): shared `watch_file` for keymap.toml and ferrite.toml (two watchers on the settings folder); `Reloader` reloads under the store lock, sends Applied or Invalid (file, line, column); echo skipped by comparing with the store's current settings and again in the window; a broken file is never rewritten (save refuses it); deleting the file keeps the current settings; S1's completion runs only at start. No setting needs a restart; the six fields the sheet marks as not applied are unchanged.
