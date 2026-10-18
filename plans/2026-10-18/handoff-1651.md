@@ -7,7 +7,7 @@ Paths: `<worktrees>` is the `.crew` folder next to the repo; `<targets>` is `<wo
 ## Done today
 
 - `main` at `f90637c` (local, not pushed; 9 commits ahead of origin): `deny.toml` ignores RUSTSEC-2026-0370/0371/0372 (zvariant, zbus_names, zvariant_derive: unmaintained after their merge into zbus 6, through gpui-kit's accesskit_unix/atspi; no upgrade path). Gate on that tree: all 9 steps passed. Every branch needs this to pass `deny`.
-- `p23-b1` `b8c17ec`: the three clippy errors fixed, `filetimes` renamed for typos, wip note removed; then main merged in (`45de54a`).
+- `p23-b1` `b8c17ec`: the three clippy errors fixed, file-time helpers renamed for typos, wip note removed; then main merged in (`45de54a`).
 - `p22-review-fixes` `13012f5`: Codex (sol xhigh) fixed the deleted-file save: a sheet save into a missing ferrite.toml starts from the completed current settings (`rusty-store/src/settings/mod.rs` `save`), tests `a_sheet_save_after_deletion_restores_all_current_settings` in rusty-store and rusty-app (red before the fix), ledger unchanged; two start-up helpers `#[cfg(test)]`. Diff reviewed by hand. Wip note removed; main merged in (`0e2b23d`). Codex worktree removed.
 - Owner rule recorded in memory: Codex sol high/xhigh allowed for non-UI backend work.
 - Tools audit (Codex) summarised to the owner; nothing acted on.
