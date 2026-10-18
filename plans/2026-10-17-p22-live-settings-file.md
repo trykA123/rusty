@@ -24,8 +24,15 @@ All decided (D56, L6 decision B); workers never reopen them.
 | --- | --- | --- | --- | --- | --- | --- |
 | S1 | Complete file and defaults ledger, upgrade rewrite, removed-key comments (D1–D3) | orchestrator or Opus high | high | — | store tests: comments and order kept byte-for-byte, user keys untouched, following keys updated, ledger migration | done |
 | S2 | Live reload of ferrite.toml (D4) | Opus medium | medium | S1 | app tests: edit on disk applies, invalid kept and reported, no echo after a sheet save | done |
-| S3 | Row state, reset, upgrade notice, layout and F3 fixes (D5–D7) | ui-builder-high | high | S1, S2, P20 K5 | UI tests and screenshots, both themes | blocked |
+| S3 | Row state, reset, upgrade notice, layout and F3 fixes (D5–D7), plus the prototype-A gaps from the P19 L7 review: a "Find a setting" field, a footer "Applied live · Saved to ferrite.toml · N changed", a changed-from-default dot, a "Live" chip | ui-builder-high | high | S1, S2, review fixes, P20 K5 | UI tests and screenshots, both themes | blocked |
 | S4 | Review | reviewer (Opus high) | high | all | verdict | blocked |
+
+### S3 brief
+
+- **Read:** this plan (D5–D7), D56, the S1/S2 log lines, `crates/rusty-ui/src/settings/` (rows, view, controls), `window_view/settings_news.rs`, `crates/rusty-app/src/settings/start.rs` (`default_changes`), `design/prototypes/menus-settings-d43.html` (direction A).
+- **Change:** row state Default/Changed from the ledger comparison exposed by rusty-store (add a read API if missing; no I/O in rusty-ui); Reset writes the current default and marks the key following; "Only changed" filter; the upgrade notice lists `default_changes` with Keep old value per item and Accept all, shown once, never modal; the TOML key line keeps its space so rows never move; F3 on a key missing from the file goes to its section header, else the last line, with a status note; plus the prototype gaps above.
+- **Check:** `cargo xtask gate`; UI tests for each behaviour; gallery screenshots light and dark, looked at.
+- **Stop if:** the ledger cannot tell Default from Changed for a key without a store change larger than a read API.
 
 ## Done when
 
