@@ -29,8 +29,8 @@ Final. Workers never reopen them; a worker that finds one wrong stops and report
 
 | Atom | Component | Role | Effort | After | Check | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| C1 | `rusty-shell::clipboard` model and platform (D2, D5, D6) | api-builder (Codex sol xhigh), then reviewer (Opus medium) | xhigh | — | `cargo nextest run -p rusty-shell clipboard`; Windows CI runs the integration test | ready |
-| C2 | Commands, keys, paste job, status messages (D1, D3, D4) | ui-builder (Opus medium) | medium | C1 | UI tests: copy and cut write the marked set with the right effect, paste starts a copy or move into the active folder, cut-paste empties the clipboard, nothing-to-paste message, Linux message | blocked |
+| C1 | `rusty-shell::clipboard` model and platform (D2, D5, D6) | api-builder (Codex sol xhigh), then reviewer (Opus medium) | xhigh | — | `cargo nextest run -p rusty-shell clipboard`; Windows CI runs the integration test | done |
+| C2 | Commands, keys, paste job, status messages (D1, D3, D4) | ui-builder (Opus medium) | medium | C1 | UI tests: copy and cut write the marked set with the right effect, paste starts a copy or move into the active folder, cut-paste empties the clipboard, nothing-to-paste message, Linux message | running |
 
 ### C1 — clipboard in rusty-shell
 
@@ -54,3 +54,4 @@ Final. Workers never reopen them; a worker that finds one wrong stops and report
 ## Log
 
 - 2026-10-19 — Plan written from the roadmap and the owner's alpha priorities. Ctrl+C/X/V were unbound in the file list.
+- 2026-10-19 — C1 merged (d4c9076): Codex sol xhigh wrote it (a first run stopped because the brief named missing AGENTS.md/CLAUDE.md files); Opus review PASS WITH FIXES, applied by the orchestrator: a failed publish empties the clipboard (no cut that reads as copy), odd padding accepted, clipboard tests in one nextest group with the shell menu tests. Windows compile first happens in CI.
