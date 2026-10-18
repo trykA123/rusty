@@ -19,8 +19,8 @@ All decided; workers never reopen them.
 
 | Atom | What | Role | Effort | After | Check | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| B1 | `--metrics` and `--profile` in rusty-app (D1) | Opus medium (general-purpose) | medium | — | app tests: JSON schema, temp profile used, exits after writing; local run prints plausible numbers | ready |
-| B2 | `perf-windows` CI job, fixture, summary table, guards (D2, D3) | infra-builder | medium | B1 | `ci.yml` validates; a pushed run shows the table | blocked |
+| B1 | `--metrics` and `--profile` in rusty-app (D1) | Opus medium (general-purpose) | medium | — | app tests: JSON schema, temp profile used, exits after writing; local run prints plausible numbers | done |
+| B2 | `perf-windows` CI job, fixture, summary table, guards (D2, D3) | infra-builder | medium | B1 | `ci.yml` validates; a pushed run shows the table | ready |
 | B3 | `docs/perf.md` baseline, roadmap link (D4) | orchestrator | — | B2 | first CI numbers recorded | blocked |
 
 ## Done when
@@ -32,3 +32,4 @@ All decided; workers never reopen them.
 ## Log
 
 - 2026-10-17 — Plan written: the v1.0 targets were never measured on the real app; the P2 spike measured only its own binary (Windows CI: first frame 220–510 ms, working set 63 MB with three panes of 100k rows, software renderer).
+- 2026-10-18 — B1 merged (c67ea3e). Green finished (three clippy errors, typos rename); a Codex sol review found seven issues (a refused command line touched the user's folders, temp profile not removed on Windows session end, missing --left/--right folders accepted, a normal start lost the restored pane focus, early settings mark, weak origin test, OS code outside platform files); all fixed test first by Codex sol xhigh and checked by hand. Windows compilation is left to CI. B2 is ready.
