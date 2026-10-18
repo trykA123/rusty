@@ -34,7 +34,7 @@ All decided (D52, D43, D45); workers never reopen them.
 | V5 | Review | reviewer (Opus high) | high | all | verdict | done |
 | V6 | Live folder profile: subtree watch while shown, counts patched from events, full recount only on overflow or Ctrl+R, "counted at" time (D7) | api-builder (Opus high) | high | V5 | fake fs tests: a write deep in the tree updates totals within 1 s; overflow triggers one recount; no recount loop on a busy share | done |
 | V7 | F3 on a folder opens the preview (D8); Esc closes the sheet (D9) | ui-builder (Opus medium) | medium | V5 | UI tests: F3 on a folder opens or focuses the sheet on it; F3 on a file unchanged; Esc in browse mode closes the sheet and returns focus; Esc in the list closes it only after the filter is clear and no scan runs | done |
-| V8 | Remove Ctrl+Q and the preview pill/button; F3 is the way in (D10) | ui-builder (Opus medium) | medium | V7 | UI tests: Ctrl+Q does nothing, F3 on a folder opens, the sheet still follows the cursor onto files; snapshots updated | ready |
+| V8 | Remove Ctrl+Q and the preview pill/button; F3 is the way in (D10) | ui-builder (Opus medium) | medium | V7 | UI tests: Ctrl+Q does nothing, F3 on a folder opens, the sheet still follows the cursor onto files; snapshots updated | done |
 | V9 | Browse folders inside the preview (D11): Enter in, Backspace up, breadcrumb, Shift+Enter to the pane, tree keys, Space size | ui-builder-high | high | V8 | UI tests for each key; screenshots of a nested folder and a counted size, both themes | ready |
 
 ## Done when
@@ -57,3 +57,4 @@ All decided (D52, D43, D45); workers never reopen them.
 - 2026-10-17 — Status closed: V3 (merged 6ca8bb6 + e41769f) was done but still marked ready.
 - 2026-10-17 — Owner on alpha-17c: the live preview during a copy works and looks good; F3 on folders is enough, so Ctrl+Q and the pill go (D10, V8).
 - 2026-10-17 — Owner: in the preview, Enter should open a folder inside the preview, Shift+Enter in the pane, Space should work there too, and a key should open a folder as a tree (D11, V9). Interpretation of Space (mark + count size, as in the list) to be confirmed with the owner when V9 starts.
+- 2026-10-19 — V8 merged: Ctrl+Q bindings, both toggle commands and the card's Preview button removed; the sheet's close button and hint show Esc; an old user keymap entry for either command is a normal unknown-command error. Open: the footer shows both "Esc Stop scan" and "Esc Close" while a folder is counted; D52 in decisions.md still names Ctrl+Q (history entry).
