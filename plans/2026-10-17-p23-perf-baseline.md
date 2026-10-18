@@ -20,7 +20,7 @@ All decided; workers never reopen them.
 | Atom | What | Role | Effort | After | Check | Status |
 | --- | --- | --- | --- | --- | --- | --- |
 | B1 | `--metrics` and `--profile` in rusty-app (D1) | Opus medium (general-purpose) | medium | — | app tests: JSON schema, temp profile used, exits after writing; local run prints plausible numbers | done |
-| B2 | `perf-windows` CI job, fixture, summary table, guards (D2, D3) | infra-builder | medium | B1 | `ci.yml` validates; a pushed run shows the table | ready |
+| B2 | `perf-windows` CI job, fixture, summary table, guards (D2, D3) | infra-builder | medium | B1 | `ci.yml` validates; a pushed run shows the table | done (first pushed run pending) |
 | B3 | `docs/perf.md` baseline, roadmap link (D4) | orchestrator | — | B2 | first CI numbers recorded | blocked |
 
 ## Done when
