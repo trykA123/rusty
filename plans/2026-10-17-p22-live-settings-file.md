@@ -24,8 +24,15 @@ All decided (D56, L6 decision B); workers never reopen them.
 | --- | --- | --- | --- | --- | --- | --- |
 | S1 | Complete file and defaults ledger, upgrade rewrite, removed-key comments (D1–D3) | orchestrator or Opus high | high | — | store tests: comments and order kept byte-for-byte, user keys untouched, following keys updated, ledger migration | done |
 | S2 | Live reload of ferrite.toml (D4) | Opus medium | medium | S1 | app tests: edit on disk applies, invalid kept and reported, no echo after a sheet save | done |
-| S3 | Row state, reset, upgrade notice, layout and F3 fixes (D5–D7) | ui-builder-high | high | S1, S2, P20 K5 | UI tests and screenshots, both themes | blocked |
+| S3 | Row state, reset, upgrade notice, layout and F3 fixes (D5–D7), plus the prototype-A gaps from the P19 L7 review: a "Find a setting" field, a footer "Applied live · Saved to ferrite.toml · N changed", a changed-from-default dot, a "Live" chip | ui-builder-high | high | S1, S2, review fixes, P20 K5 | UI tests and screenshots, both themes | blocked |
 | S4 | Review | reviewer (Opus high) | high | all | verdict | blocked |
+
+### S3 brief
+
+- **Read:** this plan (D5–D7), D56, the S1/S2 log lines, `crates/rusty-ui/src/settings/` (rows, view, controls), `window_view/settings_news.rs`, `crates/rusty-app/src/settings/start.rs` (`default_changes`), `design/prototypes/menus-settings-d43.html` (direction A).
+- **Change:** row state Default/Changed from the ledger comparison exposed by rusty-store (add a read API if missing; no I/O in rusty-ui); Reset writes the current default and marks the key following; "Only changed" filter; the upgrade notice lists `default_changes` with Keep old value per item and Accept all, shown once, never modal; the TOML key line keeps its space so rows never move; F3 on a key missing from the file goes to its section header, else the last line, with a status note; plus the prototype gaps above.
+- **Check:** `cargo xtask gate`; UI tests for each behaviour; gallery screenshots light and dark, looked at.
+- **Stop if:** the ledger cannot tell Default from Changed for a key without a store change larger than a read API.
 
 ## Done when
 
@@ -39,3 +46,4 @@ All decided (D56, L6 decision B); workers never reopen them.
 - 2026-10-17 — Plan written after the owner's alpha-17b test (settings sheet praised; rows move when the TOML key appears; F3 opens line 1 for keys not in the file) and the owner's decision that the file holds everything, live, with fine control (D56). Starts after P20 K5 merges, since both touch the settings sheet.
 - 2026-10-17 — S1 merged (99e3e6d): `reconcile` = upgrade, complete, mark unused, then a safety check that refuses any result that loses a value; ledger in `ferrite.db` V3 (`settings_defaults`, canonical TOML values); start-up runs it on a thread before the window, writes only on change through the store's atomic write and session `.bak`, records the ledger after the write; unparsable files are never touched; `default_changes` kept on the start state for S3. 59 new tests incl. a proptest. Keys with no default (`terminal.command`, `editor.path`, `[experimental]`) are not written; a key deleted by hand comes back with the current default.
 - 2026-10-17 — S2 merged (40a6b8d): shared `watch_file` for keymap.toml and ferrite.toml (two watchers on the settings folder); `Reloader` reloads under the store lock, sends Applied or Invalid (file, line, column); echo skipped by comparing with the store's current settings and again in the window; a broken file is never rewritten (save refuses it); deleting the file keeps the current settings; S1's completion runs only at start. No setting needs a restart; the six fields the sheet marks as not applied are unchanged.
+- 2026-10-18 — Review fixes branch: three Codex rounds (deleted-file save; eight round-one findings; interrupted-write recovery with a staged `ferrite.toml.defaults-pending` file) and an Opus review (no lost user value; six small fixes sent to Codex). S3 input: the late start-up completion's `default_changes` are dropped in `rusty-app/src/settings/reload.rs` `receive_late`; the upgrade notice (D6) must receive them, or a slow start never shows which defaults changed.
