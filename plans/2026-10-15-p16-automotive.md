@@ -53,6 +53,16 @@ Input: the crate research of 2026-10-15 (summary under Decisions).
 - **D9 — VBF.** A small own parser: header fields, then the blocks shown as hex on real addresses.
 - **D10 — Performance contract.** Every view opens a 500 MB file within 1 s to first content and stays under 200 MB of memory. Indexes are built in the background with progress, and only the visible part is decoded. Each format gets a benchmark fixture in CI.
 
+- **D11 — Layout: direction B, "inspector" (owner, 2026-10-19).** From the Opus prototype (`<worktrees>/prototypes/automotive/opus`, shots `B-*`): a navigator on the left (ranges, sections, messages or IDs with counts), the content in the middle (hex on real addresses, symbol or signal table, virtualised trace), an inspector on the right for the selected item (size, position, records by type, checks, decoded signals). Text, hex and the rich view stay on Alt+1/3/5.
+- **D12 — Simple by default, rich parts opt-in (owner, 2026-10-19).** The owner wants a calm default and full control over the rich parts. The rich view opens in **Simple** mode: navigator as a plain list (name, address, size), content, a one-line status with the checks (checksum errors, EOF, gaps) and no charts. Each rich part is a setting under `[automotive.view]` in `ferrite.toml`, live like every setting, and shown as a toggle group in the settings sheet's Automotive section:
+  - `inspector` — the right-hand panel (default off);
+  - `memory_strip` — the address-map strip beside the navigator and the position bar (default off);
+  - `charts` — bars, sparklines, bus load and signal curves, wherever they appear (default off);
+  - `row_bars` — the per-row bars and counts in the navigator (default off);
+  - `preset = "simple" | "rich" | "custom"` sets all four at once; changing one toggle makes it `custom`.
+  
+  In the viewer, `Ctrl+I` shows or hides the inspector for this file only, without changing the setting. Every part works with every combination; the Simple layout is designed and screenshot-tested first, Rich second.
+
 ## Atoms (cut into Red/Green pairs when P15 A1 lands)
 
 | Atom | What | Role |
@@ -77,3 +87,7 @@ Input: the crate research of 2026-10-15 (summary under Decisions).
 - A 300 MB ARXML opens as a navigable tree.
 - The whole pack turns off in settings.
 - The gate, Windows CI and the reviewer are green.
+
+## Log
+
+- 2026-10-19 — Owner picked direction B (inspector) from the Opus prototypes and asked for a simple default with every rich part switchable in settings (D11, D12).
