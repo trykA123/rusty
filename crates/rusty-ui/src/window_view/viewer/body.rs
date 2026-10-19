@@ -6,7 +6,9 @@ use rusty_core::Location;
 use rusty_core::marks::{Bookmarks, MarkSet};
 
 use super::FileHooks;
+use super::parts::PartSet;
 use crate::prelude::*;
+use crate::settings::Values;
 
 pub type Key = (&'static str, &'static str);
 pub type OpenFile = Rc<dyn Fn(Location, &mut App)>;
@@ -24,6 +26,7 @@ pub struct Host {
     pub on_saved: Rc<dyn Fn(&mut App)>,
     pub open: OpenFile,
     pub carried: Option<Carried>,
+    pub is_preview: bool,
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
@@ -43,7 +46,7 @@ pub enum BodyAct {
 }
 
 pub enum MenuEntry {
-    Run(&'static str, Box<dyn Action>),
+    Run(&'static str, Box<dyn Action>, bool),
     Submenu(&'static str, Vec<MenuEntry>),
     Break,
 }
@@ -67,6 +70,10 @@ pub trait ViewerBody: Any {
     }
 
     fn is_typing(&self, _: &App) -> bool {
+        false
+    }
+
+    fn takes_letters(&self, _: &App) -> bool {
         false
     }
 
@@ -105,4 +112,10 @@ pub trait ViewerBody: Any {
     fn menu_anchor(&self, _: &App) -> Option<Point<Pixels>> {
         None
     }
+
+    fn parts(&self, _: &App) -> Option<&'static PartSet> {
+        None
+    }
+
+    fn show_parts(&self, _: &Values, _: &mut App) {}
 }

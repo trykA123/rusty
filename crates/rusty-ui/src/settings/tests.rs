@@ -17,8 +17,11 @@ fn every_field_sits_at_its_own_index() {
 #[test]
 fn every_key_is_unique_and_lives_in_its_section() {
     for spec in &FIELDS {
-        let table = spec.key.split('.').next().unwrap_or_default();
-        assert_eq!(table, spec.section.label().to_lowercase(), "{}", spec.key);
+        let home = match spec.section {
+            Section::Display => spec.group().map(str::to_lowercase),
+            section => Some(section.label().to_lowercase()),
+        };
+        assert_eq!(Some(spec.table().to_owned()), home, "{}", spec.key);
         assert_eq!(
             FIELDS.iter().filter(|other| other.key == spec.key).count(),
             1
@@ -95,9 +98,10 @@ fn arrows_step_a_number_and_text_needs_editing() {
 #[test]
 fn tab_jumps_to_the_next_section_and_wraps() {
     assert_eq!(section_of(next_section(0, true)), Section::Files);
-    let last = first_row(Section::Editor);
+    let last = first_row(Section::Display);
     assert_eq!(next_section(last, true), 0);
-    assert_eq!(section_of(next_section(0, false)), Section::Editor);
+    assert_eq!(section_of(next_section(0, false)), Section::Display);
+    assert_eq!(next_section(FIELDS.len() - 1, true), 0);
 }
 
 #[test]
@@ -154,4 +158,91 @@ fn modifier_hints_default_to_every_shortcut_after_400_ms() {
     let change = Change::modifier_hints(HintsMode::Fkeys);
     assert_eq!(change.key(), "appearance.modifier-hints");
     assert_eq!(values.with(&change).modifier_hints(), HintsMode::Fkeys);
+}
+
+#[test]
+fn the_display_section_groups_text_image_and_automotive_parts() {
+    let keys: Vec<(Option<&str>, &str)> = FIELDS
+        .iter()
+        .filter(|spec| spec.section == Section::Display)
+        .map(|spec| (spec.group(), spec.key))
+        .collect();
+    let groups: Vec<Option<&str>> = keys.iter().map(|(group, _)| *group).collect();
+    assert_eq!(
+        groups,
+        [
+            Some("Text"),
+            Some("Text"),
+            Some("Image"),
+            Some("Automotive"),
+            Some("Automotive"),
+            Some("Automotive"),
+            Some("Automotive"),
+            Some("Automotive"),
+        ]
+    );
+    let keys: Vec<&str> = keys.into_iter().map(|(_, key)| key).collect();
+    assert_eq!(
+        keys,
+        [
+            "text.view.line-numbers",
+            "text.view.line-ends",
+            "image.view.details",
+            "automotive.view.preset",
+            "automotive.view.inspector",
+            "automotive.view.memory-strip",
+            "automotive.view.charts",
+            "automotive.view.row-bars",
+        ]
+    );
+    assert!(!Field::AutomotiveCharts.is_applied());
+    assert!(Field::AutomotiveInspector.is_applied());
+}
+
+#[test]
+fn the_inspector_opens_by_itself_only_in_rich_or_when_custom_asks() {
+    let custom = |inspector: bool| {
+        Values::default()
+            .with(&Change {
+                field: Field::AutomotivePreset,
+                value: Value::Pick(2),
+            })
+            .with(&Change {
+                field: Field::AutomotiveInspector,
+                value: Value::Flag(inspector),
+            })
+    };
+    let rich = Values::default().with(&Change {
+        field: Field::AutomotivePreset,
+        value: Value::Pick(1),
+    });
+    let simple_with_flag = Values::default().with(&Change {
+        field: Field::AutomotiveInspector,
+        value: Value::Flag(true),
+    });
+    assert!(!Values::default().opens_inspector());
+    assert!(!simple_with_flag.opens_inspector());
+    assert!(rich.opens_inspector());
+    assert!(custom(true).opens_inspector());
+    assert!(!custom(false).opens_inspector());
+}
+
+#[test]
+fn every_display_row_has_a_one_sentence_hint() {
+    for spec in FIELDS
+        .iter()
+        .filter(|spec| spec.section == Section::Display)
+    {
+        assert!(spec.help.ends_with('.'), "{}", spec.key);
+        assert_eq!(spec.help.matches(". ").count(), 0, "{}", spec.key);
+    }
+}
+
+#[test]
+fn text_parts_default_to_line_numbers_on_and_line_ends_off() {
+    let values = Values::default();
+    assert!(values.flag(Field::TextLineNumbers));
+    assert!(!values.flag(Field::TextLineEnds));
+    assert!(!values.flag(Field::ImageDetails));
+    assert!(values.is_shown(None, Field::TextLineNumbers));
 }

@@ -1,12 +1,18 @@
+use rusty_ui::Focusable;
 use rusty_ui::fkey_bar::{FKeyBar, KeyLayer};
 use rusty_ui::prelude::*;
 use rusty_ui::primitives::{
     Button, ButtonVariant, IconButton, IconName, ListScroll, SplitterState,
 };
 use rusty_ui::tokens::{self, Mode, Theme};
-use rusty_ui::window_view::{ArchiveView, BodyKeys, FontView, ImageView, PagedView, ViewerBody};
+use rusty_ui::window_view::{
+    ArchiveView, BodyKeys, FontView, ImageView, PagedView, PdfView, ViewerBody,
+};
 use rusty_ui::{FerriteTitleBar, HeaderSearch};
 
+use crate::automotive_sample::{
+    ELF_NAME, ELF_STEPS, MEMORY_NAME, MEMORY_STEPS, TRACE_NAME, TRACE_STEPS, elf, memory, trace,
+};
 use crate::drives_page::{DrivesPage, Shows};
 use crate::image_sample;
 use crate::menu_page::{MenuPage, Shows as MenuShows};
@@ -21,8 +27,14 @@ use crate::structured_sample::{
 use crate::tokens_page;
 use crate::viewer_menu_page::{Shows as ViewerMenuShows, ViewerMenuPage};
 use crate::window_page::WindowPage;
-use crate::window_samples::{hint_windows, job_windows, sheet_windows, window_element};
-use crate::{rich_sample, viewer_sample};
+use crate::window_samples::{
+    display_window, hint_windows, job_windows, sheet_windows, window_element,
+};
+use crate::{pdf_sample, rich_sample, viewer_sample};
+
+mod samples;
+
+use samples::image_keys;
 
 const TREE_STEPS: [&str; 9] = [
     "viewer::RowDown",
@@ -42,11 +54,16 @@ const TABLE_STEPS: [&str; 4] = [
     "viewer_table::SortColumn",
 ];
 
-const MENU_PAGES: [(Page, MenuShows); 4] = [
+const PDF_STEPS: [&str; 2] = ["viewer::LeftDrawer", "viewer::RightDrawer"];
+const PDF_SEARCH: &str = "undervoltage";
+
+const MENU_PAGES: [(Page, MenuShows); 6] = [
     (Page::Menu, MenuShows::Root),
     (Page::MenuSubmenu, MenuShows::SevenZip),
     (Page::MenuFilter, MenuShows::Filter),
     (Page::MenuFiles, MenuShows::Files),
+    (Page::MenuBackground, MenuShows::Background),
+    (Page::MenuEmptyFolder, MenuShows::EmptyFolder),
 ];
 
 pub struct Gallery {
@@ -62,12 +79,16 @@ pub struct Gallery {
     table: Option<Box<dyn ViewerBody>>,
     markdown: Option<Box<dyn ViewerBody>>,
     markdown_preview: Option<Box<dyn ViewerBody>>,
+    memory: [Option<Box<dyn ViewerBody>>; 2],
+    elf: [Option<Box<dyn ViewerBody>>; 2],
+    trace: [Option<Box<dyn ViewerBody>>; 2],
     archive: Entity<ArchiveView>,
     font: Option<Entity<FontView>>,
     marks: Option<Entity<PagedView>>,
     image: Option<Entity<ImageView>>,
-    menus: [(Page, Entity<MenuPage>); 4],
-    viewer_menus: [Entity<ViewerMenuPage>; 2],
+    pdf: [Entity<PdfView>; 3],
+    menus: [(Page, Entity<MenuPage>); 6],
+    viewer_menus: [Entity<ViewerMenuPage>; 6],
     main_window: Entity<WindowPage>,
     shift_window: Entity<WindowPage>,
     ctrl_window: Entity<WindowPage>,
@@ -75,6 +96,7 @@ pub struct Gallery {
     job_windows: [Entity<WindowPage>; 4],
     menu_window: Entity<WindowPage>,
     sheet_windows: [Entity<WindowPage>; 9],
+    display_window: Entity<WindowPage>,
     hint_windows: [Entity<WindowPage>; 4],
     crash_window: Entity<WindowPage>,
     tab: usize,
@@ -99,13 +121,25 @@ impl Gallery {
             table: structured::body(TABLE_NAME, TABLE, window, cx),
             markdown: structured::body(MARKDOWN_NAME, MARKDOWN, window, cx),
             markdown_preview: structured::editing(MARKDOWN_NAME, MARKDOWN, window, cx),
+            memory: [(); 2].map(|()| structured::body(MEMORY_NAME, memory(), window, cx)),
+            elf: [(); 2].map(|()| structured::binary(ELF_NAME, elf(), window, cx)),
+            trace: [(); 2].map(|()| structured::body(TRACE_NAME, trace(), window, cx)),
             archive: rich_sample::archive_view(cx),
             font: rich_sample::font_view(cx),
             marks: None,
             image: image_sample::image_view(cx).ok(),
+            pdf: [None, Some(PDF_SEARCH), Some(PDF_SEARCH)]
+                .map(|search| pdf_sample::pdf_view(search, window, cx)),
             menus: MENU_PAGES.map(|(page, shows)| (page, cx.new(|cx| MenuPage::new(shows, cx)))),
-            viewer_menus: [ViewerMenuShows::Text, ViewerMenuShows::Tree]
-                .map(|shows| cx.new(|cx| ViewerMenuPage::new(shows, window, cx))),
+            viewer_menus: [
+                ViewerMenuShows::Text,
+                ViewerMenuShows::Tree,
+                ViewerMenuShows::ViewText,
+                ViewerMenuShows::ViewAutomotive,
+                ViewerMenuShows::ViewElf,
+                ViewerMenuShows::ViewTrace,
+            ]
+            .map(|shows| cx.new(|cx| ViewerMenuPage::new(shows, window, cx))),
             main_window: cx.new(|cx| WindowPage::new(None, cx)),
             shift_window: cx.new(|cx| WindowPage::new(Some(KeyLayer::Shift), cx)),
             ctrl_window: cx.new(|cx| WindowPage::new(Some(KeyLayer::Ctrl), cx)),
@@ -113,6 +147,7 @@ impl Gallery {
             job_windows: job_windows(cx),
             menu_window: cx.new(WindowPage::with_menu),
             sheet_windows: sheet_windows(window, cx),
+            display_window: display_window(cx),
             hint_windows: hint_windows(cx),
             crash_window: cx.new(WindowPage::with_crash),
             tab: 1,
@@ -134,35 +169,6 @@ impl Gallery {
     pub fn set_page(&mut self, page: Page, cx: &mut Context<Self>) {
         self.page = page;
         cx.notify();
-    }
-
-    fn sample(&self) -> Option<&dyn ViewerBody> {
-        match self.page {
-            Page::Tree => self.tree.as_deref(),
-            Page::Table => self.table.as_deref(),
-            Page::Markdown => self.markdown.as_deref(),
-            Page::MarkdownPreview => self.markdown_preview.as_deref(),
-            _ => None,
-        }
-    }
-
-    pub fn focus_sample(&self, window: &mut Window, cx: &mut App) {
-        if let Some(body) = self.sample() {
-            window.focus(&body.focus_handle(cx), cx);
-        }
-    }
-
-    pub fn drive_sample(&self, window: &mut Window, cx: &mut App) {
-        let steps: &[&str] = match self.page {
-            Page::Tree => &TREE_STEPS,
-            Page::Table => &TABLE_STEPS,
-            _ => &[],
-        };
-        for name in steps {
-            if let Ok(action) = cx.build_action(name, None) {
-                window.dispatch_action(action, cx);
-            }
-        }
     }
 
     fn page_switch(&self, cx: &mut Context<Self>) -> impl Iterator<Item = Button> {
@@ -236,23 +242,6 @@ impl Gallery {
     }
 }
 
-fn image_keys() -> FKeyBar {
-    let kinds = [("Alt+1", "Text"), ("3", "Hex"), ("Esc", "Close")];
-    FKeyBar::new("image-keys", ImageView::KEYS.into_iter().chain(kinds))
-}
-
-fn sample_keys(body: &dyn ViewerBody, cx: &App) -> FKeyBar {
-    let (BodyKeys::Modal(keys) | BodyKeys::Normal(keys)) = body.keys(cx);
-    let viewer = [
-        ("1", "Text"),
-        ("3", "Hex"),
-        ("N", "Next file"),
-        ("P", "Previous file"),
-        ("Esc", "Close"),
-    ];
-    FKeyBar::new("sample-keys", keys.into_iter().chain(viewer))
-}
-
 fn column(t: &Theme) -> Div {
     div()
         .flex()
@@ -321,6 +310,9 @@ impl Render for Gallery {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         let t = tokens::current(cx).clone();
         let root = root(&t);
+        if self.page == Page::SettingsDisplay {
+            return root.child(self.display_window.clone());
+        }
         if let Some(page) = window_element(self.page, self.windows()) {
             let is_narrow = matches!(self.page, Page::WindowNarrow | Page::SheetNarrow);
             return root.when(is_narrow, |r| r.bg(t.colors.line)).child(page);
@@ -337,22 +329,33 @@ impl Render for Gallery {
             Page::Font => root.children(self.font.clone()),
             Page::Marks => root.child(self.marks_page(window, cx)),
             Page::Image => root.children(self.image.clone()).child(image_keys()),
-            Page::Menu | Page::MenuSubmenu | Page::MenuFilter | Page::MenuFiles => {
-                root.children(self.menu_page(self.page))
-            }
-            Page::ViewerMenuText | Page::ViewerMenuTree => root.children(self.viewer_menu()),
+            Page::Menu
+            | Page::MenuSubmenu
+            | Page::MenuFilter
+            | Page::MenuFiles
+            | Page::MenuBackground
+            | Page::MenuEmptyFolder => root.children(self.menu_page(self.page)),
+            Page::ViewerMenuText
+            | Page::ViewerMenuTree
+            | Page::ViewMenuText
+            | Page::ViewMenuAutomotive
+            | Page::ViewMenuElf
+            | Page::ViewMenuTrace => root.children(self.viewer_menu()),
             Page::Primitives => root.child(self.primitives(&t, window, cx)),
-            Page::Tree | Page::Table | Page::Markdown | Page::MarkdownPreview => {
-                match self.sample() {
-                    Some(body) => root
-                        .child(body.view())
-                        .when(self.page == Page::Tree, |root| {
-                            root.child(sample_keys(body, cx))
-                        }),
-                    None => root.child("This sample did not load."),
-                }
-            }
+            Page::Tree
+            | Page::Table
+            | Page::Markdown
+            | Page::MarkdownPreview
+            | Page::MemoryImage
+            | Page::MemoryDrawers
+            | Page::ElfSymbols
+            | Page::ElfDrawers
+            | Page::TraceTable
+            | Page::TraceDrawers => self.sample_page(root, cx),
             Page::Tokens => root.child(tokens_page::render(&t)),
+            Page::PdfCalm | Page::PdfSearch | Page::PdfDrawers => {
+                root.children(self.pdf_sample().cloned())
+            }
             _ => root,
         }
     }
@@ -363,6 +366,10 @@ impl Gallery {
         match self.page {
             Page::ViewerMenuText => Some(self.viewer_menus[0].clone()),
             Page::ViewerMenuTree => Some(self.viewer_menus[1].clone()),
+            Page::ViewMenuText => Some(self.viewer_menus[2].clone()),
+            Page::ViewMenuAutomotive => Some(self.viewer_menus[3].clone()),
+            Page::ViewMenuElf => Some(self.viewer_menus[4].clone()),
+            Page::ViewMenuTrace => Some(self.viewer_menus[5].clone()),
             _ => None,
         }
     }

@@ -80,6 +80,7 @@ impl FerriteWindow {
             location: viewer.location.clone(),
             hooks: self.files.clone(),
             carried: viewer.carried.clone(),
+            is_preview: false,
             on_saved: Rc::new(move |cx| {
                 let this = this.clone();
                 cx.defer(move |cx| {
@@ -148,6 +149,7 @@ impl FerriteWindow {
             viewer.say(note, cx);
         }
         window.focus(&viewer.focus_target(cx), cx);
+        self.show_parts(cx);
         cx.notify();
     }
 
@@ -174,6 +176,7 @@ impl FerriteWindow {
         if reused {
             viewer.kind = Some(kind);
             window.focus(&viewer.focus_target(cx), cx);
+            self.show_parts(cx);
             cx.notify();
             return;
         }

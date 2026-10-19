@@ -3,6 +3,7 @@ use super::{Slot, Viewer};
 use crate::prelude::*;
 
 const CLOSE: Key = ("Esc", "Close");
+const VIEW: Key = ("Alt+V", "View");
 const FILES: [Key; 2] = [("N", "Next file"), ("P", "Previous file")];
 pub(super) const NEXT_PREVIOUS: Key = ("N/P Space/Bksp", "Next/Prev");
 const SLOTS: [Slot; 3] = [Slot::Text, Slot::Hex, Slot::Rich];
@@ -34,12 +35,23 @@ impl Viewer {
             None => Vec::new(),
         };
         let editing = self.is_editing(cx);
+        let takes_letters = self
+            .body
+            .as_ref()
+            .is_some_and(|body| body.takes_letters(cx));
         if self.can_start_editing(cx) {
             keys.push(("Ctrl+E", "Edit"));
         }
-        let slots = self.slot_keys(editing, &keys);
+        if self
+            .body
+            .as_ref()
+            .is_some_and(|body| body.parts(cx).is_some())
+        {
+            keys.push(VIEW);
+        }
+        let slots = self.slot_keys(editing || takes_letters, &keys);
         keys.extend(slots);
-        if !editing && !keys.contains(&NEXT_PREVIOUS) {
+        if !editing && !takes_letters && !keys.contains(&NEXT_PREVIOUS) {
             keys.extend(FILES);
         }
         keys.push(CLOSE);

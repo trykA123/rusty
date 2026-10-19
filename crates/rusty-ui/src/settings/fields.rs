@@ -7,15 +7,17 @@ pub enum Section {
     Selection,
     Terminal,
     Editor,
+    Display,
 }
 
 impl Section {
-    pub const ALL: [Self; 5] = [
+    pub const ALL: [Self; 6] = [
         Self::Appearance,
         Self::Files,
         Self::Selection,
         Self::Terminal,
         Self::Editor,
+        Self::Display,
     ];
 
     pub fn label(self) -> &'static str {
@@ -25,6 +27,7 @@ impl Section {
             Self::Selection => "Selection",
             Self::Terminal => "Terminal",
             Self::Editor => "Editor",
+            Self::Display => "Display",
         }
     }
 
@@ -35,6 +38,7 @@ impl Section {
             Self::Selection => IconName::MousePointer,
             Self::Terminal => IconName::SquareTerminal,
             Self::Editor => IconName::FilePen,
+            Self::Display => IconName::Eye,
         }
     }
 }
@@ -59,6 +63,14 @@ pub enum Field {
     TerminalProvider,
     TerminalCommand,
     EditorPath,
+    TextLineNumbers,
+    TextLineEnds,
+    ImageDetails,
+    AutomotivePreset,
+    AutomotiveInspector,
+    AutomotiveMemoryStrip,
+    AutomotiveCharts,
+    AutomotiveRowBars,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
@@ -87,6 +99,11 @@ pub const HINTS: [Choice; 3] = [
     choice("All shortcuts", "all"),
 ];
 pub const HIDDEN: [Choice; 2] = [choice("Shown", "shown"), choice("Hidden", "hidden")];
+pub const PRESETS: [Choice; 3] = [
+    choice("Simple", "simple"),
+    choice("Rich", "rich"),
+    choice("Custom", "custom"),
+];
 pub const SORTS: [Choice; 4] = [
     choice("Name", "name"),
     choice("Size", "size"),
@@ -137,7 +154,7 @@ const fn spec(
 use Field as F;
 use Section as S;
 
-pub const FIELDS: [FieldSpec; 18] = [
+pub const FIELDS: [FieldSpec; 26] = [
     spec(
         (F::Theme, S::Appearance, "appearance.mode"),
         ("Theme", "Follow Windows, or keep light or dark"),
@@ -249,7 +266,96 @@ pub const FIELDS: [FieldSpec; 18] = [
         ("Editor", "The program F4 opens files with"),
         Control::Text,
     ),
+    spec(
+        (F::TextLineNumbers, S::Display, "text.view.line-numbers"),
+        (
+            "Line numbers",
+            "Shows the number of each line at its start.",
+        ),
+        Control::Toggle,
+    ),
+    spec(
+        (F::TextLineEnds, S::Display, "text.view.line-ends"),
+        ("Line ends", "Marks where each line ends, as LF or CRLF."),
+        Control::Toggle,
+    ),
+    spec(
+        (F::ImageDetails, S::Display, "image.view.details"),
+        (
+            "Details",
+            "Shows a panel with the camera, date and other EXIF data.",
+        ),
+        Control::Toggle,
+    ),
+    spec(
+        (F::AutomotivePreset, S::Display, "automotive.view.preset"),
+        (
+            "View",
+            "Simple keeps the view calm, Rich turns every part on, Custom uses the toggles below.",
+        ),
+        Control::Choices(&PRESETS, Look::Segments),
+    ),
+    spec(
+        (
+            F::AutomotiveInspector,
+            S::Display,
+            "automotive.view.inspector",
+        ),
+        (
+            "Open the inspector",
+            "Opens the details drawer by itself when you pick a range or section.",
+        ),
+        Control::Toggle,
+    ),
+    spec(
+        (
+            F::AutomotiveMemoryStrip,
+            S::Display,
+            "automotive.view.memory-strip",
+        ),
+        (
+            "Memory strip",
+            "Shows a map of the address space beside the ranges list.",
+        ),
+        Control::Toggle,
+    ),
+    spec(
+        (F::AutomotiveCharts, S::Display, "automotive.view.charts"),
+        (
+            "Charts",
+            "Shows bars, sparklines, bus load and signal curves where a view has them.",
+        ),
+        Control::Toggle,
+    ),
+    spec(
+        (F::AutomotiveRowBars, S::Display, "automotive.view.row-bars"),
+        (
+            "Row bars",
+            "Shows a size bar and counts on each row of the ranges list.",
+        ),
+        Control::Toggle,
+    ),
 ];
+
+const GROUPS: [(&str, &str); 3] = [
+    ("text", "Text"),
+    ("image", "Image"),
+    ("automotive", "Automotive"),
+];
+
+impl FieldSpec {
+    pub fn table(&self) -> &'static str {
+        self.key.split('.').next().unwrap_or_default()
+    }
+
+    pub fn group(&self) -> Option<&'static str> {
+        let table = self.table();
+        GROUPS
+            .iter()
+            .find(|(name, _)| *name == table)
+            .map(|(_, label)| *label)
+    }
+}
 
 impl Field {
     pub fn spec(self) -> &'static FieldSpec {
@@ -269,6 +375,9 @@ impl Field {
                 | Self::FontSize
                 | Self::TerminalProvider
                 | Self::TerminalCommand
+                | Self::AutomotiveMemoryStrip
+                | Self::AutomotiveCharts
+                | Self::AutomotiveRowBars
         )
     }
 }

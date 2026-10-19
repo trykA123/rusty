@@ -127,7 +127,7 @@ fn fields_of(changes: &[Change]) -> Vec<Field> {
     changes.iter().map(|change| change.field).collect()
 }
 
-pub(super) fn steer_browser(values: &Values, browser: &mut Browser) {
+pub(super) fn steer(values: &Values, browser: &mut Browser) {
     browser.set_show_hidden(values.show_hidden());
     browser.set_show_system(values.show_system());
     browser.set_default_sort(values.sort_key(), values.folders_first());
@@ -140,7 +140,8 @@ impl FerriteWindow {
         if old.theme() != self.values.theme() || old.density() != self.values.density() {
             self.apply_theme(window, cx);
         }
-        steer_browser(&self.values, &mut self.browser);
+        steer(&self.values, &mut self.browser);
+        self.show_parts(cx);
     }
 
     pub(super) fn toggle_setting(
@@ -185,9 +186,11 @@ impl FerriteWindow {
 
     fn saved(&mut self, report: SaveReport, window: &mut Window, cx: &mut Context<Self>) {
         self.saver.is_saving = false;
-        let sent = fields_of(&std::mem::take(&mut self.saver.in_flight));
+        let flight = std::mem::take(&mut self.saver.in_flight);
+        let sent = fields_of(&flight);
         self.saver.settle(&report, &sent);
         self.settings.undo_learned(&report, &sent);
+        self.keep_settled(&report, &flight, cx);
         let fresh = self.saver.on_disk(report.values, report.generation);
         self.set_values(fresh, window, cx);
         self.start_save(window, cx);

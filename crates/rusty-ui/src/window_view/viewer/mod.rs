@@ -4,6 +4,7 @@ mod background;
 mod body;
 mod cancel;
 mod editor;
+mod elf;
 mod files;
 mod font;
 mod image;
@@ -12,17 +13,25 @@ mod keys_bar;
 mod kinds;
 mod lister;
 mod markdown;
+mod memory;
 mod menu;
 mod modes;
 mod open;
 mod paged;
+mod parts;
+mod pdf;
 mod rich_header;
 mod search;
 mod table;
+mod trace;
 mod tree;
 mod view;
+mod view_menu;
 
-use gpui_kit::{FocusHandle, Subscription};
+use std::cell::Cell;
+use std::rc::Rc;
+
+use gpui_kit::{Bounds, FocusHandle, Subscription};
 use rusty_core::Location;
 
 pub use archive::{ArchiveSource, ArchiveView};
@@ -39,8 +48,10 @@ pub(in crate::window_view) use keys::{BackspaceKey, PageDown};
 pub use kinds::{Declined, EDIT_LIMIT, Kind, Kinds, Load, Loaded, Slot, Sniff, ViewerKind};
 pub use menu::viewer_menu;
 pub use paged::{PagedKind, PagedView};
+pub use pdf::{OpenPdf, PdfLook, PdfPages, PdfStart, PdfView};
 pub use search::memory::MemoryLink;
 pub(in crate::window_view) use tree::FilterBack;
+pub use view_menu::view_menu;
 
 use super::FerriteWindow;
 use crate::prelude::*;
@@ -72,6 +83,9 @@ pub(super) struct Viewer {
     message: Option<SharedString>,
     carried: Option<Carried>,
     menu: Option<(Entity<crate::context_menu::ContextMenu>, Subscription)>,
+    is_view_menu: bool,
+    parts: parts::ViewParts,
+    bounds: Rc<Cell<Bounds<Pixels>>>,
     start_line: Option<u64>,
     start_note: Option<SharedString>,
 }
@@ -107,6 +121,9 @@ impl Viewer {
             message: None,
             carried: None,
             menu: None,
+            is_view_menu: false,
+            parts: parts::ViewParts::default(),
+            bounds: Rc::default(),
             start_line: None,
             start_note: None,
         }

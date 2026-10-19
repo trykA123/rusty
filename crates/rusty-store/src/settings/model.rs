@@ -2,6 +2,8 @@ use std::collections::BTreeMap;
 
 use serde::{Deserialize, Serialize};
 
+use super::view::{Automotive, ImageViewer, TextViewer};
+
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(default, rename_all = "kebab-case")]
 pub struct Settings {
@@ -10,6 +12,9 @@ pub struct Settings {
     pub selection: SelectionSettings,
     pub terminal: Terminal,
     pub editor: Editor,
+    pub text: TextViewer,
+    pub image: ImageViewer,
+    pub automotive: Automotive,
     pub experimental: BTreeMap<String, bool>,
 }
 

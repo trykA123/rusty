@@ -14,6 +14,7 @@ mod model;
 mod parse;
 mod pending;
 mod saving;
+mod view;
 
 pub use complete::DefaultChange;
 use complete::{Ledger, reconcile};
@@ -24,6 +25,9 @@ pub use model::{
     SortKey, Terminal, ThemeMode,
 };
 pub use parse::{parse, to_toml};
+pub use view::{
+    Automotive, AutomotiveView, ImageView, ImageViewer, TextView, TextViewer, ViewPreset,
+};
 
 #[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
 pub enum SettingsError {

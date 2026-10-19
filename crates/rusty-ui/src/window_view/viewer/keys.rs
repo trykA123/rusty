@@ -1,4 +1,4 @@
-use super::{markdown, table, tree};
+use super::{elf, markdown, memory, pdf, table, trace, tree};
 use crate::prelude::*;
 
 gpui_kit::actions!(
@@ -59,6 +59,19 @@ gpui_kit::actions!(
         ZoomOut,
         ToggleInfo,
         ShowMenu,
+        ViewMenu,
+        LeftDrawer,
+        RightDrawer,
+        ToggleLineNumbers,
+        ToggleOpensInspector,
+        ToggleMemoryStrip,
+        ToggleCharts,
+        ToggleRowBars,
+        ViewSimple,
+        ViewRich,
+        ViewCustom,
+        KeepViewDefault,
+        ResetView,
         FindSelection,
         CopyPathLine,
         CopyFilePath,
@@ -74,4 +87,8 @@ pub fn bind_keys(cx: &mut App) {
     tree::bind_keys(cx);
     table::bind_keys(cx);
     markdown::bind_keys(cx);
+    memory::bind_keys(cx);
+    elf::bind_keys(cx);
+    trace::bind_keys(cx);
+    pdf::bind_keys(cx);
 }
