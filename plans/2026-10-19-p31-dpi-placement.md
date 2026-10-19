@@ -34,3 +34,4 @@ Final. Workers never reopen them; a worker that finds one wrong stops and report
 ## Log
 
 - 2026-10-19 — Plan written after a scout of DPI and placement (no manifest, no saved bounds).
+- 2026-10-19 — Correction: Ferrite is already per-monitor-v2 aware. `gpui-pre`'s default `windows-manifest` feature embeds `gpui.manifest.xml` (PerMonitorV2, `true/pm`, Windows 10 supportedOS, Common Controls 6, SegmentHeap); the scout searched only `vendor/`. A second manifest fails the link (CVT1100 duplicate resource). D1 shrinks to the evidence part: the report's `dpi_awareness` field and the Windows CI test that `--diag-report` says per-monitor-v2.
