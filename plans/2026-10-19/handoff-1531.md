@@ -27,7 +27,7 @@ Read this first. Chat with the owner in Romanian, docs in English, features not 
 | Cache budgets (P18 C7) | agent acc24f686d2375ed9 | .crew/rusty-p18-c7 | p18-c7 | pinned stats, budgets, soak |
 | Bench copy (P30 A5) | Codex crew api-builder-6ibvd (finished 15:36, exit 0) | .crew/rusty-api-builder-6ibvd | crew/api-builder-6ibvd (on p30-a5-base) | done but UNCOMMITTED: xtask/src/bench_copy/ (7 modules), xtask main/Cargo, Cargo.lock, ci.yml; reported gate passed (104.8 s), 11 bench tests; Linux small set Standard 13.9 s vs Auto 13.6 s (drive Unknown → 1 worker). Next: review the diff by hand, commit, rebase on main (A3/A7 merged), push for the Windows robocopy run |
 | Clippy on main for push | bash bg1nvlntf (passed) | main checkout | main | push hook needs `cargo clippy --all-targets -- -D warnings` then `cargo test -- --test-threads=1` (crash tests flake in parallel until ci-flakes lands) |
-| PDF CI watch | bash bemls9hyb | — | p15-a10a | watching run 39251060269 |
+| PDF CI watch | bash bemls9hyb (done: failure, see step 3) | — | p15-a10a | run 39251060269 |
 
 Empty worktree waiting: `.crew/rusty-p33-v1` (branch p33-v1 at 553205a) for P33 V1.
 
@@ -42,7 +42,7 @@ Empty worktree waiting: `.crew/rusty-p33-v1` (branch p33-v1 at 553205a) for P33 
 
 1. Main: clippy passed at 15:33 but this handoff's commit resets the push hook, so rerun `cargo clippy --all-targets -- -D warnings`, then `cargo test -- --test-threads=1` (each standalone), then push main; watch CI; publish pre-release alpha-2026-10-19e (copy engine, window placement, settings Default/Changed, preview browsing, prefetch) — pattern in memory `exe-releases`.
 2. Merge `roadmap-update` into main.
-3. p15-a10a: when run 39251060269 is green, merge to main (merge --no-ff --no-commit, gate, commit); release zip must then contain `dist/` with pdfium.dll. Then start P15 A10b (PDF viewer UI, D57 + D58 keys, Opus medium).
+3. p15-a10a: Windows CI run 39251060269 FAILED on one test: `rusty-shell helper_job::tests::closing_the_job_kills_the_child` (tests.rs:34, `assert!(!status.success())`). A process killed by a KILL_ON_JOB_CLOSE job can exit with code 0, so the exit code proves nothing. Fix the test: keep the child's stdin open (so `cmd /c pause` cannot end by itself), drop the job, then poll `try_wait` for up to ~5 s and assert it exited (not the code); optionally have the helper job set a non-zero kill code via TerminateJobObject on drop. Commit, rerun clippy + `cargo test -- --test-threads=1` in that worktree, push. When green, merge to main (merge --no-ff --no-commit, gate, commit); release zip must then contain `dist/` with pdfium.dll. Then start P15 A10b (PDF viewer UI, D57 + D58 keys, Opus medium).
 4. p16-b2: after the fixes, check them against the review, rerun reviewer briefly if large, push for Windows CI, merge, release → owner tests `.hex`/`.mot` at work.
 5. Start P33 V1 in `.crew/rusty-p33-v1` (ui-builder-high, Opus high) after p16-b2's fixes are committed (rebase/merge p16-b2 into p33-v1 first). Then W1 after p17-m8 merges, then V2, V3.
 6. p17-m8: after fixes, push, Windows CI, merge.
