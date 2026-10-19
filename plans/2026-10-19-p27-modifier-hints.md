@@ -1,6 +1,6 @@
 # P27 · Modifier hints drawer
 
-Status: ready · Repo: `<repo>` · Branch: `p27-m1` · Started: 2026-10-19
+Status: done (owner's check on the next alpha pending) · Repo: `<repo>` · Branch: `p27-m1` · Started: 2026-10-19
 
 ## Goal
 
@@ -20,7 +20,7 @@ Final. Workers never reopen them; a worker that finds one wrong stops and report
 
 | Atom | What | Role | Effort | After | Check | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| M1 | Settings keys (D5), the pure layer model (D2), the hold state machine (D1), the drawer (D3, D4) | ui-builder (Opus medium) | medium | — | unit tests for the model and the state machine; UI tests: hold opens after the delay, a chord never opens it, release hides, Ctrl→Ctrl+Shift switches, off and fkeys settings, viewer focus opens nothing, a rebind shows; screenshots at 1280 in both themes for Ctrl, Shift, Alt and the cursor-row case; gate | ready |
+| M1 | Settings keys (D5), the pure layer model (D2), the hold state machine (D1), the drawer (D3, D4) | ui-builder (Opus medium) | medium | — | unit tests for the model and the state machine; UI tests: hold opens after the delay, a chord never opens it, release hides, Ctrl→Ctrl+Shift switches, off and fkeys settings, viewer focus opens nothing, a rebind shows; screenshots at 1280 in both themes for Ctrl, Shift, Alt and the cursor-row case; gate | done |
 
 ## Done when
 
@@ -30,3 +30,4 @@ Final. Workers never reopen them; a worker that finds one wrong stops and report
 ## Log
 
 - 2026-10-19 — Owner picked direction A of the modifier-hints prototype; plan written.
+- 2026-10-19 — M1 merged. Hold detected from the root modifiers listener plus `cx.intercept_keystrokes` for chords; a pure `Hold` state machine with token timers. First build followed D2 literally (Ctrl drawer ≈ 390 px with eight Go-to-tab rows, unhandled Ctrl+K/N listed); D2 amended, second pass folds numbered runs by label and drops commands without a listener (`is_action_available_in`), Ctrl drawer 222 px. Key names are kebab-case (`appearance.modifier-hints`). Open: Shift+F10 anchor fix has no test; arrow keys step the delay by 1 ms.
