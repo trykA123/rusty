@@ -1,6 +1,6 @@
 # P24 · Explorer clipboard
 
-Status: ready · Repo: `<repo>` · Branch: `p24-cN` per atom · Started: 2026-10-19
+Status: done (owner check on the next alpha pending) · Repo: `<repo>` · Branch: `p24-cN` per atom · Started: 2026-10-19
 
 ## Goal
 
@@ -30,7 +30,7 @@ Final. Workers never reopen them; a worker that finds one wrong stops and report
 | Atom | Component | Role | Effort | After | Check | Status |
 | --- | --- | --- | --- | --- | --- | --- |
 | C1 | `rusty-shell::clipboard` model and platform (D2, D5, D6) | api-builder (Codex sol xhigh), then reviewer (Opus medium) | xhigh | — | `cargo nextest run -p rusty-shell clipboard`; Windows CI runs the integration test | done |
-| C2 | Commands, keys, paste job, status messages (D1, D3, D4) | ui-builder (Opus medium) | medium | C1 | UI tests: copy and cut write the marked set with the right effect, paste starts a copy or move into the active folder, cut-paste empties the clipboard, nothing-to-paste message, Linux message | running |
+| C2 | Commands, keys, paste job, status messages (D1, D3, D4) | ui-builder (Opus medium) | medium | C1 | UI tests: copy and cut write the marked set with the right effect, paste starts a copy or move into the active folder, cut-paste empties the clipboard, nothing-to-paste message, Linux message | done |
 
 ### C1 — clipboard in rusty-shell
 
@@ -55,3 +55,4 @@ Final. Workers never reopen them; a worker that finds one wrong stops and report
 
 - 2026-10-19 — Plan written from the roadmap and the owner's alpha priorities. Ctrl+C/X/V were unbound in the file list.
 - 2026-10-19 — C1 merged (d4c9076): Codex sol xhigh wrote it (a first run stopped because the brief named missing AGENTS.md/CLAUDE.md files); Opus review PASS WITH FIXES, applied by the orchestrator: a failed publish empties the clipboard (no cut that reads as copy), odd padding accepted, clipboard tests in one nextest group with the shell menu tests. Windows compile first happens in CI.
+- 2026-10-19 — C2 merged: paste builds the F5/F6 plan with the active folder as target and confirms it at once (`OpRequest.asks = false`); a protected source still shows the typed-DELETE dialog (worker's call, accepted); cut-paste clears the clipboard only after the job is Done; refused pastes say why ("The files are already in this folder", "Cannot paste a folder into itself"). Production adapter in rusty-app has no unit tests; the path round trip with Explorer waits for the owner's Windows check. Not done: Explorer-style "- Copy" duplicates when pasting into the same folder.
