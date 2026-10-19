@@ -35,9 +35,21 @@ Work laptop, Intel UHD Graphics, build 5844556 (alpha-2026-10-19a), 19 October 2
 
 Against the v1.0 targets (cold ≤ 400 ms, warm ≤ 150 ms, RAM < 80 MB) all three miss on real hardware. Most of the gap is before `main` (76–739 ms, versus 16 ms on CI) and in GPUI's start on a real GPU (≈ 215–250 ms, versus 62 ms with the software renderer). Private bytes double with a real GPU.
 
+Second set, same build, after moving `ferrite.exe` out of Downloads (runs 1–4; run 1 is the first launch from the new folder):
+
+| Phase | Run 1 | Run 2 | Run 3 | Run 4 |
+| --- | --- | --- | --- | --- |
+| Process start to `main` | 417 ms | 103 ms | 96 ms | 88 ms |
+| Window opening to app running (GPUI start) | 299 ms | 304 ms | 300 ms | 277 ms |
+| **Start to first usable** | **894 ms** | **592 ms** | **590 ms** | **533 ms** |
+| Private bytes, idle | 140.0 MB | 140.1 MB | 140.7 MB | 137.3 MB |
+
+Outside Downloads the warm time before `main` drops from ≈ 285 ms to ≈ 95 ms; the first launch from a new folder is still slow (the antivirus scans the exe again). GPUI's start on this GPU stays the largest part we control (≈ 280–300 ms).
+
 ## History
 
 | Date | Commit | Median warm first frame | Max private bytes |
 | --- | --- | --- | --- |
 | 2026-10-18 | 8654608 | 179.8 ms | 67.7 MB |
 | 2026-10-19 | 5844556 (owner's PC, warm median) | 645 ms first usable | 141.8 MB |
+| 2026-10-19 | 5844556 (owner's PC, outside Downloads, warm median) | 590 ms first usable | 140.7 MB |
