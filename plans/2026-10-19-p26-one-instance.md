@@ -1,6 +1,6 @@
 # P26 · One instance and `ferrite <path>`
 
-Status: ready · Repo: `<repo>` · Branch: `p26-iN` per atom · Started: 2026-10-19
+Status: done (Windows CI and the owner's check pending) · Repo: `<repo>` · Branch: `p26-iN` per atom · Started: 2026-10-19
 
 ## Goal
 
@@ -20,8 +20,8 @@ Final. Workers never reopen them; a worker that finds one wrong stops and report
 
 | Atom | What | Role | Effort | After | Check | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| I1 | `cli` positional path (D1 parsing); `instance` module in rusty-app: lock, server thread, client, request type (D2–D4), with an injected handler; `main` holds the lock or hands off | api-builder (Codex sol xhigh), then reviewer (Opus medium) | xhigh | — | cli tests; instance tests on Linux with two instances in one test process (temp runtime dir): lock held, request delivered, reply ok, malformed request rejected, stale socket recovered, timeout path; gate | ready |
-| I2 | First-instance handling in the UI (D1 tab rules, D5) and the not-found notice | ui-builder (Opus medium) | medium | I1 | UI tests: a request opens a new tab on a folder, a file selects itself, missing path shows the notice, left/right navigate; gate | blocked |
+| I1 | `cli` positional path (D1 parsing); `instance` module in rusty-app: lock, server thread, client, request type (D2–D4), with an injected handler; `main` holds the lock or hands off | api-builder (Codex sol xhigh), then reviewer (Opus medium) | xhigh | — | cli tests; instance tests on Linux with two instances in one test process (temp runtime dir): lock held, request delivered, reply ok, malformed request rejected, stale socket recovered, timeout path; gate | done |
+| I2 | First-instance handling in the UI (D1 tab rules, D5) and the not-found notice | ui-builder (Opus medium) | medium | I1 | UI tests: a request opens a new tab on a folder, a file selects itself, missing path shows the notice, left/right navigate; gate | done |
 
 ## Done when
 
@@ -31,3 +31,4 @@ Final. Workers never reopen them; a worker that finds one wrong stops and report
 ## Log
 
 - 2026-10-19 — Plan written. No instance lock exists today; `cli.rs` accepts only flags.
+- 2026-10-19 — I1 by Codex sol xhigh; Opus review PASS WITH FIXES (must: start without a lock when no profile folder; ConnectNamedPipe success means listening; idle poll 200 ms; pipe per session with a current-user DACL, start without a server when it cannot be made; private Unix runtime folder; a broken hand-off reads as "did not answer"), fixed by a second Codex run. I2 by Opus: a futures channel drained by `spawn_in`, the same pattern as settings news; a missing path shows a notice. Merged together. Untested headless: real foregrounding of a minimised window on Windows.
