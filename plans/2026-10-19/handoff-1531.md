@@ -25,7 +25,7 @@ Read this first. Chat with the owner in Romanian, docs in English, features not 
 | Flaky tests | agent a6b4f3c14fed6ca4d | .crew/rusty-ci-flakes | ci-flakes | settings background-start WAIT race, preview Escape after F3, crash::tests under plain `cargo test` (process-global panic hook) |
 | Release backtraces (P29 C3) | agent a11f424929f105988 | .crew/rusty-api-builder-6h5d1 | crew/api-builder-6h5d1 (on p15-a10a) | redaction treats Rust lifetimes `for<'a,'b>` as quotes and eats frames; Codex's release-profile/probe changes uncommitted there |
 | Cache budgets (P18 C7) | agent acc24f686d2375ed9 | .crew/rusty-p18-c7 | p18-c7 | pinned stats, budgets, soak |
-| Bench copy (P30 A5) | Codex crew api-builder-6ibvd | .crew/rusty-api-builder-6ibvd | crew/api-builder-6ibvd (on p30-a5-base) | `xtask bench-copy`; status unknown, check `~/.cache/crew/api-builder-6ibvd.log` |
+| Bench copy (P30 A5) | Codex crew api-builder-6ibvd (finished 15:36, exit 0) | .crew/rusty-api-builder-6ibvd | crew/api-builder-6ibvd (on p30-a5-base) | done but UNCOMMITTED: xtask/src/bench_copy/ (7 modules), xtask main/Cargo, Cargo.lock, ci.yml; reported gate passed (104.8 s), 11 bench tests; Linux small set Standard 13.9 s vs Auto 13.6 s (drive Unknown → 1 worker). Next: review the diff by hand, commit, rebase on main (A3/A7 merged), push for the Windows robocopy run |
 | Clippy on main for push | bash bg1nvlntf (passed) | main checkout | main | push hook needs `cargo clippy --all-targets -- -D warnings` then `cargo test -- --test-threads=1` (crash tests flake in parallel until ci-flakes lands) |
 | PDF CI watch | bash bemls9hyb | — | p15-a10a | watching run 39251060269 |
 
