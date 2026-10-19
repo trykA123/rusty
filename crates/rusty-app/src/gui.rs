@@ -35,6 +35,8 @@ pub(crate) struct Launch {
     pub(crate) cleanup: crate::profile::Cleanup,
     pub(crate) start_watch: Option<StartWatch>,
     pub(crate) instance_requests: OpenInbox,
+    pub(crate) running: Option<crate::crash::Running>,
+    pub(crate) crash: crate::crash_report::CrashStart,
 }
 
 pub(crate) fn on_instance_request(
@@ -127,19 +129,33 @@ pub(crate) fn open(launch: Launch) {
             shell_menu: shell_menu::provider(),
             file_clipboard: Some(clipboard::service()),
             start_watch: launch.start_watch,
-            open: OpenHooks {
-                path: launch.path.and_then(|path| path_location(&path)),
-                inbox: Some(launch.instance_requests),
-            },
+            open: open_hooks(launch.path, launch.instance_requests),
+            crash_report: launch.crash.service(),
         },
-        quitter(disk, launch.cleanup),
+        quitter(disk, launch.cleanup, launch.running),
     );
 }
 
-fn quitter(disk: Option<DiskListings>, cleanup: crate::profile::Cleanup) -> Rc<dyn Fn()> {
+fn open_hooks(path: Option<PathBuf>, inbox: OpenInbox) -> OpenHooks {
+    OpenHooks {
+        path: path.and_then(|path| path_location(&path)),
+        inbox: Some(inbox),
+    }
+}
+
+fn quitter(
+    disk: Option<DiskListings>,
+    cleanup: crate::profile::Cleanup,
+    running: Option<crate::crash::Running>,
+) -> Rc<dyn Fn()> {
     Rc::new(move || {
         if let Some(disk) = &disk {
             let _ = disk.close(EXIT_CLOSE);
+        }
+        if let Some(running) = &running
+            && let Err(error) = running.finish()
+        {
+            tracing::warn!(%error, "cannot remove the running marker");
         }
         cleanup.on_quit();
     })

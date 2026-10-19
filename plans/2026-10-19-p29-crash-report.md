@@ -1,6 +1,6 @@
 # P29 · Crash report
 
-Status: ready · Repo: `<repo>` · Branch: `p29-cN` per atom · Started: 2026-10-19
+Status: C1, C2 merged; C3 ready · Repo: `<repo>` · Branch: `p29-cN` per atom · Started: 2026-10-19
 
 ## Goal
 
@@ -20,8 +20,9 @@ Final. Workers never reopen them; a worker that finds one wrong stops and report
 
 | Atom | What | Role | Effort | After | Check | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| C1 | D1, D2, D4, and a `crash::pending(data_dir) -> Option<Pending>` plus `crash::save_report(…) -> Result<PathBuf>` API for the UI | api-builder (Codex sol xhigh), then reviewer (Opus medium) | xhigh | — | unit tests: hook writes a redacted file (canaries absent), chains, keeps 5, never panics on a read-only dir; marker created and removed on clean quit, left on a simulated crash; `pending` reports unclean exit with and without crash files; `save_report` zip contains the report and crash files; gate | ready |
-| C2 | D3 notice and actions in the window | ui-builder (Opus medium) | medium | C1 | UI tests: notice after an unclean start, none after a clean one, Save report opens the tab on the zip and shows the message, Dismiss and Esc clear it; screenshots light and dark; gate | blocked |
+| C1 | D1, D2, D4, and a `crash::pending(data_dir) -> Option<Pending>` plus `crash::save_report(…) -> Result<PathBuf>` API for the UI | api-builder (Codex sol xhigh), then reviewer (Opus medium) | xhigh | — | unit tests: hook writes a redacted file (canaries absent), chains, keeps 5, never panics on a read-only dir; marker created and removed on clean quit, left on a simulated crash; `pending` reports unclean exit with and without crash files; `save_report` zip contains the report and crash files; gate | done |
+| C2 | D3 notice and actions in the window | ui-builder (Opus medium) | medium | C1 | UI tests: notice after an unclean start, none after a clean one, Save report opens the tab on the zip and shows the message, Dismiss and Esc clear it; screenshots light and dark; gate | done |
+| C3 | Readable backtraces in release: `debug = "line-tables-only"` in the release profile, `ferrite.pdb` shipped in the release zip next to the exe, size guard checked | infra-builder (Opus medium) | medium | C2 | Windows CI: a forced panic in the release exe writes frames with Ferrite function names; zip contains the PDB; gate | ready |
 
 ## Done when
 
@@ -30,3 +31,5 @@ Final. Workers never reopen them; a worker that finds one wrong stops and report
 ## Log
 
 - 2026-10-19 — Plan written. No panic hook exists; reports are saved only with `--diag-report`.
+- 2026-10-19 — C1 and C2 done on `p29-c2`. Opus review: merge after fixes. Codex (sol high) fixed: Save report skips a crash file deleted since start (keep-5 retention could make every save fail); no marker or notice without an instance guard (Linux); tests through the real start order; canaries checked in every zip entry; Windows Downloads assertion. Orchestrator: gallery hints hide the crash-notice key unless the page shows a crash notice. Release backtraces have no symbols (`strip = true`, no PDB): C3 added.
+- 2026-10-19 — C1, C2 and review fixes merged to main; gate passed.
