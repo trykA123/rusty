@@ -18,9 +18,7 @@
 
 ## In progress
 
-- P29 crash report:
-  - C1 committed on branch `p29-c1` at 443fa53, worktree `.crew/rusty-p29-c1`. Gate passed. Not merged.
-  - C2 is running in ui-builder agent aefae6f6079fb79a7, worktree `.crew/rusty-p29-c2`, branch `p29-c2` (from p29-c1). It builds the "Ferrite closed unexpectedly" notice with Save report and Dismiss. Its work is uncommitted, in that worktree.
+- P29 crash report: C1 at 443fa53 on `p29-c1`, C2 at 79689bc on `p29-c2` (worktree `.crew/rusty-p29-c2`, contains C1). Both gates passed on their branches; screenshots `design/screens/p29-crash-notice-{light,dark}.png` checked. Not merged yet (stopped at the usage warning). C2 changed `Launch` to one `crash: CrashStart` field; reach key Ctrl+Shift+R, Enter saves, Esc dismisses. Open: gallery hints pages list the crash-notice key without the handled filter.
 - No crew runs or background jobs are active.
 
 ## Open questions for the owner
@@ -33,7 +31,7 @@
 
 One agent at a time. Codex sol xhigh handles non-UI work, followed by an Opus review.
 
-1. Review the C2 report and screenshots. Merge p29-c2 into main (it includes C1) with the gate, push, and wait for green Windows CI.
+1. Merge p29-c2 into main (it includes C1) with `--no-ff --no-commit` and the gate, update the P29 plan statuses, push, and wait for green Windows CI; then remove both p29 worktrees and branches and `.crew/targets/p29*`.
 2. Cut the next alpha; tell the owner to test the drawer and the crash notice.
 3. Remaining alpha items:
    - cache budgets and folder prefetch;
