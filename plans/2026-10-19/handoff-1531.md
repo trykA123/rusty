@@ -16,15 +16,15 @@ Read this first. Chat with the owner in Romanian, docs in English, features not 
 
 ## In progress (agents and jobs)
 
-| What | Agent / job id | Worktree | Branch | Doing |
+| What | Runner | Worktree | Branch | Doing |
 | --- | --- | --- | --- | --- |
-| HEX review fixes | agent aefc8ba241bf99ad6 | .crew/rusty-p16-b2 | p16-b2 | 8 review fixes: lost trailing comment in ferrite.toml on upgrade (data loss), drawers covering the status line, line-length cap, piece bounds, fragmentation cap, fetch retry loop, record lengths 02/04/03/05, implicit parent tables |
-| M8 review fixes | agent a1a8d7d957a1b247e | .crew/rusty-p17-m8 | p17-m8 | `has_files()` via IsClipboardFormatAvailable, Paste-enabled test, Properties Windows test, warm background menu, Sort-by re-pick, keymap test, Shift+F7 in F-key bar |
-| ELF viewer (P16 B3) | agent a2900113c6a2c453e | .crew/rusty-p16-b3 | p16-b3 (from 553205a) | object+gimli parser, symbol table, sections drawer, inspector with DWARF lines |
-| ASC trace viewer (P16 B6) | agent a42e0e1fc2f904475 | .crew/rusty-p16-b6 | p16-b6 (from 553205a) | Vector ASC parser, virtualised table, ID navigator, inspector, follow |
-| Flaky tests | agent a6b4f3c14fed6ca4d | .crew/rusty-ci-flakes | ci-flakes | settings background-start WAIT race, preview Escape after F3, crash::tests under plain `cargo test` (process-global panic hook) |
-| Release backtraces (P29 C3) | agent a11f424929f105988 | .crew/rusty-api-builder-6h5d1 | crew/api-builder-6h5d1 (on p15-a10a) | redaction treats Rust lifetimes `for<'a,'b>` as quotes and eats frames; Codex's release-profile/probe changes uncommitted there |
-| Cache budgets (P18 C7) | agent acc24f686d2375ed9 | .crew/rusty-p18-c7 | p18-c7 | pinned stats, budgets, soak |
+| HEX review fixes | Claude agent | .crew/rusty-p16-b2 | p16-b2 | 8 review fixes: lost trailing comment in ferrite.toml on upgrade (data loss), drawers covering the status line, line-length cap, piece bounds, fragmentation cap, fetch retry loop, record lengths 02/04/03/05, implicit parent tables |
+| M8 review fixes | Claude agent | .crew/rusty-p17-m8 | p17-m8 | `has_files()` via IsClipboardFormatAvailable, Paste-enabled test, Properties Windows test, warm background menu, Sort-by re-pick, keymap test, Shift+F7 in F-key bar |
+| ELF viewer (P16 B3) | Claude agent | .crew/rusty-p16-b3 | p16-b3 (from 553205a) | object+gimli parser, symbol table, sections drawer, inspector with DWARF lines |
+| ASC trace viewer (P16 B6) | Claude agent | .crew/rusty-p16-b6 | p16-b6 (from 553205a) | Vector ASC parser, virtualised table, ID navigator, inspector, follow |
+| Flaky tests | Claude agent | .crew/rusty-ci-flakes | ci-flakes | settings background-start WAIT race, preview Escape after F3, crash::tests under plain `cargo test` (process-global panic hook) |
+| Release backtraces (P29 C3) | Claude agent | .crew/rusty-api-builder-6h5d1 | crew/api-builder-6h5d1 (on p15-a10a) | redaction treats Rust lifetimes `for<'a,'b>` as quotes and eats frames; Codex's release-profile/probe changes uncommitted there |
+| Cache budgets (P18 C7) | Claude agent | .crew/rusty-p18-c7 | p18-c7 | pinned stats, budgets, soak |
 | Bench copy (P30 A5) | Codex crew api-builder-6ibvd (finished 15:36, exit 0) | .crew/rusty-api-builder-6ibvd | crew/api-builder-6ibvd (on p30-a5-base) | done but UNCOMMITTED: xtask/src/bench_copy/ (7 modules), xtask main/Cargo, Cargo.lock, ci.yml; reported gate passed (104.8 s), 11 bench tests; Linux small set Standard 13.9 s vs Auto 13.6 s (drive Unknown → 1 worker). Next: review the diff by hand, commit, rebase on main (A3/A7 merged), push for the Windows robocopy run |
 | Clippy on main for push | bash bg1nvlntf (passed) | main checkout | main | push hook needs `cargo clippy --all-targets -- -D warnings` then `cargo test -- --test-threads=1` (crash tests flake in parallel until ci-flakes lands) |
 | PDF CI watch | bash bemls9hyb (done: failure, see step 3) | — | p15-a10a | run 39251060269 |
