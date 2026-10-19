@@ -214,6 +214,7 @@ Reusable components from the first screen (D25). Rule: the app is assembled from
 - **Links are never followed when deleting or moving.** Symlinks and junctions are removed as links; recursive operations stop at reparse points.
 - **Re-check at execution.** Paths are canonicalised and re-validated just before each step, so a changed folder can't redirect an operation.
 - **Copies are safe:** written to a temporary name, verified (size, `xxh3` or SHA-256; see Copy engine), then renamed. Conflicts follow an explicit policy (ask, skip, rename, overwrite older).
+- **Overwrites keep the old file until the job ends:** the job journal records the old target, then it moves into a `.ferrite-held-<job>` folder next to it (same volume, so a rename), and the new file takes its place. A job cut short by a crash puts the old file back at the next start; a finished job deletes its held files. Without a journal the new file replaces the old one in one step.
 - **Undo** covers rename, move, copy and Recycle Bin operations.
 - **Keyboard and mouse guards:** F8 and Del act only when the file list has focus, repeated presses are debounced, and drag-and-drop between drives copies by default.
 
