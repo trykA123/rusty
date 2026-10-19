@@ -61,7 +61,7 @@ Input: the crate research of 2026-10-15 (summary under Decisions).
   - `row_bars` — the per-row bars and counts in the navigator (default off);
   - `preset = "simple" | "rich" | "custom"` sets all four at once; changing one toggle makes it `custom`.
   
-  In the viewer, one key opens or closes the navigator drawer and one the inspector drawer (proposed `Ctrl+L` and `Ctrl+I`, checked against keymap.toml in B1), for this file only, without changing the setting. In Simple mode the content is full width and both drawers start closed. Every part works with every combination; the Simple layout is designed and screenshot-tested first, Rich second.
+  In the viewer, `Ctrl+B` opens or closes the navigator drawer and `Ctrl+I` the inspector drawer (D58; `Ctrl+L` is the pane's edit path), for this file only, without changing the setting. A View menu (button at the top right and `Alt+V`, D58) shows Simple / Rich / Custom and the four toggles with their keys; a change applies to the open file at once, and "Keep as default" writes `[automotive.view]`. Problems (checksum errors, missing EOF, gaps) always show in the status line, in every mode. In Simple mode the content is full width and both drawers start closed. Every part works with every combination; the Simple layout is designed and screenshot-tested first, Rich second.
 
 ## Atoms (cut into Red/Green pairs when P15 A1 lands)
 
@@ -92,3 +92,5 @@ Input: the crate research of 2026-10-15 (summary under Decisions).
 
 - 2026-10-19 — Owner picked direction B (inspector) from the Opus prototypes and asked for a simple default with every rich part switchable in settings (D11, D12).
 - 2026-10-19 — Owner: the left and right panels are drawers over the content, not columns that shrink it (D11).
+- 2026-10-19 — D58 (owner, whole app): every rich viewer opens calm, uses Ctrl+B / Ctrl+I for its left / right drawers and has a View menu (Alt+V) with Simple / Rich / Custom and per-part toggles; D12 updated (navigator on Ctrl+B, not Ctrl+L).
+- 2026-10-19 — Owner's work set: `.elf` (10 MB), `.hex`, `.map` (4.6 MB), `.mot`, a 389-byte `.mdf` (not MDF4 by size; format unknown) and CAN traces in Vector `.asc`. Order after B2: B3 ELF, B4 maps (toolchain to confirm; `.mot` suggests Renesas, whose CC-RH/CC-RL map is not in D4's list yet), B6 with ASC first.
