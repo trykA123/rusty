@@ -23,7 +23,7 @@ Final. Workers never reopen them; a worker that finds one wrong stops and report
 | Atom | What | Role | Effort | After | Check | Status |
 | --- | --- | --- | --- | --- | --- | --- |
 | D1 | D1 manifest and D2 report field and CI test | api-builder (Codex sol high) | high | — | Windows CI: `--diag-report` shows `per-monitor-v2`; Linux build unchanged; gate | ready |
-| D2 | D3 placement model in the session with migration, and the pure D4 restore function (setup, placements → bounds and maximized) | api-builder (Codex sol xhigh), then reviewer (Opus) | xhigh | — | session tests: round trip, old session loads, cap 8; restore tests: exact match, moved monitor, smaller monitor, monitor gone, maximized; proptest: the result always lies inside a current work area; gate | ready |
+| D2 | D3 placement model in the session with migration, and the pure D4 restore function (setup, placements → bounds and maximized) | api-builder (Codex sol xhigh), then reviewer (Opus) | xhigh | — | session tests: round trip, old session loads, cap 8; restore tests: exact match, moved monitor, smaller monitor, monitor gone, maximized; proptest: the result always lies inside a current work area; gate | done |
 | D3 | Wire D2 into the window: read displays and bounds from GPUI at save, apply at open | ui-builder (Opus medium) | medium | D1, D2 | UI test with a fake display list; owner check on the work PC: two monitors at different scales, sharp text on both, close and reopen in place, undock and redock | blocked |
 | D4 | Review | reviewer (Opus) | medium | all | verdict | blocked |
 
@@ -35,3 +35,4 @@ Final. Workers never reopen them; a worker that finds one wrong stops and report
 
 - 2026-10-19 — Plan written after a scout of DPI and placement (no manifest, no saved bounds).
 - 2026-10-19 — Correction: Ferrite is already per-monitor-v2 aware. `gpui-pre`'s default `windows-manifest` feature embeds `gpui.manifest.xml` (PerMonitorV2, `true/pm`, Windows 10 supportedOS, Common Controls 6, SegmentHeap); the scout searched only `vendor/`. A second manifest fails the link (CVT1100 duplicate resource). D1 shrinks to the evidence part: the report's `dpi_awareness` field and the Windows CI test that `--diag-report` says per-monitor-v2.
+- 2026-10-19 — D2 merged after review fixes: session format v2 (`placement` list, v0/v1 load with none; an older build falls back to the v1 `.bak`); exact matches are still moved inside the current work area (taskbar moves); `Monitor.primary` with origin and first as fallbacks; a frozen v1 session file written by the old code is loaded unchanged in a test.
