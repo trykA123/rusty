@@ -53,15 +53,15 @@ Input: the crate research of 2026-10-15 (summary under Decisions).
 - **D9 — VBF.** A small own parser: header fields, then the blocks shown as hex on real addresses.
 - **D10 — Performance contract.** Every view opens a 500 MB file within 1 s to first content and stays under 200 MB of memory. Indexes are built in the background with progress, and only the visible part is decoded. Each format gets a benchmark fixture in CI.
 
-- **D11 — Layout: direction B, "inspector" (owner, 2026-10-19).** From the Opus prototype (`<worktrees>/prototypes/automotive/opus`, shots `B-*`): a navigator on the left (ranges, sections, messages or IDs with counts), the content in the middle (hex on real addresses, symbol or signal table, virtualised trace), an inspector on the right for the selected item (size, position, records by type, checks, decoded signals). Text, hex and the rich view stay on Alt+1/3/5.
+- **D11 — Layout: direction B, "inspector" (owner, 2026-10-19).** From the Opus prototype (`<worktrees>/prototypes/automotive/opus`, shots `B-*`): a navigator on the left (ranges, sections, messages or IDs with counts), the content in the middle (hex on real addresses, symbol or signal table, virtualised trace), an inspector on the right for the selected item (size, position, records by type, checks, decoded signals). Text, hex and the rich view stay on Alt+1/3/5. **Navigator and inspector are drawers over the content (owner, 2026-10-19):** the content always keeps the full width; each drawer slides in over it from its side, with the same frame and motion as the preview side sheet, and closes with Esc or its key. Opening the inspector does not move the content's columns.
 - **D12 — Simple by default, rich parts opt-in (owner, 2026-10-19).** The owner wants a calm default and full control over the rich parts. The rich view opens in **Simple** mode: navigator as a plain list (name, address, size), content, a one-line status with the checks (checksum errors, EOF, gaps) and no charts. Each rich part is a setting under `[automotive.view]` in `ferrite.toml`, live like every setting, and shown as a toggle group in the settings sheet's Automotive section:
-  - `inspector` — the right-hand panel (default off);
+  - `inspector` — the right-hand drawer opens by itself when an item is selected (default off; the drawer is still available on its key);
   - `memory_strip` — the address-map strip beside the navigator and the position bar (default off);
   - `charts` — bars, sparklines, bus load and signal curves, wherever they appear (default off);
   - `row_bars` — the per-row bars and counts in the navigator (default off);
   - `preset = "simple" | "rich" | "custom"` sets all four at once; changing one toggle makes it `custom`.
   
-  In the viewer, `Ctrl+I` shows or hides the inspector for this file only, without changing the setting. Every part works with every combination; the Simple layout is designed and screenshot-tested first, Rich second.
+  In the viewer, one key opens or closes the navigator drawer and one the inspector drawer (proposed `Ctrl+L` and `Ctrl+I`, checked against keymap.toml in B1), for this file only, without changing the setting. In Simple mode the content is full width and both drawers start closed. Every part works with every combination; the Simple layout is designed and screenshot-tested first, Rich second.
 
 ## Atoms (cut into Red/Green pairs when P15 A1 lands)
 
@@ -91,3 +91,4 @@ Input: the crate research of 2026-10-15 (summary under Decisions).
 ## Log
 
 - 2026-10-19 — Owner picked direction B (inspector) from the Opus prototypes and asked for a simple default with every rich part switchable in settings (D11, D12).
+- 2026-10-19 — Owner: the left and right panels are drawers over the content, not columns that shrink it (D11).
