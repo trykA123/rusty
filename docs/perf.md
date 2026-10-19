@@ -46,6 +46,8 @@ Second set, same build, after moving `ferrite.exe` out of Downloads (runs 1–4;
 
 Outside Downloads the warm time before `main` drops from ≈ 285 ms to ≈ 95 ms; the first launch from a new folder is still slow (the antivirus scans the exe again). GPUI's start on this GPU stays the largest part we control (≈ 280–300 ms).
 
+Third set, after `Unblock-File` (Mark of the Web removed): before `main` 320 / 96 / 100 / 95 ms, GPUI start 271 / 249 / 264 / 269 ms, first usable 748 / 500 / 525 / 522 ms, private bytes ≈ 140 MB. Unblocking does not change the time before `main` (≈ 95 ms warm); the lower totals come from GPUI's start, which varies by ±30 ms between sets.
+
 ## History
 
 | Date | Commit | Median warm first frame | Max private bytes |
