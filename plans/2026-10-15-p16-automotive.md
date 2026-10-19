@@ -93,3 +93,4 @@ Input: the crate research of 2026-10-15 (summary under Decisions).
 - 2026-10-19 — Owner picked direction B (inspector) from the Opus prototypes and asked for a simple default with every rich part switchable in settings (D11, D12).
 - 2026-10-19 — Owner: the left and right panels are drawers over the content, not columns that shrink it (D11).
 - 2026-10-19 — D58 (owner, whole app): every rich viewer opens calm, uses Ctrl+B / Ctrl+I for its left / right drawers and has a View menu (Alt+V) with Simple / Rich / Custom and per-part toggles; D12 updated (navigator on Ctrl+B, not Ctrl+L).
+- 2026-10-19 — Owner's work set: `.elf` (10 MB), `.hex`, `.map` (4.6 MB), `.mot`, a 389-byte `.mdf` (not MDF4 by size; format unknown) and CAN traces in Vector `.asc`. Order after B2: B3 ELF, B4 maps (toolchain to confirm; `.mot` suggests Renesas, whose CC-RH/CC-RL map is not in D4's list yet), B6 with ASC first.
