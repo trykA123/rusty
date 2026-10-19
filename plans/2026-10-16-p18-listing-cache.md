@@ -39,10 +39,10 @@ From docs/architecture.md ("Speed: caching, lazy loading, pre-warming"), which a
 | C1 | `ListingCache` (D1) | Red checker, Green api-builder | medium | — | `cargo test -p rusty-cache` | done |
 | C2 | stale-while-revalidate and diff apply (D2) | ui-builder-high | high | C1 | UI tests: Back is instant, cursor kept, diff applied | done |
 | C3 | watchers (D3) | api-builder (Opus high) | high | C1 | Windows CI tests | done |
-| C4 | pre-warming (D4) | ui-builder | medium | C2 | UI tests | ready |
+| C4 | pre-warming (D4) | ui-builder | medium | C2 | UI tests | done |
 | C5 | network timeout and offline state (D5) | ui-builder-high | high | C2 | fake fs with a stalled share | done |
 | C6 | disk cache (D6) | api-builder | medium | C1 | store tests | done |
-| C7 | budgets in diagnostics and soak test (D7) | api-builder | medium | C1–C6 | soak test in CI | blocked |
+| C7 | budgets in diagnostics and soak test (D7) | api-builder | medium | C1–C6 | soak test in CI | ready |
 | C9 | native Windows listing: `FindFirstFileExW` with `FindExInfoBasic` and `FIND_FIRST_EX_LARGE_FETCH` (architecture "Listing folders" phase 1), benchmarked against `std::fs::read_dir` and Explorer on a share | api-builder (Opus high) | high | — | Windows CI benchmark on a local folder of 50k entries; owner timing on the mapped share | done |
 | C8 | review | reviewer (Opus high) | high | all | verdict | blocked |
 
@@ -62,3 +62,4 @@ From docs/architecture.md ("Speed: caching, lazy loading, pre-warming"), which a
 - 2026-10-16 — C3 (dd721a6, e75e905; review fixes c2119b5, 28a7389, short-name tweak) merged after two green Windows runs: one watcher per open folder (ReadDirectoryChangesW / inotify), 100 ms quiet and 500 ms max debounce, patches up to 64 distinct names else relists, background tabs relist when they return, 8.3 names relist, network fallback every 5 s, Ctrl+R.
 - 2026-10-16 — C6 merged after review PASS WITH FIXES: no pinned or workspace folders exist yet, so cache.db (table `listing`, 32 MiB LRU, lz4_flex, CRC over header and body, FORMAT 2) keeps the folders open in tabs; warm-up reads at start within 50 ms, probes all drives in parallel and never restarts a failed probe; rows are put only when absent and never trusted (`folder_changed = None`); writes go through a bounded queue and only for open folders; exit flush capped at 300 ms; cache.db open no longer runs quick_check (ferrite.db keeps it).
 - 2026-10-17 — C5 merged (b6b4b61) after review PASS WITH FIXES: jobs and renames relist only answering tabs, Ctrl+R on an offline tab retries; an early NetworkLost or Timeout goes offline and keeps cached rows; an offline tab stays offline for every error except NotFound, AccessDenied, NameInvalid, PathTooLong; Windows codes 55, 59, 1232, 1236, 2250 map to NetworkLost; folder metadata counts as progress; the status shows the date when cached rows are older than today. Known gap: a share that answers metadata but never sends a batch shows Waiting with no retry.
+- 2026-10-19 — C4 merged after review fixes: a 150 ms rest on a folder prefetches it on its own IoQueue (one worker per volume, so prefetches never delay visible listings or operations); moving on cancels it; Enter on a folder still prefetching adopts that read as the tab's listing (one provider call; the stall timer still applies); prefetch errors are dropped. Back stays warm through C2's parent pins.
