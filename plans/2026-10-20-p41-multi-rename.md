@@ -171,7 +171,7 @@ Roles: Sonnet 5.5 medium or high for decided backend and UI work, Opus 5.5 mediu
 | A2 | `rename::rules` | api-builder (Sonnet) | high | A1 | `cargo nextest run -p rusty-core rename::tests::rules` | ready | |
 | A3 | `OpKind::Rename` + arms | api-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-core -p rusty-ui op_plan activity job_card` | done | |
 | A4 | `rename::check` | api-builder (Sonnet) | high | — | `cargo nextest run -p rusty-core rename::tests::check` | done | |
-| A5 | `rename::order` + `plan_batch` | api-builder (Sonnet) | high | A3, A4 | `cargo nextest run -p rusty-core rename::tests::order` | ready | |
+| A5 | `rename::order` + `plan_batch` | api-builder (Sonnet) | high | A3, A4 | `cargo nextest run -p rusty-core rename::tests::order` | done | |
 | A6 | `fake` case-insensitive mode | api-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-fs fake::tests::fold` | done | |
 | A7 | `job::rename` all or nothing | api-builder (Sonnet) | high | A5, A6 | `cargo nextest run -p rusty-fs job::tests::rename`; Windows CI | blocked | |
 | A8 | journal undo queries | api-builder (Sonnet) | high | — | `cargo nextest run -p rusty-store journal` | ready | |
@@ -403,3 +403,4 @@ Answered 2026-10-20: the owner left Q1–Q3 to the architect. Q1 F2 with 2 or mo
 - 2026-10-20 — A1 done: `rename::{Mask, Token, Span, CaseMode, Subject, split_name}` with the Total Commander token set; 61 tests. A4 done: `rename::check` (`Fold`, `fold_key`, `check_rows`, `RowState`, `Problem`); an excluded row's old name counts as taken; `case_only` only under Insensitive. Architect: partial counters allowed (A2), `[F]` keeps the rest of each word.
 - 2026-10-20 — A6 done: `FakeFs::case_insensitive()` folds names in the tree; a case-only rename keeps one entry with the new spelling.
 - 2026-10-20 — A3 done: `OpKind::Rename` with arms in core, job card, activity text, confirm text and `op_request`; `activity-renaming`, `activity-renamed` and `activity-rename-failed` added.
+- 2026-10-20 — A5 done: `rename::{plan_batch, BatchPlan}` orders chains from the free end, breaks each cycle and case-only rename with one `.ferrite-rename-<seed hex>-<n>` name, and gives `plan: None` while a row has a problem; a proptest runs the steps on a folding folder model.
