@@ -38,7 +38,8 @@ Final. The owner asked for at least Total Commander parity plus the bonuses the 
 - **D3 — Mask tokens.**
   - Name parts: `[N]` is the whole name, `[N3]` the 3rd character, `[N2-5]` characters 2 to 5, `[N2,5]` 5 characters from the 2nd, `[N2-]` from the 2nd to the end. A negative number counts from the end (`[N-3,3]`, `[N2--2]`). `[E…]` works the same way on the extension.
   - Folders: `[P]` is the parent folder name, `[G]` the grandparent.
-  - Counter: `[C]`, or `[C10+5:3]` with its own start, step and digits.
+  - Counter: `[C]`, or `[C10+5:3]` with its own start, step and digits. Partial forms (`[C10]`, `[C+5]`, `[C:3]`, `[C10:3]`) take the missing parts from the form's Start, Step and Digits.
+  - `[F]` upper-cases the first letter of each word and leaves the other letters as they are.
   - Dates: `[Y] [y] [M] [D] [h] [i] [s]` come from the modified time in local time. `[Y]` has 4 digits, `[y]` and the others 2. `[d]` is the date as `YYYY-MM-DD`, `[t]` the time as `hh.mm.ss` (a colon is not allowed in names). Minutes are `[i]`, as in Total Commander.
   - Case from here: `[U]` upper, `[L]` lower, `[F]` first letter of each word upper, `[n]` back to the original. Each applies to the mask's output after it, until the next case token.
   - Fields: `[=group.field]` takes a value from a field provider (D21), for example `[=exif.date]`, `[=audio.artist]`, `[=file.size]`. A missing value gives empty text.
@@ -166,10 +167,10 @@ Roles: Sonnet 5.5 medium or high for decided backend and UI work, Opus 5.5 mediu
 | Atom | Component | Role | Effort | After | Check | Status | Cost |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | **Part A — engine** | | | | | | | |
-| A1 | `rename::mask` | api-builder (Sonnet) | high | — | `cargo nextest run -p rusty-core rename::tests::mask` | ready | |
+| A1 | `rename::mask` | api-builder (Sonnet) | high | — | `cargo nextest run -p rusty-core rename::tests::mask` | done | |
 | A2 | `rename::rules` | api-builder (Sonnet) | high | A1 | `cargo nextest run -p rusty-core rename::tests::rules` | blocked | |
 | A3 | `OpKind::Rename` + arms | api-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-core -p rusty-ui op_plan activity job_card` | ready | |
-| A4 | `rename::check` | api-builder (Sonnet) | high | — | `cargo nextest run -p rusty-core rename::tests::check` | ready | |
+| A4 | `rename::check` | api-builder (Sonnet) | high | — | `cargo nextest run -p rusty-core rename::tests::check` | done | |
 | A5 | `rename::order` + `plan_batch` | api-builder (Sonnet) | high | A3, A4 | `cargo nextest run -p rusty-core rename::tests::order` | blocked | |
 | A6 | `fake` case-insensitive mode | api-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-fs fake::tests::fold` | ready | |
 | A7 | `job::rename` all or nothing | api-builder (Sonnet) | high | A5, A6 | `cargo nextest run -p rusty-fs job::tests::rename`; Windows CI | blocked | |
@@ -218,6 +219,7 @@ The plan has 29 atoms. The orchestrator may save it as `p41a-engine` (A1–A10) 
   - `Compiled::new(&RenameRules) -> Result<Compiled, RuleError { field, message }>`.
   - `Compiled::new_name(&Subject, index) -> String`.
   - Add `regex` 1.13 to rusty-core.
+- **Also:** extend `rename/parse.rs` to accept the partial counter forms of D3 (A1 refuses them today with `BadCounter`).
 - **Check:** D1 order, `|` pairs, regex groups, First only, Name only, Match case, each case mode on non-ASCII names, counter step and padding, an invalid regex, a JSON round trip.
 - **Stop if:** `regex` fails the workspace lints or `cargo deny`.
 
@@ -398,3 +400,4 @@ Answered 2026-10-20: the owner left Q1–Q3 to the architect. Q1 F2 with 2 or mo
   - The fake file system compares names case-sensitively only.
   - Ctrl+M is free.
 - 2026-10-20 — Owner: "at least like Total Commander, with the bonus features you choose". Added D20–D26 and Part D (E1–E8); minutes moved to `[i]`, case tokens `[U] [L] [F] [n]`, `[y] [d] [t]` and field tokens added to D3. A1 and A4 started.
+- 2026-10-20 — A1 done: `rename::{Mask, Token, Span, CaseMode, Subject, split_name}` with the Total Commander token set; 61 tests. A4 done: `rename::check` (`Fold`, `fold_key`, `check_rows`, `RowState`, `Problem`); an excluded row's old name counts as taken; `case_only` only under Insensitive. Architect: partial counters allowed (A2), `[F]` keeps the rest of each word.
