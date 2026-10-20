@@ -231,7 +231,7 @@ Later, not in P36:
 | D7b | drive pill target | ui-builder (Sonnet) | medium | D7a | same | blocked | |
 | V1 | planner same-volume check | api-builder (Sol 6.1) | xhigh | D2 | `cargo nextest run -p rusty-ui browser::operate`; Linux cross-device test | done (e4f06a1) | |
 | D8 | auto-scroll, spring-loaded targets (optional) | ui-builder (Opus) | medium | D7b | `cargo nextest run -p rusty-ui window_view::tests::drop` | blocked | |
-| L1 | `OpKind::Link` plan | api-builder (Sol 6.1) | xhigh | D2 | `cargo nextest run -p rusty-core op_plan` | blocked | |
+| L1 | `OpKind::Link` plan | api-builder (Sol 6.1) | xhigh | D2 | `cargo nextest run -p rusty-core op_plan` | done | |
 | L2 | `ProviderOps::make_link` + job step + undo | api-builder (Sol 6.1) | xhigh | L1 | `cargo nextest run -p rusty-fs job`; Windows CI `test-windows` | blocked (the `make_link` primitive landed with D1) | |
 | L3 | Link in drop and badge | ui-builder (Sonnet) | medium | L2, D7b | `cargo nextest run -p rusty-ui window_view::tests::drop drag` | blocked | |
 | D9 | review Part D | reviewer (Opus) | high | D7b, V1, L3 (D8 if run) | review notes; gate; Windows CI | blocked | |
@@ -757,3 +757,4 @@ Answers (2026-10-20): Q1 yes, Total Commander right-drag marking. Q2 `never`, as
   - `DoDragDrop` is a modal loop on the STA thread; our window procedure and our own drop target can run nested inside it. Hold no `RefCell` borrow, lock or `&mut` app state across the call; re-read state after it; expect our own window as a target. Start it only from a real mouse message with the button down (not touch or pen).
 - 2026-10-20 — D3 done on `p36-d3`: `[files] drop-confirm = never | moves | always`, default `never`, with a Settings row.
 - 2026-10-20 — D4 done on `p36-d4`: `rusty-ui::drag` badge (DragState, DragBadge, Refusal), `drag-*` strings, gallery page `p36-d4-drag-badge`.
+- 2026-10-20 — L1 done: `OpKind::Link` and `Step::MakeLink { target_of, at }` in the planner (`op_plan/build/link.rs`); `<name> - Shortcut.lnk` on Windows-style targets, `<name>` elsewhere, always numbered on a clash, one link per top item, totals count links. Running or undoing a `MakeLink` fails with `FsErrorKind::NotSupportedYet` until L2; activity, job card and confirm texts have Link arms.
