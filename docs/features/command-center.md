@@ -1,0 +1,79 @@
+# Command center
+
+Status: commands are in. Files and the disk index are coming.
+
+## What it is
+
+Press Ctrl+K and one box opens. It finds commands, folders and files, like Flow Launcher with Everything. Nothing leaves your machine.
+
+## What you can do
+
+- Run any command by typing a few letters of its name.
+- Jump to a recent folder, a folder in an open tab, or any path.
+- Find a file anywhere on your disks by part of its name.
+- Run a command that needs a value, such as Go to folder. The box asks for the value. A mistake shows under the input.
+- Open the box with nothing typed. It shows your last 5 commands and your 8 most used folders.
+
+The panel is 640 px wide and sits over the title-bar search. It shows up to 12 rows. A click outside closes it. It does not open over a dialog.
+
+Results come in groups: Top hit, Commands (5), Folders (5) and Files (8). "Show all N" rows list the rest.
+
+Prefixes narrow the search:
+
+- `>` shows commands only.
+- `/` shows files and folders only.
+- A drive letter, `\\` or `~` starts path mode.
+- Separate terms with spaces. All terms must match.
+- `ext:rs,toml` filters by extension.
+
+Commands follow the focus. Movement and editing primitives are hidden.
+
+## Keys
+
+- Ctrl+K opens the box.
+- Up, Down, PgUp and PgDn move the selection. Ctrl+Home and Ctrl+End go to the first and last row.
+- Tab and Shift+Tab move between groups. In path mode they complete the folder name.
+- Enter runs or opens the row.
+- Shift+Enter shows the item in its folder.
+- Ctrl+Enter does the same in the other pane.
+- Alt+Enter opens it in a new tab.
+- Ctrl+Shift+C copies the full path.
+- Esc clears the query, then closes the box.
+
+A click runs the row. Nothing runs on hover, on a timer or when the selection changes.
+
+## Settings
+
+The `[search]` section has these keys:
+
+- `index`: `auto`, `service`, `walk` or `off`.
+- `drives` and `exclude`: which places the index covers.
+- `network`: off by default.
+- `removable`: off by default.
+- `remember`: keep recent use. On by default.
+
+"Clear search history" is a command.
+
+## What was decided
+
+- Fuzzy matching with smart case. Frequently and recently used items rank higher.
+- Only commands run from the box count as use.
+- No network, no telemetry. Queries are never logged.
+- The key keeps its old name internally. The label is now "Command center".
+- On NTFS, a Windows service called Ferrite Index keeps the file list current. You install it with one click and one admin prompt. Only you and administrators can talk to it.
+- Elsewhere (network drives, non-NTFS, Linux), Ferrite walks the folders instead.
+- Size and date sorting, and the `size:`, `dm:` and `regex:` filters, come after the alpha.
+- Targets: commands in under 5 ms, first file results in under 50 ms on 1 million entries, file changes visible within 2 s.
+
+## Done and coming
+
+- Done: Ctrl+K opens the command center in the window.
+- Coming: recent items, tabs, a live walk of the current folder (it stops at 300,000 entries), and paths.
+- Coming: the disk index with the Windows service and the folder-walk fallback.
+- Coming: commands that ask for a value.
+
+## Open questions
+
+The plan still lists a few open questions. One covers the Alt+Enter behaviour.
+
+Refs: plans/2026-10-20-p40-command-center.md (D1 to D32)
