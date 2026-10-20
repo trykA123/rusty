@@ -192,7 +192,7 @@ Roles follow the owner's current rules: Sonnet 5.5 (medium or high) for decided 
 | Atom | Component | Role | Effort | After | Check | Status | Cost |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | **Part A — commands** | | | | | | | |
-| A0 | box look, 3–4 directions | designer (Opus) | medium | — | prototype file opens; owner picks | ready | |
+| A0 | box look, 3–4 directions | designer (Opus) | medium | — | prototype file opens; owner picks | done | owner: direction 1 + top hit row of 3 |
 | A1 | `rusty-index::fuzzy` | api-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-index fuzzy` | ready | |
 | A2 | `commands` entries, hidden list, Toggle action | ui-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-ui commands` | ready | |
 | A3 | `rusty-store::db` V4, frecency and command use | api-builder (Opus) | high | — | `cargo nextest run -p rusty-store db` | ready | |
@@ -470,7 +470,13 @@ Roles follow the owner's current rules: Sonnet 5.5 (medium or high) for decided 
 - No query, file name or path appears in logs or the diagnostic report (canary test).
 - `cargo xtask gate` and Windows CI pass for each part; each part is in an alpha build.
 
-## Open questions for the owner
+## Questions for the owner (answered 2026-10-20)
+
+- Box look (A0): direction 1, "compact list" (32 px rows, shortcuts right-aligned, key-hint footer with the result count or the indexing note), with direction 3's large top-hit row. Owner: "I mean his decision" (the designer's pick). Prototype: `design/prototypes/ctrlk-a0.html` (`?v=1`).
+- Q1–Q3: the owner took the recommendations ("I think he knows it better than me"): the service; the user folder by default without it; Alt+Enter opens a new tab.
+
+The original questions:
+
 
 - **Q1 — Service.** Part C installs a Windows service "Ferrite Index" (one UAC prompt, LocalSystem, starts with Windows, like Everything's service). Is that acceptable on the work PC, or do you prefer a helper that asks for admin at every Ferrite start? Recommendation: the service.
 - **Q2 — Default scope without the service.** Should the walk index cover only your user folder by default (light, calm), or every local fixed drive (Everything-like, but a full walk and more memory inside Ferrite after each start)? Recommendation: the user folder; whole drives come with the service.
@@ -479,3 +485,4 @@ Roles follow the owner's current rules: Sonnet 5.5 (medium or high) for decided 
 ## Log
 
 - 2026-10-20 — Plan written from D58–D67, the brief's D68 (not yet in `decisions.md`) and the code at ab89739. Found: `history` and `frecency` tables exist but are unused; `rusty-index` is empty; Ctrl+K is bound but does nothing.
+- 2026-10-20 — Owner picked the A0 look (direction 1 with the top-hit row of direction 3) and accepted Q1–Q3 as recommended.
