@@ -173,7 +173,7 @@ Roles: Sonnet 5.5 medium or high for decided backend and UI work, Opus 5.5 mediu
 | A4 | `rename::check` | api-builder (Sonnet) | high | — | `cargo nextest run -p rusty-core rename::tests::check` | done | |
 | A5 | `rename::order` + `plan_batch` | api-builder (Sonnet) | high | A3, A4 | `cargo nextest run -p rusty-core rename::tests::order` | done | |
 | A6 | `fake` case-insensitive mode | api-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-fs fake::tests::fold` | done | |
-| A7 | `job::rename` all or nothing | api-builder (Sonnet) | high | A5, A6 | `cargo nextest run -p rusty-fs job::tests::rename`; Windows CI | blocked | |
+| A7 | `job::rename` all or nothing | api-builder (Sonnet) | high | A5, A6 | `cargo nextest run -p rusty-fs job::tests::rename`; Windows CI | ready | |
 | A8 | journal undo queries | api-builder (Sonnet) | high | — | `cargo nextest run -p rusty-store journal` | ready | |
 | A9 | `db` V5 presets | api-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-store db` | ready | |
 | A10 | review Part A | reviewer (Opus) | high | A1–A9 | review notes; `cargo xtask gate`; Windows CI | blocked | |
