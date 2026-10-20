@@ -38,7 +38,7 @@ Exit: the spike meets the targets on Linux and the work PC, otherwise D2 is reop
 
 Goal: a file manager the owner can use every day on Windows.
 
-Progress: 75% (183 of 247 items done, 3 being finished counted as half, 61 still to do: (183 + 1.5) ÷ 247). Each part of multi-select and drag and drop, PDF links, Rich ELF and MAP, Ctrl+K and multi-rename counts once; review-only parts are not counted. Moving the remaining texts into translation files is out of the count (after 1.0, D59).
+Progress: 76% (190 of 253 items done, 3 being finished counted as half, 60 still to do: (190 + 1.5) ÷ 253). Each part of multi-select and drag and drop, PDF links, Rich ELF and MAP, Ctrl+K and multi-rename counts once; review-only parts are not counted. Moving the remaining texts into translation files is out of the count (after 1.0, D59).
 
 Done so far:
 
@@ -57,17 +57,19 @@ Done so far:
 - ELF symbols table with resizable columns and names that keep their prefix;
 - HEX and S-record rows of 32 bytes, with padding gaps folded;
 - memory regions from TASKING `.mdf` files; linker fill counted apart from real data (model);
-- drag and drop groundwork: drop rule, drop into a folder, volume check, drag badge, setting, shortcut planning and drag from the file list;
+- drag and drop between the panes: drag files by icon or name onto the other pane or a folder row; Move on the same drive, Copy across drives; Ctrl copies, Shift moves; a badge says what happens; Esc cancels; the "Drag and drop" setting asks before a dragged move;
+- Ctrl+K ranks the commands you run often higher;
+- built, not switched on: Alt-drop shortcuts (create and undo, long paths; the drop does not make them yet); Rich ELF and MAP memory strip, treemap and a lookup of the matching MAP or memory definition next to the open file (the screens come next); multi-rename keys (Ctrl+M, Ctrl+Z; the dialog comes next); a Search section in the settings file and the reader of the NTFS change journal for the file index;
 - built, not switched on: Ctrl+K file index engine (name table, parallel search, saved index, folder walker); multi-rename engine (Total Commander masks, clean-up, file, photo and audio fields, safe put-back; reviewed); ELF owners (who uses each byte).
 
 Still open in the alpha, in this order:
 
 - right-click on empty space: a folder menu with New file (Shift+F7) and the Windows background menu (done, waiting for Windows CI);
 - cache sizes in diagnostics: the diagnostic report shows how much disk each cache uses, backed by a long stress test (in progress);
-- multi-select (done) and drag and drop (built: rules, badge, setting, shortcut planning and drag from the file list; next: dropping in the window, on tabs, crumbs and drives, and drag and drop with Explorer in both directions);
-- Rich ELF and MAP views, direction "address space first" (D66; the model, owners, groups, strip, treemap and colours are built; the map screens come next);
-- Ctrl+K command center (D60, D61, D63): the box works for commands; the file index engine is built (name table, parallel search, saved index, folder walker); recent files, tabs and folders as sources and the background index service come next (target: global search answers in under 50 ms on 2 million files);
-- multi-rename, Ctrl+M: Total Commander parity plus extras (field tokens from EXIF and audio tags, clean-up toggles, edit names, undo history after a restart, conflict preview, all or nothing); engine done and reviewed, dialog next;
+- multi-select and drag and drop between the panes (both done; next: dropping on tabs, crumbs and drives, Alt-drop shortcuts switched on, and drag and drop with Explorer in both directions);
+- Rich ELF and MAP views, direction "address space first" (D66; the model, owners, groups, memory strip, treemap, colours and the matching-file lookup are built; the map screens come next);
+- Ctrl+K command center (D60, D61, D63): the box works for commands and ranks the ones you use often; the file index engine is built (name table, parallel search, saved index, folder walker, change journal reader, Search settings); recent files, tabs and folders as sources and the background index service come next (target: global search answers in under 50 ms on 2 million files);
+- multi-rename, Ctrl+M: Total Commander parity plus extras (field tokens from EXIF and audio tags, clean-up toggles, edit names, undo history after a restart, conflict preview, all or nothing); engine done and reviewed, keys in, dialog next;
 - DBC and A2L viewer in F3;
 - automotive syntax colours (m4, OIL, DCM, UDL) wired into the text viewer;
 - viewer chrome; pins;
@@ -91,6 +93,7 @@ Exit: two weeks of daily use on the work PC with no lost or damaged files.
 ## Right after the alpha
 
 1. Delete safety net with 1 to 7 days retention (D65).
+2. Background work: job queues, folder sizes and speed tests, from ideas in Linux tools (planned; after the alpha).
 
 ## v1 Beta · v0.9
 
@@ -115,7 +118,7 @@ Replaces Total Commander for daily work (D39). Parity features are built to beat
 - core: find files by content and attributes, with results as a pane you can work on; saved searches.
 - core: virtual collections: a pane can hold search results, recent changes or files picked from many folders.
 - core: archives as folders (zip, 7z, tar with gz, xz and zst): browse, extract and pack through the job engine; safe extraction.
-- core: compare and sync, better than Beyond Compare where it counts (D40): folder compare in the panes, sync as a plan with undo, cached BLAKE3 hashes, syntax-aware text diff, paged diff for huge and binary files, image compare; engine in the shared `rusty-compare` crate.
+- core: compare and sync, better than Beyond Compare where it counts (D40): folder compare in the panes, a calm full-window look with a change map on each scroller (chosen; after the alpha), sync as a plan with undo, cached BLAKE3 hashes, syntax-aware text diff, paged diff for huge and binary files (planned for the first version), image compare; engine in the shared `rusty-compare` crate.
 - core: checksums (BLAKE3, SHA-256, SHA-1, MD5) with verify; properties drawer for attributes, timestamps and permissions; images in F3.
 - infra: signed portable `.exe` and installer; user guide.
 - core: optional default file manager (Win+E).
