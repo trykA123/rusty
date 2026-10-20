@@ -71,7 +71,7 @@ Still open in the alpha, in this order:
 - Ctrl+K command center (D60, D61, D63): the box works for commands and ranks the ones you use often; the file index engine is built (name table, parallel search, saved index, folder walker, change journal reader, Search settings); recent files, tabs and folders as sources and the background index service come next (target: global search answers in under 50 ms on 2 million files);
 - multi-rename, Ctrl+M: Total Commander parity plus extras (field tokens from EXIF and audio tags, clean-up toggles, edit names, undo history after a restart, conflict preview, all or nothing); engine done and reviewed, keys in, dialog next;
 - DBC and A2L viewer in F3;
-- automotive syntax colours (m4, OIL, DCM, UDL) wired into the text viewer;
+- colouring for m4, OIL and DCM files: the viewer learns which words are keywords, strings and comments in these files, in whichever colour set you pick, and imports your own Notepad++ language files;
 - viewer chrome; pins;
 - steadier Windows CI (in progress);
 - the Follow bug on Windows (last).
