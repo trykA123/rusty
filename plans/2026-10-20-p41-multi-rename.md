@@ -168,7 +168,7 @@ Roles: Sonnet 5.5 medium or high for decided backend and UI work, Opus 5.5 mediu
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | **Part A — engine** | | | | | | | |
 | A1 | `rename::mask` | api-builder (Sonnet) | high | — | `cargo nextest run -p rusty-core rename::tests::mask` | done | |
-| A2 | `rename::rules` | api-builder (Sonnet) | high | A1 | `cargo nextest run -p rusty-core rename::tests::rules` | ready | |
+| A2 | `rename::rules` | api-builder (Sonnet) | high | A1 | `cargo nextest run -p rusty-core rename::tests::rules` | done | |
 | A3 | `OpKind::Rename` + arms | api-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-core -p rusty-ui op_plan activity job_card` | done | |
 | A4 | `rename::check` | api-builder (Sonnet) | high | — | `cargo nextest run -p rusty-core rename::tests::check` | done | |
 | A5 | `rename::order` + `plan_batch` | api-builder (Sonnet) | high | A3, A4 | `cargo nextest run -p rusty-core rename::tests::order` | done | |
@@ -405,3 +405,4 @@ Answered 2026-10-20: the owner left Q1–Q3 to the architect. Q1 F2 with 2 or mo
 - 2026-10-20 — A3 done: `OpKind::Rename` with arms in core, job card, activity text, confirm text and `op_request`; `activity-renaming`, `activity-renamed` and `activity-rename-failed` added.
 - 2026-10-20 — A5 done: `rename::{plan_batch, BatchPlan}` orders chains from the free end, breaks each cycle and case-only rename with one `.ferrite-rename-<seed hex>-<n>` name, and gives `plan: None` while a row has a problem; a proptest runs the steps on a folding folder model.
 - 2026-10-20 — A9 done: `ferrite.db` V5 adds `rename_preset`; `Db::save_preset`, `presets` (`RenamePresets { named, last_used }`) and `delete_preset` in `db/rename_presets.rs`; rules are an opaque JSON string and time is passed in.
+- 2026-10-20 — A2 done: `rename::{RenameRules, Find, Counter, NameCase, ExtCase, Compiled, RuleError, RuleField}` and `regex` =1.13.1 in rusty-core. `Token::Counter` now holds `CounterParts` (partial `[C10]`, `[C+5]`, `[C:3]`, `[C10:3]` accepted). Chosen: a single Replace part applies to every `|` pair, missing parts delete; pairs run in order; First letter and Title Case lower-case the rest of each word.
