@@ -1,0 +1,481 @@
+# P40 · Ctrl+K command center
+
+Status: drafting (Q1–Q3 open) · Repo: `<repo>` · Branch: `p40-<atom>` per atom · Started: 2026-10-20
+
+## Goal
+
+Ctrl+K opens one box that finds commands and files. The user types a few letters, sees the matching commands with their shortcuts, the folders and files they use most, and every file on the disk, and runs or opens the chosen row with Enter. It works like Flow Launcher with Everything, inside Ferrite, and it never sends anything off the machine.
+
+## What exists today (checked at ab89739)
+
+- **No palette.** `app.command_palette` is a menu-only row (`commands/mod.rs` `MENU_ONLY`, `action: None`). `keymap.toml` binds it to `ctrl-k` under "App menu rows without an action yet; shown in the menu, not bound", so Ctrl+K does nothing. `run_menu_command` (`window_view/app_menu.rs:77-88`) ignores `MenuCommand::CommandPalette`. The app menu row reads "Command palette · Ctrl+K".
+- **Title-bar search is a placeholder.** `title_bar/search.rs` draws a static field "Find anywhere: files, folders, commands" with a Ctrl+K key cap. It has no input and no click handler. D58 makes it hideable (`WindowParts::title_search`).
+- **Command registry.** `commands::all()` yields about 300 `CommandSpec { name, label, context, action }` built from static groups (`window`, `marks`, `overlays`, `viewer`, `structured`) plus `MENU_ONLY`. Labels are Fluent ids (`cmd-…`, `rusty-l10n/locales/en-US/commands.ftl`, 297 lines). `command_registry.snap` pins the list. Contexts: Viewer 61, FileList 47, Tree 24, FerritePane 20, PreviewBrowse 17, SettingsSheet 13, ContextMenu 11, global 10, and smaller overlay contexts. `contexts::is_within` resolves parents.
+- **Dispatch by name exists.** The viewer context menu builds an action with `cx.build_action(name, None)` and runs `focus.dispatch_action(..)` inside `window.defer` (`window_view/viewer/menu/mod.rs:80-105`). The shell menu has `run_named` (`window_view/shell_menu/actions.rs:41-52`).
+- **Shortcut text.** `commands::shown(key)` formats a keystroke ("Ctrl+Shift+F"); `commands::active(cx)` is the live keymap with user overrides.
+- **Core commands with arguments.** `rusty_core::Command` has a text parser and printer (`command/parse.rs`, `print.rs`), for example `PaneNavigate { location }`, `PaneOpenTab { location }`, `SelectionAddPattern { pattern, folders }`.
+- **Opening like the pane.** `Browser::open_row` launches files through `Launcher` and navigates into folders; `Browser::open_at(folder, name)` navigates and puts the cursor on `name`; `Browser::open_tab_at` opens a tab. `FerriteWindow::switch_pane` moves focus to the other pane.
+- **User database.** `ferrite.db` migrations V1–V3 (`rusty-store/src/db/migrations.rs`) already create `history (id, location, visited_at)` and `frecency (location PK, score, last_at)`. **Nothing reads or writes either table.** `search_history` is used by the viewer find bar. rusty-app reaches the database through `SharedDb = Arc<Mutex<Db>>` and injects closures into rusty-ui (`rusty-app/src/files/memory.rs`, `FileHooks`).
+- **Index crate is empty.** `crates/rusty-index` has an empty `lib.rs` and no dependencies. No crate depends on `nucleo`, `nucleo-matcher` or `rayon` (`rayon` is only in `Cargo.lock` transitively).
+- **File system pieces.** `rusty_fs::Provider::list`, `metadata`, `watch` and `watch_tree` (recursive watcher, debounced batches). `measure/walk.rs` is a single-threaded walker private to folder sizing. The fake file system with fault injection and the hostile-name corpus exist for tests.
+- **UI pieces.** `primitives::VirtualList` (uniform rows, scroll handle, row semantics), `primitives::TextField`, `primitives::Kbd`, the D46 context menu (filter list rows, quiet section headers, keys `↑/↓`, Enter, Esc clears then closes), `prompt_dialog`.
+- **Activity model (P39 S2, merged).** `Activity::set_background(id, title, progress)` and `end_background(id)` exist with no producer. The strip view (P39 S3) is not built yet.
+- **Decisions in force.** D6 and D61 (one command surface, public ids from the registry), D13 (Ctrl+K is core), D23 (own index: MFT + USN in a service, walk fallback), D58 (calm by default, keys shown), D59 (new text in `.ftl`), D60, D62, D63 (result-source interface, registry entries with an enabled flag, no memory gate).
+- **Not found.** `docs/decisions.md` stops at D67. The brief's D68 ("Ctrl+K is part of the alpha") is not recorded yet. `docs/roadmap.md` still lists the < 80 MB RAM target and puts global search in v1.1.
+
+## Decisions
+
+Final once the owner answers Q1–Q3. Workers never reopen them; a worker that finds one wrong stops and reports.
+
+### Shape and parts
+
+- **D1 — Three parts that ship separately.** Each part ends with `cargo xtask gate`, Windows CI, an Opus high review, a merge and an alpha build.
+  - Part A: commands only. Ctrl+K works as a command palette.
+  - Part B: files and folders from sources that exist today (history, open tabs, a live walk of the current folder), path mode and commands with arguments.
+  - Part C: the disk index (NTFS MFT and USN journal through a service; walk index as fallback).
+  - The plan has 34 atoms. Under the about-15-atoms rule, the orchestrator may save the parts as `p40a-commands`, `p40b-file-sources` and `p40c-disk-index`, with these decisions shared.
+- **D2 — Names.** The public id stays `app.command_palette` (user keymaps use it). The label becomes "Command center" in `commands.ftl` and in the app menu row. Code lives in `crates/rusty-ui/src/command_center/`. The GPUI key context is `CommandCenter`.
+
+### UI
+
+- **D3 — Where it opens: a floating panel anchored to the title-bar search.**
+  - The panel is centred on the title-bar search field. Its input row sits exactly over the field, so the field appears to grow into the box. Width 640 px, clamped to the window width minus 32 px. Height grows with the rows, up to 12 rows, then the list scrolls.
+  - With the title-bar search hidden (D58), the panel opens at the same place, top centre under the title bar.
+  - Ctrl+K, the app-menu row and a click on the title-bar field all open it. Ctrl+K while open closes it.
+  - It does not open over a modal dialog (confirm, prompt). From a viewer it opens and offers the viewer's commands.
+  - Trade-off: a real editable field inside the title bar would fight the Windows caption hit-testing and drag areas (D36). An overlay that covers the field looks the same and stays one component.
+  - It is a drawer-like overlay over the content (D58 rule 2). Nothing behind it moves or shrinks. A scrim is not used; a click outside closes it.
+- **D4 — Rows and groups.**
+  - With a query, results show as: one **Top hit** row (the single best result across all sources), then the groups **Commands**, **Folders**, **Files** in that fixed order, with quiet section headers like D46. The top hit is not repeated in its group. Empty groups are omitted.
+  - Caps in mixed mode: Commands 5, Folders 5, Files 8. A group with more matches ends with a "Show all N" row; Enter on it types that group's prefix (D6).
+  - In a scoped mode (a prefix), one group shows up to 500 rows in a `VirtualList`.
+  - Later groups: **Modules**, one per source a module adds (D16), placed after Files.
+  - Trade-off: a fixed group order keeps positions predictable for the keyboard; the top hit still puts the best answer first.
+- **D5 — A row.** Row height 32 px. Left: a Lucide icon (command, folder, file-type icon). Then the title with matched characters in the accent colour and medium weight. Then muted detail text: for a command, its context in plain words ("File list", "Viewer"); for a folder or file, the parent path with a middle ellipsis. Right: for a command, its shortcut as `Kbd` caps from the active keymap (first key bound in the matching context); for a file or folder, nothing. A command with an argument ends its title with "…".
+- **D6 — Prefixes.** A prefix is the first character of the input and stays visible and editable.
+  - `>` commands only (VS Code habit).
+  - `/` files and folders only.
+  - Path mode starts by itself when the input starts with a drive letter and colon (`C:`), `\\`, or `~`. On Linux an absolute path typed after `/` works in files mode, because a term with a separator matches the full path (D20), and an existing folder gets a "Go to" row.
+  - No other prefixes in this plan. A hint line under an empty input lists them: "> commands · / files · C:\ paths".
+  - Trade-off: `/` cannot start a Linux path in mixed mode; Linux is secondary (D30), and files mode covers it.
+- **D7 — Keys inside the box.** All live in the `CommandCenter` context, are rebindable in `keymap.toml` and get `cmd-` labels.
+
+  | Key | Action |
+  | --- | --- |
+  | ↑ / ↓, PgUp / PgDn | Move the selection |
+  | Ctrl+Home / Ctrl+End | First / last row (Home and End stay in the input) |
+  | Tab / Shift+Tab | Next / previous group; in path mode, complete the selected folder name |
+  | Enter | Run the command, or open the item like Enter in the pane: a folder opens in the active pane, a file opens with its program |
+  | Shift+Enter | Reveal: open the parent in the active pane with the cursor on the item |
+  | Ctrl+Enter | The same as Enter or Shift+Enter, but in the other pane (folder opens there; a file is revealed there) |
+  | Alt+Enter | Open the folder (or the file's parent, cursor on the file) in a new tab (Q3) |
+  | Ctrl+Shift+C | Copy the full path of the selected file or folder |
+  | Esc | Clear the query; on an empty query, leave the argument step or close |
+
+  - A single left click runs the row like Enter. Hover only moves the highlight. **Nothing runs on hover.**
+  - A footer line shows the keys for the selected row kind ("Enter open · Shift+Enter reveal · Ctrl+Enter other pane · Alt+Enter new tab"). It follows the window's key-hints part (D58 rule 7).
+  - Closing returns focus to the element that had it before.
+- **D8 — Empty state.** With an empty input: **Recent** shows the last 5 commands run from the box and the 8 most frecent folders, then the prefix hint line. With no history yet it shows only the hint line. No tips, no banners (D58).
+- **D9 — Motion.** The panel fades in and drops 4 px in 120 ms and leaves in 90 ms. Reduced motion: fade only. Rows never animate while typing. No flashing.
+
+### Commands
+
+- **D10 — The registry is the source; entries become owned (D63).** `commands::all()` keeps its signature for existing callers. A new `commands::entries()` returns `Vec<CommandEntry { spec: CommandSpec, enabled: bool, in_palette: bool, arg: Option<ArgKind> }>`. `enabled` is true for every built-in entry today; modules set it later. `MENU_ONLY` shrinks: `app.command_palette` gets the action `command_center::Toggle` in the global group.
+- **D11 — Which commands show.**
+  - A command shows when its context is `global` or is in the focused element's key-context stack at the moment the box opened. So viewer commands show only when a viewer had focus, and overlay commands (dialogs, menus, settings fields) never show.
+  - `in_palette` is false for movement and editing primitives: cursor and page moves, caret moves, text-field keys, the menu and dialog navigation keys, and `app.command_palette` itself. The list is one const in `commands/palette_hidden.rs`, pinned by a snapshot.
+  - `enabled == false` entries never show.
+- **D12 — Commands run through the same dispatch as keys.** The box closes, then `window.defer` focuses the element that had focus before and calls `focus.dispatch_action(action)`, as the viewer menu does today. The command sees the same state as when pressed by key. Destructive commands keep their confirmations, because they are the same actions (F8 asks per settings; Shift+Del shows its warning).
+- **D13 — Commands with an argument.** `ArgKind::Path` or `ArgKind::Text`. Choosing one turns the input into an argument step: a chip with the command label, an empty input and a placeholder. Enter builds the core text form and runs it through `rusty_core::Command::parse` and `Browser::command` on the active pane (D61). The first set:
+
+  | Entry | Text form | Arg |
+  | --- | --- | --- |
+  | Go to folder… | `pane.navigate location=<path>` | Path, with path-mode completion |
+  | Open folder in new tab… | `pane.open_tab location=<path>` | Path |
+  | Mark by pattern… | `selection.add_pattern pattern=<text> folders=false` | Text |
+  | Unmark by pattern… | `selection.remove_pattern pattern=<text> folders=false` | Text |
+
+  A parse error shows under the input in the error colour; the box stays open.
+- **D14 — Command use is remembered.** Each command run from the box adds to its frecency (D18). Keys pressed outside the box do not count; the box learns what the user looks up, not what they already know by key.
+
+### Ranking
+
+- **D15 — Matcher.** `nucleo-matcher` (the low-level crate of `nucleo`), smart case, Unicode normalisation on, path-aware scoring for paths. It runs inside `rusty-index::fuzzy`. The high-level `nucleo` crate is not used: it keeps its own UTF-32 copy of every item (about 4 bytes per character), which doubles the memory of a 2-million-name index. Large tables are scored in parallel chunks with `rayon` (D18 of the architecture: rayon for CPU work).
+- **D16 — Result-source interface (D63).** In `command_center/source.rs`:
+  - `trait ResultSource: Send + Sync { fn id(&self) -> &'static str; fn group(&self) -> Group; fn scopes(&self) -> Scopes; fn search(&self, request: &Request, sink: &HitSink, cancel: &Cancel); }`
+  - `Request { query: Query, generation: u64, here: Option<Location>, limit: usize }`. `Query` is the parsed input (scope, terms, path mode).
+  - `Hit { source: &'static str, group: Group, title: SharedString, detail: SharedString, score: i64, indices: Vec<u32>, target: Target, shortcut: Option<SharedString> }`.
+  - `Target` is closed: `Action(&'static str)`, `Core(Command)` (an argument command after its step), `Arg(&'static str, ArgKind)`, `Open { location: Location, folder: bool }`, `GoTo(Location)`, `ShowAll(Group)`.
+  - A module adds a source by registering a `Box<dyn ResultSource>` at start-up through an internal Rust interface (D62). Its hits must use one of these targets, so a module never runs its own code from a row; it runs a registry command or opens a location. Module results get their own group named by the source.
+  - Every source runs on the background executor. A source that needs UI state (commands, open tabs) gets a snapshot taken when the box opens. Each keystroke bumps the generation and cancels older searches. Commands search on every keystroke; file sources start after 40 ms without typing.
+- **D17 — Score.** `final = match + 12·ln(1 + frecency) + bonus`, where `match` is the nucleo score, `frecency` is the aged weight (D18) and `bonus` is +30 when the name equals the query (case-insensitive) and +15 when the name starts with it. Ties keep source order, then shorter paths. The constants live in one block in `command_center/rank.rs` with tests; tuning them is a later one-line change.
+- **D18 — Frecency (zoxide rule).** A use adds 1 to the score and sets `last_at`. The weight at query time is `score × 4` if used in the last hour, `× 2` in the last day, `× 0.5` in the last week, else `× 0.25`. When the sum of all scores in a table passes 10,000, every score is multiplied by 0.9 and rows below 1 are deleted. Folders and files use `frecency`; commands use a new `command_use` table. A folder visit counts when its listing loads (from keys, the path bar or the box), at most once per folder per 2 s. A file counts when it is opened with Enter (pane or box).
+
+### File search engine
+
+- **D19 — Phase 1 (Part B): what exists, no persistent index.**
+  - **Recent** source: the top 2,000 rows of `frecency` (folders and files), loaded when the box opens.
+  - **Tabs** source: the location of every tab in every pane and window.
+  - **Here** source: a live walk of the active pane's folder tree, started on the first file query and reused while the folder is the same and the walk is under 60 s old. It stops at 300,000 entries; past that, the Files header says "First 300,000 entries of C:\ · the disk index finds the rest". Results stream in while the walk runs.
+  - **Paths** source: path mode (D6) lists the child folders of the typed parent through the provider, with the network timeout rules of D19 (offline shows a note, never blocks).
+  - Not used: the listing cache. It holds only folders visited lately, so its results would look random. Trade-off accepted.
+- **D20 — Query terms.** Space-separated terms must all match. A term without a separator matches the name. A term with `\` or `/` matches the full path. `ext:rs,toml` filters by extension. `size:`, `dm:` and `regex:` come after the alpha.
+- **D21 — Name table, shared by the walk and the index.** `rusty-index::table::NameTable`: one UTF-8 name buffer, then per entry a `u32` name offset, a `u32` parent id and a `u16` flags field (folder, hidden, system, reparse point, deleted). About 10 bytes plus the name per entry. Paths are rebuilt from the parent chain only for shown rows. Size and dates are not stored (D24).
+- **D22 — Phase 2 (Part C): the disk index.**
+  - **NTFS through a service.** A Windows service reads each NTFS volume with `FSCTL_ENUM_USN_DATA` (names, parents, attributes) and then follows the USN journal with `FSCTL_READ_USN_JOURNAL`. It saves the journal id and the next USN per volume, so a restart only catches up; a changed journal id or a wrapped journal starts a new enumeration.
+  - **The service is a mode of `ferrite.exe`** (`ferrite.exe --index-service`), like the PDF helper (D48). This amends D23's separate `rusty-indexd` binary: one portable exe, one version, one signature. The service is named "Ferrite Index", runs as LocalSystem, starts automatic (delayed), and restarts on failure.
+  - **Install** through the commands "Install index service" and "Remove index service" (in the box and in the settings page). Each starts `ferrite.exe --index-service install|remove` elevated (one UAC prompt). Nothing installs without the user's click.
+  - **Talk** over a named pipe `\\.\pipe\ferrite-index`, whose DACL allows only SYSTEM, Administrators and the SID of the user who installed it. Frames are `postcard`: `Query { request, generation }` → `Hits` (top 500 with full paths and flags) and `Status` (volumes, entries, progress, errors). The service never opens a file and holds only read-only volume handles.
+  - **Fallback walk index** (no service, non-NTFS, network, Linux): the same `NameTable` built by the walker for chosen roots, saved to disk, refreshed by a low-priority rescan after each start, and kept current by `watch_tree` while Ferrite runs.
+  - Trade-off: a per-session elevated helper would need a UAC prompt on every start; running Ferrite elevated would break drag and drop with Explorer (UIPI). A service matches what the owner already runs for Everything at work (D23).
+- **D23 — Storage.** One file per root or volume: a versioned little-endian header (format version, volume serial, journal id, next USN, root, built-at) followed by the name buffer and the entry arrays. Written with `rusty_store::atomic_write`; a bad or old file is deleted and rebuilt. Loaded fully into memory: no `rkyv`, no memory map, so no `unsafe` in the loader. Walk index files live in `%LOCALAPPDATA%\Rusty\index\` (portable mode: beside the exe). Service files live in `%ProgramData%\Ferrite\index\` with an ACL of SYSTEM and Administrators only.
+- **D24 — Size and dates.** `FSCTL_ENUM_USN_DATA` gives no size or times. Shown rows fetch them lazily with one metadata call each, off the UI thread. Sorting or filtering by size and date waits for raw `$MFT` reading after the alpha.
+- **D25 — Budgets (targets, not gates; D63).**
+  - Memory: ≤ 50 bytes per indexed entry in the process that holds the table (≈ 100 MB for 2 million entries). With the service, Ferrite itself grows by ≤ 15 MB for the box. Measured by `NameTable::memory_bytes` in a test with 2 million synthetic names and recorded in `docs/perf.md`.
+  - Speed: commands in < 5 ms; first file results in < 50 ms on 1 million entries on the work laptop; enumeration of a 1-million-entry NTFS volume in < 10 s.
+  - Start-up: nothing before the first usable frame. After it, a background task connects to the service pipe (50 ms timeout) or loads the walk snapshots. No UI-thread step above 1 ms.
+  - Freshness: USN changes visible within 2 s; watcher changes within 2 s; changes made while Ferrite was closed (walk index) appear after the next rescan.
+- **D26 — What is indexed.** Setting `[search]`:
+  - `index = "auto" | "service" | "walk" | "off"`: auto uses the service when it answers, else the walk index.
+  - `drives = []`: empty means every local fixed drive for the service; see Q2 for the walk default.
+  - `exclude = ["$Recycle.Bin", "System Volume Information"]`: names or full paths skipped while indexing.
+  - `network = false`, `removable = false`.
+  - `remember = true`: records history and frecency. "Clear search history" empties `history`, `frecency` and `command_use`.
+  - Hidden and system entries are indexed but shown only when the window shows them (D58).
+  - Linux: walk index only, default root the home folder, no watcher on the whole tree.
+- **D27 — While the index builds.** Results come from the partial table at once. The Files header shows "Indexing C: 41 %". The activity strip shows a Background item with the same text and progress (P39), and drops it when done. A failure (service stopped, volume refused) shows once in the strip and in the settings page, never as a dialog.
+- **D28 — Privacy.** Nothing leaves the machine: no network calls, no telemetry. Queries and file names are never logged (D20 canary list already includes search queries); the diagnostic report counts entries only. The pipe is local and ACL-restricted. On a shared machine the service answers only the installing user; it shows names the user may lack rights to list, as Everything does by default; access filtering comes later.
+
+### Safety
+
+- **D29 — Enter on a file opens it exactly like Enter in the pane** (the same `Launcher`). A folder navigates. Executables get no extra prompt, as in the pane.
+- **D30 — Destructive commands keep their confirmations** (D12). The box never offers a file operation of its own; file operations stay registry commands that go through the planner and journal (D61).
+- **D31 — No command runs on hover, on selection change or on a timer.** Only Enter, a click, or the argument step's Enter runs anything.
+
+### Text
+
+- **D32 — All new text goes into `.ftl` files** (D59): labels in `commands.ftl`, box texts in `app.ftl`, index status in `files.ftl`.
+
+## Components
+
+| Component | Layer | Contract (in → out) | New / change | Test |
+| --- | --- | --- | --- | --- |
+| `rusty-index::fuzzy` | lib | `(&Query, &str) → Option<Match { score, indices }>` | new | `rusty-index/src/fuzzy/tests.rs` |
+| `rusty-index::table` | lib | `NameTable`: add, remove, rename, path(id), memory_bytes | new | `table/tests.rs` |
+| `rusty-index::search` | lib | `(&NameTable, &Query, limit, &Cancel) → Vec<TableHit>` | new | `search/tests.rs` |
+| `rusty-index::walker` | adapter | `(&dyn Provider, root, Limits, &Cancel, progress) → NameTable` | new | `walker/tests.rs` (fake fs) |
+| `rusty-index::file` | adapter | `NameTable + Header ↔ file` | new | `file/tests.rs` |
+| `rusty-index::host` | service | roots → live tables, status events | new | `host/tests.rs` |
+| `rusty-index::ntfs` | adapter (Windows) | volume → `NameTable`, USN batches | new | `ntfs/tests.rs` (Windows CI), `usn` pure tests |
+| `rusty-index::usn` | lib | `UsnRecord → TableChange` | new | `usn/tests.rs` |
+| `rusty-index::pipe` | adapter | `postcard` frames over a named pipe; client and server | new | `pipe/tests.rs` |
+| `rusty-app::index_service` | service | `--index-service run|install|remove` | new | `rusty-app/src/index_service/tests.rs` |
+| `rusty-store::db` frecency | adapter | V4 migration; `record_visit`, `frecent`, `record_command`, `command_use`, `clear_search_history` | change | `db/tests/frecency.rs` |
+| `rusty-store::settings` `[search]` | adapter | settings keys D26 | change | `settings/tests` |
+| `commands` entries | lib (ui) | `entries() → Vec<CommandEntry>`; `palette_hidden` | change | `commands/tests.rs`, snapshots |
+| `command_center::query` | lib (ui) | `&str → Query` (scope, terms, path mode) | new | `command_center/tests/query.rs` |
+| `command_center::source` | lib (ui) | `ResultSource`, `Request`, `Hit`, `Target`, `HitSink` | new | `command_center/tests/source.rs` |
+| `command_center::results` | lib (ui) | hits → rows (top hit, groups, caps, selection) | new | `command_center/tests/results.rs` |
+| `command_center::rank` | lib (ui) | `(match, frecency, name, query) → i64` | new | `command_center/tests/rank.rs` |
+| `command_center::commands_source` | service (ui) | snapshot of entries → hits | new | `command_center/tests/commands_source.rs` |
+| `command_center::file_sources` | service (ui) | Recent, Tabs, Here, Paths → hits | new | `command_center/tests/file_sources.rs` |
+| `command_center::index_source` | service (ui) | pipe or host → hits | new | `command_center/tests/index_source.rs` |
+| `command_center::view` | ui | `CommandCenter` element: props in, `CommandCenterEvent` out | new | `command_center/tests/view.rs`, gallery shot |
+| `window_view::command_center` | ui container | open, close, focus, run hits | new | `window_view/tests/command_center.rs` |
+| `rusty-app::search_hooks` | wiring | DB-backed closures for frecency and command use; source registration | new | `rusty-app/src/search_hooks/tests.rs` |
+| `settings` Search page | ui | `[search]` rows, service status and install | new | `settings/tests` |
+
+## Atoms
+
+Roles follow the owner's current rules: Sonnet 5.5 (medium or high) for decided backend and UI work; Opus 5.5 medium for senior or cross-cutting UI; Opus 5.5 high for data-safety work and reviews. No Codex or Gemini runs (D35). Claude models never above high.
+
+| Atom | Component | Role | Effort | After | Check | Status | Cost |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| **Part A — commands** | | | | | | | |
+| A0 | box look, 3–4 directions | designer (Opus) | medium | — | prototype file opens; owner picks | ready | |
+| A1 | `rusty-index::fuzzy` | api-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-index fuzzy` | ready | |
+| A2 | `commands` entries, hidden list, Toggle action | ui-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-ui commands` | ready | |
+| A3 | `rusty-store::db` V4, frecency and command use | api-builder (Opus) | high | — | `cargo nextest run -p rusty-store db` | ready | |
+| A4 | `command_center::query` + `source` contract | api-builder (Sonnet) | high | — | `cargo nextest run -p rusty-ui command_center::tests::query command_center::tests::source` | ready | |
+| A5 | `command_center::rank` + `results` | api-builder (Sonnet) | high | A4 | `cargo nextest run -p rusty-ui command_center::tests::rank command_center::tests::results` | blocked | |
+| A6 | `command_center::commands_source` | ui-builder (Sonnet) | medium | A1, A2, A4 | `cargo nextest run -p rusty-ui command_center::tests::commands_source` | blocked | |
+| A7 | `command_center::view` + gallery page | ui-builder (Opus) | medium | A0, A5 | `cargo nextest run -p rusty-ui command_center::tests::view`; gallery shots light and dark | blocked | |
+| A8 | `window_view::command_center` container | ui-builder (Opus) | medium | A6, A7 | `cargo nextest run -p rusty-ui window_view::tests::command_center` | blocked | |
+| A9 | `rusty-app::search_hooks` (command use) | api-builder (Sonnet) | medium | A3, A8 | `cargo nextest run -p rusty-app search_hooks` | blocked | |
+| A10 | review Part A | reviewer (Opus) | high | A9 | review notes; `cargo xtask gate`; Windows CI | blocked | |
+| **Part B — file sources** | | | | | | | |
+| B1 | visit and open hooks, frecency writer | ui-builder (Sonnet) | medium | A9 | `cargo nextest run -p rusty-ui window_view::tests::visits`; `-p rusty-app search_hooks` | blocked | |
+| B2 | `rusty-index::table` | api-builder (Sonnet) | high | — | `cargo nextest run -p rusty-index table` | ready | |
+| B3 | `rusty-index::search` | api-builder (Sonnet) | high | A1, B2 | `cargo nextest run -p rusty-index search` | blocked | |
+| B4 | `rusty-index::walker` | api-builder (Sonnet) | high | B2 | `cargo nextest run -p rusty-index walker` | blocked | |
+| B5 | Recent and Tabs sources | ui-builder (Sonnet) | medium | A5, B1 | `cargo nextest run -p rusty-ui command_center::tests::file_sources::recent` | blocked | |
+| B6 | Here source | ui-builder (Sonnet) | high | B3, B4, B5 | `cargo nextest run -p rusty-ui command_center::tests::file_sources::here` | blocked | |
+| B7 | Paths source (path mode) | ui-builder (Sonnet) | medium | B5 | `cargo nextest run -p rusty-ui command_center::tests::file_sources::paths` | blocked | |
+| B8 | argument step | ui-builder (Opus) | medium | B7, A10 | `cargo nextest run -p rusty-ui window_view::tests::command_center::args` | blocked | |
+| B9 | open, reveal, other pane, new tab, copy path | ui-builder (Opus) | medium | B5, A10 | `cargo nextest run -p rusty-ui window_view::tests::command_center::open browser::open` | blocked | |
+| B10 | review Part B | reviewer (Opus) | high | B6, B8, B9 | review notes; gate; Windows CI | blocked | |
+| **Part C — disk index** | | | | | | | |
+| C0 | Windows facts for the index | researcher (Sonnet) | medium | — | answers with sources, in the Log | ready | |
+| C1 | `rusty-index::file` | api-builder (Sonnet) | high | B2 | `cargo nextest run -p rusty-index file` | blocked | |
+| C2 | `[search]` settings keys | api-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-store settings` | ready | |
+| C3 | `rusty-index::host` (walk index) | api-builder (Sonnet) | high | B4, C1, C2 | `cargo nextest run -p rusty-index host` | blocked | |
+| C4 | `rusty-index::usn` | api-builder (Sonnet) | high | B2, C0 | `cargo nextest run -p rusty-index usn` | blocked | |
+| C5 | `rusty-index::ntfs` | api-builder (Sonnet) | high | C4 | Windows CI `test-windows` (`cargo nextest run -p rusty-index ntfs`) | blocked | |
+| C6 | `rusty-index::pipe` | api-builder (Opus) | high | C0, B3 | `cargo nextest run -p rusty-index pipe`; Windows CI | blocked | |
+| C7 | `rusty-app::index_service` | api-builder (Opus) | high | C5, C6, C1 | `cargo nextest run -p rusty-app index_service`; Windows CI; owner check | blocked | |
+| C8 | `command_center::index_source` | ui-builder (Sonnet) | high | C3, C6, B10 | `cargo nextest run -p rusty-ui command_center::tests::index_source` | blocked | |
+| C9 | Search settings page | ui-builder (Sonnet) | medium | C2, C7 | `cargo nextest run -p rusty-ui settings`; gallery shot | blocked | |
+| C10 | index activity in the strip | ui-builder (Sonnet) | medium | C8, P39 S3 | `cargo nextest run -p rusty-ui window_view::tests::activity` | blocked | |
+| C11 | docs: architecture, perf, roadmap | patcher (Sonnet) | medium | C10 | `cargo xtask gate` (docs links) | blocked | |
+| C12 | review Part C | reviewer (Opus) | high | C9, C10, C11 | review notes; gate; Windows CI; owner check list | blocked | |
+
+### A0 — box look
+
+- **Read:** this plan's D3–D9; `design/prototypes/` (the D46 context menu and D67 activity strip prototypes for the house style); `crates/rusty-ui/src/title_bar/search.rs`; `crates/rusty-ui/src/tokens/`.
+- **Change:** one HTML prototype with 3–4 directions behind one picker with neutral labels. Every direction keeps D3 placement, D4 groups, D5 row content, D7 keys and D8 empty state; they differ in density, header style, match highlight, footer and the argument chip. Show light and dark at 1100 px and 1600 px window widths (a desktop app; no phone width). Show states: empty, mixed query, `>` scoped, path mode, argument step, indexing note.
+- **Check:** the file opens; each direction shows every state. The orchestrator publishes it as an artifact and asks the owner.
+- **Stop if:** a direction needs a decision outside D3–D9.
+
+### A1 — fuzzy matcher
+
+- **Read:** `crates/rusty-index/Cargo.toml`, `crates/rusty-index/src/lib.rs`, the workspace `Cargo.toml` lints.
+- **Change:** add `nucleo-matcher` (latest stable, pinned) to `rusty-index`. `pub mod fuzzy` with `pub struct Fuzzy` holding a `nucleo_matcher::Matcher` and a parsed pattern; `Fuzzy::new(query: &str, paths: bool)`; `fn score(&mut self, haystack: &str) -> Option<Match>`, where `Match { score: u32, indices: Vec<u32> }`. Smart case, normalisation on. Path config when `paths`.
+- **Check:** `cargo nextest run -p rusty-index fuzzy`. Tests: subsequence match, no match, smart case, indices on a multi-byte name, path config prefers the last segment, empty query matches everything with score 0.
+- **Stop if:** `nucleo-matcher` needs `unsafe` in our code or conflicts with a pinned dependency.
+
+### A2 — registry entries
+
+- **Read:** `crates/rusty-ui/src/commands/mod.rs`, `window.rs:1-30`, `tests.rs`, `snapshots/command_registry.snap`, `keymap.toml:1336-1352`, `crates/rusty-ui/src/window_view/app_menu.rs:60-104`, `crates/rusty-l10n/locales/en-US/commands.ftl` (`cmd-app-command-palette`).
+- **Change:**
+  - `CommandEntry`, `ArgKind` and `entries()` per D10; `palette_hidden.rs` with the D11 list.
+  - A GPUI action `command_center::Toggle`; move `app.command_palette` from `MENU_ONLY` into the global group with it. Remove it from the "not bound" comment block in `keymap.toml`.
+  - Label "Command center" in `commands.ftl` and the app menu row label.
+  - Update the registry snapshot and add a `palette_entries.snap` (name, context, in_palette).
+- **Check:** `cargo nextest run -p rusty-ui commands app_menu`; both snapshots reviewed; `cargo xtask gate` l10n step passes.
+- **Stop if:** another module relies on `app.command_palette` having no action (`modifier_hints` tests at `modifier_hints/tests.rs:392`, `window_view/tests/hints.rs:250`): update those asserts only if they test "unbound", else report.
+
+### A3 — user database V4
+
+- **Read:** `crates/rusty-store/src/db/migrations.rs`, `db/mod.rs`, `db/viewer.rs` (style), `db/tests/`, `crates/rusty-app/src/crash/test_damage.rs`.
+- **Change:**
+  - Migration V4: `ALTER TABLE frecency ADD COLUMN is_folder INTEGER NOT NULL DEFAULT 1;` and `CREATE TABLE command_use (name TEXT PRIMARY KEY, score REAL NOT NULL, last_at INTEGER NOT NULL);`.
+  - `db/frecency.rs`: `record_visit(location, is_folder, now_ms)` (also inserts into `history`, capped at 10,000 rows), `frecent(limit, now_ms) -> Vec<Frecent { location, is_folder, weight }>`, `record_command(name, now_ms)`, `command_use(limit, now_ms) -> Vec<(String, f64)>`, `clear_search_history()`. Aging and pruning per D18, in one transaction.
+- **Check:** `cargo nextest run -p rusty-store db`. Tests: V3 → V4 on a database with rows in every table keeps them; weights per age band; the 10,000 decay; history cap; clear empties three tables only; a crash between statements leaves V3 or V4, never half.
+- **Stop if:** `PRAGMA user_version` handling or the P35 quarantine code needs a change.
+
+### A4 — query and source contract
+
+- **Read:** this plan's D6, D16, D20; `crates/rusty-core/src/location/` (public API), `crates/rusty-core/src/command/mod.rs:1-60`.
+- **Change:** `command_center/mod.rs`, `query.rs`, `source.rs` with the types of D16. `Query::parse(&str) -> Query { scope: Scope, terms: Vec<Term>, path: Option<String> }`; `Term::Name`, `Term::Path`, `Term::Ext(Vec<String>)`. `HitSink` is a `Send` collector keyed by generation that drops stale hits. `Cancel` wraps an `AtomicBool`.
+- **Check:** `cargo nextest run -p rusty-ui command_center::tests::query command_center::tests::source`. Tests: each prefix, path mode for `C:`, `\\srv`, `~`, Linux `/x/y` in files mode, `ext:` lists, stale generation dropped.
+- **Stop if:** `Location` cannot be built from text without a provider.
+
+### A5 — rank and results
+
+- **Read:** D4, D8, D17, D18; `command_center/source.rs` from A4.
+- **Change:** `rank.rs` with the D17 formula and constants; `results.rs`: `Results::merge(hits, scope) -> Vec<Row>` with top hit, fixed group order, caps, "Show all N" rows, the empty-state rows, and `Selection` moves (↑/↓, page, first/last, next/previous group).
+- **Check:** `cargo nextest run -p rusty-ui command_center::tests::rank command_center::tests::results`. Tests: exact and prefix bonus, frecency lifts a weaker match, top hit not repeated, caps, scoped mode up to 500, Tab across groups skips headers.
+- **Stop if:** a test needs a GPUI context.
+
+### A6 — commands source
+
+- **Read:** `commands/mod.rs` (after A2), `commands/keymap/shown.rs`, `commands/contexts.rs`, `command_center/source.rs`.
+- **Change:** `CommandsSnapshot::take(cx, context_stack) -> CommandsSnapshot` on the UI thread (visible entries per D11, label from Fluent, first shortcut text, context in plain words, command-use weights passed in). `CommandsSource` scores labels and names with `Fuzzy`.
+- **Check:** `cargo nextest run -p rusty-ui command_center::tests::commands_source`. Tests: viewer commands hidden from a file-list stack, shown from a viewer stack; hidden list respected; disabled entries hidden; a user keymap override changes the shortcut text; the box's own toggle never shows.
+- **Stop if:** GPUI exposes no way to read the focused key-context stack; report the API found instead.
+
+### A7 — the view
+
+- **Read:** A0's chosen direction; `context_menu/row.rs`, `context_menu/panel.rs` (row and header style), `primitives/virtual_list.rs`, `primitives/text_field.rs`, `primitives/kbd.rs`, `title_bar/search.rs`, `command_center/results.rs`.
+- **Change:** `command_center/view.rs` and `view/row.rs`: `CommandCenter` element per D3–D9. Props: rows, selection, query, argument chip, footer kind, status note, anchor rect. Events: `QueryChanged`, `Moved`, `Run(row, Modifiers)`, `Dismissed`. No state, no I/O. A gallery page with every A0 state.
+- **Check:** `cargo nextest run -p rusty-ui command_center::tests::view`; gallery shots at 1100 and 1600 px in light and dark, looked at.
+- **Stop if:** the anchor rect of the title-bar field is not available to the window; report it.
+
+### A8 — container
+
+- **Read:** `window_view/mod.rs:100-200`, `window_view/app_menu.rs`, `window_view/viewer/menu/mod.rs:60-120`, `window_view/title.rs`, `command_center/*`.
+- **Change:** `window_view/command_center.rs`: open from `Toggle`, the app-menu row and a title-bar field click; refuse while a modal dialog is open; take snapshots; run sources on the background executor with generation and cancel; close and restore focus; run `Target::Action` through D12; `CommandCenter` key bindings in `keymap.toml`. `window_view/mod.rs` only gets the field and one `child`.
+- **Check:** `cargo nextest run -p rusty-ui window_view::tests::command_center`. Tests: Ctrl+K opens and closes; Esc clears then closes; Enter on "Show or hide jobs" toggles the job card; a file-list command runs against the pane that had focus; F8 from the box shows the confirm dialog; hover never runs; focus returns to the file list.
+- **Stop if:** `window_view/mod.rs` (427 lines today) would grow by more than 10 lines; report instead of growing it.
+
+### A9 — command-use wiring
+
+- **Read:** `rusty-app/src/files/memory.rs`, `rusty-app/src/gui.rs` (where `FileHooks` are attached), `window_view` hook types.
+- **Change:** `rusty-app/src/search_hooks.rs`: `SearchHooks { command_use, record_command, frecent, record_visit, clear }` closures over `SharedDb`, attached like `FileHooks`. A9 wires only the command parts; B1 adds the visit parts.
+- **Check:** `cargo nextest run -p rusty-app search_hooks` with an in-memory `Db`.
+- **Stop if:** hooks need a new type in `rusty-ui` public API beyond `SearchHooks`.
+
+### A10 — review Part A
+
+- **Read:** the Part A diff, D1–D18 and D29–D32.
+- **Check:** one verdict; `cargo xtask gate`; Windows CI green; the orchestrator runs Ctrl+K on the work-PC build.
+
+### B1 — visits and opens
+
+- **Read:** `browser/open.rs`, `browser/mod.rs:140-200` (listing loaded events), `window_view/pane.rs`, `rusty-app/src/search_hooks.rs`.
+- **Change:** call `record_visit(location, true)` when a folder listing loads successfully, at most once per folder per 2 s; call `record_visit(location, false)` when the launcher opens a file. Respect `search.remember` (default true until C2 lands).
+- **Check:** `cargo nextest run -p rusty-ui window_view::tests::visits` and `-p rusty-app search_hooks`.
+- **Stop if:** listings load through more than one path that would need separate hooks.
+
+### B2 — name table
+
+- **Read:** D21, D25; `rusty-index/src/lib.rs`.
+- **Change:** `table.rs`: `NameTable` with `push(parent, name, flags) -> u32`, `remove(id)` (marks deleted), `rename(id, parent, name)`, `path(id) -> String`, `name(id)`, `flags(id)`, `len`, `memory_bytes`, `compact()` (drops deleted entries, rewrites ids, returns the id map).
+- **Check:** `cargo nextest run -p rusty-index table`. Tests include 2,000,000 synthetic names with average 20 bytes and `memory_bytes() / len ≤ 50`.
+- **Stop if:** the layout cannot meet 50 bytes per entry.
+
+### B3 — table search
+
+- **Read:** D15, D17, D20; `fuzzy.rs`, `table.rs`.
+- **Change:** `search.rs`: `search(table, query, limit, cancel) -> Vec<TableHit { id, score, indices }>`. `rayon` chunks of 64k entries; name terms on names, path terms on rebuilt paths of candidates only; `ext:` first as a cheap filter; deleted entries skipped; top-N kept with a bounded heap.
+- **Check:** `cargo nextest run -p rusty-index search`. Tests: AND terms, path terms, ext filter, cancel stops early, results stable for equal scores. A `cargo bench -p rusty-index search` on 1,000,000 names prints its time (informational).
+- **Stop if:** `rayon` conflicts with the GPUI executors in tests.
+
+### B4 — walker
+
+- **Read:** `rusty-fs/src/measure/walk.rs`, `rusty-fs/src/provider/mod.rs:55-90`, the fake file system and hostile-name corpus.
+- **Change:** `walker.rs`: breadth-first, 4 worker threads, `Limits { max_entries, exclude }`, skips reparse points (no loops), reports progress every 10,000 entries, stops on cancel, keeps going past unreadable folders (counts them).
+- **Check:** `cargo nextest run -p rusty-index walker`: fake tree, hostile names, a junction loop, an access-denied folder, cancel, the entry cap.
+- **Stop if:** `Provider` cannot report reparse points.
+
+### B5 — Recent and Tabs
+
+- **Read:** `command_center/source.rs`, `results.rs`, `search_hooks.rs`, `rusty-core/src/state/` (tabs).
+- **Change:** `file_sources/recent.rs`, `file_sources/tabs.rs` per D19; the empty state uses Recent (D8).
+- **Check:** `cargo nextest run -p rusty-ui command_center::tests::file_sources::recent`.
+- **Stop if:** —
+
+### B6 — Here
+
+- **Read:** `walker.rs`, `search.rs`, `file_sources/recent.rs`.
+- **Change:** `file_sources/here.rs` per D19: one walk per root, reused for 60 s, streaming re-search as it grows, the 300,000 cap note, cancelled when the box closes or the root changes.
+- **Check:** `cargo nextest run -p rusty-ui command_center::tests::file_sources::here` on the fake file system.
+- **Stop if:** —
+
+### B7 — Paths
+
+- **Read:** D6; `file_sources/recent.rs`; `rusty-fs` offline and timeout handling (P14).
+- **Change:** `file_sources/paths.rs`: "Go to <path>" row when the folder exists; child folders of the typed parent, filtered by the last segment; Tab completion text; offline note.
+- **Check:** `cargo nextest run -p rusty-ui command_center::tests::file_sources::paths`.
+- **Stop if:** —
+
+### B8 — argument step
+
+- **Read:** D13; `window_view/command_center.rs`, `command_center/view.rs`, `rusty-core/src/command/parse.rs`.
+- **Change:** the argument step state in the container and the chip in the view; Path args use the Paths source; Enter parses and runs through `Browser::command`; errors show under the input.
+- **Check:** `cargo nextest run -p rusty-ui window_view::tests::command_center::args`: Go to folder navigates; Mark by pattern marks; a bad path keeps the box open with the error; Esc leaves the step.
+- **Stop if:** a text form in D13 does not parse with the core parser.
+
+### B9 — opening results
+
+- **Read:** D7, D29; `browser/open.rs`, `window_view/mod.rs:330-345` (`switch_pane`), `window_view/clipboard.rs` (copy path).
+- **Change:** `Browser::open_location(location, folder)` (navigate or launch, the same launcher); container handling for Enter, Shift+Enter, Ctrl+Enter, Alt+Enter and Ctrl+Shift+C on `Target::Open` and `Target::GoTo`.
+- **Check:** `cargo nextest run -p rusty-ui window_view::tests::command_center::open browser::open`.
+- **Stop if:** Q3 is unanswered (Alt+Enter); ship the rest and leave Alt+Enter unbound.
+
+### B10 — review Part B
+
+- **Read:** the Part B diff, D13, D19–D21, D29–D31. **Check:** one verdict; gate; Windows CI.
+
+### C0 — Windows facts
+
+- **Questions:** rights needed for `FSCTL_ENUM_USN_DATA` and `FSCTL_READ_USN_JOURNAL` (volume handle access, admin); behaviour on ReFS, exFAT and Dev Drive; the current `windows-service` crate (version, licence, maintenance); how to set a named-pipe DACL for a LocalSystem server and one user SID with `windows-sys`; whether the pipe needs `PIPE_REJECT_REMOTE_CLIENTS`; how Everything's service limits clients. Answers with links go into the Log.
+
+### C1 — index file
+
+- **Read:** D23; `table.rs`; `rusty-store/src/atomic_write/mod.rs`.
+- **Change:** `file.rs`: `save(path, header, table)`, `load(path) -> Result<(Header, NameTable), FileError>`; version check; length and checksum check.
+- **Check:** `cargo nextest run -p rusty-index file`: round trip; truncated, wrong version and bad checksum files are refused; a 2,000,000-entry file loads.
+- **Stop if:** `rusty-index` would need to depend on more of `rusty-store` than `atomic_write`.
+
+### C2 — `[search]` keys
+
+- **Read:** `rusty-store/src/settings/model.rs`, `settings/view.rs`, D56 tests.
+- **Change:** a `Search` section per D26 with defaults; Q2 decides the walk default root.
+- **Check:** `cargo nextest run -p rusty-store settings`; the complete-file snapshot shows the new section.
+- **Stop if:** —
+
+### C3 — walk index host
+
+- **Read:** `walker.rs`, `file.rs`, `rusty-fs/src/watch/mod.rs`, D22, D25–D27.
+- **Change:** `host.rs`: per root load the snapshot, rescan at low priority, apply `watch_tree` batches to the table, save after changes (debounced 30 s and on close), publish `HostStatus` (entries, progress, errors). It starts after the first usable frame.
+- **Check:** `cargo nextest run -p rusty-index host` on the fake file system: load then rescan, a created and a deleted file appear within one batch, overflow triggers a rescan.
+- **Stop if:** the watcher cannot watch a drive root.
+
+### C4 — USN records
+
+- **Read:** C0 answers; `table.rs`.
+- **Change:** `usn.rs`: parse `USN_RECORD_V2/V3` bytes and map reasons (create, delete, rename old and new name, close) to `TableChange`; detect a journal id change. Pure, no Windows calls.
+- **Check:** `cargo nextest run -p rusty-index usn` with recorded record bytes.
+- **Stop if:** —
+
+### C5 — NTFS enumeration
+
+- **Read:** C0 answers; `usn.rs`; `rusty-fs/Cargo.toml` (`windows-sys` features).
+- **Change:** `ntfs/mod.rs` (Windows only): open a volume read-only, enumerate with `FSCTL_ENUM_USN_DATA` into a `NameTable` (file reference → id map; root reference 5), read the journal from a saved USN, return batches. Each `unsafe` block has a `SAFETY:` line.
+- **Check:** Windows CI `cargo nextest run -p rusty-index ntfs` on a VHD or the runner's volume, with admin; the Linux build compiles it out.
+- **Stop if:** the CI runner cannot open a volume handle.
+
+### C6 — pipe
+
+- **Read:** C0 answers; D22.
+- **Change:** `pipe.rs`: frames (`postcard`, length-prefixed, max 4 MiB), server with the D22 DACL and remote clients rejected, client with a 50 ms connect and 200 ms query timeout. Linux: a stub that always reports "not available".
+- **Check:** `cargo nextest run -p rusty-index pipe` (round trip, oversized frame refused, timeout); Windows CI.
+- **Stop if:** the DACL cannot be built with `windows-sys`.
+
+### C7 — the service
+
+- **Read:** `rusty-app/src/pdf_helper.rs` (second mode of the exe), `ntfs`, `pipe`, `file`, C0.
+- **Change:** `rusty-app/src/index_service/`: `--index-service run` (service main loop: volumes from settings or all fixed NTFS drives, enumerate, follow, answer queries), `install` and `remove` (create or delete the service, delayed auto start, restart on failure), elevated start from the app through `ShellExecuteExW` with `runas`. Index files under `%ProgramData%\Ferrite\index\` with the D23 ACL.
+- **Check:** `cargo nextest run -p rusty-app index_service` for argument parsing and config; Windows CI build; the owner installs it on the work PC and searches.
+- **Stop if:** the service needs any write access to user files.
+
+### C8 — index source
+
+- **Read:** `command_center/source.rs`, `host.rs`, `pipe.rs`.
+- **Change:** `index_source.rs`: per D26 `auto` mode, ask the service, else the host; merge with frecency; lazy size and date for shown rows; the "Indexing C: 41 %" header note.
+- **Check:** `cargo nextest run -p rusty-ui command_center::tests::index_source` with a fake pipe and a fake host.
+- **Stop if:** —
+
+### C9 — Search settings page
+
+- **Read:** `settings/` sheet pages, D26, D58 rule 5.
+- **Change:** a Search page: index mode, drives, exclusions, network, removable, remember history, "Clear search history", service status with Install and Remove.
+- **Check:** `cargo nextest run -p rusty-ui settings`; gallery shot.
+- **Stop if:** —
+
+### C10 — activity
+
+- **Read:** `activity/mod.rs`, the P39 S3 strip, `host.rs` status.
+- **Change:** feed `set_background` and `end_background` from index status (D27).
+- **Check:** `cargo nextest run -p rusty-ui window_view::tests::activity`.
+- **Stop if:** P39 S3 is not merged.
+
+### C11 — docs
+
+- **Change:** `docs/architecture.md` "Global search" per D21–D28 (service as an exe mode, `FSCTL_ENUM_USN_DATA`, no `rkyv`); `docs/perf.md` index memory and speed lines; `docs/decisions.md` D68 if the orchestrator has not added it.
+- **Check:** `cargo xtask gate`.
+
+### C12 — review Part C
+
+- **Read:** the Part C diff, D21–D28. Security focus: the pipe DACL, remote clients, the service's handles, frame limits, what the index file ACL allows. **Check:** one verdict; gate; Windows CI; the owner check list (install, search a file created a second ago, remove).
+
+## Done when
+
+- Ctrl+K, the app-menu row and a click on the title-bar field open the box; it lists commands for the focused place with their shortcuts, and Enter runs them through the same path as keys (A8 tests; owner check).
+- Typing a folder name the user visits often puts it first; Enter opens it, Ctrl+Enter opens it in the other pane (B9 tests).
+- "Go to folder…" completes paths and navigates (B8 tests).
+- With the service installed on the work PC, a file anywhere on C: appears within 50 ms of typing, and a file created a second ago is found (owner check).
+- Without the service, the walk index answers for the chosen roots, and the activity strip shows indexing progress (C3, C10 tests).
+- No query, file name or path appears in logs or the diagnostic report (canary test).
+- `cargo xtask gate` and Windows CI pass for each part; each part is in an alpha build.
+
+## Open questions for the owner
+
+- **Q1 — Service.** Part C installs a Windows service "Ferrite Index" (one UAC prompt, LocalSystem, starts with Windows, like Everything's service). Is that acceptable on the work PC, or do you prefer a helper that asks for admin at every Ferrite start? Recommendation: the service.
+- **Q2 — Default scope without the service.** Should the walk index cover only your user folder by default (light, calm), or every local fixed drive (Everything-like, but a full walk and more memory inside Ferrite after each start)? Recommendation: the user folder; whole drives come with the service.
+- **Q3 — Alt+Enter.** In the box, Alt+Enter opens the result in a new tab. In Explorer, Alt+Enter shows Properties. Keep "new tab", or use Alt+Enter for Properties and Ctrl+T for new tab?
+
+## Log
+
+- 2026-10-20 — Plan written from D58–D67, the brief's D68 (not yet in `decisions.md`) and the code at ab89739. Found: `history` and `frecency` tables exist but are unused; `rusty-index` is empty; Ctrl+K is bound but does nothing.
