@@ -26,7 +26,7 @@ Goal: prove the stack and build the factory.
 
 - infra: foundation plan; Cargo workspace with the eleven crates; quality gate; Windows CI producing a portable `.exe` per push.
 - infra: GPUI spike on design B with 100k entries, three panes and the drawer; `nucleo` against `frizbee` on 2 million names; built on `gpui-kit`, including its AccessKit support.
-- core: storage layer with SQLite from day one (`rusty.db`, `cache.db`, migrations) and the session snapshot (D17).
+- core: storage layer with SQLite from day one (`ferrite.db`, `cache.db`, migrations) and the session snapshot (D17).
 - core: diagnostics with redacted logs, memory and performance statistics and a hand-saved report (D20).
 - core: serialisable commands, layout tree, multi-window state and `apply()` with property tests.
 - core: locations and providers, record and replay, one error model, I/O queues per volume, experimental flags (D21).
