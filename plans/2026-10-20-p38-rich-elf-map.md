@@ -202,21 +202,21 @@ Final once the owner answers Q1–Q3. Workers never reopen them; a worker that f
 
 | Atom | Component | Role | Effort | After | Check | Status | Cost |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| A1 | `fit_name` | ui-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-ui columns::fit` | blocked (Q3) | |
-| A2 | `columns` primitive | ui-builder (Opus) | medium | A1 | `cargo nextest run -p rusty-ui primitives::columns`; gallery shot | blocked | |
+| A1 | `fit_name` | ui-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-ui columns::fit` | done | |
+| A2 | `columns` primitive | ui-builder (Opus) | medium | A1 | `cargo nextest run -p rusty-ui primitives::columns`; gallery shot | done | |
 | A3 | ELF table on `columns` | ui-builder (Sonnet) | medium | A2 | `cargo nextest run -p rusty-ui viewer::elf` | done | |
-| A4 | MAP table on `columns` | ui-builder (Sonnet) | medium | A2 | `cargo nextest run -p rusty-ui viewer::map` | blocked | |
-| A5 | CSV table on `columns` | ui-builder (Sonnet) | medium | A2 | `cargo nextest run -p rusty-ui viewer::table` | blocked | |
-| A6 | CAN trace rows as cells | ui-builder (Sonnet) | medium | A2 | `cargo nextest run -p rusty-ui viewer::trace viewer::tests::can_trace` | blocked | |
-| A7 | ELF noise filter (model) | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-automotive elf_query` | ready | |
-| A8 | ELF noise filter (UI) | ui-builder (Sonnet) | medium | A7, A3 | `cargo nextest run -p rusty-ui viewer::elf`; `cargo xtask gate` (l10n) | blocked | |
-| A9 | MAP headers, Space, sizes (model) | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-automotive map` | ready | |
+| A4 | MAP table on `columns` | ui-builder (Sonnet) | medium | A2 | `cargo nextest run -p rusty-ui viewer::map` | ready | |
+| A5 | CSV table on `columns` | ui-builder (Sonnet) | medium | A2 | `cargo nextest run -p rusty-ui viewer::table` | ready | |
+| A6 | CAN trace rows as cells | ui-builder (Sonnet) | medium | A2 | `cargo nextest run -p rusty-ui viewer::trace viewer::tests::can_trace` | ready | |
+| A7 | ELF noise filter (model) | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-automotive elf_query` | done | |
+| A8 | ELF noise filter (UI) | ui-builder (Sonnet) | medium | A7, A3 | `cargo nextest run -p rusty-ui viewer::elf`; `cargo xtask gate` (l10n) | ready | |
+| A9 | MAP headers, Space, sizes (model) | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-automotive map` | done | |
 | A10 | MAP status and Size column (UI) | ui-builder (Sonnet) | medium | A9, A4 | `cargo nextest run -p rusty-ui viewer::map` | blocked | |
-| A11 | `Layout` options (model) | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-automotive layout memory` | ready | |
+| A11 | `Layout` options (model) | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-automotive layout memory` | done | |
 | A12 | HEX/MOT 32-byte rows and folded gaps (UI) | ui-builder (Sonnet) | medium | A11 | `cargo nextest run -p rusty-ui viewer::memory` | done | |
 | A13 | review Part A | reviewer (Opus) | high | A3–A6, A8, A10, A12 | review notes; gate; Windows CI | blocked | |
-| B1 | `mdf` parser | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-automotive mdf` | ready | |
-| B2 | `space::kind` and regions | api-builder (Sol 6.1) | xhigh | B1 | `cargo nextest run -p rusty-automotive space_regions` | blocked | |
+| B1 | `mdf` parser | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-automotive mdf` | done | |
+| B2 | `space::kind` and regions | api-builder (Sol 6.1) | xhigh | B1 | `cargo nextest run -p rusty-automotive space_regions` | done | |
 | B3 | `space::owners_elf` | api-builder (Sol 6.1) | xhigh | B2 | `cargo nextest run -p rusty-automotive space_owners` | done | |
 | B2b | Fill kind (D7) in kinds, regions and owners | api-builder (Sonnet) | high | B3 | `cargo nextest run -p rusty-automotive space_regions space_owners` | done | |
 | B4 | `space::owners_map` and groups | api-builder (Sonnet) | high | B3, B2b | `cargo nextest run -p rusty-automotive space_groups` | blocked | |
