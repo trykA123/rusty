@@ -175,7 +175,7 @@ Roles: Sonnet 5.5 medium or high for decided backend and UI work, Opus 5.5 mediu
 | A6 | `fake` case-insensitive mode | api-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-fs fake::tests::fold` | done | |
 | A7 | `job::rename` all or nothing | api-builder (Sonnet) | high | A5, A6 | `cargo nextest run -p rusty-fs job::tests::rename`; Windows CI | ready | |
 | A8 | journal undo queries | api-builder (Sonnet) | high | — | `cargo nextest run -p rusty-store journal` | ready | |
-| A9 | `db` V5 presets | api-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-store db` | ready | |
+| A9 | `db` V5 presets | api-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-store db` | done | |
 | A10 | review Part A | reviewer (Opus) | high | A1–A9 | review notes; `cargo xtask gate`; Windows CI | blocked | |
 | **Part B — the tool** | | | | | | | |
 | B1 | commands, keys, `rename.ftl` | ui-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-ui commands`; gate l10n step | ready | |
@@ -404,3 +404,4 @@ Answered 2026-10-20: the owner left Q1–Q3 to the architect. Q1 F2 with 2 or mo
 - 2026-10-20 — A6 done: `FakeFs::case_insensitive()` folds names in the tree; a case-only rename keeps one entry with the new spelling.
 - 2026-10-20 — A3 done: `OpKind::Rename` with arms in core, job card, activity text, confirm text and `op_request`; `activity-renaming`, `activity-renamed` and `activity-rename-failed` added.
 - 2026-10-20 — A5 done: `rename::{plan_batch, BatchPlan}` orders chains from the free end, breaks each cycle and case-only rename with one `.ferrite-rename-<seed hex>-<n>` name, and gives `plan: None` while a row has a problem; a proptest runs the steps on a folding folder model.
+- 2026-10-20 — A9 done: `ferrite.db` V5 adds `rename_preset`; `Db::save_preset`, `presets` (`RenamePresets { named, last_used }`) and `delete_preset` in `db/rename_presets.rs`; rules are an opaque JSON string and time is passed in.
