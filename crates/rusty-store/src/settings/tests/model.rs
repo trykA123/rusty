@@ -97,6 +97,21 @@ fn the_text_view_shows_line_numbers_and_hides_line_ends_by_default() {
 }
 
 #[test]
+fn the_syntax_theme_defaults_to_oxidised_iron_and_reads_mocha() {
+    assert_eq!(
+        Settings::default().text.view.syntax_theme,
+        crate::settings::view::SyntaxThemeChoice::OxidisedIron
+    );
+    let (settings, unknown) =
+        crate::parse_settings("[text.view]\nsyntax-theme = \"mocha\"\n").unwrap();
+    assert!(unknown.is_empty(), "{unknown:?}");
+    assert_eq!(
+        settings.text.view.syntax_theme,
+        crate::settings::view::SyntaxThemeChoice::Mocha
+    );
+}
+
+#[test]
 fn the_image_view_starts_without_details() {
     assert!(!Settings::default().image.view.details);
 }
@@ -109,6 +124,32 @@ fn the_text_and_image_views_read_their_own_tables() {
     assert!(unknown.is_empty(), "{unknown:?}");
     assert!(!settings.text.view.line_numbers && settings.text.view.line_ends);
     assert!(settings.image.view.details);
+}
+
+#[test]
+fn every_window_part_is_shown_by_default() {
+    let view = Settings::default().window.view;
+    assert_eq!(view, crate::WindowView::default());
+    assert!(
+        view.tabs_with_one
+            && view.path_bar
+            && view.drive_button
+            && view.title_search
+            && view.fkey_bar
+            && view.icons
+    );
+    assert!(view.ext_column && view.size_column && view.date_column);
+    assert!(view.free_space && view.marked_totals && view.contents);
+}
+
+#[test]
+fn the_window_view_reads_its_own_table() {
+    let text = "[window.view]\npath-bar = false\next-column = false\ncontents = false\n";
+    let (settings, unknown) = crate::parse_settings(text).unwrap();
+    assert!(unknown.is_empty(), "{unknown:?}");
+    let view = settings.window.view;
+    assert!(!view.path_bar && !view.ext_column && !view.contents);
+    assert!(view.tabs_with_one && view.size_column && view.free_space);
 }
 
 #[test]
@@ -143,4 +184,23 @@ fn an_unknown_copy_mode_is_reported_with_its_place() {
         ),
         "{error:?}"
     );
+}
+
+#[test]
+fn the_markdown_split_is_on_by_default_and_reads_its_own_table() {
+    assert!(Settings::default().markdown.view.preview_split);
+    let (settings, unknown) =
+        crate::parse_settings("[markdown.view]\npreview-split = false\n").unwrap();
+    assert!(unknown.is_empty(), "{unknown:?}");
+    assert!(!settings.markdown.view.preview_split);
+}
+
+#[test]
+fn the_preview_sheet_shows_type_bars_and_largest_files_by_default() {
+    let view = Settings::default().preview.view;
+    assert!(view.type_bars && view.largest_files);
+    let text = "[preview.view]\nlargest-files = false\n";
+    let (settings, unknown) = crate::parse_settings(text).unwrap();
+    assert!(unknown.is_empty(), "{unknown:?}");
+    assert!(settings.preview.view.type_bars && !settings.preview.view.largest_files);
 }

@@ -1,6 +1,7 @@
 mod bind;
 mod contexts;
 mod keymap;
+mod marks;
 mod overlays;
 mod structured;
 mod viewer;
@@ -35,16 +36,17 @@ struct Group {
 }
 
 const MENU_ONLY: [(&str, &str); 5] = [
-    ("app.command_palette", "Command palette"),
-    ("window.new", "New window"),
-    ("workspace.list", "Workspaces"),
-    ("help.key_map", "Help and key map"),
-    ("app.quit", "Quit"),
+    ("app.command_palette", "cmd-app-command-palette"),
+    ("window.new", "cmd-window-new"),
+    ("workspace.list", "cmd-workspace-list"),
+    ("help.key_map", "cmd-help-key-map"),
+    ("app.quit", "cmd-app-quit"),
 ];
 
 pub fn all() -> impl Iterator<Item = CommandSpec> {
     let bound = [
         window::GROUPS.as_slice(),
+        marks::GROUPS.as_slice(),
         overlays::GROUPS.as_slice(),
         viewer::GROUPS.as_slice(),
         structured::GROUPS.as_slice(),

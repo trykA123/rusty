@@ -7,6 +7,7 @@ pub mod encoding;
 mod fs_error;
 mod id;
 mod layout;
+pub mod line_ends;
 mod location;
 pub mod marks;
 mod name;
@@ -31,11 +32,12 @@ pub use layout::{Layout, LayoutError, Rect};
 pub use location::{Location, LocationError, ProviderId, ProviderPath, typed_location};
 pub use name::{NameError, check_name};
 pub use op_plan::{
-    Conflict, ConflictPolicy, ExistingItem, ItemKind, OpKind, OperationPlan, PlanRequest,
-    Resolution, Risk, ScannedItem, Step, TEMP_SUFFIX, Totals, is_protected, plan,
+    Conflict, ConflictPolicy, DropKeys, DropOp, ExistingItem, ItemKind, OpKind, OperationPlan,
+    PlanRequest, Resolution, Risk, ScannedItem, Step, TEMP_SUFFIX, Totals, drop_op, is_protected,
+    plan,
 };
 pub use replay::{CommandLog, LogEntry, LogError, Record, Recorder};
-pub use selection::{Pattern, PatternError, Selection};
+pub use selection::{Pattern, PatternError, Selection, SpanMode};
 pub use session::{
     EntryState, LayoutState, MAX_LAYOUT_DEPTH, PaneState, RowsState, SessionError, SessionState,
     TabState, WindowState,

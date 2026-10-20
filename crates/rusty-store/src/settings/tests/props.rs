@@ -80,19 +80,75 @@ fn automotive() -> impl Strategy<Value = Automotive> {
     )
 }
 
+fn window() -> impl Strategy<Value = WindowSettings> {
+    any::<[bool; 12]>().prop_map(|flags| {
+        let [
+            tabs_with_one,
+            path_bar,
+            drive_button,
+            title_search,
+            fkey_bar,
+            icons,
+            ext_column,
+            size_column,
+            date_column,
+            free_space,
+            marked_totals,
+            contents,
+        ] = flags;
+        WindowSettings {
+            view: WindowView {
+                tabs_with_one,
+                path_bar,
+                drive_button,
+                title_search,
+                fkey_bar,
+                icons,
+                ext_column,
+                size_column,
+                date_column,
+                free_space,
+                marked_totals,
+                contents,
+            },
+        }
+    })
+}
+
 fn viewers() -> impl Strategy<Value = (TextViewer, ImageViewer, Automotive, CopySettings)> {
-    let text = any::<[bool; 2]>().prop_map(|[line_numbers, line_ends]| TextViewer {
-        view: TextView {
-            line_numbers,
-            line_ends,
-        },
-    });
+    let syntax = prop_oneof![
+        Just(crate::settings::view::SyntaxThemeChoice::OxidisedIron),
+        Just(crate::settings::view::SyntaxThemeChoice::Mocha)
+    ];
+    let text =
+        (any::<[bool; 2]>(), syntax).prop_map(|([line_numbers, line_ends], syntax_theme)| {
+            TextViewer {
+                view: TextView {
+                    line_numbers,
+                    line_ends,
+                    syntax_theme,
+                },
+            }
+        });
     let image = any::<bool>().prop_map(|details| ImageViewer {
         view: ImageView { details },
     });
     let copy = prop_oneof![Just(CopyMode::Auto), Just(CopyMode::Standard)]
         .prop_map(|mode| CopySettings { mode });
     (text, image, automotive(), copy)
+}
+
+fn markdown_and_preview() -> impl Strategy<Value = (MarkdownViewer, PreviewViewer)> {
+    let markdown = any::<bool>().prop_map(|preview_split| MarkdownViewer {
+        view: MarkdownView { preview_split },
+    });
+    let preview = any::<[bool; 2]>().prop_map(|[type_bars, largest_files]| PreviewViewer {
+        view: PreviewView {
+            type_bars,
+            largest_files,
+        },
+    });
+    (markdown, preview)
 }
 
 pub(super) fn settings() -> impl Strategy<Value = Settings> {
@@ -108,7 +164,13 @@ pub(super) fn settings() -> impl Strategy<Value = Settings> {
         appearance(),
         files(),
         selection,
-        (terminal, editor, viewers()),
+        (
+            terminal,
+            editor,
+            window(),
+            viewers(),
+            markdown_and_preview(),
+        ),
         experimental,
     )
         .prop_map(
@@ -116,7 +178,7 @@ pub(super) fn settings() -> impl Strategy<Value = Settings> {
                 appearance,
                 files,
                 selection,
-                (terminal, editor, (text, image, automotive, copy)),
+                (terminal, editor, window, (text, image, automotive, copy), (markdown, preview)),
                 experimental,
             )| Settings {
                 appearance,
@@ -124,8 +186,11 @@ pub(super) fn settings() -> impl Strategy<Value = Settings> {
                 selection,
                 terminal,
                 editor,
+                window,
                 text,
                 image,
+                markdown,
+                preview,
                 copy,
                 automotive,
                 experimental,

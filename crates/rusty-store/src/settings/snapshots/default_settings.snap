@@ -28,12 +28,34 @@ provider = "windows-terminal"
 
 [editor]
 
+[window.view]
+tabs-with-one = true
+path-bar = true
+drive-button = true
+title-search = true
+fkey-bar = true
+icons = true
+ext-column = true
+size-column = true
+date-column = true
+free-space = true
+marked-totals = true
+contents = true
+
 [text.view]
 line-numbers = true
 line-ends = false
+syntax-theme = "oxidised-iron"
 
 [image.view]
 details = false
+
+[markdown.view]
+preview-split = true
+
+[preview.view]
+type-bars = true
+largest-files = true
 
 [copy]
 mode = "auto"

@@ -1,72 +1,47 @@
+mod action;
 mod header;
+mod icons;
 mod keys;
 pub(crate) mod kind;
+mod lasso;
 mod lift;
+mod parts;
 mod press;
 pub(crate) mod row;
+mod rows;
 mod sort;
 
 #[cfg(test)]
 mod tests;
 
-use std::ops::Range;
 use std::rc::Rc;
 
 use gpui_kit::base::TestSupportExt;
 use gpui_kit::prelude::FluentBuilder;
 use gpui_kit::{
-    AnyElement, App, Bounds, Entity, FocusHandle, InteractiveElement, IntoElement, KeyDownEvent,
-    Keystroke, MouseButton, ParentElement, Pixels, Point, RenderOnce, ScrollWheelEvent,
-    SharedString, Styled, Window, div,
+    App, Bounds, Entity, FocusHandle, InteractiveElement, IntoElement, KeyDownEvent, Keystroke,
+    MouseButton, ParentElement, Pixels, RenderOnce, ScrollWheelEvent, SharedString, Styled, Window,
+    div,
 };
 use rusty_core::{Command, Selection, ViewState};
 use rusty_fs::FsEntry;
 
+pub use action::{FileListAction, FilterEdit};
 pub use keys::bind_keys;
 pub(crate) use keys::{
     ClearFilter, CopyItems, EditItem, MoveItems, NewFile, NewFolder, OpenRow, Paste, RecycleItems,
     Refresh, RenameItem, ViewItem,
 };
+pub use parts::ListParts;
 pub(crate) use row::filter_bar;
 pub use sort::{SortBy, SortKey};
 
 use crate::primitives::{ListScroll, RowSemantics, VirtualList};
-use crate::tokens::{self, Theme};
-use row::RowLook;
+use crate::tokens;
 
 type CommandHandler = Rc<dyn Fn(&Command, &mut Window, &mut App)>;
 type ActionHandler = Rc<dyn Fn(&FileListAction, &mut Window, &mut App)>;
 type PageRowsHandler = Rc<dyn Fn(&u64, &mut Window, &mut App)>;
-
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum FilterEdit {
-    Push(char),
-    Pop,
-    Clear,
-}
-
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum FileListAction {
-    Open(u64),
-    Up,
-    SwitchPane,
-    Operate(rusty_core::OpKind),
-    CopyToClipboard,
-    CutToClipboard,
-    Paste,
-    Filter(FilterEdit),
-    Rename(u64),
-    NewFolder,
-    NewFile,
-    SelectPattern { add: bool },
-    Sort(SortBy),
-    Edit { row: u64, choose: bool },
-    View(u64),
-    ContextMenu(Point<Pixels>),
-    BackgroundMenu(Point<Pixels>),
-    MenuPrefetch { adds_cursor: bool },
-    MenuCancel,
-}
 
 #[derive(Clone, Debug)]
 pub struct FileListProps {
@@ -88,6 +63,7 @@ pub struct FileList {
     on_list_action: Option<ActionHandler>,
     on_page_rows: Option<PageRowsHandler>,
     cover: Option<crate::modifier_hints::Cover>,
+    parts: ListParts,
 }
 
 impl FileList {
@@ -100,7 +76,14 @@ impl FileList {
             on_list_action: None,
             on_page_rows: None,
             cover: None,
+            parts: ListParts::default(),
         }
+    }
+
+    #[must_use]
+    pub fn parts(mut self, parts: ListParts) -> Self {
+        self.parts = parts;
+        self
     }
 
     pub fn track_focus(mut self, focus: &FocusHandle) -> Self {
@@ -138,6 +121,7 @@ struct ListState {
     list_bounds: Option<Bounds<Pixels>>,
     lift: Pixels,
     press: press::Press,
+    lasso: lasso::Held,
 }
 
 struct ListContext {
@@ -146,6 +130,7 @@ struct ListContext {
     focus: Option<FocusHandle>,
     on_command: Option<CommandHandler>,
     on_list_action: Option<ActionHandler>,
+    parts: ListParts,
 }
 
 fn row_number(index: usize) -> u64 {
@@ -276,45 +261,6 @@ fn row_semantics(props: &FileListProps, index: usize) -> RowSemantics {
     }
 }
 
-fn render_row(ctx: &Rc<ListContext>, theme: &Theme, index: usize) -> Option<AnyElement> {
-    let entry = ctx.props.rows.get(index)?;
-    let row = row_number(index);
-    let look = RowLook {
-        theme,
-        entry,
-        is_cursor: ctx.props.view.cursor == row,
-        is_marked: ctx.props.marked.is_marked(row),
-        is_active_pane: ctx.props.is_active,
-    };
-    let left = ctx.clone();
-    let right = ctx.clone();
-    let element = row::cells(&look)
-        .on_mouse_down(MouseButton::Left, move |event, window, cx| {
-            left.click(row, window, cx);
-            if event.click_count >= 2 {
-                left.act(FileListAction::Open(row), window, cx);
-            }
-        })
-        .on_mouse_down(MouseButton::Right, move |event, window, cx| {
-            cx.stop_propagation();
-            right.right_down((row, event.position), window, cx);
-        })
-        .on_mouse_move(press::drag_over(ctx, row));
-    Some(element.into_any_element())
-}
-
-fn render_rows(
-    ctx: &Rc<ListContext>,
-) -> impl Fn(Range<usize>, &mut Window, &mut App) -> Vec<AnyElement> + 'static {
-    let ctx = ctx.clone();
-    move |range, _, cx| {
-        let theme = tokens::current(cx);
-        range
-            .filter_map(|index| render_row(&ctx, theme, index))
-            .collect()
-    }
-}
-
 fn follow_scroll(
     state: &Entity<ListState>,
     (wanted, len): (u64, usize),
@@ -396,9 +342,10 @@ impl RenderOnce for FileList {
             focus: self.focus,
             on_command: self.on_command,
             on_list_action: self.on_list_action,
+            parts: self.parts,
         });
         let semantics = ctx.clone();
-        let list = VirtualList::new("list", len, &scroll, render_rows(&ctx))
+        let list = VirtualList::new("list", len, &scroll, rows::render_rows(&ctx))
             .row_height(row_height)
             .label(label)
             .describe_rows(move |index| row_semantics(&semantics.props, index))
@@ -414,6 +361,7 @@ impl RenderOnce for FileList {
             .on_mouse_down(MouseButton::Right, press::background_down(&ctx))
             .overflow_hidden()
             .child(lift::lifted(list, lift));
+        let area = lasso::layer(area, &ctx, &t, cx);
         press::release_on(keys::register(div().id(self.id), &ctx), &ctx)
             .test_support()
             .key_context(keys::CONTEXT)

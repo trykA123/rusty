@@ -225,8 +225,65 @@ fn tab_walks_the_sections_and_focus_stays_in_the_sheet(cx: &mut TestAppContext) 
     rig.press(cx, "shift-tab");
     assert_eq!(
         label(cx, &rig, "settings-key").as_deref(),
-        Some("text.view.line-numbers")
+        Some("window.view.tabs-with-one")
     );
+}
+
+#[gpui_kit::test]
+fn the_display_section_starts_with_the_window_group_and_flips_a_part(cx: &mut TestAppContext) {
+    let rig = rig(cx, ThemeChoice::System);
+    open(cx, &rig);
+    go_to(cx, &rig, Field::WindowPathBar);
+    assert_eq!(
+        label(cx, &rig, "settings-group-window").as_deref(),
+        Some("Window")
+    );
+    assert_eq!(
+        label(cx, &rig, "settings-key").as_deref(),
+        Some("window.view.path-bar")
+    );
+    rig.press(cx, "space");
+    let change = Change {
+        field: Field::WindowPathBar,
+        value: Value::Flag(false),
+    };
+    assert_eq!(last_change(&rig), Some(change));
+}
+
+#[gpui_kit::test]
+fn the_display_section_has_markdown_and_preview_groups_whose_toggles_save(cx: &mut TestAppContext) {
+    let rig = rig(cx, ThemeChoice::System);
+    open(cx, &rig);
+    for (field, group, key) in [
+        (
+            Field::MarkdownPreviewSplit,
+            "Markdown",
+            "markdown.view.preview-split",
+        ),
+        (Field::PreviewTypeBars, "Preview", "preview.view.type-bars"),
+        (
+            Field::PreviewLargestFiles,
+            "Preview",
+            "preview.view.largest-files",
+        ),
+    ] {
+        if field == Field::MarkdownPreviewSplit {
+            go_to(cx, &rig, field);
+        } else {
+            rig.press(cx, "down");
+        }
+        assert_eq!(
+            label(cx, &rig, format!("settings-group-{}", group.to_lowercase())).as_deref(),
+            Some(group)
+        );
+        assert_eq!(label(cx, &rig, "settings-key").as_deref(), Some(key));
+        rig.press(cx, "space");
+        let change = Change {
+            field,
+            value: Value::Flag(false),
+        };
+        assert_eq!(last_change(&rig), Some(change));
+    }
 }
 
 #[gpui_kit::test]
@@ -431,10 +488,6 @@ fn the_display_section_groups_the_viewer_parts_and_flips_one(cx: &mut TestAppCon
         Some("Text")
     );
     assert_eq!(
-        label(cx, &rig, "settings-group-image").as_deref(),
-        Some("Image")
-    );
-    assert_eq!(
         label(cx, &rig, "settings-key").as_deref(),
         Some("text.view.line-ends")
     );
@@ -444,4 +497,14 @@ fn the_display_section_groups_the_viewer_parts_and_flips_one(cx: &mut TestAppCon
         value: Value::Flag(true),
     };
     assert_eq!(last_change(&rig), Some(change));
+    rig.press(cx, "down");
+    assert_eq!(
+        label(cx, &rig, "settings-key").as_deref(),
+        Some("text.view.syntax-theme")
+    );
+    rig.press(cx, "down");
+    assert_eq!(
+        label(cx, &rig, "settings-group-image").as_deref(),
+        Some("Image")
+    );
 }

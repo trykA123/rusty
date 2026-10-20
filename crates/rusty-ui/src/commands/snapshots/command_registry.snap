@@ -23,6 +23,7 @@ tab.new | New tab | FerritePane
 pane.drive_menu_first | Drives of pane 1 | FerritePane
 pane.drive_menu_second | Drives of pane 2 | FerritePane
 pane.edit_path | Edit path | FerritePane
+window.view_menu | Window view menu | FerritePane
 pane.reset_split | Reset pane split | FerritePane
 preview.browse | Browse in preview | FerritePane
 crash_notice.focus | Go to the crash notice | FerritePane
@@ -44,6 +45,9 @@ preview.view | View file | PreviewBrowse
 preview.leave | Close preview | PreviewBrowse
 preview.leave_and_switch | Leave preview, switch pane | PreviewBrowse
 preview.recount | Recount folder | PreviewBrowse
+preview.view_menu | Preview view menu | PreviewBrowse
+preview.type_bars | Show or hide type bars | PreviewBrowse
+preview.largest_files | Show or hide the largest files | PreviewBrowse
 files.cursor_up | Up | FileList
 files.cursor_down | Down | FileList
 files.page_up | Page up | FileList
@@ -85,6 +89,17 @@ drive_menu.up | Up | DriveMenu
 drive_menu.down | Down | DriveMenu
 drive_menu.open | Open drive | DriveMenu
 drive_menu.close | Close drive menu | DriveMenu
+files.extend_up | Extend marks up | FileList
+files.extend_down | Extend marks down | FileList
+files.extend_page_up | Extend marks a page up | FileList
+files.extend_page_down | Extend marks a page down | FileList
+files.extend_first | Extend marks to the first row | FileList
+files.extend_last | Extend marks to the last row | FileList
+files.mark_all | Mark all | FileList
+files.unmark_all | Unmark all | FileList
+files.restore_marks | Restore last marks | FileList
+files.mark_extension | Mark files with this extension | FileList
+files.unmark_extension | Unmark files with this extension | FileList
 context_menu.up | Up | ContextMenu
 context_menu.down | Down | ContextMenu
 context_menu.first | First item | ContextMenu
@@ -113,8 +128,11 @@ settings.edit_value | Edit value | SettingsSheet
 settings.show_in_file | Show in settings file | SettingsSheet
 settings.reset_value | Reset to default | SettingsSheet
 settings.undo | Undo change | SettingsSheet
+settings.find | Find a setting | SettingsSheet
 settings.close | Close settings | SettingsSheet
 settings.cancel_edit | Cancel edit | SettingsField
+settings.clear_find | Clear the search | SettingsFind
+settings.find_to_list | Back to the list | SettingsFind
 shortcuts.previous_row | Previous shortcut | Shortcuts
 shortcuts.next_row | Next shortcut | Shortcuts
 shortcuts.record | Record a new key | Shortcuts
@@ -155,6 +173,7 @@ viewer.show_line_ends | Show line ends | Viewer
 viewer.follow | Follow the end of the file | Viewer
 viewer.context_menu | Context menu | Viewer
 viewer.view_menu | View menu | Viewer
+viewer.encoding | Choose the text encoding | Viewer
 view.left_drawer | Left drawer | Viewer
 view.right_drawer | Right drawer | Viewer
 view.line_numbers | Show or hide line numbers | Viewer

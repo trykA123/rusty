@@ -5,7 +5,7 @@ use super::fields::{Control, FIELDS, Field, FieldSpec, PRESETS};
 use crate::app_menu::{QuickSettings, Setting};
 use crate::file_list::{SortBy, SortKey};
 use crate::modifier_hints::HintsMode;
-use crate::tokens::{Density, ThemeChoice};
+use crate::tokens::{Density, SyntaxTheme, ThemeChoice};
 
 const THEME_ORDER: [ThemeChoice; 3] = [ThemeChoice::System, ThemeChoice::Light, ThemeChoice::Dark];
 const DENSITY_ORDER: [Density; 3] = [Density::Compact, Density::Normal, Density::Comfortable];
@@ -42,6 +42,10 @@ impl Change {
 
     pub fn density(density: Density) -> Self {
         Self::pick(Field::Density, &DENSITY_ORDER, density)
+    }
+
+    pub fn syntax_theme(theme: SyntaxTheme) -> Self {
+        Self::pick(Field::TextSyntaxTheme, &SyntaxTheme::ALL, theme)
     }
 
     pub fn modifier_hints(hints: HintsMode) -> Self {
@@ -94,9 +98,13 @@ fn default_of(spec: &FieldSpec) -> Value {
         Field::FontSize => Value::Number(13),
         Field::ModifierHints => Value::Pick(2),
         Field::ModifierHintsDelay => Value::Number(400),
-        Field::FoldersFirst | Field::SpaceMeasuresFolders | Field::TextLineNumbers => {
-            Value::Flag(true)
-        }
+        Field::FoldersFirst
+        | Field::SpaceMeasuresFolders
+        | Field::TextLineNumbers
+        | Field::MarkdownPreviewSplit
+        | Field::PreviewTypeBars
+        | Field::PreviewLargestFiles => Value::Flag(true),
+        field if field.is_window_part() => Value::Flag(true),
         Field::TerminalProvider => text("windows-terminal"),
         _ => match spec.control {
             Control::Choices(..) => Value::Pick(0),
@@ -182,6 +190,13 @@ impl Values {
     pub fn density(&self) -> Density {
         DENSITY_ORDER
             .get(self.pick(Field::Density))
+            .copied()
+            .unwrap_or_default()
+    }
+
+    pub fn syntax_theme(&self) -> SyntaxTheme {
+        SyntaxTheme::ALL
+            .get(self.pick(Field::TextSyntaxTheme))
             .copied()
             .unwrap_or_default()
     }

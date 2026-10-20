@@ -6,6 +6,7 @@ mod marks;
 mod motion;
 mod shadows;
 mod surfaces;
+mod syntax;
 
 #[cfg(test)]
 mod tests;
@@ -16,11 +17,12 @@ use gpui_kit::{App, Global, Hsla, Pixels, SharedString};
 
 pub use contrast::{contrast_ratio, relative_luminance};
 pub use density::{Density, Rows};
-pub use kit::{apply, apply_with};
+pub use kit::{apply, apply_look, apply_with};
 pub use marks::MarkColors;
 pub use motion::Motion;
 pub use shadows::Shadows;
 pub use surfaces::Surfaces;
+pub use syntax::{SyntaxTheme, highlight_theme};
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Default)]
 pub enum Mode {
@@ -97,6 +99,13 @@ pub struct Colors {
     pub kind_image: Hsla,
     pub kind_archive: Hsla,
     pub kind_app: Hsla,
+    pub kind_pdf: Hsla,
+    pub kind_doc: Hsla,
+    pub kind_sheet: Hsla,
+    pub kind_slides: Hsla,
+    pub kind_audio: Hsla,
+    pub kind_video: Hsla,
+    pub kind_auto: Hsla,
     pub ok: Hsla,
     pub warn: Hsla,
     pub terminal_background: Hsla,
@@ -166,6 +175,7 @@ pub struct Theme {
     pub motion: Motion,
     pub density: Density,
     pub rows: Rows,
+    pub syntax: SyntaxTheme,
 }
 
 impl Global for Theme {}
@@ -191,6 +201,7 @@ impl Theme {
             shadows: shadows::shadows(mode, &surfaces),
             surfaces,
             motion: motion::motion(),
+            syntax: SyntaxTheme::default(),
         }
     }
 }
@@ -219,7 +230,7 @@ const FILLED_PAIRS: [(&str, &str); 4] = [
 ];
 
 impl Colors {
-    pub fn entries(&self) -> [(&'static str, Hsla); 23] {
+    fn base_entries(&self) -> [(&'static str, Hsla); 23] {
         let Self {
             background,
             surface,
@@ -241,9 +252,7 @@ impl Colors {
             kind_app,
             ok,
             warn,
-            terminal_background,
-            terminal_text,
-            terminal_muted,
+            ..
         } = *self;
         [
             ("background", background),
@@ -266,10 +275,29 @@ impl Colors {
             ("kind_app", kind_app),
             ("ok", ok),
             ("warn", warn),
-            ("terminal_background", terminal_background),
-            ("terminal_text", terminal_text),
-            ("terminal_muted", terminal_muted),
+            ("terminal_background", self.terminal_background),
+            ("terminal_text", self.terminal_text),
+            ("terminal_muted", self.terminal_muted),
         ]
+    }
+
+    fn kind_entries(&self) -> [(&'static str, Hsla); 7] {
+        [
+            ("kind_pdf", self.kind_pdf),
+            ("kind_doc", self.kind_doc),
+            ("kind_sheet", self.kind_sheet),
+            ("kind_slides", self.kind_slides),
+            ("kind_audio", self.kind_audio),
+            ("kind_video", self.kind_video),
+            ("kind_auto", self.kind_auto),
+        ]
+    }
+
+    pub fn entries(&self) -> Vec<(&'static str, Hsla)> {
+        self.base_entries()
+            .into_iter()
+            .chain(self.kind_entries())
+            .collect()
     }
 
     pub fn get(&self, name: &str) -> Option<Hsla> {

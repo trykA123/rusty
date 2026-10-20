@@ -11,6 +11,7 @@ pub enum Page {
     Table,
     Markdown,
     MarkdownPreview,
+    Code,
     Archive,
     Font,
     Marks,
@@ -51,6 +52,7 @@ pub enum Page {
     MemoryImage,
     MemoryDrawers,
     ViewMenuText,
+    ViewerEncoding,
     ViewMenuAutomotive,
     ViewMenuElf,
     ViewMenuTrace,
@@ -64,6 +66,18 @@ pub enum Page {
     PdfCalm,
     PdfSearch,
     PdfDrawers,
+    WindowPartsOn,
+    WindowPartsOff,
+    WindowViewMenu,
+    ViewMenuMarkdown,
+    PreviewPartsOn,
+    PreviewNoBars,
+    PreviewNoLargest,
+    PreviewPartsOff,
+    SettingsUpgrade,
+    SettingsFind,
+    MouseMarks,
+    FileKinds,
 }
 
 pub struct PageInfo {
@@ -82,7 +96,7 @@ const fn info(page: Page, label: &'static str, stem: &'static str, in_switch: bo
     }
 }
 
-pub const PAGES: [PageInfo; 64] = [
+pub const PAGES: [PageInfo; 78] = [
     info(Page::Primitives, "Parts", "p7-gallery", true),
     info(Page::Pane, "Pane", "p7-pane", true),
     info(Page::Operate, "Operate", "p8-confirm", true),
@@ -99,6 +113,7 @@ pub const PAGES: [PageInfo; 64] = [
         "p15-markdown-preview",
         false,
     ),
+    info(Page::Code, "Code", "p34-code", false),
     info(Page::Archive, "Zip", "p15-archive", false),
     info(Page::Font, "Font", "p15-font", false),
     info(Page::Marks, "Marks", "p15-marks", false),
@@ -240,6 +255,12 @@ pub const PAGES: [PageInfo; 64] = [
         false,
     ),
     info(
+        Page::ViewerEncoding,
+        "Encoding picker, text",
+        "p15-a2b-encoding-picker",
+        false,
+    ),
+    info(
         Page::ViewMenuAutomotive,
         "View menu, automotive",
         "p33-v1-view-menu-automotive",
@@ -287,6 +308,68 @@ pub const PAGES: [PageInfo; 64] = [
     info(Page::PdfCalm, "PDF", "p15-a10b-calm", true),
     info(Page::PdfSearch, "PDF search", "p15-a10b-search", false),
     info(Page::PdfDrawers, "PDF drawers", "p15-a10b-drawers", false),
+    info(
+        Page::WindowPartsOn,
+        "Window, every part",
+        "p33-w1-window-on",
+        false,
+    ),
+    info(
+        Page::WindowPartsOff,
+        "Window, no optional part",
+        "p33-w1-window-off",
+        false,
+    ),
+    info(
+        Page::WindowViewMenu,
+        "Window, View menu",
+        "p33-w1-view-menu",
+        false,
+    ),
+    info(
+        Page::ViewMenuMarkdown,
+        "View menu, Markdown",
+        "p33-v2-view-menu-markdown",
+        false,
+    ),
+    info(
+        Page::PreviewPartsOn,
+        "Preview sheet, every part",
+        "p33-v2-preview-on",
+        false,
+    ),
+    info(
+        Page::PreviewNoBars,
+        "Preview sheet, no type bars",
+        "p33-v2-preview-no-bars",
+        false,
+    ),
+    info(
+        Page::PreviewNoLargest,
+        "Preview sheet, no largest files",
+        "p33-v2-preview-no-largest",
+        false,
+    ),
+    info(
+        Page::PreviewPartsOff,
+        "Preview sheet, no optional part",
+        "p33-v2-preview-off",
+        false,
+    ),
+    info(
+        Page::SettingsUpgrade,
+        "Settings, upgrade notice",
+        "p22-s3b-upgrade-notice",
+        false,
+    ),
+    info(
+        Page::SettingsFind,
+        "Settings, find a setting",
+        "p22-s3b-find",
+        false,
+    ),
+    info(Page::MouseMarks, "Mouse marks", "p36-k5-mouse-marks", false),
+    info(Page::FileKinds, "File types", "p36-file-kinds", false),
 ];
 
 impl Page {
@@ -297,6 +380,7 @@ impl Page {
                 | Self::Table
                 | Self::Markdown
                 | Self::MarkdownPreview
+                | Self::Code
                 | Self::MemoryImage
                 | Self::MemoryDrawers
                 | Self::ElfSymbols

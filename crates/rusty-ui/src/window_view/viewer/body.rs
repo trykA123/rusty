@@ -3,6 +3,7 @@ use std::rc::Rc;
 
 use gpui_kit::{Action, AnyView, FocusHandle};
 use rusty_core::Location;
+use rusty_core::encoding::TextEncoding;
 use rusty_core::marks::{Bookmarks, MarkSet};
 
 use super::FileHooks;
@@ -46,7 +47,7 @@ pub enum BodyAct {
 }
 
 pub enum MenuEntry {
-    Run(&'static str, Box<dyn Action>, bool),
+    Run(SharedString, Box<dyn Action>, bool),
     Submenu(&'static str, Vec<MenuEntry>),
     Break,
 }
@@ -118,4 +119,8 @@ pub trait ViewerBody: Any {
     }
 
     fn show_parts(&self, _: &Values, _: &mut App) {}
+
+    fn encoding(&self, _: &App) -> Option<TextEncoding> {
+        None
+    }
 }

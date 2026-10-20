@@ -2,17 +2,22 @@ use super::model::MapModel;
 use super::parts::{self, Part};
 use super::retention::{Record, Retention};
 use super::rows;
-use super::table::{Parsed, Side, Table, cells};
+use super::table::{Parsed, Side, Table, raw_cells};
+use super::wrap::{Wrapped, mandatory};
 
 pub(super) struct Tasking {
     pub model: MapModel,
     part: Part,
     table: Table,
     space: Option<String>,
+    symbol_space: Option<String>,
+    previous_title: Option<String>,
     file: String,
     unsupported_mau: bool,
     symbol_order: Option<String>,
     retention: Retention,
+    wrapped: Option<Wrapped>,
+    required: Vec<bool>,
 }
 
 impl Tasking {
@@ -22,19 +27,31 @@ impl Tasking {
             part: Part::Skip,
             table: Table::default(),
             space: None,
+            symbol_space: None,
+            previous_title: None,
             file: String::new(),
             unsupported_mau: false,
             symbol_order: None,
             retention: Retention::default(),
+            wrapped: None,
+            required: Vec::new(),
         }
     }
 
     fn header(&mut self, name: String) {
         self.part = parts::part(&name);
-        if self.part == Part::Skip {
-            self.model.skipped_sections += 1;
+        if self.part == Part::Skip
+            && self.model.skipped_parts.len() < 32
+            && !self
+                .model
+                .skipped_parts
+                .iter()
+                .any(|title| title.eq_ignore_ascii_case(&name))
+        {
+            self.model.skipped_parts.push(name.clone());
         }
         if self.part == Part::Symbols {
+            let name = name.to_ascii_lowercase();
             if self.model.symbols.is_empty() {
                 self.symbol_order = Some(name);
             } else if self.symbol_order.as_deref() != Some(name.as_str()) {
@@ -43,6 +60,7 @@ impl Tasking {
         }
         self.table = Table::default();
         self.space = None;
+        self.symbol_space = None;
         self.file.clear();
         self.unsupported_mau = false;
     }
@@ -50,6 +68,7 @@ impl Tasking {
     fn address_space(&mut self, text: &str) {
         let (space, mau) = text.split_once(" (MAU = ").unwrap_or((text, "8bit)"));
         self.space = Some(space.trim().to_owned());
+        self.symbol_space = None;
         self.table = Table::default();
         self.file.clear();
         self.unsupported_mau = mau.trim() != "8bit)";
@@ -64,14 +83,25 @@ impl Tasking {
     }
 
     pub(super) fn drop_row(&mut self, reason: &'static str) {
+        self.flush_row();
         self.clear_file();
+        self.previous_title = None;
         self.model.malformed(reason);
     }
 
     pub(super) fn take(&mut self, text: &str) {
         let text = text.trim().trim_start_matches('\u{feff}');
-        if let Some(header) = parts::header(text) {
+        if self.continue_row(text) {
+            return;
+        }
+        self.flush_row();
+        let header = parts::header(text, self.previous_title.take().as_deref());
+        if let Some(header) = header {
             return self.header(header);
+        }
+        self.previous_title = parts::title(text).map(str::to_owned);
+        if self.previous_title.is_some() {
+            return;
         }
         if self.part == Part::Skip {
             return;
@@ -91,7 +121,41 @@ impl Tasking {
             }
             return;
         }
-        self.take_cells(&cells(text));
+        self.take_row(text);
+    }
+
+    fn continue_row(&mut self, text: &str) -> bool {
+        let Some(row) = self.wrapped.as_mut() else {
+            return false;
+        };
+        let is_row = text.starts_with('|') && !text.bytes().all(|byte| b"|+-= \t".contains(&byte));
+        is_row && row.extend(&raw_cells(text), &self.required)
+    }
+
+    pub(super) fn flush_row(&mut self) {
+        let Some(row) = self.wrapped.take() else {
+            return;
+        };
+        let cells: Vec<&str> = row.cells().collect();
+        let now = std::mem::replace(&mut self.model.lines, row.line);
+        self.store_row(&cells);
+        self.model.lines = now;
+    }
+
+    fn take_row(&mut self, text: &str) {
+        let raw = raw_cells(text);
+        let cells: Vec<&str> = raw.iter().map(|cell| cell.trim()).collect();
+        if self.start_table(&cells) {
+            return;
+        }
+        let can_wrap = raw.len() == self.table.columns.len()
+            && !self.retention.capped(self.part)
+            && self.required.contains(&true);
+        if can_wrap {
+            self.wrapped = Some(Wrapped::start(&raw, self.model.lines));
+            return;
+        }
+        self.store_row(&cells);
     }
 
     fn is_header(&self, table: &Table) -> bool {
@@ -115,7 +179,7 @@ impl Tasking {
         }
     }
 
-    fn take_cells(&mut self, cells: &[&str]) {
+    fn start_table(&mut self, cells: &[&str]) -> bool {
         if cells.iter().any(|cell| {
             [
                 "section",
@@ -134,15 +198,21 @@ impl Tasking {
         }) {
             let table = Table::from_cells(cells);
             if self.is_header(&table) {
+                self.required = mandatory(self.part, &table);
                 self.table = table;
+                self.symbol_space = None;
                 self.clear_file();
-                return;
+                return true;
             }
             if table.has(&["space", "stack name"]) && self.part == Part::Memory {
                 self.table = Table::default();
-                return;
+                return true;
             }
         }
+        false
+    }
+
+    fn store_row(&mut self, cells: &[&str]) {
         if self.table.columns.is_empty() || self.retention.capped(self.part) {
             self.clear_file();
             return;
@@ -176,7 +246,12 @@ impl Tasking {
                 }
                 Record::Memory(region)
             }
-            Part::Symbols => Record::Symbol(rows::symbol(&row, self.space.as_deref())?),
+            Part::Symbols => {
+                let space = self.symbol_space.as_deref().or(self.space.as_deref());
+                let symbol = rows::symbol(&row, space)?;
+                self.symbol_space.clone_from(&symbol.address_space);
+                Record::Symbol(symbol)
+            }
             Part::Removed => Record::Discarded(rows::discarded(&row)?),
             Part::Link => {
                 let file_column = row

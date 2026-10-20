@@ -138,11 +138,14 @@ pub(super) fn steer(values: &Values, browser: &mut Browser) {
 impl FerriteWindow {
     pub(super) fn set_values(&mut self, values: Values, window: &Window, cx: &mut App) {
         let old = std::mem::replace(&mut self.values, values);
-        if old.theme() != self.values.theme() || old.density() != self.values.density() {
+        let looks = |values: &Values| (values.theme(), values.density(), values.syntax_theme());
+        if looks(&old) != looks(&self.values) {
             self.apply_theme(window, cx);
         }
         steer(&self.values, &mut self.browser);
         self.show_parts(cx);
+        self.apply_preview_parts();
+        self.refresh_window_menu(cx);
     }
 
     pub(super) fn toggle_setting(
@@ -191,6 +194,7 @@ impl FerriteWindow {
         let sent = fields_of(&flight);
         self.saver.settle(&report, &sent);
         self.settings.undo_learned(&report, &sent);
+        self.settings.upgrade_settled(&report, &sent);
         self.keep_settled(&report, &flight, cx);
         let fresh = self.saver.on_disk(report.values, report.generation);
         self.set_values(fresh, window, cx);

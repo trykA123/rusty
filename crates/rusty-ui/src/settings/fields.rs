@@ -1,3 +1,6 @@
+use super::viewer_fields::VIEWER_FIELDS;
+use super::window_fields::WINDOW_FIELDS;
+use crate::prelude::SharedString;
 use crate::primitives::IconName;
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
@@ -68,9 +71,25 @@ pub enum Field {
     TerminalCommand,
     EditorPath,
     CopyMode,
+    WindowTabsWithOne,
+    WindowPathBar,
+    WindowDriveButton,
+    WindowTitleSearch,
+    WindowFkeyBar,
+    WindowIcons,
+    WindowExtColumn,
+    WindowSizeColumn,
+    WindowDateColumn,
+    WindowFreeSpace,
+    WindowMarkedTotals,
+    WindowContents,
     TextLineNumbers,
     TextLineEnds,
+    TextSyntaxTheme,
     ImageDetails,
+    MarkdownPreviewSplit,
+    PreviewTypeBars,
+    PreviewLargestFiles,
     AutomotivePreset,
     AutomotiveInspector,
     AutomotiveMemoryStrip,
@@ -80,7 +99,7 @@ pub enum Field {
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub struct Choice {
-    pub label: &'static str,
+    label: &'static str,
     pub toml: &'static str,
 }
 
@@ -110,6 +129,10 @@ pub const PRESETS: [Choice; 3] = [
     choice("Custom", "custom"),
 ];
 pub const COPY_MODES: [Choice; 2] = [choice("Auto", "auto"), choice("Standard", "standard")];
+pub const SYNTAX_THEMES: [Choice; 2] = [
+    choice("settings-syntax-theme-oxidised-iron", "oxidised-iron"),
+    choice("settings-syntax-theme-mocha", "mocha"),
+];
 pub const SORTS: [Choice; 4] = [
     choice("Name", "name"),
     choice("Size", "size"),
@@ -137,12 +160,12 @@ pub struct FieldSpec {
     pub field: Field,
     pub section: Section,
     pub key: &'static str,
-    pub label: &'static str,
+    label: &'static str,
     pub help: &'static str,
     pub control: Control,
 }
 
-const fn spec(
+pub(super) const fn spec(
     (field, section, key): (Field, Section, &'static str),
     (label, help): (&'static str, &'static str),
     control: Control,
@@ -157,10 +180,10 @@ const fn spec(
     }
 }
 
-use Field as F;
-use Section as S;
+pub(super) use Field as F;
+pub(super) use Section as S;
 
-pub const FIELDS: [FieldSpec; 27] = [
+const GENERAL: [FieldSpec; 19] = [
     spec(
         (F::Theme, S::Appearance, "appearance.mode"),
         ("Theme", "Follow Windows, or keep light or dark"),
@@ -280,84 +303,73 @@ pub const FIELDS: [FieldSpec; 27] = [
         ),
         Control::Choices(&COPY_MODES, Look::Segments),
     ),
-    spec(
-        (F::TextLineNumbers, S::Display, "text.view.line-numbers"),
-        (
-            "Line numbers",
-            "Shows the number of each line at its start.",
-        ),
-        Control::Toggle,
-    ),
-    spec(
-        (F::TextLineEnds, S::Display, "text.view.line-ends"),
-        ("Line ends", "Marks where each line ends, as LF or CRLF."),
-        Control::Toggle,
-    ),
-    spec(
-        (F::ImageDetails, S::Display, "image.view.details"),
-        (
-            "Details",
-            "Shows a panel with the camera, date and other EXIF data.",
-        ),
-        Control::Toggle,
-    ),
-    spec(
-        (F::AutomotivePreset, S::Display, "automotive.view.preset"),
-        (
-            "View",
-            "Simple keeps the view calm, Rich turns every part on, Custom uses the toggles below.",
-        ),
-        Control::Choices(&PRESETS, Look::Segments),
-    ),
-    spec(
-        (
-            F::AutomotiveInspector,
-            S::Display,
-            "automotive.view.inspector",
-        ),
-        (
-            "Open the inspector",
-            "Opens the details drawer by itself when you pick a range or section.",
-        ),
-        Control::Toggle,
-    ),
-    spec(
-        (
-            F::AutomotiveMemoryStrip,
-            S::Display,
-            "automotive.view.memory-strip",
-        ),
-        (
-            "Memory strip",
-            "Shows a map of the address space beside the ranges list.",
-        ),
-        Control::Toggle,
-    ),
-    spec(
-        (F::AutomotiveCharts, S::Display, "automotive.view.charts"),
-        (
-            "Charts",
-            "Shows bars, sparklines, bus load and signal curves where a view has them.",
-        ),
-        Control::Toggle,
-    ),
-    spec(
-        (F::AutomotiveRowBars, S::Display, "automotive.view.row-bars"),
-        (
-            "Row bars",
-            "Shows a size bar and counts on each row of the ranges list.",
-        ),
-        Control::Toggle,
-    ),
 ];
 
-const GROUPS: [(&str, &str); 3] = [
+pub const FIELDS: [FieldSpec; 43] = join(GENERAL, WINDOW_FIELDS, VIEWER_FIELDS);
+
+const fn join<const A: usize, const B: usize, const C: usize, const N: usize>(
+    first: [FieldSpec; A],
+    second: [FieldSpec; B],
+    third: [FieldSpec; C],
+) -> [FieldSpec; N] {
+    assert!(A + B + C == N, "FIELDS has the wrong length");
+    let mut all = [first[0]; N];
+    let mut at = 0;
+    let mut index = 0;
+    while index < A {
+        all[at] = first[index];
+        at += 1;
+        index += 1;
+    }
+    index = 0;
+    while index < B {
+        all[at] = second[index];
+        at += 1;
+        index += 1;
+    }
+    index = 0;
+    while index < C {
+        all[at] = third[index];
+        at += 1;
+        index += 1;
+    }
+    all
+}
+
+const GROUPS: [(&str, &str); 6] = [
+    ("window", "Window"),
     ("text", "Text"),
     ("image", "Image"),
+    ("markdown", "Markdown"),
+    ("preview", "Preview"),
     ("automotive", "Automotive"),
 ];
 
+const MESSAGE_PREFIX: &str = "settings-";
+
+fn shown(text: &'static str) -> SharedString {
+    if text.starts_with(MESSAGE_PREFIX) {
+        rusty_l10n::tr(text).into()
+    } else {
+        text.into()
+    }
+}
+
+impl Choice {
+    pub fn text(&self) -> SharedString {
+        shown(self.label)
+    }
+}
+
 impl FieldSpec {
+    pub fn label(&self) -> SharedString {
+        shown(self.label)
+    }
+
+    pub fn help(&self) -> SharedString {
+        shown(self.help)
+    }
+
     pub fn table(&self) -> &'static str {
         self.key.split('.').next().unwrap_or_default()
     }
@@ -378,6 +390,10 @@ impl Field {
 
     pub fn index(self) -> usize {
         self as usize
+    }
+
+    pub fn is_window_part(self) -> bool {
+        (Self::WindowTabsWithOne.index()..=Self::WindowContents.index()).contains(&self.index())
     }
 
     pub fn is_applied(self) -> bool {

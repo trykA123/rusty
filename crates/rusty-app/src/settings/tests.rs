@@ -322,3 +322,73 @@ fn a_kept_view_part_lands_in_its_viewer_table_and_keeps_comments() {
         "# mine\n[text.view]\nline-numbers = true # gutter\nline-ends = true\n"
     );
 }
+
+#[test]
+fn a_hidden_window_part_lands_in_the_window_view_table_and_keeps_comments() {
+    let dir = tempfile::tempdir().unwrap();
+    let file = file_in(&dir);
+    fs::write(
+        &file,
+        "# mine\n[window.view]\npath-bar = true # the bar\nfkey-bar = true\n",
+    )
+    .unwrap();
+    let settings = hooks(Some(&file));
+    let hidden = Change {
+        field: Field::WindowPathBar,
+        value: Value::Flag(false),
+    };
+    let stored = save(&settings, hidden).unwrap();
+    assert_eq!(stored.get(Field::WindowPathBar), &Value::Flag(false));
+    assert_eq!(stored.get(Field::WindowFkeyBar), &Value::Flag(true));
+    assert_eq!(
+        fs::read_to_string(&file).unwrap(),
+        "# mine\n[window.view]\npath-bar = false # the bar\nfkey-bar = true\n"
+    );
+}
+
+#[test]
+fn resetting_a_window_part_brings_the_default_back() {
+    let dir = tempfile::tempdir().unwrap();
+    let file = file_in(&dir);
+    fs::write(&file, "[window.view]\nsize-column = false\n").unwrap();
+    let settings = hooks(Some(&file));
+    assert_eq!(
+        settings.values.get(Field::WindowSizeColumn),
+        &Value::Flag(false)
+    );
+    assert!(settings.values.is_changed(Field::WindowSizeColumn));
+    let stored = save(&settings, Change::reset(Field::WindowSizeColumn)).unwrap();
+    assert_eq!(stored.get(Field::WindowSizeColumn), &Value::Flag(true));
+    assert!(
+        !fs::read_to_string(&file)
+            .unwrap()
+            .contains("size-column = false")
+    );
+}
+
+#[test]
+fn a_kept_markdown_split_and_preview_parts_land_in_their_tables_and_keep_comments() {
+    let dir = tempfile::tempdir().unwrap();
+    let file = file_in(&dir);
+    fs::write(
+        &file,
+        "# mine\n[markdown.view]\npreview-split = true # beside\n\n[preview.view]\ntype-bars = true\nlargest-files = true # ten\n",
+    )
+    .unwrap();
+    let settings = hooks(Some(&file));
+    for (field, is_on) in [
+        (Field::MarkdownPreviewSplit, false),
+        (Field::PreviewLargestFiles, false),
+    ] {
+        let kept = Change {
+            field,
+            value: Value::Flag(is_on),
+        };
+        let stored = save(&settings, kept).unwrap();
+        assert_eq!(stored.get(field), &Value::Flag(is_on));
+    }
+    let text = fs::read_to_string(&file).unwrap();
+    assert!(text.contains("preview-split = false # beside"), "{text}");
+    assert!(text.contains("type-bars = true\n"), "{text}");
+    assert!(text.contains("largest-files = false # ten"), "{text}");
+}

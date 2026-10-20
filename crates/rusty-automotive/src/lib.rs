@@ -1,10 +1,14 @@
 #![forbid(unsafe_code)]
 
+pub mod a2l;
+pub mod dbc;
+mod description;
 mod elf;
 mod image;
 mod layout;
 mod lines;
 pub mod map;
+pub mod mdf;
 mod record;
 mod scan;
 mod source;
@@ -12,6 +16,9 @@ mod trace;
 
 use std::sync::atomic::AtomicBool;
 
+pub use a2l::{A2lModel, index_a2l, sniff_a2l};
+pub use dbc::{DbcModel, index_dbc, sniff_dbc};
+pub use description::{DescriptionError, DescriptionProblem, DescriptionReport};
 #[cfg(feature = "sample")]
 pub use elf::sample as elf_sample;
 pub use elf::{
@@ -21,11 +28,13 @@ pub use elf::{
 pub use image::{Counts, Image, Item, Problem, Start};
 pub use layout::{Layout, ROW_BYTES, Row};
 pub use map::{MapFlavor, MapModel, MapProblem, index_map, sniff_map};
+pub use mdf::{Mdf, MdfProblem, RegionTable, parse_mdf, sniff_mdf};
 pub use scan::{MAX_PIECES, index};
 pub use source::Source;
 pub use trace::{
-    Base, Body, CanId, Direction, Entry, Evidence, Frame, FrameKind, IdStat, Kinds, MAX_IDS,
-    Notation, Plan, TRACE_EXTENSIONS, Trace, TraceProblem, index_trace, sniff_trace,
+    Base, BlfHeader, BlfInfo, BlfPosition, Body, CanId, Direction, Entry, Evidence, Frame,
+    FrameKind, IdStat, Kinds, MAX_IDS, Notation, Plan, SystemTime, TRACE_EXTENSIONS, Trace,
+    TraceFormat, TraceProblem, index_blf, index_trace, sniff_blf, sniff_trace,
 };
 
 pub type ReadAt<'a> = dyn FnMut(u64, usize) -> Result<Vec<u8>, String> + 'a;

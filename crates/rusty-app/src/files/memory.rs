@@ -19,7 +19,7 @@ pub fn open(file: &Path) -> Option<SharedDb> {
 }
 
 fn open_keeping(file: &Path, keep: usize) -> Option<SharedDb> {
-    let (db, _) = Db::open(file, false)
+    let (db, _) = crate::crash::open_db(file)
         .inspect_err(|error| report(&format!("opening {}", file.display()), error))
         .ok()?;
     let _ = db
@@ -48,8 +48,7 @@ fn stamp(file: FileStamp) -> Stamp {
 }
 
 pub fn attach(hooks: FileHooks, db: SharedDb) -> FileHooks {
-    let (load, save, history, remember) = (db.clone(), db.clone(), db.clone(), db.clone());
-    let (split, save_split) = (db.clone(), db);
+    let (load, save, history, remember) = (db.clone(), db.clone(), db.clone(), db);
     FileHooks {
         memory: Arc::new(move |location, file| {
             lock(&load)
@@ -77,17 +76,6 @@ pub fn attach(hooks: FileHooks, db: SharedDb) -> FileHooks {
         remember: Arc::new(move |needle| {
             let saved = lock(&remember).remember_search(needle, now_ms());
             let _ = saved.inspect_err(|error| report("saving a search", error));
-        }),
-        split: Arc::new(move |extension| {
-            lock(&split)
-                .markdown_split(extension)
-                .inspect_err(|error| report("loading the Markdown split", error))
-                .ok()
-                .flatten()
-        }),
-        save_split: Arc::new(move |extension, is_shown| {
-            let saved = lock(&save_split).save_markdown_split(extension, is_shown);
-            let _ = saved.inspect_err(|error| report("saving the Markdown split", error));
         }),
         ..hooks
     }

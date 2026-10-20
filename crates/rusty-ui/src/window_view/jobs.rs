@@ -4,6 +4,9 @@ use rusty_core::Location;
 
 use super::FerriteWindow;
 use super::operate::JOB_LINGER;
+use gpui_kit::base::TestSupportExt;
+
+use crate::activity::Activity;
 use crate::browser::{JobStatus, JobView};
 use crate::fkey_bar::FKeyBar;
 use crate::job_card::{JobCard, JobInfo, JobPill, JobsSummary, Pause, PillFit, SpeedMeter};
@@ -17,6 +20,7 @@ const SAMPLE_EVERY: Duration = Duration::from_millis(500);
 pub(super) struct JobUi {
     pub(super) is_pill: bool,
     pub(super) meter: SpeedMeter,
+    pub(super) activity: Activity,
     is_sampling: bool,
 }
 
@@ -60,6 +64,7 @@ pub(super) fn job_info(job: &JobView, speed: Option<u64>) -> JobInfo {
 impl FerriteWindow {
     pub(super) fn jobs_woke(&mut self, cx: &mut Context<Self>) {
         self.sample_job_speeds(cx.background_executor().now());
+        self.sync_activity(cx.background_executor().now());
         if self.job_ui.is_sampling || !self.browser.running() {
             return;
         }
@@ -78,6 +83,7 @@ impl FerriteWindow {
 
     fn sample_while_running(&mut self, cx: &mut Context<Self>) -> bool {
         self.sample_job_speeds(cx.background_executor().now());
+        self.sync_activity(cx.background_executor().now());
         cx.notify();
         self.job_ui.is_sampling = self.browser.running();
         self.job_ui.is_sampling
@@ -95,6 +101,11 @@ impl FerriteWindow {
             }
         }
         meter.retain(&jobs.iter().map(|job| job.id).collect::<Vec<_>>());
+    }
+
+    fn sync_activity(&mut self, now: Instant) {
+        let jobs = self.job_infos();
+        self.job_ui.activity.sync(&jobs, now);
     }
 
     pub(super) fn jobs_changed(&mut self) {
@@ -120,13 +131,24 @@ impl FerriteWindow {
         }
     }
 
-    fn job_infos(&self) -> Vec<JobInfo> {
+    pub(super) fn job_infos(&self) -> Vec<JobInfo> {
         let meter = &self.job_ui.meter;
         self.browser
             .jobs()
             .iter()
             .map(|job| job_info(job, meter.speed(job.id)))
             .collect()
+    }
+
+    fn job_pill(&self, jobs: &[JobInfo], fit: PillFit, cx: &mut Context<Self>) -> JobPill {
+        let this = cx.weak_entity();
+        JobPill::new(jobs, fit)
+            .when(JobsSummary::of(jobs).is_ended(), |pill| {
+                pill.fade_out(JOB_LINGER)
+            })
+            .on_click(move |_, cx| {
+                let _ = this.update(cx, |view, cx| view.toggle_jobs(cx));
+            })
     }
 
     pub(super) fn with_job_pill(
@@ -144,15 +166,22 @@ impl FerriteWindow {
         if !self.job_ui.is_pill {
             return bar;
         }
-        let this = cx.weak_entity();
-        let pill = JobPill::new(&jobs, fit)
-            .when(JobsSummary::of(&jobs).is_ended(), |pill| {
-                pill.fade_out(JOB_LINGER)
-            })
-            .on_click(move |_, cx| {
-                let _ = this.update(cx, |view, cx| view.toggle_jobs(cx));
-            });
-        bar.right_slot(pill)
+        bar.right_slot(self.job_pill(&jobs, fit, cx))
+    }
+
+    pub(super) fn pill_strip(&self, window: &Window, cx: &mut Context<Self>) -> impl IntoElement {
+        let height = tokens::current(cx).spacing.fkey_height;
+        let fit = PillFit::for_width(window.viewport_size().width);
+        div()
+            .id("job-strip")
+            .test_support()
+            .flex()
+            .flex_none()
+            .items_center()
+            .justify_end()
+            .h(height)
+            .px(tokens::current(cx).spacing.md)
+            .child(self.job_pill(&self.job_infos(), fit, cx))
     }
 
     pub(super) fn job_card_layer(&self, cx: &mut Context<Self>) -> Option<AnyElement> {

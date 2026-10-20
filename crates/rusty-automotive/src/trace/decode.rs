@@ -1,6 +1,6 @@
 use std::io::{self, BufReader, Read};
 
-use super::asc::{Head, Shape, parse};
+use super::asc::{Head, Shape};
 use super::index::{Block, Trace};
 use super::line::next_line;
 use super::{Body, Entry, Frame};
@@ -18,6 +18,7 @@ struct Step {
 #[derive(Debug, Clone, Default)]
 pub struct Plan {
     steps: Vec<Step>,
+    binary: Option<super::blf::BinaryPlan>,
 }
 
 struct Window<'r, 'a> {
@@ -46,6 +47,12 @@ impl Read for Window<'_, '_> {
 impl Trace {
     #[must_use]
     pub fn plan(&self, rows: &[u64]) -> Plan {
+        if self.blf.is_some() {
+            return Plan {
+                steps: Vec::new(),
+                binary: Some(super::blf::BinaryPlan::new(self, rows)),
+            };
+        }
         let mut rows: Vec<u64> = rows
             .iter()
             .copied()
@@ -68,7 +75,10 @@ impl Trace {
                 }),
             }
         }
-        Plan { steps }
+        Plan {
+            steps,
+            binary: None,
+        }
     }
 }
 
@@ -94,10 +104,15 @@ fn body(line: &[u8], shape: Shape, (head, data): (Option<Head>, &[u8])) -> Body 
 impl Plan {
     #[must_use]
     pub fn is_empty(&self) -> bool {
-        self.steps.is_empty()
+        self.binary
+            .as_ref()
+            .map_or_else(|| self.steps.is_empty(), |plan| plan.is_empty())
     }
 
     pub fn decode(&self, read: &mut ReadAt<'_>) -> Result<Vec<Entry>, String> {
+        if let Some(binary) = &self.binary {
+            return binary.decode(read);
+        }
         let mut entries = Vec::new();
         for step in &self.steps {
             decode_step(step, read, &mut entries)
@@ -126,7 +141,7 @@ fn decode_step(step: &Step, read: &mut ReadAt<'_>, out: &mut Vec<Entry>) -> io::
         if taken.too_long {
             continue;
         }
-        let (time, shape) = parse(&line, clock.notation.base, &mut data);
+        let (time, shape) = clock.parse(&line, &mut data);
         let head = match &shape {
             Shape::Blank => continue,
             Shape::Header(header) => {

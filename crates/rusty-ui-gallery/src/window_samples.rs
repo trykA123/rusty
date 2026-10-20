@@ -1,10 +1,13 @@
+use rusty_ui::file_list::{SortBy, SortKey};
 use rusty_ui::fkey_bar::KeyLayer;
 use rusty_ui::modifier_hints::Combo;
 use rusty_ui::prelude::*;
-use rusty_ui::settings::Field;
+use rusty_ui::primitives::text_field_state;
+use rusty_ui::settings::{Field, WindowParts};
 use rusty_ui::side_sheet::Side;
 
 use crate::gallery::Page;
+use crate::settings_sample::Extras;
 use crate::shortcuts_sample::{self, Shows as ShortcutsShows};
 use crate::window_page::{HintsShown, JobsShown, SheetShows, WindowPage};
 
@@ -40,21 +43,32 @@ pub fn sheet_windows(window: &mut Window, cx: &mut App) -> [Entity<WindowPage>; 
             window_width,
             is_ringed,
             settings,
+            extras: Extras::default(),
             shortcuts,
         };
         cx.new(|cx| WindowPage::with_sheet(shows, cx))
     })
 }
 
-pub fn display_window(cx: &mut App) -> Entity<WindowPage> {
-    let shows = SheetShows {
-        active: Side::Left,
-        window_width: None,
-        is_ringed: false,
-        settings: Some(Field::TextLineNumbers),
-        shortcuts: None,
-    };
-    cx.new(|cx| WindowPage::with_sheet(shows, cx))
+pub fn settings_windows(window: &mut Window, cx: &mut App) -> [Entity<WindowPage>; 3] {
+    let input = text_field_state("Find a setting by name, key or help", window, cx);
+    input.update(cx, |state, cx| state.set_value("sort", window, cx));
+    [
+        (Field::TextLineNumbers, false, None),
+        (Field::Theme, true, None),
+        (Field::Sort, false, Some((input, "sort"))),
+    ]
+    .map(|(field, has_notice, find)| {
+        let shows = SheetShows {
+            active: Side::Left,
+            window_width: None,
+            is_ringed: false,
+            settings: Some(field),
+            extras: Extras { has_notice, find },
+            shortcuts: None,
+        };
+        cx.new(|cx| WindowPage::with_sheet(shows, cx))
+    })
 }
 
 pub fn hint_windows(cx: &mut App) -> [Entity<WindowPage>; 4] {
@@ -129,6 +143,58 @@ pub fn window_element(page: Page, windows: [&Entity<WindowPage>; 23]) -> Option<
         Page::HintsAlt => hints_alt,
         Page::HintsLow => hints_low,
         Page::CrashNotice => crash,
+        _ => return None,
+    };
+    Some(shown.clone().into_any_element())
+}
+
+pub fn parts_windows(cx: &mut App) -> [Entity<WindowPage>; 3] {
+    let by_size = SortKey {
+        by: SortBy::Size,
+        descending: true,
+    };
+    [
+        (WindowParts::default(), false, SortKey::default()),
+        (WindowParts::all(false), false, by_size),
+        (WindowParts::default(), true, SortKey::default()),
+    ]
+    .map(|(parts, shows_menu, sort)| {
+        cx.new(|cx| WindowPage::with_parts(parts, shows_menu, cx).sorted_by(sort))
+    })
+}
+
+pub fn preview_windows(cx: &mut App) -> [Entity<WindowPage>; 4] {
+    [(true, true), (false, true), (true, false), (false, false)].map(|parts| {
+        let shows = SheetShows {
+            active: Side::Left,
+            window_width: None,
+            is_ringed: false,
+            settings: None,
+            shortcuts: None,
+            extras: Extras::default(),
+        };
+        cx.new(|cx| WindowPage::with_sheet(shows, cx).with_preview_parts(parts))
+    })
+}
+
+pub fn preview_element(page: Page, windows: &[Entity<WindowPage>; 4]) -> Option<AnyElement> {
+    let [on, no_bars, no_largest, off] = windows;
+    let shown = match page {
+        Page::PreviewPartsOn => on,
+        Page::PreviewNoBars => no_bars,
+        Page::PreviewNoLargest => no_largest,
+        Page::PreviewPartsOff => off,
+        _ => return None,
+    };
+    Some(shown.clone().into_any_element())
+}
+
+pub fn parts_element(page: Page, windows: &[Entity<WindowPage>; 3]) -> Option<AnyElement> {
+    let [on, off, menu] = windows;
+    let shown = match page {
+        Page::WindowPartsOn => on,
+        Page::WindowPartsOff => off,
+        Page::WindowViewMenu => menu,
         _ => return None,
     };
     Some(shown.clone().into_any_element())

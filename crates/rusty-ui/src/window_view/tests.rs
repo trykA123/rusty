@@ -30,19 +30,25 @@ mod hand_off;
 mod hints;
 mod jobs;
 mod keymap;
+mod marks;
+mod mouse_marks;
 mod offline;
 mod placement;
 mod prefetch;
+mod settings_find;
 mod settings_layer;
 mod settings_news;
 mod settings_sheet;
 mod settings_state;
+mod settings_upgrade;
 mod shell_menu;
 pub(in crate::window_view) mod shortcuts;
 mod start_watch;
 mod tabs;
 mod typed;
 mod watched;
+mod window_menu;
+mod window_parts;
 use crate::browser::Operations;
 use crate::tokens::{self, Mode};
 
@@ -614,7 +620,7 @@ fn viewer_window(
                     return Err(super::SaveError::Changed);
                 }
                 saved.lock().expect("log").push(save.text.to_owned());
-                Ok(None)
+                Ok(None.into())
             }),
             head: Arc::new(|_| Ok(hello_head())),
             paged: Arc::new(|_| Err("No paged view here.".to_owned())),

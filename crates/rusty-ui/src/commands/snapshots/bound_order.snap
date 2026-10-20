@@ -31,8 +31,29 @@ files.rename | shift-f6 | FileList
 files.new_folder | f7 | FileList
 files.new_file | shift-f7 | FileList
 files.mark_pattern | + | FileList
+files.mark_pattern | add | FileList
 files.unmark_pattern | - | FileList
+files.unmark_pattern | subtract | FileList
 files.invert_marks | * | FileList
+files.invert_marks | multiply | FileList
+files.extend_up | shift-up | FileList
+files.extend_down | shift-down | FileList
+files.extend_page_up | shift-pageup | FileList
+files.extend_page_down | shift-pagedown | FileList
+files.extend_first | shift-home | FileList
+files.extend_last | shift-end | FileList
+files.mark_all | ctrl-a | FileList
+files.mark_all | ctrl-+ | FileList
+files.mark_all | ctrl-add | FileList
+files.unmark_all | ctrl-shift-a | FileList
+files.unmark_all | ctrl-- | FileList
+files.unmark_all | ctrl-subtract | FileList
+files.restore_marks | / | FileList
+files.restore_marks | divide | FileList
+files.mark_extension | alt-+ | FileList
+files.mark_extension | alt-add | FileList
+files.unmark_extension | alt-- | FileList
+files.unmark_extension | alt-subtract | FileList
 files.sort_by_name | ctrl-f3 | FileList
 files.sort_by_extension | ctrl-f4 | FileList
 files.sort_by_date | ctrl-f5 | FileList
@@ -43,6 +64,7 @@ files.view | f3 | FileList
 files.refresh | ctrl-r | FileList
 files.context_menu | menu | FileList
 files.context_menu | shift-f10 | FileList
+files.context_menu | alt-m | FileList
 [dialog_focus]
 dialog.next_field | tab | Dialog
 dialog.previous_field | shift-tab | Dialog
@@ -83,8 +105,14 @@ settings.edit_value | f2 | SettingsSheet
 settings.show_in_file | f3 | SettingsSheet
 settings.reset_value | f8 | SettingsSheet
 settings.undo | ctrl-z | SettingsSheet
+settings.find | ctrl-f | SettingsSheet
 settings.close | escape | SettingsSheet
 settings.cancel_edit | escape | SettingsField
+settings.clear_find | escape | SettingsFind
+settings.find_to_list | down | SettingsFind
+settings.find_to_list | enter | SettingsFind
+settings.find_to_list | down | SettingsFind > Input
+settings.find_to_list | enter | SettingsFind > Input
 [shortcuts]
 shortcuts.previous_row | up | Shortcuts
 shortcuts.previous_row | up | Shortcuts > Input
@@ -153,6 +181,7 @@ viewer.back | escape | Tree
 viewer.show_line_ends | alt-l | Viewer
 viewer.follow | alt-f | Viewer
 viewer.view_menu | alt-v | Viewer
+viewer.encoding | ctrl-shift-e | Viewer
 view.left_drawer | ctrl-b | Viewer
 view.right_drawer | ctrl-i | Viewer
 viewer.context_menu | menu | Viewer
@@ -323,12 +352,14 @@ preview.view | f3 | PreviewBrowse
 preview.leave | escape | PreviewBrowse
 preview.leave_and_switch | tab | PreviewBrowse
 preview.recount | ctrl-r | PreviewBrowse
+preview.view_menu | alt-v | PreviewBrowse
 [ferrite_window]
 jobs.toggle | ctrl-j | global
 tab.new | ctrl-t | FerritePane
 pane.drive_menu_first | alt-f1 | FerritePane
 pane.drive_menu_second | alt-f2 | FerritePane
 pane.edit_path | ctrl-l | FerritePane
+window.view_menu | alt-v | FerritePane
 pane.reset_split | ctrl-shift-0 | FerritePane
 preview.browse | ctrl-shift-q | FerritePane
 crash_notice.focus | ctrl-shift-r | FerritePane

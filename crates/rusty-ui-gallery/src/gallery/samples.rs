@@ -1,5 +1,16 @@
 use super::*;
 
+pub(super) const VIEWER_MENUS: [ViewerMenuShows; 8] = [
+    ViewerMenuShows::Text,
+    ViewerMenuShows::Tree,
+    ViewerMenuShows::ViewText,
+    ViewerMenuShows::Encoding,
+    ViewerMenuShows::ViewAutomotive,
+    ViewerMenuShows::ViewElf,
+    ViewerMenuShows::ViewTrace,
+    ViewerMenuShows::ViewMarkdown,
+];
+
 impl Gallery {
     pub(super) fn sample(&self) -> Option<&dyn ViewerBody> {
         match self.page {
@@ -7,6 +18,7 @@ impl Gallery {
             Page::Table => self.table.as_deref(),
             Page::Markdown => self.markdown.as_deref(),
             Page::MarkdownPreview => self.markdown_preview.as_deref(),
+            Page::Code => self.code.as_deref(),
             Page::MemoryImage => self.memory[0].as_deref(),
             Page::MemoryDrawers => self.memory[1].as_deref(),
             Page::ElfSymbols => self.elf[0].as_deref(),
@@ -38,6 +50,13 @@ impl Gallery {
     }
 
     pub fn drive_sample(&self, window: &mut Window, cx: &mut App) {
+        if self.page == Page::MouseMarks {
+            let events = self.mouse.update(cx, |page, cx| page.take_drive(cx));
+            for event in events {
+                window.dispatch_event(event, cx);
+            }
+            return;
+        }
         let steps: &[&str] = match self.page {
             Page::Tree => &TREE_STEPS,
             Page::Table => &TABLE_STEPS,

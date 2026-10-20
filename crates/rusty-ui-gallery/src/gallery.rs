@@ -15,27 +15,31 @@ use crate::automotive_sample::{
 };
 use crate::drives_page::{DrivesPage, Shows};
 use crate::image_sample;
+use crate::kinds_page::KindsPage;
 use crate::map_sample::{MAP_NAME, MAP_STEPS, map};
 use crate::menu_page::{MenuPage, Shows as MenuShows};
+use crate::mouse_page::MousePage;
 use crate::operate_page::OperatePage;
 pub use crate::pages::{PAGES, Page};
 use crate::pane_page::PanePage;
 use crate::sections;
 use crate::shortcuts_sample;
 use crate::structured_sample::{
-    self as structured, MARKDOWN, MARKDOWN_NAME, TABLE, TABLE_NAME, TREE, TREE_NAME,
+    self as structured, CODE, CODE_NAME, MARKDOWN, MARKDOWN_NAME, TABLE, TABLE_NAME, TREE,
+    TREE_NAME,
 };
 use crate::tokens_page;
 use crate::viewer_menu_page::{Shows as ViewerMenuShows, ViewerMenuPage};
 use crate::window_page::WindowPage;
 use crate::window_samples::{
-    display_window, hint_windows, job_windows, sheet_windows, window_element,
+    hint_windows, job_windows, parts_element, parts_windows, preview_element, preview_windows,
+    settings_windows, sheet_windows, window_element,
 };
 use crate::{pdf_sample, rich_sample, viewer_sample};
 
 mod samples;
 
-use samples::image_keys;
+use samples::{VIEWER_MENUS, image_keys};
 
 const TREE_STEPS: [&str; 9] = [
     "viewer::RowDown",
@@ -71,15 +75,18 @@ pub struct Gallery {
     mode: Mode,
     page: Page,
     pane: Entity<PanePage>,
+    mouse: Entity<MousePage>,
     operate: Entity<OperatePage>,
     hex: Entity<PagedView>,
     paged_text: Entity<PagedView>,
     drives: Entity<DrivesPage>,
     typed_path: Entity<DrivesPage>,
+    kinds: Entity<KindsPage>,
     tree: Option<Box<dyn ViewerBody>>,
     table: Option<Box<dyn ViewerBody>>,
     markdown: Option<Box<dyn ViewerBody>>,
     markdown_preview: Option<Box<dyn ViewerBody>>,
+    code: Option<Box<dyn ViewerBody>>,
     memory: [Option<Box<dyn ViewerBody>>; 2],
     elf: [Option<Box<dyn ViewerBody>>; 2],
     map: [Option<Box<dyn ViewerBody>>; 2],
@@ -90,7 +97,7 @@ pub struct Gallery {
     image: Option<Entity<ImageView>>,
     pdf: [Entity<PdfView>; 3],
     menus: [(Page, Entity<MenuPage>); 6],
-    viewer_menus: [Entity<ViewerMenuPage>; 6],
+    viewer_menus: [Entity<ViewerMenuPage>; 8],
     main_window: Entity<WindowPage>,
     shift_window: Entity<WindowPage>,
     ctrl_window: Entity<WindowPage>,
@@ -98,9 +105,11 @@ pub struct Gallery {
     job_windows: [Entity<WindowPage>; 4],
     menu_window: Entity<WindowPage>,
     sheet_windows: [Entity<WindowPage>; 9],
-    display_window: Entity<WindowPage>,
+    settings_windows: [Entity<WindowPage>; 3],
     hint_windows: [Entity<WindowPage>; 4],
     crash_window: Entity<WindowPage>,
+    parts_windows: [Entity<WindowPage>; 3],
+    preview_windows: [Entity<WindowPage>; 4],
     tab: usize,
     clicks: usize,
     scroll: ListScroll,
@@ -114,15 +123,18 @@ impl Gallery {
             mode,
             page: Page::Primitives,
             pane: cx.new(PanePage::new),
+            mouse: cx.new(MousePage::new),
             operate: cx.new(OperatePage::new),
             hex: viewer_sample::hex_view(cx),
             paged_text: viewer_sample::text_view(cx),
             drives: cx.new(|cx| DrivesPage::new(Shows::Menu, cx)),
             typed_path: cx.new(|cx| DrivesPage::new(Shows::PathError, cx)),
+            kinds: cx.new(KindsPage::new),
             tree: structured::body(TREE_NAME, TREE, window, cx),
             table: structured::body(TABLE_NAME, TABLE, window, cx),
             markdown: structured::body(MARKDOWN_NAME, MARKDOWN, window, cx),
             markdown_preview: structured::editing(MARKDOWN_NAME, MARKDOWN, window, cx),
+            code: structured::body(CODE_NAME, CODE, window, cx),
             memory: [(); 2].map(|()| structured::body(MEMORY_NAME, memory(), window, cx)),
             elf: [(); 2].map(|()| structured::binary(ELF_NAME, elf(), window, cx)),
             map: [(); 2].map(|()| structured::body(MAP_NAME, map(), window, cx)),
@@ -134,15 +146,8 @@ impl Gallery {
             pdf: [None, Some(PDF_SEARCH), Some(PDF_SEARCH)]
                 .map(|search| pdf_sample::pdf_view(search, window, cx)),
             menus: MENU_PAGES.map(|(page, shows)| (page, cx.new(|cx| MenuPage::new(shows, cx)))),
-            viewer_menus: [
-                ViewerMenuShows::Text,
-                ViewerMenuShows::Tree,
-                ViewerMenuShows::ViewText,
-                ViewerMenuShows::ViewAutomotive,
-                ViewerMenuShows::ViewElf,
-                ViewerMenuShows::ViewTrace,
-            ]
-            .map(|shows| cx.new(|cx| ViewerMenuPage::new(shows, window, cx))),
+            viewer_menus: VIEWER_MENUS
+                .map(|shows| cx.new(|cx| ViewerMenuPage::new(shows, window, cx))),
             main_window: cx.new(|cx| WindowPage::new(None, cx)),
             shift_window: cx.new(|cx| WindowPage::new(Some(KeyLayer::Shift), cx)),
             ctrl_window: cx.new(|cx| WindowPage::new(Some(KeyLayer::Ctrl), cx)),
@@ -150,9 +155,11 @@ impl Gallery {
             job_windows: job_windows(cx),
             menu_window: cx.new(WindowPage::with_menu),
             sheet_windows: sheet_windows(window, cx),
-            display_window: display_window(cx),
+            settings_windows: settings_windows(window, cx),
             hint_windows: hint_windows(cx),
             crash_window: cx.new(WindowPage::with_crash),
+            parts_windows: parts_windows(cx),
+            preview_windows: preview_windows(cx),
             tab: 1,
             clicks: 0,
             scroll: ListScroll::new(),
@@ -313,21 +320,27 @@ impl Render for Gallery {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         let t = tokens::current(cx).clone();
         let root = root(&t);
-        if self.page == Page::SettingsDisplay {
-            return root.child(self.display_window.clone());
+        let [display, upgrade, find] = &self.settings_windows;
+        match self.page {
+            Page::SettingsDisplay => return root.child(display.clone()),
+            Page::SettingsUpgrade => return root.child(upgrade.clone()),
+            Page::SettingsFind => return root.child(find.clone()),
+            _ => {}
         }
-        if let Some(page) = window_element(self.page, self.windows()) {
+        if let Some(page) = self.window_page() {
             let is_narrow = matches!(self.page, Page::WindowNarrow | Page::SheetNarrow);
             return root.when(is_narrow, |r| r.bg(t.colors.line)).child(page);
         }
         let root = root.child(self.header(cx)).child(self.page_bar(&t, cx));
         match self.page {
             Page::Pane => root.child(self.pane.clone()),
+            Page::MouseMarks => root.child(self.mouse.clone()),
             Page::Operate => root.child(self.operate.clone()),
             Page::Hex => root.child(self.hex.clone()),
             Page::PagedText => root.child(self.paged_text.clone()),
             Page::Drives => root.child(self.drives.clone()),
             Page::TypedPath => root.child(self.typed_path.clone()),
+            Page::FileKinds => root.child(self.kinds.clone()),
             Page::Archive => root.child(self.archive.clone()),
             Page::Font => root.children(self.font.clone()),
             Page::Marks => root.child(self.marks_page(window, cx)),
@@ -338,12 +351,7 @@ impl Render for Gallery {
             | Page::MenuFiles
             | Page::MenuBackground
             | Page::MenuEmptyFolder => root.children(self.menu_page(self.page)),
-            Page::ViewerMenuText
-            | Page::ViewerMenuTree
-            | Page::ViewMenuText
-            | Page::ViewMenuAutomotive
-            | Page::ViewMenuElf
-            | Page::ViewMenuTrace => root.children(self.viewer_menu()),
+            _ if self.viewer_menu().is_some() => root.children(self.viewer_menu()),
             Page::Primitives => root.child(self.primitives(&t, window, cx)),
             page if page.is_viewer_sample() => self.sample_page(root, cx),
             Page::Tokens => root.child(tokens_page::render(&t)),
@@ -356,14 +364,22 @@ impl Render for Gallery {
 }
 
 impl Gallery {
+    fn window_page(&self) -> Option<AnyElement> {
+        parts_element(self.page, &self.parts_windows)
+            .or_else(|| preview_element(self.page, &self.preview_windows))
+            .or_else(|| window_element(self.page, self.windows()))
+    }
+
     fn viewer_menu(&self) -> Option<Entity<ViewerMenuPage>> {
         match self.page {
             Page::ViewerMenuText => Some(self.viewer_menus[0].clone()),
             Page::ViewerMenuTree => Some(self.viewer_menus[1].clone()),
             Page::ViewMenuText => Some(self.viewer_menus[2].clone()),
-            Page::ViewMenuAutomotive => Some(self.viewer_menus[3].clone()),
-            Page::ViewMenuElf => Some(self.viewer_menus[4].clone()),
-            Page::ViewMenuTrace => Some(self.viewer_menus[5].clone()),
+            Page::ViewerEncoding => Some(self.viewer_menus[3].clone()),
+            Page::ViewMenuAutomotive => Some(self.viewer_menus[4].clone()),
+            Page::ViewMenuElf => Some(self.viewer_menus[5].clone()),
+            Page::ViewMenuTrace => Some(self.viewer_menus[6].clone()),
+            Page::ViewMenuMarkdown => Some(self.viewer_menus[7].clone()),
             _ => None,
         }
     }

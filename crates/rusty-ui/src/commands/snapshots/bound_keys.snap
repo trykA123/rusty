@@ -66,6 +66,7 @@ elf.type_three | 3 | ElfTable
 files.clear_filter | escape | FileList
 files.clipboard_copy | ctrl-c | FileList
 files.clipboard_cut | ctrl-x | FileList
+files.context_menu | alt-m | FileList
 files.context_menu | menu | FileList
 files.context_menu | shift-f10 | FileList
 files.copy | f5 | FileList
@@ -77,8 +78,21 @@ files.delete | shift-delete | FileList
 files.delete | shift-f8 | FileList
 files.edit | f4 | FileList
 files.edit_with | shift-f4 | FileList
+files.extend_down | shift-down | FileList
+files.extend_first | shift-home | FileList
+files.extend_last | shift-end | FileList
+files.extend_page_down | shift-pagedown | FileList
+files.extend_page_up | shift-pageup | FileList
+files.extend_up | shift-up | FileList
 files.invert_marks | * | FileList
+files.invert_marks | multiply | FileList
+files.mark_all | ctrl-+ | FileList
+files.mark_all | ctrl-a | FileList
+files.mark_all | ctrl-add | FileList
+files.mark_extension | alt-+ | FileList
+files.mark_extension | alt-add | FileList
 files.mark_pattern | + | FileList
+files.mark_pattern | add | FileList
 files.move | f6 | FileList
 files.new_file | shift-f7 | FileList
 files.new_folder | f7 | FileList
@@ -92,13 +106,21 @@ files.recycle | f8 | FileList
 files.refresh | ctrl-r | FileList
 files.rename | f2 | FileList
 files.rename | shift-f6 | FileList
+files.restore_marks | / | FileList
+files.restore_marks | divide | FileList
 files.sort_by_date | ctrl-f5 | FileList
 files.sort_by_extension | ctrl-f4 | FileList
 files.sort_by_name | ctrl-f3 | FileList
 files.sort_by_size | ctrl-f6 | FileList
 files.toggle_mark | space | FileList
 files.toggle_mark_down | insert | FileList
+files.unmark_all | ctrl-- | FileList
+files.unmark_all | ctrl-shift-a | FileList
+files.unmark_all | ctrl-subtract | FileList
+files.unmark_extension | alt-- | FileList
+files.unmark_extension | alt-subtract | FileList
 files.unmark_pattern | - | FileList
+files.unmark_pattern | subtract | FileList
 files.view | f3 | FileList
 find.all | alt-enter | ViewerFind
 find.close_results | escape | FindAll
@@ -189,11 +211,18 @@ preview.toggle_mark | space | PreviewBrowse
 preview.unfold | right | PreviewBrowse
 preview.unfold_all | alt-right | PreviewBrowse
 preview.view | f3 | PreviewBrowse
+preview.view_menu | alt-v | PreviewBrowse
 prompt.cancel | escape | PromptDialog
 settings.cancel_edit | escape | SettingsField
+settings.clear_find | escape | SettingsFind
 settings.close | escape | SettingsSheet
 settings.edit_value | enter | SettingsSheet
 settings.edit_value | f2 | SettingsSheet
+settings.find | ctrl-f | SettingsSheet
+settings.find_to_list | down | SettingsFind
+settings.find_to_list | down | SettingsFind > Input
+settings.find_to_list | enter | SettingsFind
+settings.find_to_list | enter | SettingsFind > Input
 settings.flip_value | space | SettingsSheet
 settings.next_section | tab | SettingsSheet
 settings.next_value | right | SettingsSheet
@@ -284,6 +313,7 @@ viewer.context_menu | menu | Viewer
 viewer.context_menu | shift-f10 | Viewer
 viewer.copy_path_line | ctrl-shift-c | Viewer
 viewer.edit | ctrl-e | Viewer
+viewer.encoding | ctrl-shift-e | Viewer
 viewer.follow | alt-f | Viewer
 viewer.go_to_end | ctrl-end | Viewer
 viewer.go_to_end | end | Archive
@@ -308,3 +338,4 @@ viewer.show_line_ends | alt-l | Viewer
 viewer.show_rich | alt-5 | Viewer
 viewer.show_text | alt-1 | Viewer
 viewer.view_menu | alt-v | Viewer
+window.view_menu | alt-v | FerritePane

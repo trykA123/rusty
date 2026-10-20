@@ -1,7 +1,9 @@
 mod archive;
 mod at_line;
 mod can_trace;
+mod can_trace_blf;
 mod elf_view;
+mod encoding;
 mod find;
 mod find_all;
 mod follow;
@@ -25,11 +27,14 @@ mod moves;
 mod open;
 mod pdf;
 mod pdf_find;
+mod pdf_links;
 mod rebound;
 mod save;
 mod search;
 pub(in crate::window_view::viewer) mod structured;
 mod view_parts;
+mod view_parts_md;
+mod view_rig;
 
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
@@ -152,6 +157,7 @@ fn paged_of(bytes: &Arc<Vec<u8>>, setup: &Setup, log: &Log) -> Paged {
         }),
         index: index_run(bytes.clone(), setup.index_fails),
         summary: None,
+        problem: None,
         editable: false,
         stamp: Some(FileStamp {
             len: bytes.len() as u64,
@@ -182,7 +188,7 @@ pub(super) fn hooks(setup: Setup, log: &Log) -> FileHooks {
         }),
         write: Arc::new(move |_, save| {
             written.lock().expect("log").push(save.text.to_owned());
-            Ok(None)
+            Ok(None.into())
         }),
         head: Arc::new(move |location| {
             let name = location

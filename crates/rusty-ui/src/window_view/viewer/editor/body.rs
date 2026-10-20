@@ -2,6 +2,7 @@ use std::any::Any;
 
 use gpui_kit::component::input::{Copy, Cut, Paste, SelectAll};
 use gpui_kit::{AnyView, FocusHandle, Focusable};
+use rusty_core::encoding::TextEncoding;
 
 use super::{EditorView, SplitChoice};
 use crate::prelude::*;
@@ -11,7 +12,7 @@ use crate::window_view::viewer::body::{
     BodyAct, BodyKeys, Carried, Host, Key, MenuEntry, ViewerBody,
 };
 use crate::window_view::viewer::menu::marking_entries;
-use crate::window_view::viewer::parts::{PartSet, TEXT};
+use crate::window_view::viewer::parts::{MARKDOWN_TEXT, PartSet, TEXT};
 use crate::window_view::viewer::search::bar::{FIND_KEYS, GO_TO_KEYS, LIST_KEYS, MARK_KEYS};
 use crate::window_view::viewer::{CopyPathLine, FindSelection, OpenGoTo, ShowHex, ToggleFollow};
 
@@ -39,6 +40,14 @@ impl EditorBody {
         cx: &App,
     ) -> Entity<gpui_kit::component::input::EditorState> {
         self.0.read(cx).editor.clone()
+    }
+
+    pub(in crate::window_view::viewer) fn has_preview_focus(
+        &self,
+        window: &Window,
+        cx: &App,
+    ) -> bool {
+        self.0.read(cx).is_preview_focused(window, cx)
     }
 
     #[cfg(test)]
@@ -146,37 +155,61 @@ impl ViewerBody for EditorBody {
         let editing = self.0.read(cx).editing;
         let mut entries = Vec::new();
         if editing {
-            entries.push(MenuEntry::Run("Cut", Box::new(Cut), false));
+            entries.push(MenuEntry::Run("Cut".into(), Box::new(Cut), false));
         }
-        entries.push(MenuEntry::Run("Copy", Box::new(Copy), false));
+        entries.push(MenuEntry::Run("Copy".into(), Box::new(Copy), false));
         if editing {
-            entries.push(MenuEntry::Run("Paste", Box::new(Paste), false));
+            entries.push(MenuEntry::Run("Paste".into(), Box::new(Paste), false));
         }
-        entries.push(MenuEntry::Run("Select all", Box::new(SelectAll), false));
+        entries.push(MenuEntry::Run(
+            "Select all".into(),
+            Box::new(SelectAll),
+            false,
+        ));
         entries.push(MenuEntry::Break);
         entries.push(MenuEntry::Run(
-            "Find selection",
+            "Find selection".into(),
             Box::new(FindSelection),
             false,
         ));
         entries.push(MenuEntry::Run(
-            "Copy path:line",
+            "Copy path:line".into(),
             Box::new(CopyPathLine),
             false,
         ));
         entries.push(MenuEntry::Break);
         entries.extend(marking_entries());
         entries.push(MenuEntry::Break);
-        entries.push(MenuEntry::Run("Go to line", Box::new(OpenGoTo), false));
+        entries.push(MenuEntry::Run(
+            "Go to line".into(),
+            Box::new(OpenGoTo),
+            false,
+        ));
         if !editing {
-            entries.push(MenuEntry::Run("Follow", Box::new(ToggleFollow), false));
+            entries.push(MenuEntry::Run(
+                "Follow".into(),
+                Box::new(ToggleFollow),
+                false,
+            ));
         }
-        entries.push(MenuEntry::Run("Open as Hex", Box::new(ShowHex), false));
+        entries.push(MenuEntry::Run(
+            "Open as Hex".into(),
+            Box::new(ShowHex),
+            false,
+        ));
         entries
     }
 
-    fn parts(&self, _: &App) -> Option<&'static PartSet> {
-        Some(&TEXT)
+    fn parts(&self, cx: &App) -> Option<&'static PartSet> {
+        Some(if self.0.read(cx).has_split() {
+            &MARKDOWN_TEXT
+        } else {
+            &TEXT
+        })
+    }
+
+    fn encoding(&self, cx: &App) -> Option<TextEncoding> {
+        Some(self.0.read(cx).encoding)
     }
 
     fn show_parts(&self, values: &Values, cx: &mut App) {

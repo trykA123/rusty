@@ -1,8 +1,9 @@
 use std::io::{Read, Write};
 
 use crate::protocol::{
-    Bitmap, CodecError, MAX_MESSAGE_BYTES, MAX_RESPONSE_FRAME, PageText, PdfError, RenderRequest,
-    Request, Response, encode_response, read_request, write_frame, write_response,
+    Bitmap, CodecError, MAX_MESSAGE_BYTES, MAX_RESPONSE_FRAME, Outline, PageLinks, PageText,
+    PdfError, RenderRequest, Request, Response, encode_response, read_request, write_frame,
+    write_response,
 };
 
 pub trait Engine {
@@ -10,6 +11,8 @@ pub trait Engine {
     fn page_count(&self) -> Result<u32, PdfError>;
     fn render(&mut self, request: &RenderRequest) -> Result<Bitmap, PdfError>;
     fn text(&mut self, page: u32) -> Result<PageText, PdfError>;
+    fn links(&mut self, page: u32) -> Result<PageLinks, PdfError>;
+    fn outline(&mut self) -> Result<Outline, PdfError>;
     fn close(&mut self);
 }
 
@@ -35,6 +38,14 @@ impl Engine for Unavailable {
     }
 
     fn text(&mut self, _page: u32) -> Result<PageText, PdfError> {
+        Err(PdfError::NotOpen)
+    }
+
+    fn links(&mut self, _page: u32) -> Result<PageLinks, PdfError> {
+        Err(PdfError::NotOpen)
+    }
+
+    fn outline(&mut self) -> Result<Outline, PdfError> {
         Err(PdfError::NotOpen)
     }
 
@@ -76,6 +87,8 @@ fn answer(engine: &mut dyn Engine, request: Request) -> Response {
         Request::PageCount => engine.page_count().map(Response::PageCount),
         Request::Render(render) => engine.render(&render).map(Response::Page),
         Request::Text { page } => engine.text(page).map(Response::Text),
+        Request::Links { page } => engine.links(page).map(Response::Links),
+        Request::Outline => engine.outline().map(Response::Outline),
         Request::Close => {
             engine.close();
             Ok(Response::Closed)

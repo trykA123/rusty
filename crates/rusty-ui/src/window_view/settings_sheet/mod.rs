@@ -1,7 +1,9 @@
 mod edit;
+mod find;
 mod locate;
 mod shortcuts;
 mod undo;
+mod upgrade;
 
 use std::sync::{Arc, Mutex, PoisonError};
 
@@ -12,9 +14,7 @@ use super::FerriteWindow;
 use super::settings_news::SettingsInbox;
 use super::settings_save::{SaveReport, SaveSettings, Saver};
 use crate::prelude::*;
-use crate::settings::{
-    Change, FIELDS, Field, SettingsBody, SheetEvent, Values, rows_in, section_of,
-};
+use crate::settings::{Change, FIELDS, Field, Filter, SettingsBody, SheetEvent, Values, child_of};
 use crate::side_sheet::SheetState;
 use crate::tokens;
 
@@ -61,6 +61,9 @@ pub(super) struct SettingsPanel {
     scroll: ScrollHandle,
     is_open: bool,
     row: usize,
+    filter: Filter,
+    find: Option<find::Find>,
+    upgrade: upgrade::Upgrade,
     undo: undo::UndoStack,
     edit: Option<edit::TextEdit>,
     restore_preview: bool,
@@ -93,6 +96,9 @@ impl SettingsPanel {
             scroll: ScrollHandle::new(),
             is_open: false,
             row: 0,
+            filter: Filter::default(),
+            find: None,
+            upgrade: upgrade::Upgrade::default(),
             undo: undo::UndoStack::default(),
             edit: None,
             restore_preview: false,
@@ -146,6 +152,7 @@ impl FerriteWindow {
             self.settings.restore_preview = true;
         }
         self.settings.is_open = true;
+        self.prepare_find(window, cx);
         self.settings.undo.clear();
         self.settings.notice = None;
         self.settings.sheet.update(cx, |sheet, cx| sheet.open(cx));
@@ -171,6 +178,7 @@ impl FerriteWindow {
         self.settings.edit = None;
         self.settings.waiting_locate = None;
         self.settings.undo.clear();
+        self.clear_find(window, cx);
         self.pause_shortcuts(cx);
         self.settings.sheet.update(cx, |sheet, cx| sheet.close(cx));
         if std::mem::take(&mut self.settings.restore_preview) {
@@ -198,7 +206,10 @@ impl FerriteWindow {
             SheetEvent::Edit(field) => self.start_edit(field, window, cx),
             SheetEvent::Locate(field) => self.open_settings_file(field, window, cx),
             SheetEvent::Undo => self.undo_setting(window, cx),
-            SheetEvent::Close => self.close_settings(window, cx),
+            SheetEvent::Find => self.focus_find(window, cx),
+            SheetEvent::Keep(field) => self.keep_old(field, window, cx),
+            SheetEvent::DismissUpgrade => self.dismiss_upgrade(),
+            SheetEvent::Close => self.escape_settings(window, cx),
         }
         cx.notify();
     }
@@ -209,9 +220,8 @@ impl FerriteWindow {
         if std::mem::take(&mut self.settings.is_shortcuts) {
             self.pause_shortcuts(cx);
         }
-        let at = rows_in(section_of(row)).position(|(index, _)| index == row);
-        if let Some(at) = at {
-            self.settings.scroll.scroll_to_item(at + 1);
+        if let Some(child) = child_of(&self.settings.filter, row) {
+            self.settings.scroll.scroll_to_item(child);
         }
         if self.settings.edit.is_none() {
             self.focus_settings(window, cx);
@@ -219,15 +229,28 @@ impl FerriteWindow {
     }
 
     fn set_from_sheet(&mut self, change: Change, window: &mut Window, cx: &mut Context<Self>) {
+        let field = change.field;
+        if self.apply_from_sheet(change, window, cx) {
+            self.settings.upgrade.forget(field);
+        }
+    }
+
+    fn apply_from_sheet(
+        &mut self,
+        change: Change,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) -> bool {
         if let Some(row) = FIELDS.iter().position(|spec| spec.field == change.field) {
             self.select_setting(row, window, cx);
         }
         let old = self.values.change_of(change.field);
         if old == change {
-            return;
+            return false;
         }
         self.settings.undo.push(old);
         self.change_setting(change, window, cx);
+        true
     }
 
     fn undo_setting(&mut self, window: &mut Window, cx: &mut Context<Self>) {
@@ -254,6 +277,9 @@ impl FerriteWindow {
         let error = self.saver.error.clone().or(self.settings.notice.clone());
         let body = SettingsBody::new(self.values.clone(), self.settings.row)
             .error(error)
+            .filter(self.settings.filter.clone())
+            .find(self.find_bar(&t, cx))
+            .upgrade(self.settings.upgrade.items())
             .editor(self.edit_bar(&t, cx))
             .shortcuts(
                 self.shown_shortcuts()

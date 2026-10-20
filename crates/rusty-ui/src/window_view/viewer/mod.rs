@@ -5,6 +5,7 @@ mod body;
 mod cancel;
 mod editor;
 mod elf;
+mod encoding;
 mod files;
 mod font;
 mod image;
@@ -19,7 +20,7 @@ mod menu;
 mod modes;
 mod open;
 mod paged;
-mod parts;
+pub(in crate::window_view) mod parts;
 mod pdf;
 mod rich_header;
 mod search;
@@ -27,29 +28,31 @@ mod table;
 mod trace;
 mod tree;
 mod view;
-mod view_menu;
+pub(in crate::window_view) mod view_menu;
 
 use std::cell::Cell;
 use std::rc::Rc;
 
 use gpui_kit::{Bounds, FocusHandle, Subscription};
 use rusty_core::Location;
+use rusty_core::encoding::{Encoding, TextEncoding};
 
 pub use archive::{ArchiveSource, ArchiveView};
 pub use body::{Attach, BodyAct, BodyKeys, Carried, Host, Key, MenuEntry, ViewerBody};
+pub use encoding::encoding_picker;
 pub use files::{
     FileHooks, FileStamp, FileText, Head, IndexRun, Paged, ReadBytes, Reopen, Save, SaveError,
-    SharedSource,
+    Saved, SharedSource,
 };
 pub use font::{FontFace, FontView};
 pub use image::{ExifEntry, IMAGE_LIMIT, ImageView, Picture, decode_image};
 pub use keys::bind_keys;
 use keys::*;
-pub(in crate::window_view) use keys::{BackspaceKey, PageDown};
+pub(in crate::window_view) use keys::{BackspaceKey, KeepViewDefault, PageDown, ResetView};
 pub use kinds::{Declined, EDIT_LIMIT, Kind, Kinds, Load, Loaded, Slot, Sniff, ViewerKind};
 pub use menu::viewer_menu;
 pub use paged::{PagedKind, PagedView};
-pub use pdf::{OpenPdf, PdfLook, PdfPages, PdfStart, PdfView};
+pub use pdf::{OpenPdf, OpenUri, PdfLook, PdfPages, PdfStart, PdfView};
 pub use search::memory::MemoryLink;
 pub(in crate::window_view) use tree::FilterBack;
 pub use view_menu::view_menu;
@@ -89,6 +92,9 @@ pub(super) struct Viewer {
     bounds: Rc<Cell<Bounds<Pixels>>>,
     start_line: Option<u64>,
     start_note: Option<SharedString>,
+    encoding: Option<&'static Encoding>,
+    detected: Option<TextEncoding>,
+    reencoding: Option<u64>,
 }
 
 fn merged_note(load: Option<&'static str>, start: Option<SharedString>) -> Option<SharedString> {
@@ -127,6 +133,9 @@ impl Viewer {
             bounds: Rc::default(),
             start_line: None,
             start_note: None,
+            encoding: None,
+            detected: None,
+            reencoding: None,
         }
     }
 

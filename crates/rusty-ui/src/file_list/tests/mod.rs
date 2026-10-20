@@ -1,5 +1,10 @@
 mod density;
 mod input;
+mod kinds;
+mod lasso;
+mod marks;
+mod mouse;
+mod parts;
 mod render;
 
 use std::rc::Rc;

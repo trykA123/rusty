@@ -97,19 +97,31 @@ fn arrows_step_a_number_and_text_needs_editing() {
 
 #[test]
 fn tab_jumps_to_the_next_section_and_wraps() {
-    assert_eq!(section_of(next_section(0, true)), Section::Files);
+    assert_eq!(
+        section_of(next_section(&Filter::default(), 0, true)),
+        Section::Files
+    );
     let last = first_row(Section::Display);
-    assert_eq!(next_section(last, true), 0);
-    assert_eq!(section_of(next_section(0, false)), Section::Display);
-    assert_eq!(next_section(FIELDS.len() - 1, true), 0);
+    assert_eq!(next_section(&Filter::default(), last, true), 0);
+    assert_eq!(
+        section_of(next_section(&Filter::default(), 0, false)),
+        Section::Display
+    );
+    assert_eq!(next_section(&Filter::default(), FIELDS.len() - 1, true), 0);
 }
 
 #[test]
 fn rows_move_across_sections_and_stop_at_the_ends() {
     let last_appearance = first_row(Section::Files) - 1;
-    assert_eq!(section_of(moved(last_appearance, true)), Section::Files);
-    assert_eq!(moved(0, false), 0);
-    assert_eq!(moved(FIELDS.len() - 1, true), FIELDS.len() - 1);
+    assert_eq!(
+        section_of(moved(&Filter::default(), last_appearance, true)),
+        Section::Files
+    );
+    assert_eq!(moved(&Filter::default(), 0, false), 0);
+    assert_eq!(
+        moved(&Filter::default(), FIELDS.len() - 1, true),
+        FIELDS.len() - 1
+    );
 }
 
 #[test]
@@ -161,33 +173,39 @@ fn modifier_hints_default_to_every_shortcut_after_400_ms() {
 }
 
 #[test]
-fn the_display_section_groups_text_image_and_automotive_parts() {
+fn the_display_section_groups_the_window_and_each_viewer_in_order() {
     let keys: Vec<(Option<&str>, &str)> = FIELDS
         .iter()
         .filter(|spec| spec.section == Section::Display)
         .map(|spec| (spec.group(), spec.key))
         .collect();
     let groups: Vec<Option<&str>> = keys.iter().map(|(group, _)| *group).collect();
-    assert_eq!(
-        groups,
-        [
-            Some("Text"),
-            Some("Text"),
-            Some("Image"),
-            Some("Automotive"),
-            Some("Automotive"),
-            Some("Automotive"),
-            Some("Automotive"),
-            Some("Automotive"),
-        ]
-    );
+    let expected = [
+        ("Window", 12),
+        ("Text", 3),
+        ("Image", 1),
+        ("Markdown", 1),
+        ("Preview", 2),
+        ("Automotive", 5),
+    ];
+    let expected: Vec<Option<&str>> = expected
+        .iter()
+        .flat_map(|(group, count)| std::iter::repeat_n(Some(*group), *count))
+        .collect();
+    assert_eq!(groups, expected);
     let keys: Vec<&str> = keys.into_iter().map(|(_, key)| key).collect();
+    assert_eq!(keys[0], "window.view.tabs-with-one");
+    assert_eq!(keys[11], "window.view.contents");
     assert_eq!(
-        keys,
+        keys[12..],
         [
             "text.view.line-numbers",
             "text.view.line-ends",
+            "text.view.syntax-theme",
             "image.view.details",
+            "markdown.view.preview-split",
+            "preview.view.type-bars",
+            "preview.view.largest-files",
             "automotive.view.preset",
             "automotive.view.inspector",
             "automotive.view.memory-strip",
@@ -233,8 +251,9 @@ fn every_display_row_has_a_one_sentence_hint() {
         .iter()
         .filter(|spec| spec.section == Section::Display)
     {
-        assert!(spec.help.ends_with('.'), "{}", spec.key);
-        assert_eq!(spec.help.matches(". ").count(), 0, "{}", spec.key);
+        let help = spec.help();
+        assert!(help.ends_with('.'), "{}", spec.key);
+        assert_eq!(help.matches(". ").count(), 0, "{}", spec.key);
     }
 }
 
@@ -245,6 +264,72 @@ fn text_parts_default_to_line_numbers_on_and_line_ends_off() {
     assert!(!values.flag(Field::TextLineEnds));
     assert!(!values.flag(Field::ImageDetails));
     assert!(values.is_shown(None, Field::TextLineNumbers));
+}
+
+#[test]
+fn the_markdown_split_and_both_preview_parts_default_to_on() {
+    let values = Values::default();
+    for field in [
+        Field::MarkdownPreviewSplit,
+        Field::PreviewTypeBars,
+        Field::PreviewLargestFiles,
+    ] {
+        assert!(values.flag(field), "{}", field.spec().key);
+        assert!(!values.is_changed(field));
+        assert!(field.is_applied());
+    }
+    let hidden = values.with(&Change {
+        field: Field::PreviewTypeBars,
+        value: Value::Flag(false),
+    });
+    assert!(hidden.is_changed(Field::PreviewTypeBars));
+    assert!(hidden.flag(Field::PreviewLargestFiles));
+}
+
+#[test]
+fn every_window_part_is_on_by_default_and_reads_back() {
+    let values = Values::default();
+    assert_eq!(WindowParts::of(&values), WindowParts::default());
+    assert_eq!(WindowParts::default(), WindowParts::all(true));
+    let hidden = values.with(&Change {
+        field: Field::WindowSizeColumn,
+        value: Value::Flag(false),
+    });
+    assert!(!WindowParts::of(&hidden).size_column);
+    assert!(WindowParts::of(&hidden).date_column);
+    assert!(hidden.is_changed(Field::WindowSizeColumn));
+    assert!(Field::WindowContents.is_applied());
+}
+
+#[test]
+fn only_the_twelve_window_fields_are_window_parts() {
+    let parts: Vec<Field> = FIELDS
+        .iter()
+        .map(|spec| spec.field)
+        .filter(|field| field.is_window_part())
+        .collect();
+    assert_eq!(parts.len(), 12);
+    assert!(
+        FIELDS
+            .iter()
+            .filter(|spec| spec.key.starts_with("window."))
+            .all(|spec| spec.field.is_window_part())
+    );
+}
+
+#[test]
+fn the_scroll_child_of_a_row_counts_the_group_headings_above_it() {
+    let child = |field: Field| {
+        child_of(
+            &Filter::default(),
+            FIELDS.iter().position(|spec| spec.field == field).unwrap(),
+        )
+    };
+    assert_eq!(child(Field::Theme), Some(1));
+    assert_eq!(child(Field::WindowTabsWithOne), Some(2));
+    assert_eq!(child(Field::WindowContents), Some(13));
+    assert_eq!(child(Field::TextLineNumbers), Some(15));
+    assert_eq!(child(Field::ImageDetails), Some(19));
 }
 
 #[test]
