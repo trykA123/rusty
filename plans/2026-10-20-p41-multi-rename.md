@@ -176,11 +176,11 @@ Roles: Sonnet 5.5 medium or high for decided backend and UI work, Opus 5.5 mediu
 | A7 | `job::rename` all or nothing | api-builder (Sonnet) | high | A5, A6 | `cargo nextest run -p rusty-fs job::tests::rename`; Windows CI | done | |
 | A8 | journal undo queries | api-builder (Sonnet) | high | — | `cargo nextest run -p rusty-store journal` | done | |
 | A9 | `db` V5 presets | api-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-store db` | done | |
-| A10 | review Part A | reviewer (Opus) | high | A1–A9 | review notes; `cargo xtask gate`; Windows CI | blocked | |
+| A10 | review Part A | reviewer (Opus) | high | A1–A9 | review notes; `cargo xtask gate`; Windows CI | ready | |
 | **Part B — the tool** | | | | | | | |
 | B1 | commands, keys, `rename.ftl` | ui-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-ui commands`; gate l10n step | ready | |
-| B2 | `multi_rename::form` | ui-builder (Sonnet) | high | A2, A5 | `cargo nextest run -p rusty-ui multi_rename::tests::form` | blocked | |
-| B3 | `browser` rename batch + undo | api-builder (Sonnet) | high | A7 | `cargo nextest run -p rusty-ui browser::tests::rename_batch` | blocked | |
+| B2 | `multi_rename::form` | ui-builder (Sonnet) | high | A2, A5 | `cargo nextest run -p rusty-ui multi_rename::tests::form` | in progress | |
+| B3 | `browser` rename batch + undo | api-builder (Sonnet) | high | A7 | `cargo nextest run -p rusty-ui browser::tests::rename_batch` | ready | |
 | B4 | `view::fields` + token menu | ui-builder (Sonnet) | medium | B2 | `cargo nextest run -p rusty-ui multi_rename::tests::fields`; gallery shots | blocked | |
 | B5 | `view::preview` + summary | ui-builder (Opus) | medium | B2 | `cargo nextest run -p rusty-ui multi_rename::tests::preview`; gallery shots | blocked | |
 | B6 | `window_view::multi_rename` | ui-builder (Opus) | medium | B1, B3, B4, B5 | `cargo nextest run -p rusty-ui window_view::tests::multi_rename` | blocked | |
@@ -191,7 +191,7 @@ Roles: Sonnet 5.5 medium or high for decided backend and UI work, Opus 5.5 mediu
 | C1 | F2 on the batch path | ui-builder (Opus) | medium | B9 | `cargo nextest run -p rusty-ui browser::naming window_view::tests` | blocked | |
 | C2 | final review + owner checks | reviewer (Opus) | high | C1, E7 | review notes; gate; Windows CI; owner list | blocked | |
 | **Part D — parity and bonuses** | | | | | | | |
-| E1 | `rename::fields` registry + file, exif | api-builder (Sonnet) | high | A1 | `cargo nextest run -p rusty-core -p rusty-ui rename::fields` | blocked | |
+| E1 | `rename::fields` registry + file, exif | api-builder (Sonnet) | high | A1 | `cargo nextest run -p rusty-core -p rusty-ui rename::fields` | in progress | |
 | E2 | audio provider (`lofty`) | api-builder (Sonnet) | medium | E1 | `cargo nextest run -p rusty-ui rename::fields::audio` | blocked | |
 | E3 | clean-up rules | api-builder (Sonnet) | medium | A2 | `cargo nextest run -p rusty-core rename::tests::cleanup` | done | |
 | E4 | Edit names, load, paste, copy | ui-builder (Opus) | medium | B6 | `cargo nextest run -p rusty-ui window_view::tests::multi_rename` | blocked | |
