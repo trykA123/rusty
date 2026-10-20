@@ -219,23 +219,23 @@ Later, not in P36:
 | K4b | bindings, registry, labels, key tests | ui-builder (Sonnet) | medium | K4a | `cargo nextest run -p rusty-ui file_list commands`; `cargo xtask gate` (l10n) | done | |
 | K5 | `file_list` mouse | ui-builder (Opus) | medium | K4b | `cargo nextest run -p rusty-ui file_list window_view::tests::shell_menu` | done | |
 | K5b | `file_list` left-drag lasso (D20) | ui-builder (Opus) | medium | K5 | `cargo nextest run -p rusty-ui file_list::tests::lasso` | done | |
-| K6 | status bar hidden count | ui-builder (Sonnet) | medium | K3, K4b | `cargo nextest run -p rusty-ui status_bar window_view` | blocked | |
-| K7 | review Part K | reviewer (Opus) | high | K5, K6 | review notes; gate; Windows CI | blocked | |
-| D1 | `op_plan::drop_op` | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-core op_plan::drop` | ready | |
-| D2 | `Browser::drop_into` | api-builder (Sol 6.1) | xhigh | D1 | `cargo nextest run -p rusty-ui browser::operate` | blocked | |
-| D3 | `drop-confirm` setting | ui-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-store settings`, `-p rusty-ui settings` | blocked (Q2) | |
+| K6 | status bar hidden count | ui-builder (Sonnet) | medium | K3, K4b | `cargo nextest run -p rusty-ui status_bar window_view` | done (7ddacda) | |
+| K7 | review Part K | reviewer (Opus) | high | K5, K6 | review notes; gate; Windows CI | done (0a44f5c) | |
+| D1 | `op_plan::drop_op` | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-core op_plan::drop` | done (1fe41f4) | |
+| D2 | `Browser::drop_into` | api-builder (Sol 6.1) | xhigh | D1 | `cargo nextest run -p rusty-ui browser::operate` | done (39299b2) | |
+| D3 | `drop-confirm` setting | ui-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-store settings`, `-p rusty-ui settings` | in progress | |
 | D4 | `drag` badge | ui-builder (Sonnet) | medium | D1 | `cargo nextest run -p rusty-ui drag`; gallery shot | blocked | |
 | D5 | `file_list` drag source and targets | ui-builder (Opus) | medium | D4, K5 | `cargo nextest run -p rusty-ui file_list::tests::drag` | blocked | |
 | D6 | `window_view::drop` | ui-builder (Opus) | medium | D2, D3, D5 | `cargo nextest run -p rusty-ui window_view::tests::drop` | blocked | |
 | D7a | tab and crumb targets | ui-builder (Sonnet) | medium | D6 | `cargo nextest run -p rusty-ui pane_chrome window_view::tests::drop` | blocked | |
 | D7b | drive pill target | ui-builder (Sonnet) | medium | D7a | same | blocked | |
-| V1 | planner same-volume check | api-builder (Sol 6.1) | xhigh | D2 | `cargo nextest run -p rusty-ui browser::operate`; Linux cross-device test | blocked | |
-| D8 | auto-scroll, spring-loaded targets (optional) | ui-builder (Opus) | medium | D7b | `cargo nextest run -p rusty-ui window_view::tests::drop` | blocked (Q-D15) | |
-| L1 | `OpKind::Link` plan | api-builder (Sol 6.1) | xhigh | D2 | `cargo nextest run -p rusty-core op_plan` | blocked (Q4) | |
-| L2 | `ProviderOps::make_link` + job step + undo | api-builder (Sol 6.1) | xhigh | L1 | `cargo nextest run -p rusty-fs job`; Windows CI `test-windows` | blocked | |
+| V1 | planner same-volume check | api-builder (Sol 6.1) | xhigh | D2 | `cargo nextest run -p rusty-ui browser::operate`; Linux cross-device test | done (e4f06a1) | |
+| D8 | auto-scroll, spring-loaded targets (optional) | ui-builder (Opus) | medium | D7b | `cargo nextest run -p rusty-ui window_view::tests::drop` | blocked | |
+| L1 | `OpKind::Link` plan | api-builder (Sol 6.1) | xhigh | D2 | `cargo nextest run -p rusty-core op_plan` | blocked | |
+| L2 | `ProviderOps::make_link` + job step + undo | api-builder (Sol 6.1) | xhigh | L1 | `cargo nextest run -p rusty-fs job`; Windows CI `test-windows` | blocked (the `make_link` primitive landed with D1) | |
 | L3 | Link in drop and badge | ui-builder (Sonnet) | medium | L2, D7b | `cargo nextest run -p rusty-ui window_view::tests::drop drag` | blocked | |
 | D9 | review Part D | reviewer (Opus) | high | D7b, V1, L3 (D8 if run) | review notes; gate; Windows CI | blocked | |
-| X0 | OLE facts | researcher (Sonnet) | medium | — | answers with sources, in the Log | ready | |
+| X0 | OLE facts | researcher (Sonnet) | medium | — | answers with sources, in the Log | done (Log) | |
 | X1 | vendored drop target | api-builder (Opus) | medium | X0 | `cargo build --target x86_64-pc-windows-msvc` in CI; unit test of the key-state mapping | blocked | |
 | X2 | `DropPlatform` bridge, external drops | ui-builder (Opus) | medium | X1, D9 | `cargo nextest run -p rusty-ui window_view::tests::drop_external` | blocked | |
 | X3 | drop menu | ui-builder (Sonnet) | medium | X2 | same | blocked | |
@@ -749,3 +749,9 @@ Answers (2026-10-20): Q1 yes, Total Commander right-drag marking. Q2 `never`, as
   - Lasso: Ctrl toggles (D20). The tracked y is clamped to the list viewport, so a drag past an edge marks only shown rows; the rectangle still follows the raw pointer. A lasso from below that comes back below sends `Row(len)` and shrinks to the base (D3).
   - Browser: unmark-all and the empty-space click save visible plus filter-hidden marks (D5). `/` under a filter puts saved names the filter hides into the hidden-marks set, and succeeds when only hidden names match.
   - Footer text is now "N marked not shown", since show-hidden/show-system also hide marks.
+- 2026-10-20 — Table brought up to date: K6, K7, D1, D2 and V1 had merged without their rows changing.
+- 2026-10-20 — X0 answers (Microsoft Learn and The Old New Thing; worth a Windows check):
+  - Drop from Explorer that Ferrite moves itself: return `DROPEFFECT_NONE` from `Drop` and `SetData` `CFSTR_PERFORMEDDROPEFFECT = DROPEFFECT_NONE` (an optimized move). Explorer deletes the sources only when it sees `DROPEFFECT_MOVE`. `Logical Performed DropEffect` is read by the source; the target need not set it. Sources: learn.microsoft.com/windows/win32/shell/datascenarios, devblogs.microsoft.com/oldnewthing/20041208-00/?p=37093.
+  - `SHCreateDataObject` takes one parent PIDL plus child PIDLs, so all children share one parent. It documents `CFSTR_SHELLIDLIST`, not `CF_HDROP`; the shell's object is believed to render `CF_HDROP` lazily (unconfirmed: X4 tests it with `GetData`). For several folders use `SHCreateDataObject` with a null parent and absolute PIDLs, or `GetUIObjectOf` (unconfirmed).
+  - `SHDoDragDrop` with a null `IDropSource` creates the default source (Vista+) and a generic image when none is stored; a custom image goes in through `IDragSourceHelper`.
+  - `DoDragDrop` is a modal loop on the STA thread; our window procedure and our own drop target can run nested inside it. Hold no `RefCell` borrow, lock or `&mut` app state across the call; re-read state after it; expect our own window as a target. Start it only from a real mouse message with the button down (not touch or pen).
