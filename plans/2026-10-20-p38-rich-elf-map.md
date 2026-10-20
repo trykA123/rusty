@@ -222,7 +222,7 @@ Final once the owner answers Q1–Q3. Workers never reopen them; a worker that f
 | B4 | `space::owners_map` and groups | api-builder (Sonnet) | high | B3, B2b | `cargo nextest run -p rusty-automotive space_groups` | blocked | |
 | B5 | `space::strip` | api-builder (Sol 6.1) | xhigh | B2 | `cargo nextest run -p rusty-automotive space_strip` | done | |
 | B5b | `strip::inner` (D17 inner cells from owners) | api-builder (Sonnet) | medium | B5, B3 | `cargo nextest run -p rusty-automotive space_strip` | ready | |
-| B6 | `space::treemap` | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-automotive space_treemap` | ready | |
+| B6 | `space::treemap` | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-automotive space_treemap` | done | |
 | B7 | fixtures and budget | api-builder (Sol 6.1) | xhigh | B4, B5, B6, A7 | `cargo nextest run --release -p rusty-automotive --test elf_rich_large --run-ignored all` | blocked | |
 | B8 | `.mdf` viewer | ui-builder (Sonnet) | medium | B1, A2 | `cargo nextest run -p rusty-ui viewer::mdf`; gallery shot | blocked | |
 | B9 | review Part B | reviewer (Opus) | high | B7, B8 | review notes; gate; Windows CI | blocked | |
@@ -526,3 +526,4 @@ The original questions:
 - 2026-10-20 — Probe on the owner's files with B3: owner sums equal `Region.used` in every region, 1.4–3.0 ms. TASKING ROM copies of initialised data appear as their own `[.data.…]` sections in flash, so ROM usage already counts them (no LOAD-segment image needed). demo.elf has 9 `$fill` sections (671,680 bytes in one flash region) that showed as the largest owner and counted as used; D7 now adds the Fill kind (atom B2b).
 - 2026-10-20 — B2b done: `Kind::Fill` (ELF sections named `$fill*`, MAP entries `*fill*` or `$fill*`). `Region.used` leaves Fill out, `by_kind` and blocks keep it, owners skip Fill sections so owner sums still equal `used`.
 - 2026-10-20 — B5 done: `space::strip` has `Scale` (gap compression, true scale, zoom view, breaks) and `cells` (sub-pixel merge, at most one cell per pixel column, 1 px minimum). `inner` for D17 inner cells waits for B3 owners.
+- 2026-10-20 — B6 done: `space::treemap` (`layout(&[Item], Rect) -> Vec<Tile>`): squarified layout, top 22 plus one "N more" tile (last), zero weights dropped, order by size then input order, text flag above 64 × 34, inner tiles above 150 × 110 (top 14 parts plus "N more", laid out below an 18 px header and above the 4 px kind bar). Release timing for 22 × 14 tiles is under 1 ms.
