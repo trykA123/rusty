@@ -1,10 +1,10 @@
 # Multi-select and drag and drop
 
-Status: marking is done. Dragging inside Ferrite is mostly done. Explorer drag is coming.
+Status: marking is done. Dragging works between the panes, onto folders, tabs, path crumbs and drive pills. Alt-drop makes shortcuts. Auto-scroll, hover-open and Explorer drag are not done yet.
 
 ## What it is
 
-Mark many files with keys or the mouse. Drag them to the other pane, a folder or a tab to copy or move them. Later, drag files to and from Explorer.
+Mark many files with keys or the mouse. Drag them to the other pane, a folder, a tab, a breadcrumb or a drive pill to copy or move them. Later, drag files to and from Explorer.
 
 Ferrite keeps the Total Commander mark model. Marks are separate from the cursor. A plain click and plain arrows never change marks.
 
@@ -44,10 +44,13 @@ Marks survive the type-to-filter. Operations act only on visible marked rows. Th
 - Ctrl copies. Shift moves. Alt, or Ctrl+Shift, creates a shortcut.
 - A badge near the pointer says what will happen, for example "Move 3 items to Projects". It reacts live to the keys.
 - A drop into the source folder is refused: "Already in this folder". A folder into itself is refused: "Cannot drop a folder into itself".
+- An Alt-drop into the same folder is refused for now.
 - Shortcuts are named `<name> - Shortcut.lnk` on Windows and are symlinks on Linux. Clashes get a number.
-- Auto-scroll works near the top and bottom edges (24 px). Folders, tabs and drive pills open after you hover (800 ms, tabs 500 ms). Reduced motion turns these off.
+- Not done yet: auto-scroll near the top and bottom edges (24 px), and opening a folder, tab or drive after a hover.
 
 ### Explorer
+
+Coming. Not done yet. The plan for each part:
 
 - Dropping from Explorer into Ferrite: Ferrite does every move itself. The source never deletes anything.
 - A right-button drag from Explorer shows a menu: Copy here, Move here, Create shortcuts here, Cancel.
@@ -62,17 +65,17 @@ Marks survive the type-to-filter. Operations act only on visible marked rows. Th
 
 - Right-drag marks a range, as in Total Commander.
 - A click below the files unmarks. Marks survive the filter. `/` restores marks.
-- Shortcuts, auto-scroll and hover-open targets are in.
+- Alt-drop makes shortcuts. Shortcuts from a drop are in.
 - The owner added the left-drag lasso.
 - Linux: marks, internal drag, drops in and symlinks work. Modifier keys for drops from other apps, drag out on X11 and the Explorer menu do not apply.
 
 ## Done and coming
 
-- Done: all mark keys and mouse marks, marks that survive the filter, the footer note, the drop rule, the confirm setting, the drag badge, rows that start drags and accept drops, and drops onto the other pane or a folder.
-- Alt-drop shortcuts are made on disk and can be undone, but the drop shows "Shortcuts from a drop come next". The drop itself is not finished.
-- In progress: auto-scroll, hover-open targets, and drops on tabs, breadcrumbs and drive pills.
+- Done: all mark keys and mouse marks, marks that survive the filter, the footer note, the drop rule, the confirm setting, the drag badge, and drops onto the other pane, folders, tabs, breadcrumbs and drive pills.
+- Done: Alt-drop shortcuts. You can undo them.
+- Not done yet: auto-scroll near the edges, and hover-open on folders, tabs and drive pills.
 - Coming: all Explorer drag, in and out.
-- Undo for drops arrives with job undo.
+- Undo for moves and copies arrives with job undo.
 - Later: save and load marks, and mark newer or missing files from the other pane. That belongs to Compare.
 
 ## Open questions
