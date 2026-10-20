@@ -216,7 +216,7 @@ Final once the owner answers Q1–Q3. Workers never reopen them; a worker that f
 | A13 | review Part A | reviewer (Opus) | high | A3–A6, A8, A10, A12 | review notes; gate; Windows CI | blocked | |
 | B1 | `mdf` parser | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-automotive mdf` | ready | |
 | B2 | `space::kind` and regions | api-builder (Sol 6.1) | xhigh | B1 | `cargo nextest run -p rusty-automotive space_regions` | blocked | |
-| B3 | `space::owners_elf` | api-builder (Sol 6.1) | xhigh | B2 | `cargo nextest run -p rusty-automotive space_owners` | blocked | |
+| B3 | `space::owners_elf` | api-builder (Sol 6.1) | xhigh | B2 | `cargo nextest run -p rusty-automotive space_owners` | done | |
 | B4 | `space::owners_map` and groups | api-builder (Sol 6.1) | xhigh | B3 | `cargo nextest run -p rusty-automotive space_groups` | blocked | |
 | B5 | `space::strip` | api-builder (Sol 6.1) | xhigh | B2 | `cargo nextest run -p rusty-automotive space_strip` | blocked | |
 | B6 | `space::treemap` | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-automotive space_treemap` | ready | |
@@ -517,3 +517,4 @@ The original questions:
 ## Log
 
 - 2026-10-20 — Plan written. Owner picked direction 1 "Address space first" from the Rich ELF/MAP prototype. Measured the owner's files (counts above). Found: TASKING Symbols tables have no size column; Space is printed only when it changes; "N other parts not shown" counts about 955 call-graph lines as part headers; the HEX has 196 gaps of 16 bytes or less. A second 26 MB ELF uses merged sections and about 95 % zero-size labels, so owners come from symbols (D9) and the strip draws symbols inside wide sections (D17). Orchestrator rule D6: Rich never assumes one toolchain's layout.
+- 2026-10-20 — B3 done: `space::owners` (owners_elf). Rules: MAP contributions, section names for per-function layouts, sized symbols, estimated globals, "(not attributed)" fillers, `.data` load image mirrored at its LMA. The ELF parser now keeps FILE marks (`Elf::file_marks`) because it dropped FILE symbols before.
