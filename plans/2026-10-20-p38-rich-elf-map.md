@@ -107,7 +107,12 @@ Final once the owner answers Q1–Q3. Workers never reopen them; a worker that f
   - Alt+H toggles it for the open file.
   - Ctrl+G still finds a hidden symbol. The note then says "Hidden by the zero-size filter; Alt+H shows it."
 - **D14 — MAP fixes (scope item 6).** The causes are measured, so no checker atom is needed; the fix atom writes the failing tests first.
-  - **Part headers.** A line is a part header only when it is a run of at least three `*`, a title and at least three `*`, or a `* Title` line followed by a line of `=` (TASKING's sub-headers). Call-graph lines (`* name [n,m]`) are not headers.
+  - **Part headers.** A line is a part header only when it is one of these shapes:
+    - a run of at least three `*`, a title and at least three `*`;
+    - a `* Title` line followed by a line of `=` only (TASKING's sub-headers);
+    - a run of at least three `=`, a title and at least three `=` (kept for the tolerance fixtures);
+    - a bare `* Title` line whose title is a known TASKING part title (the titles the parser reads, plus the ones it skips, matched case-insensitively), kept for the tolerance fixtures.
+    - Call-graph lines (`* name [n,m]`) and any other `* text` line are not headers. Amended 2026-10-20 after A9 found the tolerance fixtures.
   - **Unread parts.** `MapModel.skipped_parts: Vec<String>` replaces `skipped_sections`: titles in file order, without duplicates, at most 32. The status line says "Not read: <titles>" with the first three titles and "+N more"; the navigator lists them all under "Not read".
   - **Space.** Within one Symbols table, a blank Space cell repeats the space of the row above. The table's first rows start with the `+ Space` heading when one exists.
   - **Size.** TASKING Symbols tables have no size. The Size column is hidden when no row in the table has a size, and the status line says "This map lists no symbol sizes." Sizes from a sibling ELF come later, not in P38.
