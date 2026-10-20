@@ -65,6 +65,7 @@ Final once the owner answers Q1–Q3. Workers never reopen them; a worker that f
 - **D6 — Rich never assumes one toolchain's layout (owner: "ELF files will look different between them").** It builds from facts that every ELF has and takes each piece from the best source available. A **provenance line** under the Rich header says which source it used, for example "regions from demo.mdf · owners from symbols (12 estimated) · kinds from section flags". The line shows in Rich and Custom only.
 - **D7 — Kinds.**
   - ELF: from the section type and flags, never from names. Alloc and exec → code; alloc and NOBITS → bss; alloc and write → data; alloc only → rodata; anything else → other. ABS symbols are other.
+  - **Fill** (added 2026-10-20 after the owner's demo.elf): linker fill is its own kind. An ELF section whose name is `$fill` or starts with `$fill` (TASKING), and a MAP entry named `*fill*` or `$fill` (GNU ld, TASKING), is Fill whatever its flags. Fill bytes are in the image but are not "used": `Region.used` leaves them out, `by_kind` counts them, and owners never claim them. The bars show Fill as a hatched part of free space, labelled "Linker fill"; the strip gives it its own token; the treemap leaves it out.
   - MAP alone has no flags. A located section takes the kind of the sibling ELF section with the same name and address when one is loaded. Otherwise the kind comes from the section name's leading part (`.text`, `.rodata`, `.data`, `.bss` and their small-data forms such as `.zdata`, `.zbss`, `.zrodata`). The provenance line then says "kinds from section names".
 - **D8 — Region totals and free space (scope item 8).** An ELF knows what it uses, not what each region holds. Sources, best first:
   1. **`<stem>.mdf`** beside the file: every chip mapped into the address space becomes a region with its exact start, size and type (rom or ram).
@@ -217,7 +218,8 @@ Final once the owner answers Q1–Q3. Workers never reopen them; a worker that f
 | B1 | `mdf` parser | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-automotive mdf` | ready | |
 | B2 | `space::kind` and regions | api-builder (Sol 6.1) | xhigh | B1 | `cargo nextest run -p rusty-automotive space_regions` | blocked | |
 | B3 | `space::owners_elf` | api-builder (Sol 6.1) | xhigh | B2 | `cargo nextest run -p rusty-automotive space_owners` | done | |
-| B4 | `space::owners_map` and groups | api-builder (Sol 6.1) | xhigh | B3 | `cargo nextest run -p rusty-automotive space_groups` | blocked | |
+| B2b | Fill kind (D7) in kinds, regions and owners | api-builder (Sonnet) | high | B3 | `cargo nextest run -p rusty-automotive space_regions space_owners` | ready | |
+| B4 | `space::owners_map` and groups | api-builder (Sonnet) | high | B3, B2b | `cargo nextest run -p rusty-automotive space_groups` | blocked | |
 | B5 | `space::strip` | api-builder (Sol 6.1) | xhigh | B2 | `cargo nextest run -p rusty-automotive space_strip` | blocked | |
 | B6 | `space::treemap` | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-automotive space_treemap` | ready | |
 | B7 | fixtures and budget | api-builder (Sol 6.1) | xhigh | B4, B5, B6, A7 | `cargo nextest run --release -p rusty-automotive --test elf_rich_large --run-ignored all` | blocked | |
@@ -520,3 +522,4 @@ The original questions:
 - 2026-10-20 — A3 done: the ELF symbol table renders through `columns`; `ColumnSet` gained `set_measured` and `text_chars` (flex column width for `fit_name`).
 - 2026-10-20 — A12 done: HEX/MOT view folds gaps under 256 bytes and uses 32-byte rows when the width fits.
 - 2026-10-20 — B3 done: `space::owners` (owners_elf). Rules: MAP contributions, section names for per-function layouts, sized symbols, estimated globals, "(not attributed)" fillers, `.data` load image mirrored at its LMA. The ELF parser now keeps FILE marks (`Elf::file_marks`) because it dropped FILE symbols before.
+- 2026-10-20 — Probe on the owner's files with B3: owner sums equal `Region.used` in every region, 1.4–3.0 ms. TASKING ROM copies of initialised data appear as their own `[.data.…]` sections in flash, so ROM usage already counts them (no LOAD-segment image needed). demo.elf has 9 `$fill` sections (671,680 bytes in one flash region) that showed as the largest owner and counted as used; D7 now adds the Fill kind (atom B2b).
