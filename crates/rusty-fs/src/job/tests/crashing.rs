@@ -20,6 +20,9 @@ pub(super) struct Crashing<'a> {
     path: String,
     ops: Vec<FakeOp>,
     dead: AtomicBool,
+    inside: bool,
+    fatal: bool,
+    takes: Option<String>,
 }
 
 impl<'a> Crashing<'a> {
@@ -29,6 +32,32 @@ impl<'a> Crashing<'a> {
             path: path.to_owned(),
             ops: vec![op],
             dead: AtomicBool::new(false),
+            inside: false,
+            fatal: true,
+            takes: None,
+        }
+    }
+
+    pub(super) fn inside_holding(fs: &'a FakeFs, op: FakeOp) -> Self {
+        Self {
+            inside: true,
+            ..Self::new(fs, HELD_PREFIX, op)
+        }
+    }
+
+    pub(super) fn refusing(self) -> Self {
+        Self {
+            fatal: false,
+            ..self
+        }
+    }
+
+    pub(super) fn taking(fs: &'a FakeFs, temp: &str, taken: &str) -> Self {
+        Self {
+            ops: vec![FakeOp::Replace],
+            fatal: false,
+            takes: Some(taken.to_owned()),
+            ..Self::new(fs, temp, FakeOp::Replace)
         }
     }
 
@@ -47,10 +76,20 @@ impl<'a> Crashing<'a> {
     }
 
     fn hits(&self, location: &Location, op: FakeOp) -> bool {
-        self.ops.contains(&op) && location.path().to_text().trim_start_matches('/') == self.path
+        let text = location.path().to_text();
+        let path = text.trim_start_matches('/');
+        let matches = if self.inside {
+            path.split('/').any(|part| part.starts_with(&self.path))
+        } else {
+            path == self.path
+        };
+        self.ops.contains(&op) && matches
     }
 
     fn die(&self) -> FsError {
+        if !self.fatal {
+            return FsError::new(FsErrorKind::AccessDenied);
+        }
         self.dead.store(true, Ordering::SeqCst);
         died()
     }
@@ -58,6 +97,9 @@ impl<'a> Crashing<'a> {
     fn enter(&self, location: &Location, op: FakeOp) -> Result<(), FsError> {
         self.alive()?;
         if self.hits(location, op) {
+            if let Some(taken) = &self.takes {
+                self.fs.add_file(taken, 1);
+            }
             return Err(self.die());
         }
         Ok(())
@@ -150,6 +192,10 @@ impl ProviderOps for Crashing<'_> {
         self.enter(location, FakeOp::Recycle)?;
         self.fs.recycle(location)
     }
+
+    fn volume_serial(&self, location: &Location) -> Result<Option<u64>, FsError> {
+        self.fs.volume_serial(location)
+    }
 }
 
 pub(super) fn crashed(fs: &FakeFs, plan: &OperationPlan, copy_of: &str) -> Vec<u32> {
@@ -166,10 +212,19 @@ pub(super) fn crashed_with(
 }
 
 pub(super) fn crashed_on(ops: &Crashing<'_>, plan: &OperationPlan, workers: usize) -> Vec<u32> {
+    crashed_keeping(ops, plan, workers).0
+}
+
+pub(super) fn crashed_keeping(
+    ops: &Crashing<'_>,
+    plan: &OperationPlan,
+    workers: usize,
+) -> (Vec<u32>, Vec<HeldFile>) {
     let mut harness = Harness {
         workers,
+        keeps_held: true,
         ..Harness::default()
     };
     let _ = harness.run(ops, plan, &[]);
-    harness.log.done()
+    (harness.log.done(), harness.log.held)
 }

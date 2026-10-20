@@ -3,11 +3,15 @@ use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 
 use rusty_core::{AppState, Command, Direction, FsErrorKind, OpKind, OperationPlan, apply};
-use rusty_fs::{FakeFs, FakeOp, Fault, JobLog, JobOutcome, Provider, ProviderOps, StepOutcome};
+use rusty_fs::{
+    DriveClass, FakeFs, FakeOp, Fault, JobLog, JobOutcome, Provider, ProviderOps, StepOutcome,
+};
 
 use super::{JobStatus, OpLog, Operations};
 use crate::browser::Browser;
 
+mod concurrent;
+mod mode;
 mod pause;
 
 fn fake() -> Arc<FakeFs> {
@@ -88,10 +92,14 @@ impl JobLog for SharedLog {
         }
         Ok(())
     }
+
+    fn journal_held(&mut self, _: &rusty_fs::HeldFile) -> Result<bool, rusty_core::FsError> {
+        Ok(false)
+    }
 }
 
 impl OpLog for SharedLog {
-    fn finish(&mut self, outcome: &JobOutcome) {
+    fn finish(&mut self, outcome: &JobOutcome, _: &dyn ProviderOps) {
         if let Ok(mut record) = self.0.lock() {
             record.finished = Some(outcome.clone());
         }
