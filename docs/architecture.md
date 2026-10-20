@@ -25,6 +25,7 @@ A Cargo workspace; dependencies point down the table.
 | `rusty-term` | Terminal providers: Windows Terminal, external command templates, embedded ConPTY + `alacritty_terminal` | Windows |
 | `rusty-plugins` | WASM component host, capability checks, plugin lifecycle | any |
 | `rusty-ui` | Rusty's component library and views on `gpui-kit`, styled with the design tokens from the prototype; draws state, sends commands (see UI components) | any |
+| `rusty-l10n` | Fluent files (`locales/en-US/*.ftl`) embedded in one process-wide bundle; `t!`, `tr` and `tr_args` return text by message id. Depends on no other Rusty crate | any |
 | `rusty-diag` | Logging setup, redaction, in-memory event ring, memory statistics, diagnostic reports. Built in the Foundation phase | any |
 | `rusty-app` | The binary: wiring, single instance, tray, global hotkey, crash handling | Windows |
 
