@@ -206,7 +206,7 @@ Roles follow the owner's current rules: Sonnet 5.5 (medium or high) for decided 
 | **Part B — file sources** | | | | | | | |
 | B1 | visit and open hooks, frecency writer | ui-builder (Sonnet) | medium | A9 | `cargo nextest run -p rusty-ui window_view::tests::visits`; `-p rusty-app search_hooks` | blocked | |
 | B2 | `rusty-index::table` | api-builder (Sonnet) | high | — | `cargo nextest run -p rusty-index table` | done | |
-| B3 | `rusty-index::search` | api-builder (Sol 6.1) | xhigh | A1, B2 | `cargo nextest run -p rusty-index search` | ready | |
+| B3 | `rusty-index::search` | api-builder (Sol 6.1) | xhigh | A1, B2 | `cargo nextest run -p rusty-index search` | done | |
 | B4 | `rusty-index::walker` | api-builder (Sol 6.1) | xhigh | B2 | `cargo nextest run -p rusty-index walker` | ready | |
 | B5 | Recent and Tabs sources | ui-builder (Sonnet) | medium | A5, B1 | `cargo nextest run -p rusty-ui command_center::tests::file_sources::recent` | blocked | |
 | B6 | Here source | ui-builder (Sonnet) | high | B3, B4, B5 | `cargo nextest run -p rusty-ui command_center::tests::file_sources::here` | blocked | |
@@ -489,3 +489,4 @@ The original questions:
 - 2026-10-20 — A6 done: `CommandsSnapshot::build` (pure, testable) and `CommandsSource`; one `ArgKind` (the registry's). Left for A8: reading the focused key-context stack and command-use weights; context text in `detail` is empty; menu-only commands (no action) are skipped.
 - 2026-10-20 — B2 done: `rusty-index::table` (`NameTable`, u32 ids, 31 bytes per entry on 1M and 2M synthetic names).
 - 2026-10-20 — A7 done: `CommandCenter` view (input with argument chip, top-hit row, groups, Show all, prefix hint, no-match line, footer with count or note and key hints), `VirtualList` from 64 rows; events `QueryChanged`, `Moved`, `Run(index, Modifiers)`, `Dismissed`; seven gallery pages `p40-a7-*`. Key actions and bindings stay with A8.
+- 2026-10-20 — B3 done: parallel table search in 64k chunks with bounded top-N heaps, AND name and path terms, extension filters and cancellation; 14 search tests passed; 1M synthetic names in 6.19 ms (release, warm, limit 50); all 10 gate steps passed. Borrowed terms and a cancellation callback keep the index independent of the UI; base matcher scores and table-order ties leave D17 ranking to the UI.
