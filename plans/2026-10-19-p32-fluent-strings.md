@@ -1,6 +1,6 @@
 # P32 · Every string in Fluent files
 
-Status: ready (L1); L2–L6 wait for the UI branches in flight · Repo: `<repo>` · Branch: `p32-lN` per atom · Started: 2026-10-19
+Status: L1 done on branch `p32-l1` (review pending); L2–L6 wait for the UI branches in flight · Repo: `<repo>` · Branch: `p32-lN` per atom · Started: 2026-10-19
 
 ## Goal
 
@@ -20,7 +20,7 @@ Final. Workers never reopen them; a worker that finds one wrong stops and report
 
 | Atom | What | Role | Effort | After | Check | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| L1 | D1–D3 crate, macro, command labels through `cmd-` ids, D5 gate step with today's count as the ratchet | api-builder (Codex sol high), then reviewer (Opus) | high | — | unit tests for lookup, arguments, plurals, missing id; command id test; gate passes with the new step | ready |
+| L1 | D1–D3 crate, macro, command labels through `cmd-` ids, D5 gate step with today's count as the ratchet | api-builder (Codex sol high), then reviewer (Opus) | high | — | unit tests for lookup, arguments, plurals, missing id; command id test; gate passes with the new step | done, review pending |
 | L2 | `window_view` part 1 (browser, panes, tabs, status, F-key bar, notices) | patcher (Sonnet medium) | medium | L1, P21 V9, P18 C4, P29 merged | ratchet count goes down; snapshot and UI tests unchanged in output; gate | blocked |
 | L3 | `window_view` part 2 (preview, viewer, shell menu, dialogs) | patcher (Sonnet medium) | medium | L2 | as L2 | blocked |
 | L4 | settings sheet, shortcuts page, app menu, job card, context menu, confirm dialog | patcher (Sonnet medium) | medium | L2, P22 S3 merged | as L2 | blocked |
@@ -34,3 +34,4 @@ Final. Workers never reopen them; a worker that finds one wrong stops and report
 ## Log
 
 - 2026-10-19 — Plan written. L2–L4 wait until the UI branches in flight (P21 V9, P18 C4, P29, P22 S3) are merged, because they touch the same files.
+- 2026-10-20 — L1 built on `p32-l1`: crate `rusty-l10n` (`t!`, `tr`, `tr_args`), 286 command labels now `cmd-` ids in `commands.ftl` and shown through `tr` at 8 sites, gate step `l10n` with the ratchet at 679 in `xtask/l10n-allow.txt`. Visible text and snapshots unchanged. Next: reviewer on the branch, then merge; L2–L4 stay blocked on the UI branches.
