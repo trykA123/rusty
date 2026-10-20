@@ -38,7 +38,7 @@ Exit: the spike meets the targets on Linux and the work PC, otherwise D2 is reop
 
 Goal: a file manager the owner can use every day on Windows.
 
-Progress: 67% (129 of 195 items done, 3 being finished counted as half, 63 still to do: (129 + 1.5) ÷ 195). The drop from 87% is because five features moved into the alpha (D68). Each atom of the plans P36 (multi-select and drag and drop), P37 (PDF links) and P38 (Rich ELF and MAP) counts once; review-only atoms are not counted; Ctrl+K and multi-rename count as one item each until their plans exist. Moving the remaining texts into translation files is out of the count (after 1.0, D59).
+Progress: 59% (144 of 248 items done, 3 being finished counted as half, 101 still to do: (144 + 1.5) ÷ 248). The drop from 67% is because the plans for Ctrl+K and multi-rename now list their real parts instead of one item each. Each part of the plans P36 (multi-select and drag and drop), P37 (PDF links), P38 (Rich ELF and MAP), P40 (Ctrl+K) and P41 (multi-rename) counts once; review-only parts are not counted. Moving the remaining texts into translation files is out of the count (after 1.0, D59).
 
 Done so far:
 
@@ -49,24 +49,29 @@ Done so far:
 - TASKING map wrapped rows, map part headers, `.mdf` memory definition reader;
 - Alt+M opens the context menu;
 - safer session and database store after a crash;
-- In the next download: multi-select: keys, Shift and Ctrl click, right-drag ranges, left-drag lasso; marks survive the filter, `/` restores them, the footer counts marked files the filter hides;
-- In the next download: file-type icons per extension (PDF, Office, audio, video, code families, automotive);
-- In the next download: PDF links follow on click, with a back stack;
-- In the next download: drag and drop groundwork: drop rule, drop into a folder, volume check.
+- multi-select: keys, Shift and Ctrl click, right-drag ranges, left-drag lasso; marks survive the filter, `/` restores them, the footer counts marked files the filter hides;
+- file-type icons per extension (PDF, Office, audio, video, code families, automotive);
+- PDF links follow on click with a back stack; PDF outline tab (faster, with a note for an unreadable outline); only http, https and mailto links open outside Ferrite;
+- F-key bar off by default;
+- ELF symbols table with resizable columns and names that keep their prefix;
+- HEX and S-record rows of 32 bytes, with padding gaps folded;
+- memory regions from TASKING `.mdf` files; linker fill counted apart from real data (model);
+- drag and drop groundwork: drop rule, drop into a folder, volume check;
+- built, not switched on: Ctrl+K groundwork (command list, ranking, the look of the box, the file name index table); multi-rename engine parts (masks with the Total Commander tokens, row checks, rename job type, case-insensitive test file system); ELF owners (who uses each byte).
 
 Still open in the alpha, in this order:
 
-- multi-select (done) and drag and drop (in progress);
-- PDF links (done) with keys and outline (in progress);
-- Rich ELF and MAP views, direction "address space first" (D66; planned, first parts done: `.mdf` reader, MAP fixes, name helper);
-- Ctrl+K command center with global search (D60, D61, D63; being planned);
-- multi-rename (not started);
+- multi-select (done) and drag and drop (next: the mouse part);
+- PDF links and outline (done; waits for your check with a real PDF);
+- Rich ELF and MAP views, direction "address space first" (D66; tables, rows, `.mdf` regions and owners are built; the map screens come next);
+- Ctrl+K command center with global search (D60, D61, D63; groundwork built, the box comes next);
+- multi-rename, Ctrl+M (Total Commander parity plus extras: field tokens from EXIF and audio tags, clean-up toggles, edit names, undo history after a restart, conflict preview, all or nothing; engine parts built, the screen comes next);
 - DBC and A2L viewer in F3;
 - automotive syntax colours (m4, OIL, DCM, UDL) wired into the text viewer;
 - viewer chrome; pins;
 - spreadsheets in F3 (one item; after 1.0 if it grows);
 - every shortcut changeable;
-- the Follow bug on Windows; steadier Windows CI.
+- the Follow bug on Windows (last); steadier Windows CI.
 
 Scope:
 
@@ -86,7 +91,7 @@ Exit: two weeks of daily use on the work PC with no lost or damaged files.
 
 In this order:
 
-1. Activity strip replacing the F-key bar, which becomes off by default (D67, in progress).
+1. Activity strip replacing the F-key bar, which is now off by default (D67, being built now).
 2. Delete safety net with 1 to 7 days retention (D65).
 
 ## v1 Beta · v0.9
@@ -110,7 +115,6 @@ Replaces Total Commander for daily work (D39). Parity features are built to beat
 - core: find files by name, content and attributes, with results as a pane you can work on; saved searches.
 - core: virtual collections: a pane can hold search results, recent changes or files picked from many folders.
 - core: archives as folders (zip, 7z, tar with gz, xz and zst): browse, extract and pack through the job engine; safe extraction.
-- core: multi-rename with a live preview, conflicts flagged first, presets and one undo step.
 - core: compare and sync, better than Beyond Compare where it counts (D40): folder compare in the panes, sync as a plan with undo, cached BLAKE3 hashes, syntax-aware text diff, paged diff for huge and binary files, image compare; engine in the shared `rusty-compare` crate.
 - core: checksums (BLAKE3, SHA-256, SHA-1, MD5) with verify; properties drawer for attributes, timestamps and permissions; images in F3.
 - infra: signed portable `.exe` and installer; user guide.
