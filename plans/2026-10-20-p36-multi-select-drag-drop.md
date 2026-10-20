@@ -224,7 +224,7 @@ Later, not in P36:
 | D1 | `op_plan::drop_op` | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-core op_plan::drop` | ready | |
 | D2 | `Browser::drop_into` | api-builder (Sol 6.1) | xhigh | D1 | `cargo nextest run -p rusty-ui browser::operate` | blocked | |
 | D3 | `drop-confirm` setting | ui-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-store settings`, `-p rusty-ui settings` | blocked (Q2) | |
-| D4 | `drag` badge | ui-builder (Sonnet) | medium | D1 | `cargo nextest run -p rusty-ui drag`; gallery shot | blocked | |
+| D4 | `drag` badge | ui-builder (Sonnet) | medium | D1 | `cargo nextest run -p rusty-ui drag`; gallery shot | done | |
 | D5 | `file_list` drag source and targets | ui-builder (Opus) | medium | D4, K5 | `cargo nextest run -p rusty-ui file_list::tests::drag` | blocked | |
 | D6 | `window_view::drop` | ui-builder (Opus) | medium | D2, D3, D5 | `cargo nextest run -p rusty-ui window_view::tests::drop` | blocked | |
 | D7a | tab and crumb targets | ui-builder (Sonnet) | medium | D6 | `cargo nextest run -p rusty-ui pane_chrome window_view::tests::drop` | blocked | |
@@ -749,3 +749,4 @@ Answers (2026-10-20): Q1 yes, Total Commander right-drag marking. Q2 `never`, as
   - Lasso: Ctrl toggles (D20). The tracked y is clamped to the list viewport, so a drag past an edge marks only shown rows; the rectangle still follows the raw pointer. A lasso from below that comes back below sends `Row(len)` and shrinks to the base (D3).
   - Browser: unmark-all and the empty-space click save visible plus filter-hidden marks (D5). `/` under a filter puts saved names the filter hides into the hidden-marks set, and succeeds when only hidden names match.
   - Footer text is now "N marked not shown", since show-hidden/show-system also hide marks.
+- 2026-10-20 — D4 done on `p36-d4`: `rusty-ui::drag` badge (DragState, DragBadge, Refusal), `drag-*` strings, gallery page `p36-d4-drag-badge`.
