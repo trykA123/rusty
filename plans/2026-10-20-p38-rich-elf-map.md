@@ -70,7 +70,7 @@ Final once the owner answers Q1–Q3. Workers never reopen them; a worker that f
   1. **`<stem>.mdf`** beside the file: every chip mapped into the address space becomes a region with its exact start, size and type (rom or ram).
   2. **`<stem>.map`** beside the file: region names, totals, used and free from its memory table. The start comes from the map when it gives one, else from the `.mdf`, else from the lowest located section address in that region ("start estimated").
   3. **Address clusters**: the ELF's alloc sections, sorted by address, split where the gap to the next one is at least 16 MiB. A cluster shows **used only**. Its row says "free not known: no .map or .mdf beside this file"; there is no free figure and no free gaps in its strip.
-  - Lookup: the same folder, the same stem, extension `.mdf` or `.MDF`, then `.map` or `.MAP`. A missing or unreadable sibling counts as absent. A `.map` that the TASKING sniffer rejects counts as absent.
+  - Lookup: the same folder, the same stem, extension `.mdf` or `.MDF`, then `.map` or `.MAP`. When no file has the same stem and the folder holds exactly one `.mdf` (or one `.map`), that file is used and the provenance line says so ("regions from build.mdf, the only .mdf here"). A missing or unreadable sibling counts as absent. A `.map` that the TASKING sniffer rejects counts as absent. Owner, Q2: the build writes the `.elf`, `.hex`, `.mot`, `.map` and `.mdf` into the same folder, usually with the same stem.
   - The siblings load in the background after the file's first content. Simple never waits for them; Rich redraws when they arrive. Limits: 1 MiB for a `.mdf`, 64 MiB for a `.map`.
   - A MAP view uses the same rule for its region starts: the map's own origin, else `<stem>.mdf`, else the lowest section address.
   - A region name from the `.map` matches a `.mdf` chip name case-insensitively.
@@ -84,7 +84,11 @@ Final once the owner answers Q1–Q3. Workers never reopen them; a worker that f
   - FILE symbols name an object only when they end in `.c`, `.cpp`, `.cc`, `.s`, `.S`, `.asm`, `.o` or `.obj`; compiler temp files are ignored.
   - A stripped ELF (no symbol table) has sections and segments only. "Who uses the flash" shows a note instead of the treemap: "This file has no symbol table, so bytes cannot be traced to modules."
 - **D10 — Grouping.** A switch with Module, Source file, Object file and Section. The default is the first one in that order that yields more than one group. An option without data is disabled and its tooltip says why.
-  - **Module:** the owner's name (object file stem, else section name without its leading kind part, else symbol name), without leading `.` or `_`, up to the first `_` or `.`. Names that leave nothing go to "(other)". See Q1.
+  - **Module:** from the owner's name (object file stem, else section name without its leading kind part, else symbol name), without leading `.` or `_`. Rules, first match wins (owner, Q1: "the best way to cover everything"):
+    1. the user's list `[automotive] modules = ["Com", "Dio_Cfg"]` in `ferrite.toml`: the longest listed prefix that the name starts with, followed by `_`, `.` or the end of the name;
+    2. AUTOSAR two-part prefixes: `Rte_<X>` and `SchM_<X>` group as `Rte_<X>` and `SchM_<X>`;
+    3. the text up to the first `_` or `.`.
+    - Grouping ignores case and shows the first spelling met. Names that leave nothing go to "(other)". The list reloads live like other settings (P22), and the Rich header's provenance line says "modules: N from your list" when the list matched anything.
   - **Source file:** the DWARF source file of the owner's first address; else a FILE symbol with a real extension (D9).
   - **Object file:** from a MAP, or FILE symbols ending in `.o` or `.obj`.
   - **Section:** the output section name.
@@ -487,7 +491,14 @@ Opus high: kind rules, D8 source order and the outside count, D9 owner order and
 
 Opus high on C1–C10: Simple unchanged, drawers over the content, provenance truthful, the free figure absent for clusters, colour pairs, keyboard paths, and no model work in `render`. Then gate, Windows CI, merge, an alpha build and the owner check on the work PC: both real ELF files, the real MAP and `.mdf`, HEX and MOT, at the work monitor's width.
 
-## Open questions for the owner
+## Questions for the owner (answered 2026-10-20)
+
+- Q1: "The best way to cover everything": the user's list, then AUTOSAR two-part prefixes, then the first `_` or `.` (D10).
+- Q2: "Usually yes, all 5 are generated in the same folder": same stem first, then the only `.mdf` or `.map` in the folder (D8).
+- Q3: "Ok": the table changes apply in Simple too.
+
+The original questions:
+
 
 - **Q1 — Module names.** Is "the text before the first `_` or `.`" right for your module names, or do you want an editable prefix list in `ferrite.toml` (for example `[automotive] modules = ["Com", "Dio_Cfg"]`)?
 - **Q2 — Where the `.map` and `.mdf` live.** Are they always beside the `.elf` with the same name? If not, where do your builds put them?
