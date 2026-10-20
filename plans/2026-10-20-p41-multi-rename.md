@@ -193,7 +193,7 @@ Roles: Sonnet 5.5 medium or high for decided backend and UI work, Opus 5.5 mediu
 | **Part D — parity and bonuses** | | | | | | | |
 | E1 | `rename::fields` registry + file, exif | api-builder (Sonnet) | high | A1 | `cargo nextest run -p rusty-core -p rusty-ui rename::fields` | blocked | |
 | E2 | audio provider (`lofty`) | api-builder (Sonnet) | medium | E1 | `cargo nextest run -p rusty-ui rename::fields::audio` | blocked | |
-| E3 | clean-up rules | api-builder (Sonnet) | medium | A2 | `cargo nextest run -p rusty-core rename::tests::cleanup` | blocked | |
+| E3 | clean-up rules | api-builder (Sonnet) | medium | A2 | `cargo nextest run -p rusty-core rename::tests::cleanup` | done | |
 | E4 | Edit names, load, paste, copy | ui-builder (Opus) | medium | B6 | `cargo nextest run -p rusty-ui window_view::tests::multi_rename` | blocked | |
 | E5 | row order, column sort, counter per folder | ui-builder (Sonnet) | high | B6 | `cargo nextest run -p rusty-ui multi_rename window_view::tests::multi_rename` | blocked | |
 | E6 | change and match highlights, long-path warning | ui-builder (Sonnet) | medium | B5 | `cargo nextest run -p rusty-ui multi_rename::tests::preview`; gallery shots | blocked | |
@@ -407,3 +407,4 @@ Answered 2026-10-20: the owner left Q1–Q3 to the architect. Q1 F2 with 2 or mo
 - 2026-10-20 — A9 done: `ferrite.db` V5 adds `rename_preset`; `Db::save_preset`, `presets` (`RenamePresets { named, last_used }`) and `delete_preset` in `db/rename_presets.rs`; rules are an opaque JSON string and time is passed in.
 - 2026-10-20 — A2 done: `rename::{RenameRules, Find, Counter, NameCase, ExtCase, Compiled, RuleError, RuleField}` and `regex` =1.13.1 in rusty-core. `Token::Counter` now holds `CounterParts` (partial `[C10]`, `[C+5]`, `[C:3]`, `[C10:3]` accepted). Chosen: a single Replace part applies to every `|` pair, missing parts delete; pairs run in order; First letter and Title Case lower-case the rest of each word.
 - 2026-10-20 — A7 done: `run_rename` (and `RenameOutcome { Done, PutBack, Cancelled, Stuck }`) runs `run`, then `roll_back` over the steps it saw finish; `Stuck.left` lists the targets whose put-back failed; `counted` counts a Rename step unless its target is a `.ferrite-rename-` name; `local::tests::rename_batch` is Windows-only.
+- 2026-10-20 — E3 done: `rename::Cleanup { trim, collapse, remove_accents, spaces_to_underscore }` in `RenameRules.cleanup` (serde default), applied to stem and extension after case; `unicode-normalization` =0.1.26 added for NFD.
