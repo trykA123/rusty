@@ -216,7 +216,7 @@ Roles follow the owner's current rules: Sonnet 5.5 (medium or high) for decided 
 | B10 | review Part B | reviewer (Opus) | high | B6, B8, B9 | review notes; gate; Windows CI | blocked | |
 | **Part C — disk index** | | | | | | | |
 | C0 | Windows facts for the index | researcher (Sonnet) | medium | — | answers with sources, in the Log | ready | |
-| C1 | `rusty-index::file` | api-builder (Sol 6.1) | xhigh | B2 | `cargo nextest run -p rusty-index file` | ready | |
+| C1 | `rusty-index::file` | api-builder (Sol 6.1) | xhigh | B2 | `cargo nextest run -p rusty-index file` | done | |
 | C2 | `[search]` settings keys | api-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-store settings` | ready | |
 | C3 | `rusty-index::host` (walk index) | api-builder (Sonnet) | high | B4, C1, C2 | `cargo nextest run -p rusty-index host` | blocked | |
 | C4 | `rusty-index::usn` | api-builder (Sonnet) | high | B2, C0 | `cargo nextest run -p rusty-index usn` | blocked | |
@@ -491,3 +491,4 @@ The original questions:
 - 2026-10-20 — B2 done: `rusty-index::table` (`NameTable`, u32 ids, 31 bytes per entry on 1M and 2M synthetic names).
 - 2026-10-20 — A7 done: `CommandCenter` view (input with argument chip, top-hit row, groups, Show all, prefix hint, no-match line, footer with count or note and key hints), `VirtualList` from 64 rows; events `QueryChanged`, `Moved`, `Run(index, Modifiers)`, `Dismissed`; seven gallery pages `p40-a7-*`. Key actions and bindings stay with A8.
 - 2026-10-20 — B4 first run stopped: `Attributes` has no reparse flag. Decided: skip only `EntryKind::Link` (name surrogates), walk other reparse points, depth limit 256.
+- 2026-10-20 — C1 done: version 1 little-endian index snapshots, CRC32 over metadata and payload, atomic writes, stable deleted slots; `built_at` uses UTC Unix seconds. Twelve file tests pass; 2M entries save in 247.5 ms and load in 559.8 ms (debug); gate: all 10 steps passed.
