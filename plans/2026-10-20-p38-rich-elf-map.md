@@ -212,7 +212,7 @@ Final once the owner answers Q1–Q3. Workers never reopen them; a worker that f
 | A9 | MAP headers, Space, sizes (model) | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-automotive map` | ready | |
 | A10 | MAP status and Size column (UI) | ui-builder (Sonnet) | medium | A9, A4 | `cargo nextest run -p rusty-ui viewer::map` | blocked | |
 | A11 | `Layout` options (model) | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-automotive layout memory` | ready | |
-| A12 | HEX/MOT 32-byte rows and folded gaps (UI) | ui-builder (Sonnet) | medium | A11 | `cargo nextest run -p rusty-ui viewer::memory` | blocked | |
+| A12 | HEX/MOT 32-byte rows and folded gaps (UI) | ui-builder (Sonnet) | medium | A11 | `cargo nextest run -p rusty-ui viewer::memory` | done | |
 | A13 | review Part A | reviewer (Opus) | high | A3–A6, A8, A10, A12 | review notes; gate; Windows CI | blocked | |
 | B1 | `mdf` parser | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-automotive mdf` | ready | |
 | B2 | `space::kind` and regions | api-builder (Sol 6.1) | xhigh | B1 | `cargo nextest run -p rusty-automotive space_regions` | blocked | |
@@ -517,3 +517,4 @@ The original questions:
 ## Log
 
 - 2026-10-20 — Plan written. Owner picked direction 1 "Address space first" from the Rich ELF/MAP prototype. Measured the owner's files (counts above). Found: TASKING Symbols tables have no size column; Space is printed only when it changes; "N other parts not shown" counts about 955 call-graph lines as part headers; the HEX has 196 gaps of 16 bytes or less. A second 26 MB ELF uses merged sections and about 95 % zero-size labels, so owners come from symbols (D9) and the strip draws symbols inside wide sections (D17). Orchestrator rule D6: Rich never assumes one toolchain's layout.
+- 2026-10-20 — A12 done: HEX/MOT view folds gaps under 256 bytes and uses 32-byte rows when the width fits.
