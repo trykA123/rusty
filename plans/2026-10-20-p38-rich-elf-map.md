@@ -209,7 +209,7 @@ Final once the owner answers Q1–Q3. Workers never reopen them; a worker that f
 | A5 | CSV table on `columns` | ui-builder (Sonnet) | medium | A2 | `cargo nextest run -p rusty-ui viewer::table` | ready | |
 | A6 | CAN trace rows as cells | ui-builder (Sonnet) | medium | A2 | `cargo nextest run -p rusty-ui viewer::trace viewer::tests::can_trace` | ready | |
 | A7 | ELF noise filter (model) | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-automotive elf_query` | done | |
-| A8 | ELF noise filter (UI) | ui-builder (Sonnet) | medium | A7, A3 | `cargo nextest run -p rusty-ui viewer::elf`; `cargo xtask gate` (l10n) | ready | |
+| A8 | ELF noise filter (UI) | ui-builder (Sonnet) | medium | A7, A3 | `cargo nextest run -p rusty-ui viewer::elf`; `cargo xtask gate` (l10n) | done | |
 | A9 | MAP headers, Space, sizes (model) | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-automotive map` | done | |
 | A10 | MAP status and Size column (UI) | ui-builder (Sonnet) | medium | A9, A4 | `cargo nextest run -p rusty-ui viewer::map` | blocked | |
 | A11 | `Layout` options (model) | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-automotive layout memory` | done | |
@@ -540,3 +540,4 @@ The original questions:
 - 2026-10-20 — C4 done: `viewer/space/bars.rs` has `UsageBar` (kind segments over a free track, linker fill as a tint, label "name: N % used, X free"), `UsageLine` (used, free, reserved, total; a cluster says "free not known" and shows no free figure), `RegionHead` (name, large percent), `Legend` (reuses `space-kind-*`, adds free) and `FileBytesBar` (`FileBytes::of(&elf.sections)`: loaded, DWARF, notes, symbols and strings, other; NOBITS and null sections have no file bytes). Gallery page `p38-c4-bars`. Fill is not hatched yet.
 - 2026-10-20 — C4 review (orchestrator): for C7/C8: linker fill must be hatched in the bars (D7; it is a plain tint now); percent is written without a space ("62%", as D67's amendment); File bytes reuse kind colours, so keep its named chips.
 - 2026-10-20 — C4 review (orchestrator): for C7/C8: linker fill must be hatched in the bars (D7; it is a plain tint now); percent is written without a space ("62%", as D67's amendment); File bytes reuse kind colours, so keep its named chips.
+- 2026-10-20 — A8 done: the ELF status line shows "N hidden (zero-size, ABS)" in every mode; Alt+H (`elf.toggle_noise`) switches the filter per file; Ctrl+G to a hidden symbol still opens it in the inspector and sets the D13 note. Keymap count 363 to 364. Three UI tests.
