@@ -38,7 +38,7 @@ Exit: the spike meets the targets on Linux and the work PC, otherwise D2 is reop
 
 Goal: a file manager the owner can use every day on Windows.
 
-Progress: 59% (144 of 248 items done, 3 being finished counted as half, 101 still to do: (144 + 1.5) ÷ 248). The drop from 67% is because the plans for Ctrl+K and multi-rename now list their real parts instead of one item each. Each part of the plans P36 (multi-select and drag and drop), P37 (PDF links), P38 (Rich ELF and MAP), P40 (Ctrl+K) and P41 (multi-rename) counts once; review-only parts are not counted. Moving the remaining texts into translation files is out of the count (after 1.0, D59).
+Progress: 63% (155 of 248 items done, 3 being finished counted as half, 90 still to do: (155 + 1.5) ÷ 248). The drop from 67% is because the plans for Ctrl+K and multi-rename list their real parts instead of one item each. Each part of the plans P36 (multi-select and drag and drop), P37 (PDF links), P38 (Rich ELF and MAP), P40 (Ctrl+K) and P41 (multi-rename) counts once; review-only parts are not counted. Moving the remaining texts into translation files is out of the count (after 1.0, D59).
 
 Done so far:
 
