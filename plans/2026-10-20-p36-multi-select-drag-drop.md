@@ -38,7 +38,7 @@ Final. The owner answered Q1–Q4 on 2026-10-20 (see the Log). Workers never reo
   - The plan has 31 atoms. Under the about-15-atoms rule, the orchestrator may save the parts as `p36a-multi-select`, `p36b-drag-drop` and `p36c-explorer-drag`, with the decisions shared.
 - **D2 — The Total Commander mark model stays (D15).** Marks are separate from the cursor; a plain click and plain arrows never change marks. Every new gesture adds or removes marks. Only an explicit unmark-all and the empty-space click (D7) clear them, and both save the marks first (D5).
 - **D3 — Span.** One mechanism serves Shift+keys, Shift+click and right-drag.
-  - The first extend saves the current marks as the *base* and the cursor row as the *anchor*. Every extend sets marks = base with every row in [anchor, cursor] set to `mark` (or cleared, in unmark mode).
+  - The first extend saves the current marks as the *base* and the cursor row as the *anchor*. Every extend sets marks = base with every row in [anchor, cursor] set to `mark` (cleared in unmark mode, flipped from the base in toggle mode).
   - Moving back shrinks the span to the base.
   - The span ends at any other command, and when the listing is replaced.
   - Marks add to what exists (base ∪ span). This differs from Explorer, where Shift+click replaces the selection, and keeps marks safe.
@@ -51,7 +51,7 @@ Final. The owner answered Q1–Q4 on 2026-10-20 (see the Log). Workers never reo
 - **D6 — Marks survive the filter.** 
   - Marks on rows that the filter hides are kept by name and come back when the filter changes or clears.
   - F5, F6, F8, Ctrl+C/X and drag act only on *visible* marked rows, so hidden files are never deleted by surprise.
-  - The footer shows "· N hidden by filter".
+  - The footer shows "· N marked not shown" (marks hidden by the filter or by show-hidden/show-system).
 - **D7 — Mouse.**
   - Ctrl+click toggles the row and moves the cursor there. Shift+click (and Ctrl+Shift+click) extends the span from the cursor to the row.
   - Ctrl and Shift clicks act on mouse up (`on_click`), and mouse-down does not move the cursor while Ctrl or Shift is held. This way Ctrl+drag copies without toggling the row, and the Shift anchor stays the old cursor (the Windows behaviour).
@@ -157,7 +157,7 @@ All keys are in the `FileList` context. Checked against `keymap.toml` and `typed
 
 | Key | Command id → core | Does | Conflicts checked | Owner |
 | --- | --- | --- | --- | --- |
-| Shift+↑ / Shift+↓ | `files.extend_up` / `files.extend_down` → `SelectionExtend { to: Up/Down, unmark: false }` | Extends from the anchor and shrinks when moving back (D3) | None in FileList; the Shift F-key layer only lights while held | — |
+| Shift+↑ / Shift+↓ | `files.extend_up` / `files.extend_down` → `SelectionExtend { to: Up/Down, mode: Mark }` | Extends from the anchor and shrinks when moving back (D3) | None in FileList; the Shift F-key layer only lights while held | — |
 | Shift+PgUp / Shift+PgDn | `files.extend_page_up` / `files.extend_page_down` | As above, by a page | None | — |
 | Shift+Home / Shift+End | `files.extend_first` / `files.extend_last` | As above, to the first or last row | None | — |
 | Ctrl+A, Ctrl+Num+ | `files.mark_all` → `SelectionAll` (now **files and folders**) | Marks every visible row | `ctrl-a` is unused everywhere; `ctrl-+` only in Image/Pdf (other contexts) | — |
@@ -168,7 +168,7 @@ All keys are in the `FileList` context. Checked against `keymap.toml` and `typed
 | Ctrl+click | `PaneCursorMove` + `SelectionToggle`, on mouse up | Toggles one row (D7) | Today a click ignores modifiers | — |
 | Shift+click, Ctrl+Shift+click | `SelectionExtend { to: Row(r) }`, on mouse up | Range from the cursor (D7) | As above | — |
 | Click below the last row | `SelectionClear` (saves) | Unmarks all (D7) | Today: no left handler | yes |
-| Right-drag over rows | `SelectionExtend { to: Row(r), unmark: start_was_marked }` | Paints a range (D8) | Keeps the long-press menu and the prefetch cancel | yes (D8) |
+| Right-drag over rows | `SelectionExtend { to: Row(r), mode: Unmark if the start row was marked, else Mark }` | Paints a range (D8) | Keeps the long-press menu and the prefetch cancel | yes (D8) |
 | Esc during a drag | `cx.stop_active_drag` | Cancels the drag | A capture listener, active only while dragging; Esc otherwise keeps clear-filter → close-preview | — |
 | Space, Insert, Num+, Num−, Num* | unchanged | — | — | — |
 | (no key) marks survive the filter | browser behaviour | D6 | — | yes |
@@ -184,7 +184,7 @@ Later, not in P36:
 | Component | Layer | Contract (in → out) | New / change | Test |
 | --- | --- | --- | --- | --- |
 | `selection` span and extension | core lib | `Selection::extend(cursor, to, unmark)`, `end_span()`, `mark_extension(&Listing, ext, on)` | change | `rusty-core/src/selection/tests/span.rs` (unit + proptest) |
-| `command` text forms | core | `SelectionExtend { to: CursorMove, unmark: bool }`, `SelectionExtension { mark: bool }`, `SelectionRestore` ↔ text | change | command round-trip tests + insta |
+| `command` text forms | core | `SelectionExtend { to: CursorMove, mode: SpanMode }`, `SelectionExtension { mark: bool }`, `SelectionRestore` ↔ text | change | command round-trip tests + insta |
 | `apply::select` | core | commands → `AppState` (span end, `last_marks`, all with folders) | change | `apply/tests/select_span.rs` |
 | `browser::filter` hidden marks | ui controller | refilter keeps hidden names; `hidden_marks(tab) -> u64` | change | `browser/filter/marks_tests.rs` |
 | `file_list` keys | ui | actions → commands | change | `file_list/tests/input.rs` |
@@ -211,14 +211,14 @@ Later, not in P36:
 
 | Atom | Component | Role | Effort | After | Check | Status | Cost |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| K1 | `selection` span and extension | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-core selection` | blocked (Q3) | |
-| K2a | `command` text forms | api-builder (Sol 6.1) | xhigh | K1 | `cargo nextest run -p rusty-core command`; insta reviewed | blocked | |
-| K2b | `apply::select` | api-builder (Sol 6.1) | xhigh | K2a | `cargo nextest run -p rusty-core apply` | blocked | |
-| K3 | `browser::filter` hidden marks | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-ui browser::filter` | blocked (Q3) | |
-| K4a | `file_list` key actions | ui-builder (Sonnet) | medium | K2b | `cargo nextest run -p rusty-ui file_list` | blocked | |
-| K4b | bindings, registry, labels, key tests | ui-builder (Sonnet) | medium | K4a | `cargo nextest run -p rusty-ui file_list commands`; `cargo xtask gate` (l10n) | blocked | |
-| K5 | `file_list` mouse | ui-builder (Opus) | medium | K4b | `cargo nextest run -p rusty-ui file_list window_view::tests::shell_menu` | blocked | |
-| K5b | `file_list` left-drag lasso (D20) | ui-builder (Opus) | medium | K5 | `cargo nextest run -p rusty-ui file_list::tests::lasso` | blocked | |
+| K1 | `selection` span and extension | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-core selection` | done (e921926) | |
+| K2a | `command` text forms | api-builder (Sol 6.1) | xhigh | K1 | `cargo nextest run -p rusty-core command`; insta reviewed | done (e921926) | |
+| K2b | `apply::select` | api-builder (Sol 6.1) | xhigh | K2a | `cargo nextest run -p rusty-core apply` | done (e921926) | |
+| K3 | `browser::filter` hidden marks | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-ui browser::filter` | done (`Event::MarksRestored`) | |
+| K4a | `file_list` key actions | ui-builder (Sonnet) | medium | K2b | `cargo nextest run -p rusty-ui file_list` | done | |
+| K4b | bindings, registry, labels, key tests | ui-builder (Sonnet) | medium | K4a | `cargo nextest run -p rusty-ui file_list commands`; `cargo xtask gate` (l10n) | done | |
+| K5 | `file_list` mouse | ui-builder (Opus) | medium | K4b | `cargo nextest run -p rusty-ui file_list window_view::tests::shell_menu` | done | |
+| K5b | `file_list` left-drag lasso (D20) | ui-builder (Opus) | medium | K5 | `cargo nextest run -p rusty-ui file_list::tests::lasso` | done | |
 | K6 | status bar hidden count | ui-builder (Sonnet) | medium | K3, K4b | `cargo nextest run -p rusty-ui status_bar window_view` | blocked | |
 | K7 | review Part K | reviewer (Opus) | high | K5, K6 | review notes; gate; Windows CI | blocked | |
 | D1 | `op_plan::drop_op` | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-core op_plan::drop` | ready | |
@@ -702,6 +702,28 @@ Then: gate, Windows CI, merge, an alpha build, and the owner check list (D16, D1
   - The UI thread is STA through GPUI's `OleInitialize`.
   - 31 atoms in three parts. The orchestrator may split them into p36a, p36b and p36c.
 
+- 2026-10-20 — K4a and K4b done on `p36-k` (one commit, because an action without a registry row fails the command tests).
+  - Keys: Shift+arrows/PgUp/PgDn/Home/End, Ctrl+A and Ctrl+Num+, Ctrl+Shift+A and Ctrl+Num−, `/`, Alt+Num+ and Alt+Num− are bound as in the key table. The held-modifier hint layers list them in the Files group.
+  - "No saved marks match this folder" comes from `CommandError::NothingToRestore` and shows as an error notice on the status line, text `files-marks-restore-none` in `files.ftl`.
+  - Key arrival, read from the GPUI platform code (`vendor/gpui-pre-windows` `keyboard.rs`/`events.rs`, `gpui-pre-linux` `keystroke_from_xkb`) and tested as parsed keystrokes:
+    - Windows: the numpad `+`, `-` and `/` keys map through `MapVirtualKeyW` to the same key names as the main keyboard, so `ctrl-+`, `ctrl--`, `alt-+`, `alt--` and `/` arrive from both. On the main keyboard `+` needs Shift; GPUI clears Shift for symbol keys, so Ctrl+Shift+= is `ctrl-+`.
+    - Linux: the main keyboard gives the same names. The numpad gives `add`, `subtract`, `divide` and `multiply` (`KP_*` keysyms), so Num keys do not match the `+`, `-`, `/` bindings. This already holds for the Num+, Num− and Num* mark keys. No default is dropped, because every key arrives on Windows. Aliases such as `ctrl-add` are an owner decision.
+  - K3 is blocked: marks of rows hidden by the filter can come back only through a core event (for example `Event::MarksRestored { tab, names }` that marks the rows of the new listing by name and ends the span). The core has no public way to mark rows by name on a given tab. K2b follow-up first, then K3.
+- 2026-10-20 — K3 done on `p36-k`, with the Linux numpad aliases.
+  - Core: `Event::MarksRestored { tab, names }` adds the named rows of the tab's current listing to its marks and ends the span. The replay log prints it as `!marks-restored { tab: N, names: K }` followed by K quoted name lines.
+  - Browser (`browser/filter/marks.rs`): marks of rows that a refilter hides are kept by name per tab and location. After the refilter, the names that are visible again are re-marked through the new event. Navigation and `SelectionClear` (Ctrl+Shift+A, Ctrl+Num−, and the clear after a finished job) empty the set; a reload drops names that no longer exist. `Browser::hidden_marks(tab) -> u64` returns the count for K6.
+  - F5, F6, F8, Ctrl+C/X and drag read `selected_sources`, which only sees marks in the shown listing, so they never touch hidden rows.
+  - `browser/mod.rs` was at the 400-line limit, so `open_row`, `go_up`, `open_at`, `open_tab_at` and `set_launcher` moved unchanged to `browser/open.rs`.
+  - Linux aliases (owner decision): `add`, `subtract`, `multiply`, `divide`, `ctrl-add`, `ctrl-subtract`, `alt-add` and `alt-subtract` are bound beside `+`, `-`, `*`, `/`, `ctrl-+`, `ctrl--`, `alt-+` and `alt--` for mark_pattern, unmark_pattern, invert_marks, restore_marks, mark_all, unmark_all, mark_extension and unmark_extension. `ctrl-multiply` and the other numpad chords stay unbound. The bound-key snapshots gained exactly those 8 rows, and the FileList action count went from 54 to 62.
+
+- 2026-10-20 — K5 and K5b done on `p36-k`.
+  - Rows: Ctrl+click moves the cursor and toggles; Shift+click and Ctrl+Shift+click send `SelectionExtend { to: Row(r) }`. Both act in `on_click`; mouse-down with Ctrl or Shift only takes focus. GPUI fires `on_click` after a movement when no `on_drag` is set, so a click that follows a lasso is swallowed by a flag that the next mouse-down clears (no timers).
+  - Empty click: a plain left click below the last row sends `SelectionClear` on mouse up, not on mouse down, so a lasso that starts there keeps the marks.
+  - Right-drag: the first row change cancels the menu prefetch, puts the cursor back on the start row and starts the span; every row change sends `SelectionExtend { to: Row(r), unmark: start_marked }`. A release after a drag does not toggle.
+  - Lasso: a left press on the gap right of the name text (a `flex_1` zone in the Name cell) or below the last row arms it; past 4 px it draws a rectangle (accent at 12 % alpha, 1 px accent border, no animation) and spans the crossed rows from the start row (or the last row, from below). Ctrl unmarks. Move and release are window listeners, so the lasso follows the pointer anywhere inside the window. A press on the icon or the name text does nothing new (reserved for D9).
+  - Not done: auto-scroll near the list edges (needs a timer while the pointer rests; left to D8). A lasso started below the last row that crossed rows and comes back below them keeps the last row marked, because a span always contains its anchor.
+  - `render_row` and `render_rows` moved to `file_list/rows.rs`. Gallery page "Mouse marks" (`p36-k5-mouse-marks`) drives real pointer events: Ctrl/Shift clicks, a right-drag range and a lasso in progress.
+
 ## Questions for the owner (answered 2026-10-20)
 
 **Q1 — Right-drag.** Should right-drag stay Total Commander range marking (finished properly), with Windows' drop menu only for right-button drags that come from Explorer? Or should right-drag in Ferrite become the Windows drop menu?
@@ -721,3 +743,9 @@ Then: gate, Windows CI, merge, an alpha build, and the owner check list (D16, D1
 *Recommended:* shortcuts yes, as the last part of Part D, since you asked for Alt. Auto-scroll and spring-loading also yes, but optional: they run after the core drag works and can slip to a later alpha without blocking Part X.
 
 Answers (2026-10-20): Q1 yes, Total Commander right-drag marking. Q2 `never`, as in Explorer. Q3 yes to (a), (b) and (c). Q4 yes to shortcuts, auto-scroll and spring-loaded targets. Added D20, the left-drag lasso.
+
+- 2026-10-20 — K7 review fixes on `p36-k`.
+  - Core: `SpanMode { Mark, Unmark, Toggle }` replaces `unmark: bool` in `Selection::extend` and `SelectionExtend`; the text form is `selection.extend { to: down, mode: mark|unmark|toggle }` (printed-commands snapshot updated). Toggle = base XOR span; moving back restores the base. A span target past the last row (`Row(r)` with r ≥ len) holds no rows. `PaneScroll` no longer ends the span.
+  - Lasso: Ctrl toggles (D20). The tracked y is clamped to the list viewport, so a drag past an edge marks only shown rows; the rectangle still follows the raw pointer. A lasso from below that comes back below sends `Row(len)` and shrinks to the base (D3).
+  - Browser: unmark-all and the empty-space click save visible plus filter-hidden marks (D5). `/` under a filter puts saved names the filter hides into the hidden-marks set, and succeeds when only hidden names match.
+  - Footer text is now "N marked not shown", since show-hidden/show-system also hide marks.
