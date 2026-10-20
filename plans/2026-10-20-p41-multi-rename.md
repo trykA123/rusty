@@ -29,7 +29,7 @@ The user marks files, presses Ctrl+M and renames them all at once. They can use 
 
 ## Decisions
 
-These become final once the owner answers Q1–Q3. Workers never reopen them; a worker that finds one wrong stops and reports.
+Final. The owner asked for at least Total Commander parity plus the bonuses the architect chooses (2026-10-20), and left Q1–Q3 to the architect: the recommended answers apply. Workers never reopen them; a worker that finds one wrong stops and reports.
 
 ### Rules: how a new name is built
 
@@ -39,7 +39,9 @@ These become final once the owner answers Q1–Q3. Workers never reopen them; a 
   - Name parts: `[N]` is the whole name, `[N3]` the 3rd character, `[N2-5]` characters 2 to 5, `[N2,5]` 5 characters from the 2nd, `[N2-]` from the 2nd to the end. A negative number counts from the end (`[N-3,3]`, `[N2--2]`). `[E…]` works the same way on the extension.
   - Folders: `[P]` is the parent folder name, `[G]` the grandparent.
   - Counter: `[C]`, or `[C10+5:3]` with its own start, step and digits.
-  - Dates: `[Y] [M] [D] [h] [n] [s]` come from the modified time in local time. Year has 4 digits, the others 2.
+  - Dates: `[Y] [y] [M] [D] [h] [i] [s]` come from the modified time in local time. `[Y]` has 4 digits, `[y]` and the others 2. `[d]` is the date as `YYYY-MM-DD`, `[t]` the time as `hh.mm.ss` (a colon is not allowed in names). Minutes are `[i]`, as in Total Commander.
+  - Case from here: `[U]` upper, `[L]` lower, `[F]` first letter of each word upper, `[n]` back to the original. Each applies to the mask's output after it, until the next case token.
+  - Fields: `[=group.field]` takes a value from a field provider (D21), for example `[=exif.date]`, `[=audio.artist]`, `[=file.size]`. A missing value gives empty text.
   - `[[` and `]]` are literal brackets.
   - Positions count characters from 1. A part outside the name gives empty text.
   - An unknown token shows an error under the field with its position, and no preview runs.
@@ -122,6 +124,19 @@ These become final once the owner answers Q1–Q3. Workers never reopen them; a 
   - The tool opens with the defaults (`[N]`, `[E]`, empty Find, Unchanged case) (Q3).
 - **D19 — Text.** Tool texts go in a new `rename.ftl` (added to `catalog.rs`), labels in `commands.ftl`, activity texts in `files.ftl` (D59).
 
+### Total Commander parity and bonuses (Part D)
+
+- **D20 — Parity list.** Everything in Total Commander's Multi-Rename Tool that applies to Ferrite is in: masks with ranges, counter, dates and times, case tokens, field tokens (TC's content plugins), search and replace with regex and the extension switch, case lists, presets with last used, Edit names, Undo, the log file, and reordering the list to change the counter order.
+- **D21 — Field providers.** `rename::fields` is a registry of providers, each a group of named fields read on demand for the items a mask uses (never read when no `[=…]` token is in the rules).
+  - Built in: `file` (`size`, `size_kb`, `created`, `accessed`, `attrs`), `exif` (`date`, `camera`, `model`, `width`, `height`; kamadak-exif, already a dependency), `audio` (`artist`, `title`, `album`, `track`, `year`, `genre`; `lofty`, pinned).
+  - Plugins add groups through the same trait later (D-modularity); the token menu lists every registered field.
+  - Reads run on the background executor with the preview's generation number; a slow read shows "…" in the row until it lands.
+- **D22 — Clean-up.** A fourth row of toggles after case: Trim spaces, Collapse repeats (spaces, `_`, `-`, `.`), Remove accents (`ă→a`, `ș→s`, `é→e`; Unicode decomposition, then marks dropped), Spaces to `_`. They run last, before the check.
+- **D23 — Edit names.** Ctrl+E switches the preview to a text editor with one new name per line. Edits there override the rules for that row and show as "Edited" in Status; a line count that differs from the row count is a problem that blocks Rename. "Load names from file…" and "Paste names" fill the same lines; "Copy new names" copies them.
+- **D24 — Order and folders.** Ctrl+Shift+↑/↓ in the preview moves a row, which changes the counter order; clicking a column head sorts the preview. "Counter per folder" restarts the counter in each folder when the items come from several folders (search results, flat views); collisions are always checked per folder.
+- **D25 — Preview help.** The New name column highlights the characters that changed. With Find filled, the Old name column highlights the matches. A path longer than 260 characters is a warning, not a problem.
+- **D26 — Undo history and log.** Ctrl+Z walks back through the rename batches, newest first, up to the last 20 kept in the journal; each one undoes only steps that still apply (D11). An optional log (Settings › Files › Rename log) appends `old → new` lines per batch to a text file in the profile folder.
+
 ## Components
 
 | Component | Layer | Contract (in → out) | New / change | Test |
@@ -173,9 +188,18 @@ Roles: Sonnet 5.5 medium or high for decided backend and UI work, Opus 5.5 mediu
 | B9 | review Part B | reviewer (Opus) | high | A10, B6–B8 | review notes; gate; Windows CI | blocked | |
 | **Part C — single rename** | | | | | | | |
 | C1 | F2 on the batch path | ui-builder (Opus) | medium | B9 | `cargo nextest run -p rusty-ui browser::naming window_view::tests` | blocked | |
-| C2 | final review + owner checks | reviewer (Opus) | high | C1 | review notes; gate; Windows CI; owner list | blocked | |
+| C2 | final review + owner checks | reviewer (Opus) | high | C1, E7 | review notes; gate; Windows CI; owner list | blocked | |
+| **Part D — parity and bonuses** | | | | | | | |
+| E1 | `rename::fields` registry + file, exif | api-builder (Sonnet) | high | A1 | `cargo nextest run -p rusty-core -p rusty-ui rename::fields` | blocked | |
+| E2 | audio provider (`lofty`) | api-builder (Sonnet) | medium | E1 | `cargo nextest run -p rusty-ui rename::fields::audio` | blocked | |
+| E3 | clean-up rules | api-builder (Sonnet) | medium | A2 | `cargo nextest run -p rusty-core rename::tests::cleanup` | blocked | |
+| E4 | Edit names, load, paste, copy | ui-builder (Opus) | medium | B6 | `cargo nextest run -p rusty-ui window_view::tests::multi_rename` | blocked | |
+| E5 | row order, column sort, counter per folder | ui-builder (Sonnet) | high | B6 | `cargo nextest run -p rusty-ui multi_rename window_view::tests::multi_rename` | blocked | |
+| E6 | change and match highlights, long-path warning | ui-builder (Sonnet) | medium | B5 | `cargo nextest run -p rusty-ui multi_rename::tests::preview`; gallery shots | blocked | |
+| E7 | undo history + rename log | api-builder (Sonnet) | high | B7, B8 | `cargo nextest run -p rusty-app rename_hooks -p rusty-ui window_view::tests::undo` | blocked | |
+| E8 | review Part D | reviewer (Opus) | high | E1–E7 | review notes; gate; Windows CI | blocked | |
 
-The plan has 21 atoms. The orchestrator may save it as `p41a-engine` (A1–A10) and `p41b-tool` (B1–C2), with these decisions shared.
+The plan has 29 atoms. The orchestrator may save it as `p41a-engine` (A1–A10) and `p41b-tool` (B1–C2), with these decisions shared.
 
 ### A1 — masks
 - **Read:** D2–D4; `rusty-core/src/name/mod.rs`, `lib.rs`, `selection/pattern.rs` (style).
@@ -363,9 +387,7 @@ Parallel lanes:
 
 ## Open questions for the owner
 
-- **Q1 — F2 with marks.** Should F2 on 2 or more marked items open multi-rename? Recommendation: yes. F2 on a single item stays the quick prompt.
-- **Q2 — On a failure.** Should a failure put every name back (all or nothing), or keep the renames already done and offer Undo? Recommendation: all or nothing. It is the same as crash recovery, and the folder is never half renamed.
-- **Q3 — Starting rules.** Should the tool open with the defaults (`[N]`, `[E]`) or with the last rules used? Recommendation: the defaults (calm, predictable), with "Last used" first in the preset list.
+Answered 2026-10-20: the owner left Q1–Q3 to the architect. Q1 F2 with 2 or more marks opens multi-rename; Q2 all or nothing; Q3 the tool opens with the defaults, "Last used" first in the preset list.
 
 ## Log
 
@@ -375,3 +397,4 @@ Parallel lanes:
   - No job has a user-facing undo yet.
   - The fake file system compares names case-sensitively only.
   - Ctrl+M is free.
+- 2026-10-20 — Owner: "at least like Total Commander, with the bonus features you choose". Added D20–D26 and Part D (E1–E8); minutes moved to `[i]`, case tokens `[U] [L] [F] [n]`, `[y] [d] [t]` and field tokens added to D3. A1 and A4 started.
