@@ -38,7 +38,7 @@ Exit: the spike meets the targets on Linux and the work PC, otherwise D2 is reop
 
 Goal: a file manager the owner can use every day on Windows.
 
-Progress: 87% (111 of 129 items done, 3 being finished counted as half, 15 still to do: (111 + 1.5) ÷ 129; counted from the work plans of the alpha features). Moving the remaining texts into translation files is out of the count (after 1.0, D59).
+Progress: 67% (129 of 195 items done, 3 being finished counted as half, 63 still to do: (129 + 1.5) ÷ 195). The drop from 87% is because five features moved into the alpha (D68). Each atom of the plans P36 (multi-select and drag and drop), P37 (PDF links) and P38 (Rich ELF and MAP) counts once; review-only atoms are not counted; Ctrl+K and multi-rename count as one item each until their plans exist. Moving the remaining texts into translation files is out of the count (after 1.0, D59).
 
 Done so far:
 
@@ -49,17 +49,23 @@ Done so far:
 - TASKING map wrapped rows, map part headers, `.mdf` memory definition reader;
 - Alt+M opens the context menu;
 - safer session and database store after a crash;
-- multi-select: keys, Shift and Ctrl click, right-drag ranges, left-drag lasso; marks survive the filter, `/` restores them, the footer counts marked files the filter hides;
-- file-type icons per extension (PDF, Office, audio, video, code families, automotive);
-- PDF links follow on click, with a back stack;
-- drag and drop groundwork: drop rule, drop into a folder, volume check.
+- In the next download: multi-select: keys, Shift and Ctrl click, right-drag ranges, left-drag lasso; marks survive the filter, `/` restores them, the footer counts marked files the filter hides;
+- In the next download: file-type icons per extension (PDF, Office, audio, video, code families, automotive);
+- In the next download: PDF links follow on click, with a back stack;
+- In the next download: drag and drop groundwork: drop rule, drop into a folder, volume check.
 
-Still open in the alpha:
+Still open in the alpha, in this order:
 
+- multi-select (done) and drag and drop (in progress);
+- PDF links (done) with keys and outline (in progress);
+- Rich ELF and MAP views, direction "address space first" (D66; planned, first parts done: `.mdf` reader, MAP fixes, name helper);
+- Ctrl+K command center with global search (D60, D61, D63; being planned);
+- multi-rename (not started);
 - DBC and A2L viewer in F3;
 - automotive syntax colours (m4, OIL, DCM, UDL) wired into the text viewer;
+- viewer chrome; pins;
 - spreadsheets in F3 (one item; after 1.0 if it grows);
-- every shortcut changeable; viewer chrome; pins;
+- every shortcut changeable;
 - the Follow bug on Windows; steadier Windows CI.
 
 Scope:
@@ -80,13 +86,8 @@ Exit: two weeks of daily use on the work PC with no lost or damaged files.
 
 In this order:
 
-1. Multi-select (done) and drag and drop (in progress).
-2. PDF links and outline (in progress).
-3. Rich ELF and MAP views, direction "address space first" (D66, planned).
-4. Activity strip replacing the F-key bar, which becomes off by default (D67, in progress).
-5. Ctrl+K command center with global search (D60, D61, D63).
-6. Multi-rename.
-7. Delete safety net with 1 to 7 days retention (D65).
+1. Activity strip replacing the F-key bar, which becomes off by default (D67, in progress).
+2. Delete safety net with 1 to 7 days retention (D65).
 
 ## v1 Beta · v0.9
 
