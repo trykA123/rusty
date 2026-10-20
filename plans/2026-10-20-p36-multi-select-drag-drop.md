@@ -211,12 +211,12 @@ Later, not in P36:
 
 | Atom | Component | Role | Effort | After | Check | Status | Cost |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| K1 | `selection` span and extension | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-core selection` | blocked (Q3) | |
-| K2a | `command` text forms | api-builder (Sol 6.1) | xhigh | K1 | `cargo nextest run -p rusty-core command`; insta reviewed | blocked | |
-| K2b | `apply::select` | api-builder (Sol 6.1) | xhigh | K2a | `cargo nextest run -p rusty-core apply` | blocked | |
-| K3 | `browser::filter` hidden marks | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-ui browser::filter` | blocked (Q3) | |
-| K4a | `file_list` key actions | ui-builder (Sonnet) | medium | K2b | `cargo nextest run -p rusty-ui file_list` | blocked | |
-| K4b | bindings, registry, labels, key tests | ui-builder (Sonnet) | medium | K4a | `cargo nextest run -p rusty-ui file_list commands`; `cargo xtask gate` (l10n) | blocked | |
+| K1 | `selection` span and extension | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-core selection` | done (e921926) | |
+| K2a | `command` text forms | api-builder (Sol 6.1) | xhigh | K1 | `cargo nextest run -p rusty-core command`; insta reviewed | done (e921926) | |
+| K2b | `apply::select` | api-builder (Sol 6.1) | xhigh | K2a | `cargo nextest run -p rusty-core apply` | done (e921926) | |
+| K3 | `browser::filter` hidden marks | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-ui browser::filter` | blocked: needs a core event to re-mark rows by name (K2b follow-up) | |
+| K4a | `file_list` key actions | ui-builder (Sonnet) | medium | K2b | `cargo nextest run -p rusty-ui file_list` | done | |
+| K4b | bindings, registry, labels, key tests | ui-builder (Sonnet) | medium | K4a | `cargo nextest run -p rusty-ui file_list commands`; `cargo xtask gate` (l10n) | done | |
 | K5 | `file_list` mouse | ui-builder (Opus) | medium | K4b | `cargo nextest run -p rusty-ui file_list window_view::tests::shell_menu` | blocked | |
 | K5b | `file_list` left-drag lasso (D20) | ui-builder (Opus) | medium | K5 | `cargo nextest run -p rusty-ui file_list::tests::lasso` | blocked | |
 | K6 | status bar hidden count | ui-builder (Sonnet) | medium | K3, K4b | `cargo nextest run -p rusty-ui status_bar window_view` | blocked | |
@@ -701,6 +701,14 @@ Then: gate, Windows CI, merge, an alpha build, and the owner check list (D16, D1
   - GPUI: the Windows drop target always reports COPY and ignores modifiers. gpui-pre 0.3.9 already has the drag-out API (`external_drag_payload`, `restore_platform_drag`), but Windows lacks `start_external_drag`.
   - The UI thread is STA through GPUI's `OleInitialize`.
   - 31 atoms in three parts. The orchestrator may split them into p36a, p36b and p36c.
+
+- 2026-10-20 — K4a and K4b done on `p36-k` (one commit, because an action without a registry row fails the command tests).
+  - Keys: Shift+arrows/PgUp/PgDn/Home/End, Ctrl+A and Ctrl+Num+, Ctrl+Shift+A and Ctrl+Num−, `/`, Alt+Num+ and Alt+Num− are bound as in the key table. The held-modifier hint layers list them in the Files group.
+  - "No saved marks match this folder" comes from `CommandError::NothingToRestore` and shows as an error notice on the status line, text `files-marks-restore-none` in `files.ftl`.
+  - Key arrival, read from the GPUI platform code (`vendor/gpui-pre-windows` `keyboard.rs`/`events.rs`, `gpui-pre-linux` `keystroke_from_xkb`) and tested as parsed keystrokes:
+    - Windows: the numpad `+`, `-` and `/` keys map through `MapVirtualKeyW` to the same key names as the main keyboard, so `ctrl-+`, `ctrl--`, `alt-+`, `alt--` and `/` arrive from both. On the main keyboard `+` needs Shift; GPUI clears Shift for symbol keys, so Ctrl+Shift+= is `ctrl-+`.
+    - Linux: the main keyboard gives the same names. The numpad gives `add`, `subtract`, `divide` and `multiply` (`KP_*` keysyms), so Num keys do not match the `+`, `-`, `/` bindings. This already holds for the Num+, Num− and Num* mark keys. No default is dropped, because every key arrives on Windows. Aliases such as `ctrl-add` are an owner decision.
+  - K3 is blocked: marks of rows hidden by the filter can come back only through a core event (for example `Event::MarksRestored { tab, names }` that marks the rows of the new listing by name and ends the span). The core has no public way to mark rows by name on a given tab. K2b follow-up first, then K3.
 
 ## Questions for the owner (answered 2026-10-20)
 
