@@ -1,6 +1,6 @@
 # Rusty roadmap
 
-Updated 15 October 2026. The visual version is [`design/roadmap.html`](../design/roadmap.html). Scope rules are in [decisions.md](decisions.md) (D13, D14).
+Updated 20 October 2026. The visual version is [`design/roadmap.html`](../design/roadmap.html). Scope rules are in [decisions.md](decisions.md) (D13, D14).
 
 Kinds: **core** is always on; **module** can be turned off; **package** is data only (themes, keymaps); **infra** is build, CI and release work.
 
@@ -38,17 +38,29 @@ Exit: the spike meets the targets on Linux and the work PC, otherwise D2 is reop
 
 Goal: a file manager the owner can use every day on Windows.
 
-Progress: 45% (6 of 20 items done, 6 in progress).
+Progress: 87% (111 of 129 items done, 3 being finished counted as half, 15 still to do: (111 + 1.5) ÷ 129; counted from the work plans of the alpha features). Moving the remaining texts into translation files is out of the count (after 1.0, D59).
 
 Done so far:
 
-- component library and gallery;
-- two panes with tabs and history (keyboard and mouse back/forward);
-- session restore;
-- virtualised list with quick filter;
-- TC marking with folder sizes;
-- copy, move, rename and new folder, Recycle Bin and Shift+Del with plans, progress, cancel and a crash-safe journal;
-- light and dark themes.
+- component library and gallery; two panes with tabs and history; session restore; virtualised list with quick filter;
+- copy, move, rename and new folder, Recycle Bin and Shift+Del with plans, progress, cancel and a crash-safe journal; light and dark themes;
+- Oxidised iron syntax colours (D64);
+- CAN traces in TRC and Vector BLF; DBC and A2L readers (the F3 viewer for them is not done);
+- TASKING map wrapped rows, map part headers, `.mdf` memory definition reader;
+- Alt+M opens the context menu;
+- safer session and database store after a crash;
+- multi-select: keys, Shift and Ctrl click, right-drag ranges, left-drag lasso; marks survive the filter, `/` restores them, the footer counts marked files the filter hides;
+- file-type icons per extension (PDF, Office, audio, video, code families, automotive);
+- PDF links follow on click, with a back stack;
+- drag and drop groundwork: drop rule, drop into a folder, volume check.
+
+Still open in the alpha:
+
+- DBC and A2L viewer in F3;
+- automotive syntax colours (m4, OIL, DCM, UDL) wired into the text viewer;
+- spreadsheets in F3 (one item; after 1.0 if it grows);
+- every shortcut changeable; viewer chrome; pins;
+- the Follow bug on Windows; steadier Windows CI.
 
 Scope:
 
@@ -59,10 +71,22 @@ Scope:
 - core: copy, move, rename, new folder, Recycle Bin, Shift+Del with a warning; plan before acting; background job queue.
 - core: copy engine in Auto and Standard modes (D22); Explorer clipboard; lock owner in errors; command line; key contexts; per-monitor DPI.
 - infra: copy benchmark against Explorer, `robocopy /MT` and TeraCopy.
-- core: pins, Ctrl+K palette, shortcuts in TOML, F-key bar; every string in Fluent files (English only).
+- core: pins, shortcuts in TOML; new UI text goes into Fluent files (English only); moving the old texts is after 1.0 (D59).
 - package: built-in light and dark themes following Windows.
 
 Exit: two weeks of daily use on the work PC with no lost or damaged files.
+
+## Right after the alpha
+
+In this order:
+
+1. Multi-select (done) and drag and drop (in progress).
+2. PDF links and outline (in progress).
+3. Rich ELF and MAP views, direction "address space first" (D66, planned).
+4. Activity strip replacing the F-key bar, which becomes off by default (D67, in progress).
+5. Ctrl+K command center with global search (D60, D61, D63).
+6. Multi-rename.
+7. Delete safety net with 1 to 7 days retention (D65).
 
 ## v1 Beta · v0.9
 
@@ -72,7 +96,7 @@ Goal: safe, configurable and pleasant; modules and theming arrive.
 - core: module registry with runtime on/off and safe mode; settings window generated from module schemas.
 - core: per-case confirmations, date and size formats, ignore list.
 - core: Parallel and Large files copy modes, copy options, profiles and rules by destination; accessibility basics.
-- package: custom colour themes and icon themes (D16).
+- package: custom colour themes and icon themes (D16). Idea, not decided: an optional colourful icon theme based on Material Icon Theme (MIT).
 - module: copy path, terminal (Windows Terminal and templates), folder search, frecency jump, external viewer and editor (F3/F4; done, from plan P12; hex view and large files done, from plan P13; viewer foundation done, from plan P15; extra grammars and content detection done, from plan P15 (A3); rule lexer and Notepad++ UDL import done, from plan P15 (A4, viewer wiring next); search counts, marks and history (model and store) done, from plan P15 (A5)), notifications for long operations.
 - infra: soak test; start-up and memory benchmark in CI (done, from plan P23; baseline in [perf.md](perf.md)).
 
