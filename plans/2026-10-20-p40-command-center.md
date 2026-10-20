@@ -207,7 +207,7 @@ Roles follow the owner's current rules: Sonnet 5.5 (medium or high) for decided 
 | B1 | visit and open hooks, frecency writer | ui-builder (Sonnet) | medium | A9 | `cargo nextest run -p rusty-ui window_view::tests::visits`; `-p rusty-app search_hooks` | blocked | |
 | B2 | `rusty-index::table` | api-builder (Sonnet) | high | — | `cargo nextest run -p rusty-index table` | done | |
 | B3 | `rusty-index::search` | api-builder (Sol 6.1) | xhigh | A1, B2 | `cargo nextest run -p rusty-index search` | done | |
-| B4 | `rusty-index::walker` | api-builder (Sol 6.1) | xhigh | B2 | `cargo nextest run -p rusty-index walker` | ready | |
+| B4 | `rusty-index::walker` | api-builder (Sol 6.1) | xhigh | B2 | `cargo nextest run -p rusty-index walker` | done | |
 | B5 | Recent and Tabs sources | ui-builder (Sonnet) | medium | A5, B1 | `cargo nextest run -p rusty-ui command_center::tests::file_sources::recent` | blocked | |
 | B6 | Here source | ui-builder (Sonnet) | high | B3, B4, B5 | `cargo nextest run -p rusty-ui command_center::tests::file_sources::here` | blocked | |
 | B7 | Paths source (path mode) | ui-builder (Sonnet) | medium | B5 | `cargo nextest run -p rusty-ui command_center::tests::file_sources::paths` | blocked | |
@@ -493,3 +493,4 @@ The original questions:
 - 2026-10-20 — B4 first run stopped: `Attributes` has no reparse flag. Decided: skip only `EntryKind::Link` (name surrogates), walk other reparse points, depth limit 256.
 - 2026-10-20 — C1 done: version 1 little-endian index snapshots, CRC32 over metadata and payload, atomic writes, stable deleted slots; `built_at` uses UTC Unix seconds. Twelve file tests pass; 2M entries save in 247.5 ms and load in 559.8 ms (debug); gate: all 10 steps passed.
 - 2026-10-20 — B3 done: parallel table search in 64k chunks with bounded top-N heaps, AND name and path terms, extension filters and cancellation; 14 search tests passed; 1M synthetic names in 6.19 ms (release, warm, limit 50); all 10 gate steps passed. Borrowed terms and a cancellation callback keep the index independent of the UI; base matcher scores and table-order ties leave D17 ranking to the UI.
+- 2026-10-20 — B4 done: four-worker breadth-first walker fills the name table, records links without following them, limits depth to 256, supports cancellation and exact exclusions, counts unreadable folders, and reports partial tables every 10,000 entries and at completion. The cap includes the root. All 14 walker tests passed after failing against the initial scaffold; the full gate passed all 10 steps.
