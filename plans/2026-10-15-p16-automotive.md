@@ -90,6 +90,7 @@ Input: the crate research of 2026-10-15 (summary under Decisions).
 
 ## Log
 
+- 2026-10-20 — B5a backend: pinned can-dbc 10.0.0 and a2lfile 3.5.1; own DBC/A2L table rows, ID lookup, content sniffers, bounded retention, Watch progress/cancellation and up to 1000 line-numbered problems. Parsing individual records/row blocks preserves other rows after errors; A2L includes are reported and left unloaded. Invented release fixtures: A2L 50,000,153 bytes / 98,061 measurements, 0.361 s / 74,584 KiB peak RSS; DBC 5,000,130 bytes / 19,200 messages, 0.345 s / 41,032 KiB peak RSS. A separate dense 50 MB whole-tree a2lfile probe took 0.578 s / 1,154,316 KiB, so the index uses bounded row blocks. Full 500 MB/first-content D10 and UI wiring remain unverified in this backend atom.
 - 2026-10-19 — Owner picked direction B (inspector) from the Opus prototypes and asked for a simple default with every rich part switchable in settings (D11, D12).
 - 2026-10-19 — Owner: the left and right panels are drawers over the content, not columns that shrink it (D11).
 - 2026-10-19 — D58 (owner, whole app): every rich viewer opens calm, uses Ctrl+B / Ctrl+I for its left / right drawers and has a View menu (Alt+V) with Simple / Rich / Custom and per-part toggles; D12 updated (navigator on Ctrl+B, not Ctrl+L).
