@@ -191,7 +191,7 @@ Roles: Sonnet 5.5 medium or high for decided backend and UI work, Opus 5.5 mediu
 | C1 | F2 on the batch path | ui-builder (Opus) | medium | B9 | `cargo nextest run -p rusty-ui browser::naming window_view::tests` | blocked | |
 | C2 | final review + owner checks | reviewer (Opus) | high | C1, E7 | review notes; gate; Windows CI; owner list | blocked | |
 | **Part D — parity and bonuses** | | | | | | | |
-| E1 | `rename::fields` registry + file, exif | api-builder (Sonnet) | high | A1 | `cargo nextest run -p rusty-core -p rusty-ui rename::fields` | in progress | |
+| E1 | `rename::fields` registry + file, exif | api-builder (Sonnet) | high | A1 | `cargo nextest run -p rusty-core -p rusty-ui rename::fields` | done | |
 | E2 | audio provider (`lofty`) | api-builder (Sonnet) | medium | E1 | `cargo nextest run -p rusty-ui rename::fields::audio` | blocked | |
 | E3 | clean-up rules | api-builder (Sonnet) | medium | A2 | `cargo nextest run -p rusty-core rename::tests::cleanup` | done | |
 | E4 | Edit names, load, paste, copy | ui-builder (Opus) | medium | B6 | `cargo nextest run -p rusty-ui window_view::tests::multi_rename` | blocked | |
@@ -409,3 +409,4 @@ Answered 2026-10-20: the owner left Q1–Q3 to the architect. Q1 F2 with 2 or mo
 - 2026-10-20 — A7 done: `run_rename` (and `RenameOutcome { Done, PutBack, Cancelled, Stuck }`) runs `run`, then `roll_back` over the steps it saw finish; `Stuck.left` lists the targets whose put-back failed; `counted` counts a Rename step unless its target is a `.ferrite-rename-` name; `local::tests::rename_batch` is Windows-only.
 - 2026-10-20 — E3 done: `rename::Cleanup { trim, collapse, remove_accents, spaces_to_underscore }` in `RenameRules.cleanup` (serde default), applied to stem and extension after case; `unicode-normalization` =0.1.26 added for NFD.
 - 2026-10-20 — A8 done: `JobState::Undone`; `JobJournal::last_undoable(kind) -> Option<FinishedJob { id, plan, steps, created_at }>` returns the newest Done job of that kind; `mark_job_undone`; `prune` also keeps the newest 20 Done `rename` jobs. No schema change.
+- 2026-10-20 — E1 done: `rename::{FieldProvider, FieldInfo, FieldRegistry, FieldRef, ItemFields, Values, groups_needed}` in rusty-core (pure; `Values::insert` swaps forbidden file-name characters for `_`); `rusty_ui::rename::fields::{builtin, FileFields, ExifFields}` in rusty-ui next to the image viewer's kamadak-exif. Chosen: `size_kb` rounds up; `attrs` is letters R H S A (Linux: R and dot-name H); `exif.camera` is the Make; label ids `rename-field-<group>-<field>` are defined by B1 in `rename.ftl`.
