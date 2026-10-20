@@ -179,10 +179,13 @@ After the alpha, except four small atoms that help alpha features in progress: *
 
 ## Questions for the owner
 
-- **Q1 — Should a second copy wait when it shares a hard disk or USB drive with a running copy?** Two copies on one spinning disk make both slower. Recommended: yes for Hdd and removable, no for SSD and network.
-- **Q2 — Should folder sizes fill in by themselves?** Recommended: off by default (Space measures, as now); a setting turns it on for local drives only.
-- **Q3 — On Windows, is about 32 MB during a big folder-size walk acceptable to count hard links once?** Recommended: yes, capped at 1,000,000 files, with a note past the cap.
+All three answered 2026-10-20: the owner accepted the recommendations.
+
+- **Q1 — Should a second copy wait when it shares a hard disk or USB drive with a running copy?** Two copies on one spinning disk make both slower. **Decided:** yes for Hdd and removable, no for SSD and network.
+- **Q2 — Should folder sizes fill in by themselves?** **Decided:** off by default (Space measures, as now); a setting turns it on for local drives only.
+- **Q3 — On Windows, is about 32 MB during a big folder-size walk acceptable to count hard links once?** **Decided:** yes, capped at 1,000,000 files, with a note past the cap.
 
 ## Log
 
 - 2026-10-20 — Plan written from D71 items 1, 7, 8, 10 and the code at f8e7655. Found: `IoQueue` already has priorities, owner cancel and per-volume limits, but no volume is ever classified; five queues are separate; Space sizes are not cancelled on leave; copy into itself is refused by the plan, the UI pre-check is case-sensitive.
+- 2026-10-20 — Owner accepted Q1–Q3 as recommended; J8 can proceed on that rule.

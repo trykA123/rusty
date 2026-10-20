@@ -18,6 +18,7 @@ Key names (Ctrl+K), menu names and setting names are fine. Use the product name 
 
 ## Commits and merges
 
+- Each branch lands on main as one squash commit. Its subject follows the rules below.
 - The subject says what changed for the user, in plain words.
 - An optional short area prefix is fine: `ui:`, `fs:`, `docs:`, `plans:`.
 - The body is optional.
