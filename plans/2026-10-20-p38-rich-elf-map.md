@@ -205,7 +205,7 @@ Final once the owner answers Q1–Q3. Workers never reopen them; a worker that f
 | A1 | `fit_name` | ui-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-ui columns::fit` | done | |
 | A2 | `columns` primitive | ui-builder (Opus) | medium | A1 | `cargo nextest run -p rusty-ui primitives::columns`; gallery shot | done | |
 | A3 | ELF table on `columns` | ui-builder (Sonnet) | medium | A2 | `cargo nextest run -p rusty-ui viewer::elf` | done | |
-| A4 | MAP table on `columns` | ui-builder (Sonnet) | medium | A2 | `cargo nextest run -p rusty-ui viewer::map` | ready | |
+| A4 | MAP table on `columns` | ui-builder (Sonnet) | medium | A2 | `cargo nextest run -p rusty-ui viewer::map` | done | |
 | A5 | CSV table on `columns` | ui-builder (Sonnet) | medium | A2 | `cargo nextest run -p rusty-ui viewer::table` | ready | |
 | A6 | CAN trace rows as cells | ui-builder (Sonnet) | medium | A2 | `cargo nextest run -p rusty-ui viewer::trace viewer::tests::can_trace` | ready | |
 | A7 | ELF noise filter (model) | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-automotive elf_query` | done | |
@@ -219,7 +219,7 @@ Final once the owner answers Q1–Q3. Workers never reopen them; a worker that f
 | B2 | `space::kind` and regions | api-builder (Sol 6.1) | xhigh | B1 | `cargo nextest run -p rusty-automotive space_regions` | done | |
 | B3 | `space::owners_elf` | api-builder (Sol 6.1) | xhigh | B2 | `cargo nextest run -p rusty-automotive space_owners` | done | |
 | B2b | Fill kind (D7) in kinds, regions and owners | api-builder (Sonnet) | high | B3 | `cargo nextest run -p rusty-automotive space_regions space_owners` | done | |
-| B4 | `space::owners_map` and groups | api-builder (Sonnet) | high | B3, B2b | `cargo nextest run -p rusty-automotive space_groups` | blocked | |
+| B4 | `space::owners_map` and groups | api-builder (Sonnet) | high | B3, B2b | `cargo nextest run -p rusty-automotive space_groups` | done | |
 | B5 | `space::strip` | api-builder (Sol 6.1) | xhigh | B2 | `cargo nextest run -p rusty-automotive space_strip` | done | |
 | B5b | `strip::inner` (D17 inner cells from owners) | api-builder (Sonnet) | medium | B5, B3 | `cargo nextest run -p rusty-automotive space_strip` | ready | |
 | B6 | `space::treemap` | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-automotive space_treemap` | ready | |
@@ -526,3 +526,5 @@ The original questions:
 - 2026-10-20 — Probe on the owner's files with B3: owner sums equal `Region.used` in every region, 1.4–3.0 ms. TASKING ROM copies of initialised data appear as their own `[.data.…]` sections in flash, so ROM usage already counts them (no LOAD-segment image needed). demo.elf has 9 `$fill` sections (671,680 bytes in one flash region) that showed as the largest owner and counted as used; D7 now adds the Fill kind (atom B2b).
 - 2026-10-20 — B2b done: `Kind::Fill` (ELF sections named `$fill*`, MAP entries `*fill*` or `$fill*`). `Region.used` leaves Fill out, `by_kind` and blocks keep it, owners skip Fill sections so owner sums still equal `used`.
 - 2026-10-20 — B5 done: `space::strip` has `Scale` (gap compression, true scale, zoom view, breaks) and `cells` (sub-pixel merge, at most one cell per pixel column, 1 px minimum). `inner` for D17 inner cells waits for B3 owners.
+- 2026-10-20 — A4 done: the MAP tables (Memory, Sections, Symbols) render through `columns`, one `ColumnSet` per table kept while the file is open; section names use `map_prefix`, symbols `symbol_prefix`.
+- 2026-10-20 — B4 done: `owners_of_map` (one owner per located contribution, gaps "(not attributed)", Fill skipped), `group`/`Grouping`/`GroupBy`/`Origin`, `top`, `available`, `default_grouping`, `flash_region`, `Region::span`. Decisions taken: the module list is a `&[String]` parameter (the `ferrite.toml` setting is wired in C); module candidates are object stem, then section name without its kind part, then owner name, and `.L<caps/digits>` labels leave nothing; "(other)" for missing keys, "(not attributed)" keeps its own group in Module and Object; groups count load images in `bytes` and `by_kind` and report them in `image`; children are object files for a MAP Module group, owner names otherwise (all of them, sorted; the UI cuts at 14); `top` cuts groups at 22 with "N more" (B6 `top` works on items); `flash_region` ranks rom chips with code first, then code+rodata, then used; MAP section names lose their ` (n)` suffix before the kind lookup (fixes `regions_for_map` kinds on TASKING maps).

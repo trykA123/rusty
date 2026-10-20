@@ -173,14 +173,14 @@ Roles: Sonnet 5.5 medium or high for decided backend and UI work, Opus 5.5 mediu
 | A4 | `rename::check` | api-builder (Sonnet) | high | — | `cargo nextest run -p rusty-core rename::tests::check` | done | |
 | A5 | `rename::order` + `plan_batch` | api-builder (Sonnet) | high | A3, A4 | `cargo nextest run -p rusty-core rename::tests::order` | done | |
 | A6 | `fake` case-insensitive mode | api-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-fs fake::tests::fold` | done | |
-| A7 | `job::rename` all or nothing | api-builder (Sonnet) | high | A5, A6 | `cargo nextest run -p rusty-fs job::tests::rename`; Windows CI | ready | |
-| A8 | journal undo queries | api-builder (Sonnet) | high | — | `cargo nextest run -p rusty-store journal` | ready | |
+| A7 | `job::rename` all or nothing | api-builder (Sonnet) | high | A5, A6 | `cargo nextest run -p rusty-fs job::tests::rename`; Windows CI | done | |
+| A8 | journal undo queries | api-builder (Sonnet) | high | — | `cargo nextest run -p rusty-store journal` | done | |
 | A9 | `db` V5 presets | api-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-store db` | done | |
-| A10 | review Part A | reviewer (Opus) | high | A1–A9 | review notes; `cargo xtask gate`; Windows CI | blocked | |
+| A10 | review Part A | reviewer (Opus) | high | A1–A9 | review notes; `cargo xtask gate`; Windows CI | ready | |
 | **Part B — the tool** | | | | | | | |
 | B1 | commands, keys, `rename.ftl` | ui-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-ui commands`; gate l10n step | ready | |
-| B2 | `multi_rename::form` | ui-builder (Sonnet) | high | A2, A5 | `cargo nextest run -p rusty-ui multi_rename::tests::form` | blocked | |
-| B3 | `browser` rename batch + undo | api-builder (Sonnet) | high | A7 | `cargo nextest run -p rusty-ui browser::tests::rename_batch` | blocked | |
+| B2 | `multi_rename::form` | ui-builder (Sonnet) | high | A2, A5 | `cargo nextest run -p rusty-ui multi_rename::tests::form` | in progress | |
+| B3 | `browser` rename batch + undo | api-builder (Sonnet) | high | A7 | `cargo nextest run -p rusty-ui browser::tests::rename_batch` | ready | |
 | B4 | `view::fields` + token menu | ui-builder (Sonnet) | medium | B2 | `cargo nextest run -p rusty-ui multi_rename::tests::fields`; gallery shots | blocked | |
 | B5 | `view::preview` + summary | ui-builder (Opus) | medium | B2 | `cargo nextest run -p rusty-ui multi_rename::tests::preview`; gallery shots | blocked | |
 | B6 | `window_view::multi_rename` | ui-builder (Opus) | medium | B1, B3, B4, B5 | `cargo nextest run -p rusty-ui window_view::tests::multi_rename` | blocked | |
@@ -191,9 +191,9 @@ Roles: Sonnet 5.5 medium or high for decided backend and UI work, Opus 5.5 mediu
 | C1 | F2 on the batch path | ui-builder (Opus) | medium | B9 | `cargo nextest run -p rusty-ui browser::naming window_view::tests` | blocked | |
 | C2 | final review + owner checks | reviewer (Opus) | high | C1, E7 | review notes; gate; Windows CI; owner list | blocked | |
 | **Part D — parity and bonuses** | | | | | | | |
-| E1 | `rename::fields` registry + file, exif | api-builder (Sonnet) | high | A1 | `cargo nextest run -p rusty-core -p rusty-ui rename::fields` | blocked | |
+| E1 | `rename::fields` registry + file, exif | api-builder (Sonnet) | high | A1 | `cargo nextest run -p rusty-core -p rusty-ui rename::fields` | in progress | |
 | E2 | audio provider (`lofty`) | api-builder (Sonnet) | medium | E1 | `cargo nextest run -p rusty-ui rename::fields::audio` | blocked | |
-| E3 | clean-up rules | api-builder (Sonnet) | medium | A2 | `cargo nextest run -p rusty-core rename::tests::cleanup` | blocked | |
+| E3 | clean-up rules | api-builder (Sonnet) | medium | A2 | `cargo nextest run -p rusty-core rename::tests::cleanup` | done | |
 | E4 | Edit names, load, paste, copy | ui-builder (Opus) | medium | B6 | `cargo nextest run -p rusty-ui window_view::tests::multi_rename` | blocked | |
 | E5 | row order, column sort, counter per folder | ui-builder (Sonnet) | high | B6 | `cargo nextest run -p rusty-ui multi_rename window_view::tests::multi_rename` | blocked | |
 | E6 | change and match highlights, long-path warning | ui-builder (Sonnet) | medium | B5 | `cargo nextest run -p rusty-ui multi_rename::tests::preview`; gallery shots | blocked | |
@@ -406,3 +406,6 @@ Answered 2026-10-20: the owner left Q1–Q3 to the architect. Q1 F2 with 2 or mo
 - 2026-10-20 — A5 done: `rename::{plan_batch, BatchPlan}` orders chains from the free end, breaks each cycle and case-only rename with one `.ferrite-rename-<seed hex>-<n>` name, and gives `plan: None` while a row has a problem; a proptest runs the steps on a folding folder model.
 - 2026-10-20 — A9 done: `ferrite.db` V5 adds `rename_preset`; `Db::save_preset`, `presets` (`RenamePresets { named, last_used }`) and `delete_preset` in `db/rename_presets.rs`; rules are an opaque JSON string and time is passed in.
 - 2026-10-20 — A2 done: `rename::{RenameRules, Find, Counter, NameCase, ExtCase, Compiled, RuleError, RuleField}` and `regex` =1.13.1 in rusty-core. `Token::Counter` now holds `CounterParts` (partial `[C10]`, `[C+5]`, `[C:3]`, `[C10:3]` accepted). Chosen: a single Replace part applies to every `|` pair, missing parts delete; pairs run in order; First letter and Title Case lower-case the rest of each word.
+- 2026-10-20 — A7 done: `run_rename` (and `RenameOutcome { Done, PutBack, Cancelled, Stuck }`) runs `run`, then `roll_back` over the steps it saw finish; `Stuck.left` lists the targets whose put-back failed; `counted` counts a Rename step unless its target is a `.ferrite-rename-` name; `local::tests::rename_batch` is Windows-only.
+- 2026-10-20 — E3 done: `rename::Cleanup { trim, collapse, remove_accents, spaces_to_underscore }` in `RenameRules.cleanup` (serde default), applied to stem and extension after case; `unicode-normalization` =0.1.26 added for NFD.
+- 2026-10-20 — A8 done: `JobState::Undone`; `JobJournal::last_undoable(kind) -> Option<FinishedJob { id, plan, steps, created_at }>` returns the newest Done job of that kind; `mark_job_undone`; `prune` also keeps the newest 20 Done `rename` jobs. No schema change.

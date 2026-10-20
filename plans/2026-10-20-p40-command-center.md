@@ -206,8 +206,8 @@ Roles follow the owner's current rules: Sonnet 5.5 (medium or high) for decided 
 | **Part B — file sources** | | | | | | | |
 | B1 | visit and open hooks, frecency writer | ui-builder (Sonnet) | medium | A9 | `cargo nextest run -p rusty-ui window_view::tests::visits`; `-p rusty-app search_hooks` | blocked | |
 | B2 | `rusty-index::table` | api-builder (Sonnet) | high | — | `cargo nextest run -p rusty-index table` | done | |
-| B3 | `rusty-index::search` | api-builder (Sonnet) | high | A1, B2 | `cargo nextest run -p rusty-index search` | blocked | |
-| B4 | `rusty-index::walker` | api-builder (Sonnet) | high | B2 | `cargo nextest run -p rusty-index walker` | blocked | |
+| B3 | `rusty-index::search` | api-builder (Sol 6.1) | xhigh | A1, B2 | `cargo nextest run -p rusty-index search` | ready | |
+| B4 | `rusty-index::walker` | api-builder (Sol 6.1) | xhigh | B2 | `cargo nextest run -p rusty-index walker` | ready | |
 | B5 | Recent and Tabs sources | ui-builder (Sonnet) | medium | A5, B1 | `cargo nextest run -p rusty-ui command_center::tests::file_sources::recent` | blocked | |
 | B6 | Here source | ui-builder (Sonnet) | high | B3, B4, B5 | `cargo nextest run -p rusty-ui command_center::tests::file_sources::here` | blocked | |
 | B7 | Paths source (path mode) | ui-builder (Sonnet) | medium | B5 | `cargo nextest run -p rusty-ui command_center::tests::file_sources::paths` | blocked | |
@@ -216,7 +216,7 @@ Roles follow the owner's current rules: Sonnet 5.5 (medium or high) for decided 
 | B10 | review Part B | reviewer (Opus) | high | B6, B8, B9 | review notes; gate; Windows CI | blocked | |
 | **Part C — disk index** | | | | | | | |
 | C0 | Windows facts for the index | researcher (Sonnet) | medium | — | answers with sources, in the Log | ready | |
-| C1 | `rusty-index::file` | api-builder (Sonnet) | high | B2 | `cargo nextest run -p rusty-index file` | blocked | |
+| C1 | `rusty-index::file` | api-builder (Sol 6.1) | xhigh | B2 | `cargo nextest run -p rusty-index file` | ready | |
 | C2 | `[search]` settings keys | api-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-store settings` | ready | |
 | C3 | `rusty-index::host` (walk index) | api-builder (Sonnet) | high | B4, C1, C2 | `cargo nextest run -p rusty-index host` | blocked | |
 | C4 | `rusty-index::usn` | api-builder (Sonnet) | high | B2, C0 | `cargo nextest run -p rusty-index usn` | blocked | |
@@ -336,7 +336,8 @@ Roles follow the owner's current rules: Sonnet 5.5 (medium or high) for decided 
 - **Read:** `rusty-fs/src/measure/walk.rs`, `rusty-fs/src/provider/mod.rs:55-90`, the fake file system and hostile-name corpus.
 - **Change:** `walker.rs`: breadth-first, 4 worker threads, `Limits { max_entries, exclude }`, skips reparse points (no loops), reports progress every 10,000 entries, stops on cancel, keeps going past unreadable folders (counts them).
 - **Check:** `cargo nextest run -p rusty-index walker`: fake tree, hostile names, a junction loop, an access-denied folder, cancel, the entry cap.
-- **Stop if:** `Provider` cannot report reparse points.
+- **Reparse points (architect, 2026-10-20):** only name-surrogate reparse points (junctions, symlinks, mount points) can loop; the provider reports them as `EntryKind::Link`. The walker records a link as an entry (flag REPARSE) and never descends into it. Other reparse points (OneDrive and cloud placeholders, dedup) are real content: walk and index them as normal files and folders, without reading file contents. A depth limit of 256 is the backstop.
+- **Stop if:** the provider cannot list a folder without hydrating cloud placeholders.
 
 ### B5 — Recent and Tabs
 
@@ -489,3 +490,4 @@ The original questions:
 - 2026-10-20 — A6 done: `CommandsSnapshot::build` (pure, testable) and `CommandsSource`; one `ArgKind` (the registry's). Left for A8: reading the focused key-context stack and command-use weights; context text in `detail` is empty; menu-only commands (no action) are skipped.
 - 2026-10-20 — B2 done: `rusty-index::table` (`NameTable`, u32 ids, 31 bytes per entry on 1M and 2M synthetic names).
 - 2026-10-20 — A7 done: `CommandCenter` view (input with argument chip, top-hit row, groups, Show all, prefix hint, no-match line, footer with count or note and key hints), `VirtualList` from 64 rows; events `QueryChanged`, `Moved`, `Run(index, Modifiers)`, `Dismissed`; seven gallery pages `p40-a7-*`. Key actions and bindings stay with A8.
+- 2026-10-20 — B4 first run stopped: `Attributes` has no reparse flag. Decided: skip only `EntryKind::Link` (name surrogates), walk other reparse points, depth limit 256.
