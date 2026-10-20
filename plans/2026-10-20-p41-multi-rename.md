@@ -179,7 +179,7 @@ Roles: Sonnet 5.5 medium or high for decided backend and UI work, Opus 5.5 mediu
 | A10 | review Part A | reviewer (Opus) | high | A1–A9 | review notes; `cargo xtask gate`; Windows CI | blocked | |
 | **Part B — the tool** | | | | | | | |
 | B1 | commands, keys, `rename.ftl` | ui-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-ui commands`; gate l10n step | ready | |
-| B2 | `multi_rename::form` | ui-builder (Sonnet) | high | A2, A5 | `cargo nextest run -p rusty-ui multi_rename::tests::form` | blocked | |
+| B2 | `multi_rename::form` | ui-builder (Sonnet) | high | A2, A5 | `cargo nextest run -p rusty-ui multi_rename::tests::form` | done | |
 | B3 | `browser` rename batch + undo | api-builder (Sonnet) | high | A7 | `cargo nextest run -p rusty-ui browser::tests::rename_batch` | blocked | |
 | B4 | `view::fields` + token menu | ui-builder (Sonnet) | medium | B2 | `cargo nextest run -p rusty-ui multi_rename::tests::fields`; gallery shots | blocked | |
 | B5 | `view::preview` + summary | ui-builder (Opus) | medium | B2 | `cargo nextest run -p rusty-ui multi_rename::tests::preview`; gallery shots | blocked | |
@@ -406,3 +406,4 @@ Answered 2026-10-20: the owner left Q1–Q3 to the architect. Q1 F2 with 2 or mo
 - 2026-10-20 — A5 done: `rename::{plan_batch, BatchPlan}` orders chains from the free end, breaks each cycle and case-only rename with one `.ferrite-rename-<seed hex>-<n>` name, and gives `plan: None` while a row has a problem; a proptest runs the steps on a folding folder model.
 - 2026-10-20 — A9 done: `ferrite.db` V5 adds `rename_preset`; `Db::save_preset`, `presets` (`RenamePresets { named, last_used }`) and `delete_preset` in `db/rename_presets.rs`; rules are an opaque JSON string and time is passed in.
 - 2026-10-20 — A2 done: `rename::{RenameRules, Find, Counter, NameCase, ExtCase, Compiled, RuleError, RuleField}` and `regex` =1.13.1 in rusty-core. `Token::Counter` now holds `CounterParts` (partial `[C10]`, `[C+5]`, `[C:3]`, `[C10:3]` accepted). Chosen: a single Replace part applies to every `|` pair, missing parts delete; pairs run in order; First letter and Title Case lower-case the rest of each word.
+- 2026-10-20 — B2 done: `multi_rename::{Form, Item, Preview}`; `Item.excluded` is set by `Form::mark_excluded` and takes no counter number; the preview runs `plan_batch` and is `Send`; field providers (E1) plug in at `Item::subject` (`fields: None` for now); 50,000 items compute in 228 ms (release, ignored test).
