@@ -1,0 +1,1687 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ferrite · Compare directions</title>
+<style>
+
+:root {
+  color-scheme: light;
+  --c-bg: oklch(99.2% 0.002 260);
+  --c-rail: oklch(96.2% 0.005 260);
+  --c-zebra: oklch(97.6% 0.004 260);
+  --c-line: oklch(88% 0.008 260);
+  --c-text: oklch(21% 0.012 260);
+  --c-muted: oklch(46% 0.02 260);
+  --c-faint: oklch(60% 0.016 260);
+  --c-hover: oklch(95% 0.008 260);
+  --c-selection: oklch(93% 0.035 262);
+  --c-accent: oklch(50% 0.18 262);
+  --c-accent-text: oklch(46% 0.17 262);
+  --c-folder: oklch(60% 0.13 80);
+  --c-code: oklch(50% 0.15 262);
+  --c-card: oklch(99.3% 0.002 250);
+  --c-card-edge: oklch(88% 0.01 250);
+  --c-field: oklch(96.5% 0.006 250);
+  --c-key-face: oklch(99.8% 0.001 260);
+  --c-key-edge: oklch(84% 0.01 260);
+  --c-shadow: oklch(21% 0.012 260 / 0.28);
+  --c-shadow-near: oklch(21% 0.012 260 / 0.06);
+  --c-del: oklch(50% 0.17 27);
+  --c-del-mark: oklch(62% 0.17 27);
+  --c-del-fill: oklch(88% 0.07 27);
+  --c-del-wash: oklch(96.5% 0.02 27);
+  --c-add: oklch(46% 0.12 150);
+  --c-add-mark: oklch(60% 0.14 150);
+  --c-add-fill: oklch(87% 0.08 150);
+  --c-add-wash: oklch(96.5% 0.025 150);
+  --c-chg: oklch(48% 0.11 70);
+  --c-chg-mark: oklch(60% 0.13 70);
+  --c-chg-wash: oklch(97% 0.025 80);
+  --c-mov: oklch(48% 0.1 210);
+  --c-mov-mark: oklch(60% 0.1 210);
+  --c-mov-wash: oklch(96.5% 0.02 210);
+  --c-conf: oklch(50% 0.17 27);
+  --c-auto: oklch(50% 0.15 262);
+  --c-auto-wash: oklch(96.5% 0.02 262);
+  --c-hatch: oklch(91% 0.006 260);
+  --c-syn-kw: oklch(48% 0.18 300);
+  --c-syn-ty: oklch(50% 0.1 195);
+  --c-syn-fn: oklch(50% 0.15 255);
+  --c-syn-str: oklch(50% 0.12 145);
+  --c-syn-num: oklch(52% 0.13 55);
+  --c-syn-com: oklch(50% 0.015 260);
+  --c-syn-mac: oklch(50% 0.16 20);
+
+  --bg: var(--c-bg);
+  --rail: var(--c-rail);
+  --zebra: var(--c-zebra);
+  --border: var(--c-line);
+  --text: var(--c-text);
+  --text-muted: var(--c-muted);
+  --text-faint: var(--c-faint);
+  --hover: var(--c-hover);
+  --selection: var(--c-selection);
+  --accent: var(--c-accent);
+  --accent-text: var(--c-accent-text);
+  --card: var(--c-card);
+  --card-edge: var(--c-card-edge);
+  --field: var(--c-field);
+  --key-face: var(--c-key-face);
+  --key-edge: var(--c-key-edge);
+  --shadow-card: 0 1px 2px var(--c-shadow-near), 0 8px 24px var(--c-shadow-near);
+  --shadow-menu: 0 18px 44px -12px var(--c-shadow), 0 2px 6px var(--c-shadow-near), 0 0 0 1px var(--card-edge);
+
+  --font-ui: "Archivo", "Segoe UI Variable", "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --fs-12: 0.75rem; --fs-13: 0.8125rem; --fs-14: 0.875rem; --fs-16: 1rem; --fs-18: 1.125rem; --fs-24: 1.5rem;
+  --s-hair: 2px; --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-6: 24px; --s-8: 32px; --s-12: 48px;
+  --r-sm: 4px; --r-md: 8px; --r-lg: 12px; --r-full: 999px;
+  --row-h: 20px; --list-h: 26px; --ln-w: 48px; --mid-w: 36px; --map-w: 22px; --nav-w: 232px; --drawer-w: 340px; --bar-h: 3px;
+  --fast: 120ms; --base: 180ms; --slow: 260ms;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1); --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --z-sticky: 5; --z-overlay: 10; --z-pop: 20; --z-toast: 30;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --c-bg: oklch(16% 0.008 260);
+  --c-rail: oklch(19% 0.01 260);
+  --c-zebra: oklch(18% 0.009 260);
+  --c-line: oklch(28% 0.012 260);
+  --c-text: oklch(93% 0.006 260);
+  --c-muted: oklch(72% 0.016 260);
+  --c-faint: oklch(58% 0.014 260);
+  --c-hover: oklch(24% 0.012 260);
+  --c-selection: oklch(30% 0.07 262);
+  --c-accent: oklch(72% 0.13 262);
+  --c-accent-text: oklch(78% 0.11 262);
+  --c-folder: oklch(80% 0.11 85);
+  --c-code: oklch(76% 0.1 262);
+  --c-card: oklch(20.5% 0.01 250);
+  --c-card-edge: oklch(29% 0.012 250);
+  --c-field: oklch(17.5% 0.01 250);
+  --c-key-face: oklch(24% 0.012 260);
+  --c-key-edge: oklch(11% 0.008 260);
+  --c-shadow: oklch(0% 0 0 / 0.7);
+  --c-shadow-near: oklch(0% 0 0 / 0.4);
+  --c-del: oklch(76% 0.13 27);
+  --c-del-mark: oklch(66% 0.16 27);
+  --c-del-fill: oklch(36% 0.09 27);
+  --c-del-wash: oklch(21% 0.03 27);
+  --c-add: oklch(78% 0.13 150);
+  --c-add-mark: oklch(68% 0.14 150);
+  --c-add-fill: oklch(36% 0.08 150);
+  --c-add-wash: oklch(21% 0.03 150);
+  --c-chg: oklch(82% 0.12 78);
+  --c-chg-mark: oklch(74% 0.13 78);
+  --c-chg-wash: oklch(21.5% 0.025 78);
+  --c-mov: oklch(78% 0.09 210);
+  --c-mov-mark: oklch(68% 0.1 210);
+  --c-mov-wash: oklch(21% 0.025 210);
+  --c-conf: oklch(76% 0.13 27);
+  --c-auto: oklch(72% 0.13 262);
+  --c-auto-wash: oklch(21% 0.03 262);
+  --c-hatch: oklch(23% 0.01 260);
+  --c-syn-kw: oklch(76% 0.12 300);
+  --c-syn-ty: oklch(80% 0.09 195);
+  --c-syn-fn: oklch(78% 0.1 255);
+  --c-syn-str: oklch(80% 0.12 145);
+  --c-syn-num: oklch(82% 0.1 70);
+  --c-syn-com: oklch(64% 0.015 260);
+  --c-syn-mac: oklch(76% 0.13 25);
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--rail); color: var(--text); font-family: var(--font-ui); font-size: var(--fs-13); line-height: 1.35; -webkit-font-smoothing: antialiased; overflow: hidden; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+kbd { font-family: var(--font-mono); font-size: var(--fs-12); padding-inline: var(--s-1); border-radius: var(--r-sm); background: var(--key-face); box-shadow: inset 0 0 0 1px var(--key-edge); color: var(--text-muted); white-space: nowrap; }
+svg.i { width: 15px; height: 15px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+svg.i.sm { width: 13px; height: 13px; }
+.mono { font-family: var(--font-mono); }
+.num { font-variant-numeric: tabular-nums; }
+.mu { color: var(--text-muted); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+
+/* harness */
+.hx { display: flex; align-items: center; gap: var(--s-3); padding: var(--s-2) var(--s-3); min-height: 44px; flex-wrap: wrap; }
+.hx-title { font-weight: 700; font-size: var(--fs-14); white-space: nowrap; }
+.hx-scn { display: inline-flex; gap: var(--s-hair); padding: var(--s-hair); border: 1px solid var(--border); border-radius: var(--r-md); background: var(--bg); overflow-x: auto; max-width: 100%; scrollbar-width: none; }
+.hx-scn button { border: 0; background: none; min-height: 28px; padding: 0 var(--s-2); border-radius: var(--r-sm); cursor: pointer; color: var(--text-muted); white-space: nowrap; display: inline-flex; align-items: center; gap: var(--s-1); }
+.hx-scn button[aria-pressed="true"] { background: var(--selection); color: var(--text); font-weight: 600; }
+.hx-desc { color: var(--text-muted); flex: 1 1 280px; min-width: 0; }
+.hx-theme { margin-inline-start: auto; }
+.page { height: 100dvh; display: grid; grid-template-rows: auto 1fr 64px; }
+.stage { min-height: 0; padding: 0 var(--s-3); }
+
+/* app window */
+.app { container: app / inline-size; position: relative; height: 100%; display: flex; flex-direction: column; background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden; box-shadow: var(--shadow-card); }
+.tb { display: flex; align-items: center; gap: var(--s-3); height: 44px; padding-inline: var(--s-3); border-bottom: 1px solid var(--border); flex: none; }
+.logo { display: inline-flex; align-items: center; gap: var(--s-2); font-weight: 700; }
+.logo b { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 6px; background: var(--text); color: var(--bg); font-family: var(--font-mono); font-size: var(--fs-12); letter-spacing: -0.04em; }
+.search { flex: 0 1 520px; margin-inline: auto; display: flex; align-items: center; gap: var(--s-2); height: 30px; padding-inline: var(--s-3); border: 1px solid var(--border); border-radius: var(--r-full); background: var(--field); color: var(--text-muted); cursor: pointer; }
+.search span { flex: 1; text-align: start; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.ib { display: inline-grid; place-items: center; min-width: 30px; height: 30px; border: 0; border-radius: var(--r-md); background: none; color: var(--text-muted); cursor: pointer; }
+.ib:hover { background: var(--hover); color: var(--text); }
+.btn { display: inline-flex; align-items: center; gap: var(--s-1); height: 28px; padding-inline: var(--s-2); border: 1px solid var(--border); border-radius: var(--r-md); background: var(--bg); color: var(--text); cursor: pointer; white-space: nowrap; }
+.btn:hover { background: var(--hover); }
+.btn:active, .ib:active, .chip:active { transform: scale(0.97); }
+.btn[disabled] { color: var(--text-faint); cursor: not-allowed; background: var(--rail); }
+.btn.pri { background: var(--accent); border-color: var(--accent); color: var(--bg); font-weight: 600; }
+.btn.pri[disabled] { background: var(--rail); border-color: var(--border); color: var(--text-muted); font-weight: 500; }
+.btn kbd { margin-inline-start: var(--s-1); }
+.seg { display: inline-flex; gap: var(--s-hair); padding: var(--s-hair); border: 1px solid var(--border); border-radius: var(--r-md); background: var(--rail); flex: none; }
+.seg button { display: inline-flex; align-items: center; gap: var(--s-1); border: 0; background: none; height: 24px; padding: 0 var(--s-2); border-radius: var(--r-sm); color: var(--text-muted); cursor: pointer; white-space: nowrap; }
+.seg button[aria-pressed="true"] { background: var(--bg); color: var(--text); font-weight: 600; box-shadow: 0 0 0 1px var(--border); }
+.seg .ct { font-variant-numeric: tabular-nums; color: var(--text-muted); font-weight: 500; }
+
+.vh { display: flex; align-items: center; gap: var(--s-2); min-height: 40px; padding: var(--s-1) var(--s-3); border-bottom: 1px solid var(--border); flex-wrap: wrap; flex: none; }
+.vh-name { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.vh-meta { color: var(--text-muted); white-space: nowrap; }
+.vh .grow { flex: 1; }
+.body { position: relative; flex: 1; min-height: 0; display: flex; }
+.st { display: flex; align-items: center; gap: var(--s-3); min-height: 26px; padding: var(--s-1) var(--s-3); border-top: 1px solid var(--border); color: var(--text-muted); font-size: var(--fs-12); flex: none; overflow: hidden; }
+.st .grow { flex: 1; }
+.st .keys { display: flex; gap: var(--s-3); white-space: nowrap; overflow: hidden; }
+.st .keys span { display: inline-flex; gap: var(--s-1); align-items: center; }
+
+/* status glyph chips */
+.sg { display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: var(--r-sm); font-family: var(--font-mono); font-size: var(--fs-12); font-weight: 700; flex: none; }
+.sg.diff { color: var(--c-chg); background: var(--c-chg-wash); }
+.sg.lo { color: var(--c-del); background: var(--c-del-wash); }
+.sg.ro { color: var(--c-add); background: var(--c-add-wash); }
+.sg.same { color: var(--text-faint); }
+.sg.hash { color: var(--accent-text); }
+.sg.ign { color: var(--text-faint); }
+.dl { font-family: var(--font-mono); font-size: var(--fs-12); white-space: nowrap; }
+.dl .p { color: var(--c-add); }
+.dl .m { color: var(--c-del); }
+
+/* text rows */
+.scroller { position: relative; flex: 1; min-width: 0; overflow: auto; scrollbar-width: none; overscroll-behavior: contain; }
+.scroller::-webkit-scrollbar { display: none; }
+.code { font-family: var(--font-mono); font-size: var(--fs-13); line-height: var(--row-h); min-width: max-content; width: 100%; padding-block-end: var(--s-8); }
+.r { display: grid; min-height: var(--row-h); position: relative; }
+.r.split { grid-template-columns: var(--ln-w) minmax(0, 1fr) var(--mid-w) var(--ln-w) minmax(0, 1fr); }
+.r.inline { grid-template-columns: var(--ln-w) var(--ln-w) 16px minmax(0, 1fr); }
+.ln { color: var(--text-faint); text-align: end; padding-inline-end: var(--s-2); user-select: none; font-variant-numeric: tabular-nums; font-size: var(--fs-12); }
+.gl { text-align: center; user-select: none; font-weight: 700; }
+.tx { white-space: pre; padding-inline: var(--s-2) var(--s-4); position: relative; overflow: hidden; }
+.tx[contenteditable="true"] { outline: 1px solid var(--accent); background: var(--bg); }
+.fill { background: repeating-linear-gradient(135deg, var(--c-hatch) 0 2px, transparent 2px 7px); }
+.fill::before { content: ""; position: absolute; inset-block: 0; inset-inline-start: 0; border-inline-start: 1px dashed var(--text-faint); }
+.k-del { box-shadow: inset var(--bar-h) 0 0 var(--c-del-mark); }
+.k-add { box-shadow: inset var(--bar-h) 0 0 var(--c-add-mark); }
+.k-chg { box-shadow: inset var(--bar-h) 0 0 var(--c-chg-mark); }
+.k-mov { box-shadow: inset var(--bar-h) 0 0 var(--c-mov-mark); background: var(--c-mov-wash); }
+.k-ws { box-shadow: inset var(--bar-h) 0 0 var(--text-faint); }
+.k-done { box-shadow: inset var(--bar-h) 0 0 var(--accent); background: var(--c-auto-wash); }
+.wash .k-del { background: var(--c-del-wash); }
+.wash .k-add { background: var(--c-add-wash); }
+.wash .k-chg { background: var(--c-chg-wash); }
+.g-del { color: var(--c-del); }
+.g-add { color: var(--c-add); }
+.g-chg { color: var(--c-chg); }
+.g-mov { color: var(--c-mov); }
+mark.il-del { background: var(--c-del-fill); color: inherit; border-radius: 2px; }
+mark.il-add { background: var(--c-add-fill); color: inherit; border-radius: 2px; }
+.r.cur::after { content: ""; position: absolute; inset-inline-start: 0; inset-block: 0; width: 2px; background: var(--accent); animation: fade-in var(--base) var(--ease-out); }
+.r.cur-top::before { content: attr(data-label); position: absolute; inset-inline-end: var(--s-3); top: 1px; z-index: 1; font-family: var(--font-ui); font-size: var(--fs-12); line-height: 18px; padding-inline: var(--s-1); border-radius: var(--r-sm); background: var(--accent); color: var(--bg); pointer-events: none; animation: fade-in var(--base) var(--ease-out); }
+.mid { display: flex; align-items: center; justify-content: center; gap: 0; }
+.cp { display: inline-grid; place-items: center; width: 17px; height: 18px; padding: 0; border: 0; border-radius: var(--r-sm); background: none; color: var(--text-muted); cursor: pointer; }
+.cp:hover { background: var(--selection); color: var(--accent-text); }
+.fold { display: flex; align-items: center; gap: var(--s-2); height: 24px; padding-inline: var(--s-3); color: var(--text-muted); background: var(--rail); border-block: 1px solid var(--border); font-family: var(--font-ui); font-size: var(--fs-12); cursor: pointer; width: 100%; border-inline: 0; text-align: start; }
+.fold:hover { color: var(--text); }
+.note { font-family: var(--font-ui); font-size: var(--fs-12); color: var(--c-mov); padding-inline-start: var(--s-2); }
+.ws-badge { font-family: var(--font-ui); font-size: var(--fs-12); color: var(--text-muted); border: 1px solid var(--border); border-radius: var(--r-full); padding-inline: var(--s-1); margin-inline-start: var(--s-2); }
+.t-kw { color: var(--c-syn-kw); } .t-ty { color: var(--c-syn-ty); } .t-fn { color: var(--c-syn-fn); } .t-str { color: var(--c-syn-str); } .t-num { color: var(--c-syn-num); } .t-com { color: var(--c-syn-com); font-style: italic; } .t-mac { color: var(--c-syn-mac); }
+.pend .tx, .pend .ln { color: transparent; }
+.pend .tx::after { content: ""; position: absolute; inset-block: 7px; inset-inline-start: var(--s-2); width: var(--w, 60%); border-radius: var(--r-sm); background: var(--c-hatch); }
+
+/* change map */
+.map { position: relative; flex: none; background: var(--rail); touch-action: none; cursor: pointer; user-select: none; }
+.map.v { width: var(--map-w); border-inline-start: 1px solid var(--border); }
+.map.h { height: 22px; border-bottom: 1px solid var(--border); }
+.map.spine { width: var(--mid-w); border-inline: 1px solid var(--border); }
+.map-b { position: absolute; border-radius: 1px; pointer-events: none; }
+.v .map-b { min-height: 3px; }
+.h .map-b { min-width: 3px; }
+.map-b.del, .map-b.lo { background: var(--c-del-mark); }
+.map-b.add, .map-b.ro { background: var(--c-add-mark); }
+.map-b.chg, .map-b.diff { background: var(--c-chg-mark); }
+.map-b.mov { background: var(--c-mov-mark); }
+.map-b.ws { background: var(--text-faint); }
+.map-b.conf { background: var(--c-conf); }
+.map-b.auto { background: var(--c-auto); opacity: 0.55; }
+.map-b.done { background: var(--accent); opacity: 0.4; }
+.map-b.hash { background: repeating-linear-gradient(135deg, var(--accent) 0 2px, transparent 2px 4px); }
+.map-b.cur { outline: 2px solid var(--text); outline-offset: 1px; z-index: 1; }
+.map-t { position: absolute; background: var(--text-faint); pointer-events: none; }
+.v .map-t { inset-inline-start: 0; width: 3px; height: 1px; }
+.h .map-t { top: 0; height: 3px; width: 1px; }
+.map-n { position: absolute; font-size: 10px; line-height: 12px; font-weight: 700; color: var(--bg); background: var(--text); border-radius: 3px; padding-inline: 2px; pointer-events: none; z-index: 2; }
+.map-vp { position: absolute; inset-inline: 0; top: 0; border: 1px solid var(--text-muted); background: color-mix(in oklch, var(--text) 8%, transparent); border-radius: 2px; pointer-events: none; will-change: transform; }
+.h .map-vp { inset-inline: auto; inset-block: 0; left: 0; }
+.map-pend { position: absolute; inset-inline: 0; bottom: 0; top: 0; background: repeating-linear-gradient(135deg, var(--c-hatch) 0 3px, transparent 3px 6px); transform-origin: bottom; pointer-events: none; transition: transform var(--slow) var(--ease-out); }
+.h .map-pend { transform-origin: right; }
+.map-tip { position: absolute; z-index: var(--z-pop); padding: var(--s-1) var(--s-2); border-radius: var(--r-sm); background: var(--text); color: var(--bg); font-size: var(--fs-12); white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity var(--fast) var(--ease-out); }
+.map-tip.on { opacity: 1; }
+.v .map-tip { inset-inline-end: calc(100% + 6px); }
+.spine .map-tip { inset-inline-end: calc(100% + 6px); }
+.h .map-tip { top: calc(100% + 4px); }
+.map canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.legend { display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-3); font-size: var(--fs-12); color: var(--text-muted); }
+.legend i { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-inline-end: var(--s-1); }
+
+/* folder rows */
+.fl { min-width: 0; font-size: var(--fs-13); }
+.fr { display: grid; align-items: center; min-height: var(--list-h); position: relative; cursor: default; }
+.fr:hover { background: var(--hover); }
+.fr[aria-selected="true"] { background: var(--selection); }
+.fr[aria-selected="true"]::after { content: ""; position: absolute; inset-inline-start: 0; inset-block: 3px; width: 3px; border-radius: 2px; background: var(--accent); }
+.fr.cur { background: var(--selection); }
+.nm { display: flex; align-items: center; gap: var(--s-1); min-width: 0; padding-inline-end: var(--s-2); }
+.nm span.t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nm .tw { display: inline-grid; place-items: center; width: 16px; height: 16px; border: 0; padding: 0; background: none; color: var(--text-muted); cursor: pointer; flex: none; transition: transform var(--fast) var(--ease-out); }
+.nm .tw[aria-expanded="true"] { transform: rotate(90deg); }
+.nm .sp { width: 16px; flex: none; }
+.ic-dir { color: var(--c-folder); }
+.ic-file { color: var(--c-code); }
+.fr.st-same .t, .fr.st-ign .t { color: var(--text-muted); }
+.fr.st-diff .t { color: var(--c-chg); font-weight: 600; }
+.fr.st-lo .t { color: var(--c-del); font-weight: 600; }
+.fr.st-ro .t { color: var(--c-add); font-weight: 600; }
+.fr .meta { color: var(--text-muted); font-variant-numeric: tabular-nums; white-space: nowrap; text-align: end; padding-inline-end: var(--s-2); font-size: var(--fs-12); }
+.fr .gone { align-self: stretch; }
+.hp { display: inline-flex; align-items: center; gap: var(--s-1); font-size: var(--fs-12); color: var(--accent-text); white-space: nowrap; }
+.hp .bar { width: 48px; height: 4px; border-radius: 2px; background: var(--border); overflow: hidden; }
+.hp .bar i { display: block; height: 100%; background: var(--accent); transform-origin: left; transform: scaleX(var(--p)); transition: transform var(--slow) var(--ease-out); }
+.fr.enter { animation: row-in var(--base) var(--ease-out) both; animation-delay: calc(var(--d, 0) * 12ms); }
+.colh { display: grid; align-items: center; height: 26px; color: var(--text-muted); font-size: var(--fs-12); border-bottom: 1px solid var(--border); background: var(--bg); position: sticky; top: 0; z-index: var(--z-sticky); }
+.cmpbar { display: flex; align-items: center; gap: var(--s-2) var(--s-3); padding: var(--s-2) var(--s-3); border-bottom: 1px solid var(--border); flex-wrap: wrap; flex: none; }
+.side { display: inline-flex; align-items: center; gap: var(--s-1); min-width: 0; height: 28px; padding-inline: var(--s-2); border: 1px solid var(--border); border-radius: var(--r-md); background: var(--bg); cursor: pointer; }
+.side .t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--font-mono); font-size: var(--fs-12); }
+.ro-tag { display: inline-flex; align-items: center; gap: 2px; font-size: var(--fs-12); color: var(--text-muted); white-space: nowrap; }
+.chip { display: inline-flex; align-items: center; gap: var(--s-1); height: 26px; padding-inline: var(--s-2); border: 1px solid var(--border); border-radius: var(--r-full); background: var(--bg); color: var(--text-muted); cursor: pointer; white-space: nowrap; }
+.chip[aria-pressed="true"] { border-color: var(--accent); color: var(--text); background: var(--selection); }
+
+/* overlays */
+.drawer { position: absolute; inset-block: 0; z-index: var(--z-overlay); width: min(var(--drawer-w), 88%); background: var(--card); box-shadow: var(--shadow-menu); display: flex; flex-direction: column; overflow: hidden; }
+.drawer.l { inset-inline-start: 0; }
+.drawer.r { inset-inline-end: 0; }
+.drawer.enter.l { animation: in-l var(--base) var(--ease-out); }
+.drawer.enter.r { animation: in-r var(--base) var(--ease-out); }
+.dh { display: flex; align-items: center; gap: var(--s-2); height: 40px; padding-inline: var(--s-3); border-bottom: 1px solid var(--border); font-weight: 700; flex: none; }
+.dh .grow { flex: 1; }
+.db { padding: var(--s-3); overflow: auto; display: flex; flex-direction: column; gap: var(--s-3); }
+.db h3 { margin: 0; font-size: var(--fs-12); color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.db label { display: flex; gap: var(--s-2); align-items: center; }
+.db textarea { font-family: var(--font-mono); font-size: var(--fs-13); width: 100%; min-height: 88px; border: 1px solid var(--border); border-radius: var(--r-md); background: var(--field); color: var(--text); padding: var(--s-2); resize: vertical; }
+.kv { display: grid; grid-template-columns: auto 1fr; gap: var(--s-1) var(--s-3); }
+.kv dt { color: var(--text-muted); }
+.kv dd { margin: 0; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.dlist { display: flex; flex-direction: column; }
+.dlist button { display: flex; align-items: center; gap: var(--s-2); min-height: 30px; border: 0; background: none; text-align: start; padding-inline: var(--s-2); border-radius: var(--r-md); cursor: pointer; }
+.dlist button:hover { background: var(--hover); }
+.dlist .t { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.menu { position: absolute; z-index: var(--z-pop); top: var(--s-1); inset-inline-end: var(--s-3); width: 300px; max-width: calc(100% - 24px); background: var(--card); border-radius: var(--r-lg); box-shadow: var(--shadow-menu); padding: var(--s-1); transform-origin: top right; }
+.menu.enter { animation: pop var(--base) var(--ease-out); }
+.menu .mh { display: flex; align-items: center; gap: var(--s-2); padding: var(--s-2); }
+.menu button.mi { display: flex; align-items: center; gap: var(--s-2); width: 100%; min-height: 32px; padding-inline: var(--s-2); border: 0; background: none; border-radius: var(--r-md); text-align: start; cursor: pointer; }
+.menu button.mi:hover { background: var(--hover); }
+.menu .mi .t { flex: 1; }
+.menu .ck { width: 15px; color: var(--accent-text); }
+.menu hr { border: 0; border-top: 1px solid var(--border); margin: var(--s-1) 0; }
+.toast { position: absolute; z-index: var(--z-toast); inset-inline-start: 50%; bottom: var(--s-6); transform: translateX(-50%); display: flex; align-items: center; gap: var(--s-3); max-width: calc(100% - 24px); padding: var(--s-2) var(--s-2) var(--s-2) var(--s-3); background: var(--text); color: var(--bg); border-radius: var(--r-md); box-shadow: var(--shadow-menu); }
+.toast.enter { animation: toast-in var(--base) var(--ease-out); }
+.toast .btn { background: transparent; color: var(--bg); border-color: color-mix(in oklch, var(--bg) 40%, transparent); }
+.toast .btn:hover { background: color-mix(in oklch, var(--bg) 14%, transparent); }
+.toast kbd { background: transparent; color: var(--bg); box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--bg) 40%, transparent); }
+.toast code { font-family: var(--font-mono); font-size: var(--fs-12); }
+.prog { position: relative; height: 3px; background: var(--border); overflow: hidden; flex: none; }
+.prog i { position: absolute; inset: 0; background: var(--accent); transform-origin: left; transform: scaleX(var(--p)); transition: transform var(--slow) var(--ease-out); }
+
+/* merge */
+.cf { margin: var(--s-1) var(--s-2); border: 1px solid var(--c-del-mark); border-radius: var(--r-md); overflow: hidden; font-family: var(--font-ui); background: var(--bg); }
+.cf.solved { border-color: var(--border); }
+.cf.ws { border-color: var(--text-faint); border-style: dashed; }
+.cf-h { display: flex; align-items: center; gap: var(--s-2); padding: var(--s-1) var(--s-2); background: var(--c-del-wash); flex-wrap: wrap; }
+.cf.solved .cf-h { background: var(--rail); }
+.cf.ws .cf-h { background: var(--rail); }
+.cf-h .t { font-weight: 700; }
+.cf-h .grow { flex: 1; }
+.cf-opt { display: grid; grid-template-columns: 64px minmax(0, 1fr); border-top: 1px solid var(--border); }
+.cf-opt > span { font-size: var(--fs-12); color: var(--text-muted); padding: var(--s-hair) var(--s-2); }
+.cf-opt .code { padding: 0; min-width: 0; }
+.pick { display: inline-flex; gap: var(--s-1); flex-wrap: wrap; }
+.auto-tag { font-family: var(--font-ui); font-size: var(--fs-12); color: var(--c-auto); padding-inline-start: var(--s-2); }
+.k-auto { box-shadow: inset var(--bar-h) 0 0 var(--c-auto); background: var(--c-auto-wash); }
+.k-conf { box-shadow: inset var(--bar-h) 0 0 var(--c-conf); background: var(--c-del-wash); }
+.counter { display: inline-flex; align-items: center; gap: var(--s-1); height: 26px; padding-inline: var(--s-2); border-radius: var(--r-full); font-weight: 700; font-variant-numeric: tabular-nums; color: var(--c-del); background: var(--c-del-wash); white-space: nowrap; }
+.counter.ok { color: var(--c-add); background: var(--c-add-wash); }
+.pane-h { display: flex; align-items: center; gap: var(--s-2); height: 30px; padding-inline: var(--s-2) var(--s-3); border-bottom: 1px solid var(--border); background: var(--rail); font-size: var(--fs-12); white-space: nowrap; overflow: hidden; flex: none; }
+.pane-h .t { font-weight: 700; color: var(--text); overflow: hidden; text-overflow: ellipsis; }
+.col { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+
+/* hex */
+.hex { font-family: var(--font-mono); font-size: var(--fs-13); line-height: var(--row-h); padding: var(--s-2) var(--s-3); }
+.hexr { display: grid; grid-template-columns: 11ch 1fr; gap: var(--s-3); white-space: pre; }
+.hexr .off { color: var(--text-faint); }
+.hx-d { background: var(--c-chg-wash); color: var(--c-chg); font-weight: 700; box-shadow: inset 0 -2px 0 var(--c-chg-mark); }
+.blocks { display: grid; gap: 2px; }
+.blk { border: 0; padding: 0; border-radius: 2px; background: var(--border); cursor: pointer; min-height: 10px; }
+.blk.d { background: var(--c-chg-mark); }
+.blk.cur { outline: 2px solid var(--text); outline-offset: 1px; }
+
+@keyframes fade-in { from { opacity: 0; } }
+@keyframes row-in { from { opacity: 0; transform: translateY(-4px); } }
+@keyframes in-l { from { transform: translateX(-24px); opacity: 0; } }
+@keyframes in-r { from { transform: translateX(24px); opacity: 0; } }
+@keyframes pop { from { transform: scale(0.96); opacity: 0; } }
+@keyframes toast-in { from { transform: translate(-50%, 8px); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 1ms !important; transition-duration: 1ms !important; }
+}
+
+@container app (max-width: 720px) {
+  .search span, .search kbd { display: none; }
+  .search { flex: none; width: 36px; justify-content: center; padding: 0; margin-inline: auto 0; }
+  .winctl { display: none; }
+  .st .keys span.wide { display: none; }
+  .vh { gap: var(--s-1) var(--s-2); }
+  .hide-n { display: none !important; }
+}
+@container app (min-width: 721px) { .show-n { display: none !important; } }
+@media (max-width: 720px) {
+  .stage { padding: 0; }
+  .app { border-radius: 0; border-inline: 0; }
+  .hx-desc { display: none; }
+  .hx { gap: var(--s-2); padding: var(--s-1) var(--s-2); }
+  .hx-title { display: none; }
+  .hx { flex-wrap: nowrap; }
+  .hx-scn { flex: 1; min-width: 0; }
+  .hx-scn kbd { display: none; }
+}
+
+/* direction 2 navigator, direction 3 preview */
+.navcol { width: var(--nav-w); flex: none; display: flex; flex-direction: column; border-inline-end: 1px solid var(--border); background: var(--rail); overflow: auto; }
+.navcol.mini { flex-direction: row; overflow: hidden; width: calc(var(--nav-w) + 96px); }
+.navcol.mini .map { height: 100%; }
+.navsec { display: flex; flex-direction: column; gap: var(--s-1); padding: var(--s-3); align-items: flex-start; }
+.navsec.legend { flex-direction: row; flex-wrap: wrap; margin-top: auto; }
+.navcol .dlist { padding-inline: var(--s-1); }
+.navcol .dlist button { flex-wrap: wrap; padding-block: var(--s-1); }
+.dlist button[aria-current="true"] { background: var(--selection); }
+.nt { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.nt .t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: flex; align-items: center; gap: var(--s-1); }
+.navcol .dlist button .nt { flex-direction: row; justify-content: space-between; gap: var(--s-2); }
+.navcol.mini .dlist button .nt { flex-direction: column; }
+.fbar { display: flex; width: 100%; height: 6px; border-radius: 3px; overflow: hidden; gap: 1px; background: var(--bg); }
+.fbar i { display: block; min-width: 2px; }
+.fbar .diff { background: var(--c-chg-mark); } .fbar .lo { background: var(--c-del-mark); } .fbar .ro { background: var(--c-add-mark); } .fbar .same { background: var(--border); } .fbar .hash { background: var(--accent); }
+.sg.mov { color: var(--c-mov); background: var(--c-mov-wash); }
+.pv { border-block: 1px solid var(--border); background: var(--rail); padding-block: var(--s-2); animation: row-in var(--base) var(--ease-out); }
+.pv-in { border: 1px solid var(--border); border-radius: var(--r-md); background: var(--bg); overflow: auto; max-height: 300px; margin-inline-end: var(--s-3); }
+.pv-in .code { padding-block-end: 0; }
+.pv-f { padding: var(--s-2) 0 0; }
+.map[data-numbers="all"] .map-n { top: 2px; }
+
+.proto-picker { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 2147483647; display: flex; align-items: center; gap: 2px; padding: 4px; border-radius: 999px; background: rgba(10, 10, 10, 0.82); -webkit-backdrop-filter: blur(12px) saturate(1.4); backdrop-filter: blur(12px) saturate(1.4); box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08) inset, 0 8px 24px rgba(0, 0, 0, 0.24), 0 2px 6px rgba(0, 0, 0, 0.12); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 13px; line-height: 1; -webkit-font-smoothing: antialiased; user-select: none; -webkit-user-select: none; }
+.proto-picker-highlight { position: absolute; top: 4px; left: 0; height: 28px; border-radius: 999px; background: rgba(255, 255, 255, 0.12); will-change: transform; }
+.proto-picker[data-ready] .proto-picker-highlight { transition: transform 250ms cubic-bezier(0.23, 1, 0.32, 1), width 250ms cubic-bezier(0.23, 1, 0.32, 1); }
+@media (prefers-reduced-motion: reduce) { .proto-picker[data-ready] .proto-picker-highlight { transition: none; } }
+.proto-picker-item { position: relative; display: flex; align-items: center; height: 28px; padding: 0 12px; border: 0; border-radius: 999px; background: transparent; color: rgba(255, 255, 255, 0.55); font: inherit; cursor: pointer; transition: color 150ms ease-out; }
+.proto-picker-item:hover { color: rgba(255, 255, 255, 0.85); }
+.proto-picker-item:active { transform: scale(0.97); }
+.proto-picker-item:focus-visible { outline: 2px solid rgba(255, 255, 255, 0.4); outline-offset: 2px; }
+.proto-picker-item[data-active] { color: #fff; }
+.proto-picker-divider { width: 1px; height: 16px; margin: 0 4px; background: rgba(255, 255, 255, 0.12); }
+.proto-picker-replay { padding: 0 10px; font-size: 14px; }
+.proto-picker[data-position="top"] { bottom: auto; top: 24px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="hx" id="hx"></header>
+  <main class="stage" id="stage"></main>
+  <div aria-hidden="true"></div>
+</div>
+<nav class="proto-picker" aria-label="Prototype variants">
+  <span class="proto-picker-highlight" aria-hidden="true"></span>
+  <button class="proto-picker-item" data-active aria-current="true">Direction 1</button>
+  <button class="proto-picker-item">Direction 2</button>
+  <button class="proto-picker-item">Direction 3</button>
+  <button class="proto-picker-item">Direction 4</button>
+</nav>
+<script>
+const D = (name, s, kids, extra = {}) => ({ name, dir: true, s, kids, ...extra });
+const F = (name, s, L, R, extra = {}) => ({ name, s, L, R, ...extra });
+const m = (size, date) => ({ size, date });
+
+const TREE = [
+  D('.cargo', 'same', [F('config.toml', 'same', m('412 B', '10-02 09:14'), m('412 B', '10-02 09:14'))]),
+  D('crates', 'diff', [
+    D('rusty-app', 'diff', [
+      D('src', 'diff', [
+        D('compare', 'ro', [F('mod.rs', 'ro', null, m('6.1 KB', '10-20 13:40')), F('session.rs', 'ro', null, m('9.8 KB', '10-20 13:52'))]),
+        F('main.rs', 'diff', m('3.4 KB', '10-18 21:05'), m('3.6 KB', '10-20 13:41'), { delta: '+9 −2' }),
+        F('jobs.rs', 'same', m('14.2 KB', '10-17 11:20'), m('14.2 KB', '10-17 11:20')),
+      ]),
+      F('Cargo.toml', 'diff', m('1.2 KB', '10-18 21:05'), m('1.3 KB', '10-20 13:41'), { delta: '+1 −0' }),
+    ]),
+    D('rusty-compare', 'ro', [
+      D('src', 'ro', [F('lib.rs', 'ro', null, m('1.9 KB', '10-20 12:10')), F('pair.rs', 'ro', null, m('7.4 KB', '10-20 12:31')), F('content.rs', 'ro', null, m('5.2 KB', '10-20 12:48')), F('text.rs', 'ro', null, m('11.0 KB', '10-20 13:02'))]),
+      F('Cargo.toml', 'ro', null, m('640 B', '10-20 12:10')),
+    ]),
+    D('rusty-core', 'same', [D('src', 'same', [F('lib.rs', 'same', m('2.2 KB', '10-11 08:30'), m('2.2 KB', '10-11 08:30')), F('op_plan.rs', 'same', m('18.5 KB', '10-16 17:02'), m('18.5 KB', '10-16 17:02'))]), F('Cargo.toml', 'same', m('702 B', '10-11 08:30'), m('702 B', '10-11 08:30'))]),
+    D('rusty-fs', 'diff', [
+      D('src', 'diff', [
+        D('git', 'ro', [F('mod.rs', 'ro', null, m('4.4 KB', '10-20 11:58')), F('provider.rs', 'ro', null, m('8.9 KB', '10-20 12:20'))]),
+        D('job', 'diff', [
+          F('copy.rs', 'diff', m('3.1 KB', '10-19 18:22'), m('3.5 KB', '10-20 13:44'), { delta: '+14 −9', open: 'file' }),
+          F('journal.rs', 'diff', m('4.8 KB', '10-19 18:22'), m('5.0 KB', '10-20 13:10'), { delta: '+12 −6', open: 'merge' }),
+          F('write_file.rs', 'ro', null, m('6.7 KB', '10-20 13:46')),
+          F('mod.rs', 'same', m('1.1 KB', '10-14 10:02'), m('1.1 KB', '10-14 10:02')),
+        ]),
+        F('legacy_walk.rs', 'lo', m('5.3 KB', '09-28 16:40'), null),
+        F('lib.rs', 'diff', m('2.0 KB', '10-14 10:02'), m('2.1 KB', '10-20 11:58'), { delta: '+2 −0' }),
+      ]),
+      F('Cargo.toml', 'diff', m('980 B', '10-14 10:02'), m('1.0 KB', '10-20 11:58'), { delta: '+3 −1' }),
+    ]),
+    D('rusty-ui', 'diff', [
+      D('src', 'diff', [F('pane.rs', 'diff', m('22.4 KB', '10-19 20:15'), m('23.9 KB', '10-20 13:58'), { delta: '+51 −8' }), F('viewer.rs', 'same', m('31.0 KB', '10-18 09:44'), m('31.0 KB', '10-18 09:44'))]),
+      D('assets', 'diff', [F('icons.bin', 'diff', m('2.4 MB', '10-12 14:00'), m('2.4 MB', '10-20 10:31'), { bin: true, open: 'hex' })]),
+    ]),
+  ]),
+  D('docs', 'diff', [F('decisions.md', 'diff', m('96.0 KB', '10-20 09:12'), m('98.3 KB', '10-20 13:30'), { delta: '+18 −3' }), F('keys.md', 'same', m('7.7 KB', '10-15 12:00'), m('7.7 KB', '10-15 12:00'))]),
+  D('target', 'ign', [F('CACHEDIR.TAG', 'ign', m('177 B', '10-20 08:00'), m('177 B', '10-20 08:00'))], { ign: true }),
+  D('tests', 'hash', [D('fixtures', 'hash', [
+    F('big_trace.asc', 'hash', m('612 MB', '10-19 07:12'), m('611 MB', '10-20 07:40'), { hash: 0.34, then: 'diff', open: 'large' }),
+    F('flash_dump.hex', 'hash', m('148 MB', '10-03 15:21'), m('148 MB', '10-03 15:21'), { hash: 0.71, then: 'same' }),
+  ])]),
+  F('.gitignore', 'same', m('64 B', '09-20 10:00'), m('64 B', '09-20 10:00')),
+  F('Cargo.lock', 'diff', m('88.1 KB', '10-19 18:30'), m('91.6 KB', '10-20 13:41'), { delta: '+41 −12' }),
+  F('Cargo.toml', 'diff', m('1.6 KB', '10-14 10:02'), m('1.7 KB', '10-20 12:10'), { delta: '+2 −1' }),
+  F('README.md', 'same', m('5.9 KB', '10-15 18:00'), m('5.9 KB', '10-15 18:00')),
+];
+
+(function index(list, parent, depth) {
+  for (const n of list) {
+    n.path = parent ? parent + '/' + n.name : n.name;
+    n.depth = depth;
+    if (n.dir) {
+      index(n.kids, n.path, depth + 1);
+      if (!n.L && n.s !== 'ro') n.L = m('', n.s === 'ign' ? '10-20 08:00' : '10-20');
+      if (!n.R && n.s !== 'lo') n.R = m('', '10-20');
+    }
+  }
+})(TREE, '', 0);
+
+const DEFAULT_OPEN = ['crates', 'crates/rusty-fs', 'crates/rusty-fs/src', 'crates/rusty-fs/src/job', 'tests', 'tests/fixtures', 'crates/rusty-compare'];
+
+const FILES = {
+  left: { label: 'D:\\src\\ferrite', short: 'ferrite', kind: 'folder', rev: 'main · working tree' },
+  right: { label: 'ferrite @ feature/compare', short: 'feature/compare', kind: 'ref', rev: 'a3f9c21 · read-only' },
+};
+
+const COPY_BLOCKS = [
+  { t: 's', l: ['use std::fs::File;', 'use std::io::{self, Read, Write};'] },
+  { t: 'c', l: ['use std::path::Path;'], r: ['use std::path::{Path, PathBuf};'] },
+  { t: 's', l: ['', 'use crate::journal::Journal;', 'use crate::stamp::FileStamp;'] },
+  { t: 'a', r: ['use crate::job::Progress;'] },
+  { t: 's', l: ['', '/// Copies one file in chunks and reports progress to the journal.', '#[derive(Debug, Clone)]', "pub struct CopyJob<'a> {", "    pub source: &'a Path,", "    pub target: &'a Path,"] },
+  { t: 'c', l: ['    pub chunk: usize,'], r: ['    pub chunk_size: usize,', '    pub expect: Option<FileStamp>,'] },
+  { t: 's', l: ['}', ''] },
+  { t: 'mi', r: ['fn verify_stamp(path: &Path, expect: &FileStamp) -> io::Result<()> {', '    let now = FileStamp::read(path)?;', '    if now != *expect {', '        return Err(io::Error::other("target changed since it was read"));', '    }', '    Ok(())', '}', ''], link: 'out' },
+  { t: 's', l: ["impl<'a> CopyJob<'a> {"] },
+  { t: 'c', l: ['    pub const CHUNK: usize = 1 << 20;'], r: ['    pub const CHUNK: usize = 64 * 1024;'] },
+  { t: 's', l: ['', '    pub fn run(&self, journal: &mut Journal) -> io::Result<u64> {'] },
+  { t: 'a', r: ['        if let Some(expect) = &self.expect {', '            verify_stamp(self.target, expect)?;', '        }'] },
+  { t: 's', l: ['        let mut src = File::open(self.source)?;', '        let mut dst = File::create(self.target)?;'] },
+  { t: 'c', l: ['        let mut buf = vec![0u8; self.chunk];'], r: ['        let mut buf = vec![0u8; self.chunk_size];'] },
+  { t: 's', l: ['        let mut done = 0u64;', '        loop {', '            let n = src.read(&mut buf)?;', '            if n == 0 {', '                break;', '            }', '            dst.write_all(&buf[..n])?;', '            done += n as u64;'] },
+  { t: 'c', l: ['            journal.note_progress(done);', '            journal.flush()?;'], r: ['            journal.progress(self.source, Progress::Bytes(done));'] },
+  { t: 's', l: ['        }'] },
+  { t: 'w', l: ['\tdst.sync_all()?;'], r: ['        dst.sync_all()?;'] },
+  { t: 's', l: ['        Ok(done)', '    }', '', '    /// Copies times and the read-only flag after the bytes are written.', '    fn copy_metadata(&self) -> io::Result<()> {', '        let meta = std::fs::metadata(self.source)?;', '        let times = std::fs::FileTimes::new()', '            .set_accessed(meta.accessed()?)', '            .set_modified(meta.modified()?);', '        File::options().write(true).open(self.target)?.set_times(times)?;', '        let mut perms = std::fs::metadata(self.target)?.permissions();', '        perms.set_readonly(meta.permissions().readonly());', '        std::fs::set_permissions(self.target, perms)', '    }', '', '    /// Bytes left for the progress line, never below zero.', '    pub fn remaining(&self, done: u64) -> u64 {', '        let total = std::fs::metadata(self.source).map(|m| m.len()).unwrap_or(0);', '        total.saturating_sub(done)', '    }', '}', ''] },
+  { t: 'mo', l: ['fn verify_stamp(path: &Path, expect: &FileStamp) -> io::Result<()> {', '    let now = FileStamp::read(path)?;', '    if now != *expect {', '        return Err(io::Error::other("target changed since it was read"));', '    }', '    Ok(())', '}', ''], link: 'in' },
+  { t: 's', l: ['#[cfg(test)]', 'mod tests;'] },
+];
+
+const MERGE_REGIONS = [
+  { t: 's', l: ['use std::fs::{File, OpenOptions};', 'use std::io::{self, BufWriter, Write};', 'use std::path::{Path, PathBuf};', ''] },
+  { t: 'auto', from: 'right', l: ['use crate::job::Progress;', 'use crate::stamp::FileStamp;'] },
+  { t: 's', l: ['', '/// Append-only record of every step a job takes, replayed on undo.', 'pub struct Journal {', '    path: PathBuf,', '    file: BufWriter<File>,'] },
+  { t: 'conf', ws: true, base: ['    entries: Vec<Entry>,'], left: ['    entries: Vec<Entry>,   '], right: ['\tentries: Vec<Entry>,'] },
+  { t: 's', l: ['}', '', 'impl Journal {', '    pub fn open(path: PathBuf) -> io::Result<Self> {', '        let file = OpenOptions::new().create(true).append(true).open(&path)?;', '        Ok(Self { path, file: BufWriter::new(file), entries: Vec::new() })', '    }', ''] },
+  { t: 'conf', base: ['    pub fn note(&mut self, done: u64) {', '        writeln!(self.file, "progress {done}").ok();', '    }'], left: ['    pub fn note_progress(&mut self, done: u64) {', '        writeln!(self.file, "progress {done}").ok();', '        self.entries.push(Entry::Progress(done));', '    }'], right: ['    pub fn progress(&mut self, path: &Path, step: Progress) {', '        writeln!(self.file, "progress {} {step}", path.display()).ok();', '    }'] },
+  { t: 's', l: [''] },
+  { t: 'auto', from: 'left', l: ['    /// Number of entries written since the journal was opened.', '    pub fn len(&self) -> usize {', '        self.entries.len()', '    }', ''] },
+  { t: 'auto', from: 'right', l: ['    pub fn record_write(&mut self, target: &Path, stamp: &FileStamp) -> io::Result<()> {', '        writeln!(self.file, "write {} {}", target.display(), stamp.hex())', '    }', ''] },
+  { t: 's', l: ['    pub fn flush(&mut self) -> io::Result<()> {'] },
+  { t: 'conf', base: ['        self.file.flush()'], left: ['        self.file.flush()?;', '        self.file.get_ref().sync_data()'], right: ['        self.file.flush()?;', '        log::trace!("journal {} flushed", self.path.display());', '        Ok(())'] },
+  { t: 's', l: ['    }', '}', '', '#[cfg(test)]', 'mod tests;'] },
+];
+
+const SIDES = {
+  file: { left: 'D:\\src\\ferrite\\crates\\rusty-fs\\src\\job\\copy.rs', right: 'D:\\src\\ferrite-p42\\crates\\rusty-fs\\src\\job\\copy.rs', lshort: 'ferrite', rshort: 'ferrite-p42' },
+  merge: { base: 'merge base 7c1e04b', left: 'main (ours)', right: 'feature/compare (theirs)', path: 'crates/rusty-fs/src/job/journal.rs' },
+};
+
+function rng(seed) { let s = seed >>> 0; return () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }; }
+
+function traceLines() {
+  const r = rng(7), ids = ['0CF00400x', '18FEF100x', '18F00500x', '0C000003x', '18FEEE00x', '1CFFAA21x'];
+  const out = [];
+  let t = 1204.002113;
+  for (let i = 0; i < 260; i++) {
+    t += 0.0004 + r() * 0.004;
+    const id = ids[Math.floor(r() * ids.length)];
+    const bytes = Array.from({ length: 8 }, () => Math.floor(r() * 256).toString(16).toUpperCase().padStart(2, '0'));
+    out.push(`${t.toFixed(6).padStart(12)} 1  ${id.padEnd(11)} Rx   d 8 ${bytes.join(' ')}`);
+  }
+  return out;
+}
+const TRACE = traceLines();
+const TRACE_DIFF = new Map([[22, 'c'], [23, 'c'], [61, 'd'], [118, 'c'], [119, 'c'], [120, 'c'], [171, 'a'], [214, 'c'], [240, 'c'], [241, 'c']]);
+
+const HEX = (() => {
+  const r = rng(42), blocks = 37, diff = [[2], [9, 10], [17], [30], [36]];
+  const regions = diff.map((bs, i) => ({ bs, start: bs[0] * 65536 + 0x1000 * (i + 1), bytes: [96, 214, 12, 4096, 38][i] }));
+  return { blocks, regions, size: '2,411,520 bytes', rows: (reg) => {
+    const g = rng(1000 + reg.start);
+    return Array.from({ length: 12 }, (_, i) => {
+      const off = reg.start + i * 16;
+      const a = Array.from({ length: 16 }, () => Math.floor(g() * 256));
+      const b = a.map((v, j) => ((i * 16 + j) % 7 === 3 && i > 1 && i < 10) ? (v ^ 0x5a) : v);
+      return { off, a, b };
+    });
+  } };
+})();
+
+const P = {
+  folder: '<path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/>',
+  file: '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/>',
+  code: '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="m10 13-2 2 2 2"/><path d="m14 17 2-2-2-2"/>',
+  binary: '<rect x="14" y="14" width="4" height="6" rx="2"/><rect x="6" y="4" width="4" height="6" rx="2"/><path d="M6 20h4"/><path d="M14 10h4"/><path d="M6 14h2v6"/><path d="M14 4h2v6"/>',
+  right: '<path d="m9 18 6-6-6-6"/>', down: '<path d="m6 9 6 6 6-6"/>', up: '<path d="m18 15-6-6-6 6"/>',
+  branch: '<line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/>',
+  merge: '<circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M6 21V9a9 9 0 0 0 9 9"/>',
+  lock: '<rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  al: '<path d="m12 19-7-7 7-7"/><path d="M19 12H5"/>', ar: '<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
+  swap: '<path d="M8 3 4 7l4 4"/><path d="M4 7h16"/><path d="m16 21 4-4-4-4"/><path d="M20 17H4"/>',
+  search: '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>',
+  moon: '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
+  undo: '<path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11"/>',
+  save: '<path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/><path d="M7 3v4a1 1 0 0 0 1 1h7"/>',
+  pl: '<rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/>', pr: '<rect width="18" height="18" x="3" y="3" rx="2"/><path d="M15 3v18"/>',
+  eye: '<path d="M2.06 12.35a1 1 0 0 1 0-.7 10.75 10.75 0 0 1 19.88 0 1 1 0 0 1 0 .7 10.75 10.75 0 0 1-19.88 0"/><circle cx="12" cy="12" r="3"/>',
+  check: '<path d="M20 6 9 17l-5-5"/>', x: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+  cols: '<rect width="18" height="18" x="3" y="3" rx="2"/><path d="M12 3v18"/>', rows: '<rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 12h18"/>',
+  fold: '<path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/>', min: '<path d="M5 12h14"/>', sq: '<rect width="14" height="14" x="5" y="5" rx="2"/>',
+  filter: '<path d="M3 6h18"/><path d="M7 12h10"/><path d="M10 18h4"/>',
+  copy: '<rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',
+  pen: '<path d="M21.17 6.81a1 1 0 0 0-3.99-3.99L3.84 16.17a2 2 0 0 0-.5.83l-1.32 4.35a.5.5 0 0 0 .62.62l4.35-1.32a2 2 0 0 0 .83-.5z"/>',
+  ws: '<path d="M18 6 7 17l-5-5"/><path d="m22 10-7.5 7.5L13 16"/>',
+  sliders: '<path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/>',
+  spin: '<path d="M21 12a9 9 0 1 1-6.219-8.56"/>',
+  list: '<path d="M3 12h.01"/><path d="M3 18h.01"/><path d="M3 6h.01"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M8 6h13"/>',
+  map: '<path d="M14.1 6.3 9.9 4.2a2 2 0 0 0-1.8 0L3.6 6.5A1 1 0 0 0 3 7.4v12a1 1 0 0 0 1.4.9l3.7-1.8a2 2 0 0 1 1.8 0l4.2 2.1a2 2 0 0 0 1.8 0l4.5-2.3a1 1 0 0 0 .6-.9v-12a1 1 0 0 0-1.4-.9l-3.7 1.8a2 2 0 0 1-1.8 0z"/><path d="M15 6.5v14"/><path d="M9 3.7v14"/>',
+};
+const ic = (n, cls = '') => `<svg class="i ${cls}" viewBox="0 0 24 24" aria-hidden="true">${P[n]}</svg>`;
+const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const kb = (k) => `<kbd>${k}</kbd>`;
+
+const TOK = /(\/\/.*$)|("(?:\\.|[^"\\])*")|('[a-z_]+\b(?!'))|(\b[a-z_]+!)|\b(use|pub|fn|let|mut|struct|impl|if|else|return|loop|break|for|in|as|self|Self|mod|const|crate|while|match|where|dyn|ref)\b|\b(Some|None|Ok|Err|[A-Z][A-Za-z0-9_]*)\b|\b(\d[\d_]*(?:u8|u64|usize)?)\b/g;
+const TOK_CLS = ['', 't-com', 't-str', 't-ty', 't-mac', 't-kw', 't-ty', 't-num'];
+function hl(s) {
+  let out = '', last = 0;
+  for (const m of s.matchAll(TOK)) {
+    out += esc(s.slice(last, m.index));
+    const g = m.findIndex((v, i) => i > 0 && v !== undefined);
+    out += `<span class="${TOK_CLS[g]}">${esc(m[0])}</span>`;
+    last = m.index + m[0].length;
+  }
+  return out + esc(s.slice(last));
+}
+const plain = (s) => esc(s);
+function intra(a, b) {
+  let p = 0;
+  while (p < a.length && p < b.length && a[p] === b[p]) p++;
+  let q = 0;
+  while (q < a.length - p && q < b.length - p && a[a.length - 1 - q] === b[b.length - 1 - q]) q++;
+  return [[p, a.length - q], [p, b.length - q]];
+}
+function hlMark(s, rng, cls, on) {
+  if (!on || !rng || rng[0] >= rng[1]) return hl(s);
+  return hl(s.slice(0, rng[0])) + `<mark class="${cls}">${hl(s.slice(rng[0], rng[1]))}</mark>` + hl(s.slice(rng[1]));
+}
+const pMark = (s, r, cls) => esc(s.slice(0, r[0])) + `<mark class="${cls}">${esc(s.slice(r[0], r[1]))}</mark>` + esc(s.slice(r[1]));
+const showWs = (s) => s.replace(/\t/g, '→   ');
+
+const clone = (o) => JSON.parse(JSON.stringify(o));
+let S;
+function freshState(dir, scn) {
+  return {
+    dir, scn: scn || 'folders', layout: 'split', hide: false, intra: true, moved: true, ignWs: false, lineNo: true, preset: 'rich',
+    filter: 'all', open: new Set(DEFAULT_OPEN), sel: 'crates/rusty-fs/src/job/copy.rs', showIgn: false, gitignore: true,
+    blocks: clone(COPY_BLOCKS), regions: clone(MERGE_REGIONS).map((r) => (r.t === 'conf' ? { ...r, pick: null } : r)),
+    undo: [], dirty: { L: false, R: false }, drawer: null, menu: null, toast: null, enter: new Set(), prog: 0.22, largeTab: 'text',
+    region: 1, hashP: { 'tests/fixtures/big_trace.asc': 0.34, 'tests/fixtures/flash_dump.hex': 0.71 }, cur: -1, side: 'L', navFolder: null,
+    expanded: new Set(['crates/rusty-fs/src/job/copy.rs']), narrow: false, saved: false,
+  };
+}
+
+/* ---------- folder model ---------- */
+function statusOf(n) {
+  if (!n.dir) {
+    if (n.s === 'hash') return (S.hashP[n.path] ?? 1) >= 1 ? n.then : 'hash';
+    return n.s;
+  }
+  if (n.s === 'ign') return 'ign';
+  const ks = n.kids.filter((k) => !k.ign).map(statusOf);
+  if (ks.includes('hash')) return 'hash';
+  if (ks.every((k) => k === 'same')) return 'same';
+  if (ks.every((k) => k === 'ro')) return 'ro';
+  if (ks.every((k) => k === 'lo')) return 'lo';
+  return 'diff';
+}
+const allFiles = (list = TREE, out = []) => { for (const n of list) { if (n.ign && !S.showIgn) continue; if (n.dir) allFiles(n.kids, out); else out.push(n); } return out; };
+function counts(root) {
+  const c = { diff: 0, lo: 0, ro: 0, same: 0, hash: 0 };
+  for (const f of allFiles(root ? root.kids : TREE)) c[statusOf(f)] = (c[statusOf(f)] || 0) + 1;
+  c.all = c.diff + c.lo + c.ro + c.same + c.hash;
+  c.orph = c.lo + c.ro;
+  return c;
+}
+function fileMatches(f) {
+  const s = statusOf(f);
+  if (S.filter === 'all') return true;
+  if (S.filter === 'diff') return s !== 'same';
+  if (S.filter === 'same') return s === 'same' || s === 'hash';
+  return s === 'lo' || s === 'ro';
+}
+const matches = (n) => (n.dir ? n.kids.some(matches) || (S.filter === 'all') : fileMatches(n));
+function visibleRows(list = TREE, out = []) {
+  for (const n of list) {
+    if (n.ign && !S.showIgn) continue;
+    if (!matches(n)) continue;
+    out.push(n);
+    if (n.dir && S.open.has(n.path)) visibleRows(n.kids, out);
+  }
+  return out;
+}
+const byPath = (p, list = TREE) => { for (const n of list) { if (n.path === p) return n; if (n.dir && p.startsWith(n.path + '/')) return byPath(p, n.kids); } return null; };
+const GLYPH = { diff: '≠', lo: '◂', ro: '▸', same: '=', hash: '…', ign: '–' };
+const STATUS_WORD = { diff: 'different', lo: 'left only', ro: 'right only', same: 'same', hash: 'checking', ign: 'ignored' };
+const sg = (s) => `<span class="sg ${s}" title="${STATUS_WORD[s]}">${GLYPH[s]}</span>`;
+function nameCell(n, withTwist = true, extra = '') {
+  const s = statusOf(n), pad = `padding-inline-start:calc(${n.depth} * 16px + 8px)`;
+  const tw = n.dir && withTwist ? `<button class="tw" data-act="twist" data-p="${esc(n.path)}" aria-expanded="${S.open.has(n.path)}" aria-label="${S.open.has(n.path) ? 'Collapse' : 'Expand'} ${esc(n.name)}">${ic('right', 'sm')}</button>` : '<span class="sp"></span>';
+  const icon = n.dir ? ic('folder', 'ic-dir') : ic(n.bin ? 'binary' : (/\.(rs|toml|md|lock)$/.test(n.name) ? 'code' : 'file'), 'ic-file');
+  return `<span class="nm" style="${pad}">${tw}${icon}<span class="t" title="${esc(n.path)}">${esc(n.name)}</span>${extra}</span>`;
+}
+function hashCell(n) {
+  const p = S.hashP[n.path];
+  if (statusOf(n) !== 'hash' || p === undefined) return '';
+  return `<span class="hp" title="Hashing in the background"><span class="bar"><i style="--p:${p.toFixed(3)}"></i></span>${Math.round(p * 100)}%</span>`;
+}
+const deltaCell = (n) => (n.delta && statusOf(n) === 'diff' ? `<span class="dl">${n.delta.replace(/\+(\d+)/, '<span class="p">+$1</span>').replace(/−(\d+)/, '<span class="m">−$1</span>')}</span>` : n.bin && statusOf(n) === 'diff' ? '<span class="dl mu">binary</span>' : '');
+const rowAttrs = (n, i) => {
+  const s = statusOf(n), k = !n.dir && s !== 'same' && s !== 'ign' ? ` data-k="${s}" data-h="${n.path}" data-tip="${esc(n.name)} · ${STATUS_WORD[s]}"` : '';
+  return `class="fr st-${s}${S.enter.has(n.path) ? ' enter' : ''}" data-p="${esc(n.path)}" role="row" aria-selected="${S.sel === n.path}" tabindex="${S.sel === n.path ? 0 : -1}"${k}`;
+};
+function filterSeg() {
+  const c = counts();
+  const f = [['all', 'All', c.all], ['diff', 'Differences', c.diff + c.orph + c.hash], ['same', 'Same', c.same], ['orph', 'Orphans', c.orph]];
+  return `<div class="seg" role="group" aria-label="Show">${f.map(([k, l, n]) => `<button data-act="filter" data-v="${k}" aria-pressed="${S.filter === k}">${l} <span class="ct">${n}</span></button>`).join('')}</div>`;
+}
+function sideChip(which) {
+  const s = FILES[which];
+  const icon = s.kind === 'ref' ? ic('branch', 'sm') : ic('folder', 'sm ic-dir');
+  return `<button class="side" data-act="side" data-v="${which}" title="${esc(s.label)} · ${esc(s.rev)}">${icon}<span class="t">${esc(S.narrow ? s.short : s.label)}</span>${s.kind === 'ref' ? `<span class="ro-tag">${ic('lock', 'sm')}<span class="hide-n">read-only</span></span>` : ''}${ic('down', 'sm')}</button>`;
+}
+const rulesChip = () => `<button class="chip" data-act="drawer" data-v="R" title="Ignore rules (Ctrl+I)">${ic('filter', 'sm')}${S.gitignore ? '.gitignore' : 'No .gitignore'} · ${S.showIgn ? 'showing' : '1,284'} ignored</button>`;
+function hashingNote() {
+  const live = Object.entries(S.hashP).filter(([, p]) => p < 1);
+  return live.length ? `<span class="hp">${ic('spin', 'sm')}Hashing ${live.length} large file${live.length > 1 ? 's' : ''}</span>` : `<span class="mu">${ic('check', 'sm')} All contents checked</span>`;
+}
+
+/* ---------- file diff model ---------- */
+function symAt(lines) { let s = ''; for (const l of lines) { const m = l.match(/fn (\w+)|struct (\w+)|impl<[^>]*> (\w+)/); if (m) s = m[1] ? `fn ${m[1]}` : m[2] ? `struct ${m[2]}` : `impl ${m[3]}`; } return s; }
+function diffModel() {
+  const rows = [], hunks = [];
+  let ln = 1, rn = 1, h = -1;
+  const seen = [];
+  S.blocks.forEach((b, bi) => {
+    if (b.t === 's') {
+      const run = b.l.map((t) => ({ k: '', l: ln++, r: rn++, lt: t, rt: t, bi }));
+      rows.push(...run); seen.push(...b.l);
+      return;
+    }
+    if (b.t === 'w' && S.ignWs) {
+      rows.push({ k: '', l: ln++, r: rn++, lt: b.l[0], rt: b.r[0], bi, wsHidden: true });
+      return;
+    }
+    h++;
+    const L = b.l || [], R = b.r || [], n = Math.max(L.length, R.length);
+    const kind = { c: 'chg', a: 'add', d: 'del', w: 'ws', mi: S.moved ? 'mov' : 'add', mo: S.moved ? 'mov' : 'del', done: 'done' }[b.t];
+    const hk = { h, bi, kind, sym: symAt(seen) || 'top of file', l1: ln, r1: rn, nl: L.length, nr: R.length };
+    for (let i = 0; i < n; i++) {
+      const lt = L[i], rt = R[i];
+      const row = { k: kind, h, bi, lt, rt, l: lt !== undefined ? ln++ : null, r: rt !== undefined ? rn++ : null, first: i === 0 };
+      if (kind === 'chg' && lt !== undefined && rt !== undefined) row.il = intra(lt, rt);
+      rows.push(row);
+    }
+    if (b.t === 'mi') hk.note = 'moved from below';
+    if (b.t === 'mo') hk.note = 'moved up';
+    hunks.push(hk);
+    seen.push(...(R.length ? R : L));
+  });
+  return { rows, hunks };
+}
+const KIND_WORD = { chg: 'changed', add: 'added', del: 'removed', mov: 'moved', ws: 'whitespace only', done: 'copied', conf: 'conflict', auto: 'auto-merged' };
+const GL = { chg: '~', add: '+', del: '−', mov: '↷', ws: '·', done: '✓' };
+function hunkLabel(hk, total) {
+  const lr = `L${hk.l1}${hk.nl > 1 ? '–' + (hk.l1 + hk.nl - 1) : ''} → R${hk.r1}${hk.nr > 1 ? '–' + (hk.r1 + hk.nr - 1) : ''}`;
+  return `Change ${hk.h + 1} of ${total} · ${KIND_WORD[hk.kind]} · ${lr} · ${hk.sym}`;
+}
+function copyBtns(r, side) {
+  if (!r.first || r.k === 'done') return '';
+  const toR = `<button class="cp" data-act="copy" data-v="R" data-b="${r.bi}" title="Copy block to the right (Ctrl+Alt+→)" aria-label="Copy change ${r.h + 1} to the right">${ic('ar', 'sm')}</button>`;
+  const toL = `<button class="cp" data-act="copy" data-v="L" data-b="${r.bi}" title="Copy block to the left (Ctrl+Alt+←)" aria-label="Copy change ${r.h + 1} to the left">${ic('al', 'sm')}</button>`;
+  return side === 'both' ? toL + toR : side === 'L' ? toR : toL;
+}
+function diffRows(opts = {}) {
+  const { rows, hunks } = diffModel();
+  const layout = S.narrow ? 'inline' : (opts.layout || S.layout);
+  const cpIn = opts.cpIn || 'mid';
+  let html = '';
+  const total = hunks.length;
+  const tipOf = (r) => (r.h !== undefined && r.k ? ` data-k="${r.k}" data-h="${r.h}" data-tip="${esc(hunkLabel(hunks[r.h], total))}"` : '');
+  const cell = (t, side, r) => {
+    if (t === undefined) return `<span class="tx fill"></span>`;
+    const txt = r.k === 'ws' ? showWs(t) : t;
+    const markCls = side === 'L' ? 'il-del' : 'il-add';
+    const inner = r.il ? hlMark(t, r.il[side === 'L' ? 0 : 1], markCls, S.intra) : hl(txt);
+    const note = r.first && r.k === 'mov' ? `<span class="note">${side === 'L' ? '↷ moved up' : '↷ moved from L64'}</span>` : r.first && r.k === 'ws' ? '<span class="ws-badge">whitespace only</span>' : '';
+    const kcls = r.k ? (r.k === 'chg' || r.k === 'ws' || r.k === 'mov' || r.k === 'done' ? `k-${r.k}` : side === 'L' ? 'k-del' : 'k-add') : '';
+    return `<span class="tx ${kcls}" data-side="${side}" data-b="${r.bi}">${inner}${note}</span>`;
+  };
+  const glyph = (r, side) => (r.k && (side === 'L' ? r.lt : r.rt) !== undefined ? `<span class="g-${r.k === 'chg' || r.k === 'mov' || r.k === 'ws' ? r.k : side === 'L' ? 'del' : 'add'}">${r.k === 'chg' || r.k === 'mov' || r.k === 'ws' || r.k === 'done' ? GL[r.k] : side === 'L' ? '−' : '+'}</span>` : '');
+  const foldRun = (start, end) => `<button class="fold" data-act="unfold">${ic('fold', 'sm')}${end - start} unchanged lines · ${hunks.length ? 'click to show' : ''}</button>`;
+  const visible = rows.map((r, i) => {
+    if (!S.hide || r.k) return true;
+    for (let d = -3; d <= 3; d++) { const o = rows[i + d]; if (o && o.k) return true; }
+    return false;
+  });
+  let i = 0;
+  while (i < rows.length) {
+    if (!visible[i]) { let j = i; while (j < rows.length && !visible[j]) j++; html += foldRun(i, j); i = j; continue; }
+    const r = rows[i];
+    if (layout === 'split') {
+      const lnL = cpIn === 'ln' && r.first && r.k && r.k !== 'done' ? `<span class="ln">${copyBtns(r, 'L')}</span>` : `<span class="ln">${r.l ?? ''} ${glyph(r, 'L')}</span>`;
+      const lnR = cpIn === 'ln' && r.first && r.k && r.k !== 'done' ? `<span class="ln">${copyBtns(r, 'R')}</span>` : `<span class="ln">${r.r ?? ''} ${glyph(r, 'R')}</span>`;
+      html += `<div class="r split"${tipOf(r)}>${lnL}${cell(r.lt, 'L', r)}<span class="mid">${cpIn === 'mid' ? copyBtns(r, 'both') : ''}</span>${lnR}${cell(r.rt, 'R', r)}</div>`;
+    } else {
+      if (!r.k) {
+        html += `<div class="r inline"${tipOf(r)}><span class="ln">${r.l}</span><span class="ln">${r.r}</span><span class="gl"></span><span class="tx">${hl(r.rt)}</span></div>`;
+      } else {
+        let j = i; const grp = [];
+        while (j < rows.length && rows[j].h === r.h && rows[j].k) grp.push(rows[j++]);
+        const lefts = grp.filter((g) => g.lt !== undefined), rights = grp.filter((g) => g.rt !== undefined);
+        const k = r.k;
+        const cp = k === 'done' ? '' : `<span class="pick" style="position:absolute;inset-inline-end:8px;top:0">${copyBtns(r, 'both')}</span>`;
+        lefts.forEach((g, x) => {
+          const t = k === 'ws' ? showWs(g.lt) : g.lt;
+          const inner = g.il ? hlMark(g.lt, g.il[0], 'il-del', S.intra) : hl(t);
+          const kc = k === 'chg' || k === 'del' ? 'k-del' : `k-${k}`;
+          const note = x === 0 && k === 'mov' ? '<span class="note">↷ moved up to line 18</span>' : x === 0 && k === 'ws' ? '<span class="ws-badge">whitespace only</span>' : '';
+          html += `<div class="r inline"${x === 0 ? tipOf(g) : ` data-k="${k}"`}><span class="ln">${g.l}</span><span class="ln"></span><span class="gl ${k === 'mov' ? 'g-mov' : 'g-del'}">${k === 'mov' ? '↷' : '−'}</span><span class="tx ${kc}" data-side="L" data-b="${g.bi}">${inner}${note}</span>${x === 0 ? cp : ''}</div>`;
+        });
+        rights.forEach((g, x) => {
+          const inner = g.il ? hlMark(g.rt, g.il[1], 'il-add', S.intra) : hl(g.rt);
+          const kc = k === 'chg' || k === 'add' || k === 'ws' ? 'k-add' : `k-${k}`;
+          const note = x === 0 && k === 'mov' && !lefts.length ? '<span class="note">↷ moved from line 64</span>' : '';
+          html += `<div class="r inline"${x === 0 && !lefts.length ? tipOf(g) : ` data-k="${k}" data-h="${g.h}"`}><span class="ln"></span><span class="ln">${g.r}</span><span class="gl ${k === 'mov' ? 'g-mov' : 'g-add'}">${k === 'mov' ? '↷' : '+'}</span><span class="tx ${kc}" data-side="R" data-b="${g.bi}">${inner}${note}</span>${x === 0 && !lefts.length ? cp : ''}</div>`;
+        });
+        i = j; continue;
+      }
+    }
+    i++;
+  }
+  return { html: `<div class="code ${opts.wash ? 'wash' : ''}">${html}</div>`, hunks, layout };
+}
+function copyBlock(bi, dir) {
+  const b = S.blocks[bi];
+  if (!b || b.t === 's' || b.t === 'done') return;
+  S.undo.push({ type: 'copy', bi, prev: clone(b), dirty: { ...S.dirty } });
+  const src = dir === 'L' ? (b.r || []) : (b.l || []);
+  S.blocks[bi] = { t: 'done', l: src.slice(), r: src.slice(), dir };
+  S.dirty[dir] = true;
+  const { hunks } = diffModel();
+  toast(`Copied change to the ${dir === 'L' ? 'left' : 'right'} · ${hunks.filter((x) => x.kind !== 'done').length} still differ`, true);
+}
+
+/* ---------- merge model ---------- */
+const unsolved = () => S.regions.filter((r) => r.t === 'conf' && !r.pick).length;
+const wsUnsolved = () => S.regions.filter((r) => r.t === 'conf' && r.ws && !r.pick).length;
+function pickLines(r) {
+  if (r.pick === 'L') return r.left; if (r.pick === 'R') return r.right;
+  if (r.pick === 'LR') return [...r.left, ...r.right]; if (r.pick === 'RL') return [...r.right, ...r.left];
+  if (r.pick === 'E') return r.edited || r.left; return null;
+}
+function confIndex(r) { return S.regions.filter((x) => x.t === 'conf').indexOf(r); }
+function confCard(r, ri, opts = {}) {
+  const ci = confIndex(r), total = S.regions.filter((x) => x.t === 'conf').length;
+  const solved = !!r.pick;
+  const title = r.ws ? `Conflict ${ci + 1} · whitespace only` : `Conflict ${ci + 1} of ${total}`;
+  const word = { L: 'took left', R: 'took right', LR: 'took both, left first', RL: 'took both, right first', E: 'edited by hand' }[r.pick];
+  const btn = (v, label, key) => `<button class="btn${r.pick === v ? ' pri' : ''}" data-act="pick" data-r="${ri}" data-v="${v}" title="${label}${key ? ' (' + key + ')' : ''}">${label}</button>`;
+  const pickers = `<span class="pick">${btn('L', 'Left', 'Alt+1')}${btn('R', 'Right', 'Alt+2')}${btn('LR', 'Both', 'Alt+3')}<button class="btn" data-act="edit" data-r="${ri}" title="Edit the result by hand">${ic('pen', 'sm')}Edit</button>${solved ? `<button class="btn" data-act="unpick" data-r="${ri}" title="Undo this choice">${ic('undo', 'sm')}</button>` : ''}</span>`;
+  const codeRows = (lines, cls) => lines.map((t) => `<div class="r inline" style="grid-template-columns:16px minmax(0,1fr)"><span class="gl"></span><span class="tx ${cls}">${hl(showWs(t))}</span></div>`).join('');
+  const body = solved
+    ? `<div class="code">${codeRows(pickLines(r), 'k-done')}</div>`
+    : opts.compact
+      ? ''
+      : `<div class="cf-opt"><span>Left<br><span class="mu">main</span></span><div class="code">${codeRows(r.left, 'k-del')}</div></div><div class="cf-opt"><span>Right<br><span class="mu">feature</span></span><div class="code">${codeRows(r.right, 'k-add')}</div></div>${opts.base ? `<div class="cf-opt"><span>Base</span><div class="code">${codeRows(r.base, '')}</div></div>` : ''}`;
+  const k = solved ? 'done' : 'conf';
+  return `<section class="cf${solved ? ' solved' : ''}${r.ws ? ' ws' : ''}" data-k="${k}" data-h="${ci}" data-tip="${esc(title)}${solved ? ' · ' + word : ''}" aria-label="${esc(title)}"><div class="cf-h">${ic(solved ? 'check' : 'merge', 'sm')}<span class="t">${title}</span>${solved ? `<span class="mu">${word}</span>` : r.ws ? '<span class="mu">only spaces and tabs differ</span>' : ''}<span class="grow"></span>${pickers}</div>${body}</section>`;
+}
+function mergeResult(opts = {}) {
+  let ln = 1, html = '';
+  S.regions.forEach((r, ri) => {
+    if (r.t === 's') r.l.forEach((t) => { html += `<div class="r inline" style="grid-template-columns:var(--ln-w) 16px minmax(0,1fr)"><span class="ln">${ln++}</span><span class="gl"></span><span class="tx">${hl(t)}</span></div>`; });
+    else if (r.t === 'auto') r.l.forEach((t, x) => { html += `<div class="r inline" data-k="auto"${x === 0 ? ` data-tip="Auto-merged from ${r.from === 'left' ? 'left (main)' : 'right (feature)'}"` : ''} style="grid-template-columns:var(--ln-w) 16px minmax(0,1fr)"><span class="ln">${ln++}</span><span class="gl" style="color:var(--c-auto)">${r.from === 'left' ? '◂' : '▸'}</span><span class="tx k-auto">${hl(t)}${x === 0 ? `<span class="auto-tag">auto · from ${r.from}</span>` : ''}</span></div>`; });
+    else { html += confCard(r, ri, opts); const p = pickLines(r); if (p) ln += p.length; }
+  });
+  return `<div class="code">${html}</div>`;
+}
+function mergeSide(side) {
+  let ln = 1, html = '';
+  const key = side === 'L' ? 'left' : side === 'R' ? 'right' : 'base';
+  S.regions.forEach((r) => {
+    let lines, k = '', n;
+    if (r.t === 's') lines = r.l;
+    else if (r.t === 'auto') { lines = (side === 'L' && r.from === 'left') || (side === 'R' && r.from === 'right') ? r.l : []; k = 'auto'; n = r.l.length; }
+    else { lines = r[key]; k = r.pick ? 'done' : 'conf'; n = Math.max(r.left.length, r.right.length, r.base.length); }
+    const pad = n ? n - lines.length : 0;
+    const ci = r.t === 'conf' ? confIndex(r) : -1;
+    lines.forEach((t, x) => { html += `<div class="r inline" ${k ? `data-k="${k}"` : ''}${x === 0 && ci >= 0 ? ` data-h="${ci}" data-tip="Conflict ${ci + 1}"` : ''} style="grid-template-columns:var(--ln-w) minmax(0,1fr)"><span class="ln">${ln++}</span><span class="tx ${k ? 'k-' + (k === 'conf' ? (side === 'L' ? 'del' : side === 'R' ? 'add' : 'ws') : k) : ''}">${hl(showWs(t))}</span></div>`; });
+    for (let x = 0; x < pad; x++) html += `<div class="r inline" style="grid-template-columns:var(--ln-w) minmax(0,1fr)"><span class="ln"></span><span class="tx fill"></span></div>`;
+  });
+  return `<div class="code">${html}</div>`;
+}
+function counterChip() {
+  const u = unsolved();
+  return u ? `<span class="counter" role="status">${ic('merge', 'sm')}${u} unsolved</span>` : `<span class="counter ok" role="status">${ic('check', 'sm')}All solved</span>`;
+}
+function saveBtn() {
+  const u = unsolved();
+  return `<button class="btn pri" data-act="save" ${u ? 'aria-disabled="true" disabled' : ''} title="${u ? 'Solve every conflict first' : 'Save the result (Ctrl+S)'}">${ic('save', 'sm')}${u ? 'Save locked' : 'Save'}${kb('Ctrl+S')}</button>`;
+}
+const wsBtn = () => (wsUnsolved() ? `<button class="btn" data-act="solve-ws" title="Take the left side for every conflict where only whitespace differs">${ic('ws', 'sm')}Solve ${wsUnsolved()} whitespace-only</button>` : '');
+
+/* ---------- large ---------- */
+function traceRows(opts = {}) {
+  const cut = Math.floor(TRACE.length * S.prog);
+  let html = '';
+  TRACE.forEach((t, i) => {
+    const pend = i >= cut, k = pend ? '' : { c: 'chg', d: 'del', a: 'add' }[TRACE_DIFF.get(i)] || '';
+    const ln = 1204880 + i;
+    const rt = k === 'chg' ? t.slice(0, 44) + t.slice(44).replace(/[0-9A-F]{2}/, (x) => (parseInt(x, 16) ^ 0x21).toString(16).toUpperCase().padStart(2, '0')) : t;
+    const first = k && TRACE_DIFF.get(i - 1) !== TRACE_DIFF.get(i);
+    const tip = k && first ? ` data-h="${i}" data-tip="${KIND_WORD[k]} · line ${ln.toLocaleString('en')}"` : '';
+    const w = `--w:${40 + (i * 37) % 50}%`;
+    if (opts.inline || S.narrow) {
+      html += `<div class="r inline${pend ? ' pend' : ''}" ${k ? `data-k="${k}"` : ''}${tip} style="${w}"><span class="ln">${ln}</span><span class="ln"></span><span class="gl ${k ? 'g-' + k : ''}">${k ? GL[k] : ''}</span><span class="tx ${k ? 'k-' + k : ''}">${k === 'chg' ? pMark(rt, intra(t, rt)[1], 'il-add', true) : plain(k === 'del' ? t : rt)}</span></div>`;
+    } else {
+      const L = k === 'add' ? '<span class="tx fill"></span>' : `<span class="tx ${k ? (k === 'chg' ? 'k-chg' : 'k-del') : ''}">${k === 'chg' ? pMark(t, intra(t, rt)[0], 'il-del', true) : plain(t)}</span>`;
+      const R = k === 'del' ? '<span class="tx fill"></span>' : `<span class="tx ${k ? (k === 'chg' ? 'k-chg' : 'k-add') : ''}">${k === 'chg' ? pMark(rt, intra(t, rt)[1], 'il-add', true) : plain(rt)}</span>`;
+      html += `<div class="r split${pend ? ' pend' : ''}" ${k ? `data-k="${k}"` : ''}${tip} style="${w}"><span class="ln">${k === 'add' ? '' : ln}</span>${L}<span class="mid"></span><span class="ln">${k === 'del' ? '' : ln}</span>${R}</div>`;
+    }
+  });
+  return `<div class="code">${html}</div>`;
+}
+function progressLine() {
+  const p = S.prog, lines = (3.2 * p).toFixed(2), found = [...TRACE_DIFF.keys()].filter((i) => i < TRACE.length * p).length;
+  return p < 1
+    ? `${ic('spin', 'sm')}<span class="num">Comparing ${Math.round(p * 100)}% · ${lines} M of 3.20 M lines · ${found} differences so far</span> ${kb('Esc')} stops`
+    : `${ic('check', 'sm')}<span class="num">Compared 3.20 M lines in 9.8 s · 9 differences · lines 1,204,880–1,205,139 shown</span>`;
+}
+const progBar = () => `<div class="prog" role="progressbar" aria-valuenow="${Math.round(S.prog * 100)}" aria-label="Comparing big_trace.asc"><i style="--p:${S.prog}"></i></div>`;
+function hexRegionBar() {
+  const reg = HEX.regions[S.region];
+  return `<span class="num"><b>Region ${S.region + 1} of ${HEX.regions.length} differs</b> · 0x${reg.start.toString(16).toUpperCase().padStart(8, '0')} · ${reg.bytes.toLocaleString('en')} bytes</span><button class="ib" data-act="region" data-v="-1" aria-label="Previous region (Alt+↑)">${ic('up', 'sm')}</button><button class="ib" data-act="region" data-v="1" aria-label="Next region (Alt+↓)">${ic('down', 'sm')}</button>`;
+}
+function hexRows(side, opts = {}) {
+  const reg = HEX.regions[S.region];
+  return `<div class="hex">${HEX.rows(reg).map((row) => {
+    const bytes = (arr, other) => arr.map((v, j) => { const h = v.toString(16).toUpperCase().padStart(2, '0'); return v !== other[j] ? `<span class="hx-d">${h}</span>` : h; }).join(' ');
+    const ascii = (arr) => esc(arr.map((v) => (v > 31 && v < 127 ? String.fromCharCode(v) : '.')).join(''));
+    const diff = row.a.some((v, j) => v !== row.b[j]);
+    const off = row.off.toString(16).toUpperCase().padStart(8, '0');
+    if (opts.stack) {
+      return `<div class="hexr" ${diff ? 'data-k="chg"' : ''}><span class="off">${off}</span><span>${bytes(row.a, row.b)}${diff ? `<br>${bytes(row.b, row.a)}` : ''}</span></div>`;
+    }
+    const a = side === 'L' ? row.a : row.b, b = side === 'L' ? row.b : row.a;
+    return `<div class="hexr" ${diff ? 'data-k="chg"' : ''}><span class="off">${off}</span><span>${bytes(a, b)}${opts.ascii === false ? '' : '  <span class="mu">' + ascii(a) + '</span>'}</span></div>`;
+  }).join('')}</div>`;
+}
+function blockGrid(cols) {
+  const dset = new Map(); HEX.regions.forEach((r, i) => r.bs.forEach((b) => dset.set(b, i)));
+  return `<div class="blocks" style="grid-template-columns:repeat(${cols},1fr)" role="group" aria-label="64 KiB blocks">${Array.from({ length: HEX.blocks }, (_, b) => { const ri = dset.get(b); return `<button class="blk${ri !== undefined ? ' d' : ''}${ri === S.region ? ' cur' : ''}" ${ri !== undefined ? `data-act="region-go" data-v="${ri}"` : 'data-act="noop"'} title="Block ${b + 1} · 0x${(b * 65536).toString(16).toUpperCase()} · ${ri !== undefined ? 'differs (region ' + (ri + 1) + ')' : 'same'}" aria-label="Block ${b + 1} ${ri !== undefined ? 'differs' : 'same'}"></button>`; }).join('')}</div>`;
+}
+
+/* ---------- change map ---------- */
+function mapEl(forId, opts = {}) {
+  const o = opts.orient || 'v';
+  return `<div class="map ${o}${opts.spine ? ' spine' : ''}" data-map="${forId}" data-lanes="${opts.lanes || 'three'}" data-mode="${opts.mode || 'lanes'}" ${opts.pend ? `data-pend="1"` : ''} tabindex="0" role="scrollbar" aria-controls="${forId}" aria-orientation="${o === 'h' ? 'horizontal' : 'vertical'}" aria-valuenow="0" aria-label="Change map: click or drag to jump, arrow keys step through changes" style="${opts.style || ''}"><div class="map-bs"></div>${opts.pend ? `<div class="map-pend" style="transform:scale${o === 'h' ? 'X' : 'Y'}(${1 - S.prog})"></div>` : ''}<div class="map-vp"></div><div class="map-tip"></div></div>`;
+}
+function laneOf(k, lanes) {
+  if (lanes === 'one') return [0.2, 0.8];
+  if (lanes === 'two') return k === 'del' || k === 'lo' ? [0, 0.5] : k === 'add' || k === 'ro' ? [0.5, 1] : [0, 1];
+  if (k === 'del' || k === 'lo') return [0.08, 0.36];
+  if (k === 'add' || k === 'ro') return [0.64, 0.92];
+  if (k === 'conf' || k === 'auto' || k === 'done' || k === 'hash') return [0.08, 0.92];
+  return [0.36, 0.64];
+}
+function buildMap(map) {
+  const sc = document.getElementById(map.dataset.map);
+  if (!sc) return;
+  const o = map.classList.contains('h') ? 'h' : 'v';
+  const lanes = map.dataset.lanes, bs = map.querySelector('.map-bs');
+  const total = sc.scrollHeight || 1;
+  const rows = [...sc.querySelectorAll('[data-k]')];
+  const blocks = [];
+  for (const r of rows) {
+    const top = offTop(r, sc), h = r.offsetHeight, k = r.dataset.k, hk = r.dataset.h ?? (blocks.length ? blocks[blocks.length - 1].h : undefined);
+    const last = blocks[blocks.length - 1];
+    if (last && last.k === k && Math.abs(last.end - top) < 2 && (r.dataset.h === undefined || r.dataset.h === last.h)) { last.end = top + h; continue; }
+    blocks.push({ k, start: top, end: top + h, h: r.dataset.h, tip: r.dataset.tip });
+  }
+  map._blocks = blocks; map._total = total;
+  if (map.dataset.mode === 'mini') return drawMini(map, sc, rows);
+  const cur = String(S.cur);
+  bs.innerHTML = blocks.map((b) => {
+    const [a, z] = laneOf(b.k, lanes);
+    const p0 = (b.start / total) * 100, p1 = ((b.end - b.start) / total) * 100;
+    const isCur = b.h !== undefined && b.h === cur;
+    const pos = o === 'v' ? `top:${p0}%;height:${p1}%;left:${a * 100}%;width:${(z - a) * 100}%` : `left:${p0}%;width:${p1}%;top:${a * 100}%;height:${(z - a) * 100}%`;
+    return `<i class="map-b ${b.k}${isCur ? ' cur' : ''}" style="${pos}"></i>`;
+  }).join('') + ticks(map, sc, total, o);
+  syncVp(map, sc);
+}
+function offTop(el, sc) { let t = 0, e = el; while (e && e !== sc) { t += e.offsetTop; e = e.offsetParent; } return t; }
+function ticks(map, sc, total, o) {
+  const seen = new Set(); let out = '', n = 0;
+  for (const r of sc.querySelectorAll('[data-h]')) {
+    if (seen.has(r.dataset.h)) continue; seen.add(r.dataset.h); n++;
+    const p = (offTop(r, sc) / total) * 100;
+    const isCur = r.dataset.h === String(S.cur);
+    out += `<i class="map-t" style="${o === 'v' ? 'top' : 'left'}:${p}%"></i>`;
+    if (isCur || (map.dataset.numbers === 'all')) out += `<span class="map-n" style="${o === 'v' ? `top:calc(${p}% - 6px);right:calc(100% + 2px)` : `left:calc(${p}% - 4px);top:-1px`}">${n}</span>`;
+  }
+  return out;
+}
+function drawMini(map, sc, rows) {
+  let cv = map.querySelector('canvas');
+  if (!cv) { cv = document.createElement('canvas'); map.prepend(cv); }
+  const W = map.clientWidth, H = map.clientHeight, dpr = devicePixelRatio || 1;
+  cv.width = W * dpr; cv.height = H * dpr;
+  const g = cv.getContext('2d'); g.scale(dpr, dpr);
+  const cs = getComputedStyle(document.documentElement);
+  const col = { '': cs.getPropertyValue('--c-faint'), chg: cs.getPropertyValue('--c-chg-mark'), add: cs.getPropertyValue('--c-add-mark'), del: cs.getPropertyValue('--c-del-mark'), mov: cs.getPropertyValue('--c-mov-mark'), ws: cs.getPropertyValue('--c-faint'), conf: cs.getPropertyValue('--c-conf'), auto: cs.getPropertyValue('--c-auto'), done: cs.getPropertyValue('--c-accent') };
+  const all = [...sc.querySelectorAll('.r')];
+  const total = sc.scrollHeight || 1, scale = Math.min(3, H / total * 1);
+  const rh = Math.max(1, (H / all.length) * 0.75);
+  all.forEach((r) => {
+    const y = (offTop(r, sc) / total) * H, k = r.dataset.k || r.closest('[data-k]')?.dataset.k || '';
+    const tx = r.querySelector('.tx:not(.fill)') || r.querySelector('.tx');
+    const text = tx ? tx.textContent : '';
+    const indent = (text.match(/^\s*/) || [''])[0].length, len = Math.min(text.trimEnd().length, 90);
+    g.globalAlpha = k ? 1 : 0.45;
+    g.fillStyle = col[k] || col[''];
+    if (k) g.fillRect(4, y, 3, rh + 0.5);
+    g.fillRect(12 + indent * 0.9, y, Math.max(2, (len - indent) * 0.9), rh);
+  });
+  g.globalAlpha = 1;
+  syncVp(map, sc);
+}
+function syncVp(map, sc) {
+  const vp = map.querySelector('.map-vp');
+  const o = map.classList.contains('h') ? 'h' : 'v';
+  const L = o === 'v' ? map.clientHeight : map.clientWidth, total = sc.scrollHeight || 1;
+  const size = Math.max(8, (sc.clientHeight / total) * L), pos = (sc.scrollTop / total) * L;
+  if (o === 'v') { vp.style.height = size + 'px'; vp.style.transform = `translateY(${pos}px)`; } else { vp.style.width = size + 'px'; vp.style.transform = `translateX(${pos}px)`; }
+  map.setAttribute('aria-valuenow', Math.round((sc.scrollTop / Math.max(1, total - sc.clientHeight)) * 100));
+}
+function wireMap(map) {
+  const sc = document.getElementById(map.dataset.map);
+  if (!sc) return;
+  const o = () => (map.classList.contains('h') ? 'h' : 'v');
+  const frac = (e) => { const b = map.getBoundingClientRect(); return o() === 'v' ? (e.clientY - b.top) / b.height : (e.clientX - b.left) / b.width; };
+  const hit = (f) => { const total = map._total || 1, y = f * total, tol = total * 0.012; return (map._blocks || []).find((b) => y >= b.start - tol && y <= b.end + tol); };
+  let drag = false, moved = false;
+  sc.addEventListener('scroll', () => syncVp(map, sc), { passive: true });
+  map.addEventListener('pointerdown', (e) => { drag = true; moved = false; map.setPointerCapture(e.pointerId); jump(frac(e)); });
+  map.addEventListener('pointermove', (e) => {
+    const f = Math.max(0, Math.min(1, frac(e)));
+    if (drag) { moved = true; jump(f); }
+    const tip = map.querySelector('.map-tip'), b = hit(f);
+    if (map.dataset.pend && f > S.prog) { tip.textContent = 'Not compared yet'; tip.classList.add('on'); }
+    else if (b && b.tip) { tip.textContent = b.tip; tip.classList.add('on'); }
+    else tip.classList.remove('on');
+    if (o() === 'v') tip.style.top = `clamp(0px, ${f * 100}% - 10px, calc(100% - 22px))`; else { tip.style.left = `clamp(0px, ${f * 100}% - 60px, calc(100% - 260px))`; }
+  });
+  map.addEventListener('pointerleave', () => map.querySelector('.map-tip').classList.remove('on'));
+  map.addEventListener('pointerup', (e) => {
+    drag = false;
+    if (!moved) { const b = hit(frac(e)); if (b && b.h !== undefined) goHunk(b.h, true); }
+  });
+  map.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); nav(1); }
+    if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); nav(-1); }
+    if (e.key === 'Home') { e.preventDefault(); sc.scrollTop = 0; }
+    if (e.key === 'End') { e.preventDefault(); sc.scrollTop = sc.scrollHeight; }
+  });
+  function jump(f) { sc.scrollTop = f * sc.scrollHeight - sc.clientHeight / 2; }
+}
+
+/* ---------- navigation ---------- */
+function navTargets() {
+  const sc = document.querySelector('[data-nav]');
+  if (!sc) return { sc: null, ids: [] };
+  const ids = [];
+  for (const r of sc.querySelectorAll('[data-h]')) if (!ids.includes(r.dataset.h)) ids.push(r.dataset.h);
+  return { sc, ids };
+}
+function nav(dir) {
+  if (S.scn === 'folders') return navFolder(dir);
+  if (S.scn === 'large' && S.largeTab === 'hex') return stepRegion(dir);
+  const { ids } = navTargets();
+  if (!ids.length) return;
+  const i = ids.indexOf(String(S.cur));
+  const next = i < 0 ? (dir > 0 ? 0 : ids.length - 1) : Math.max(0, Math.min(ids.length - 1, i + dir));
+  goHunk(ids[next], true);
+}
+function goHunk(id, scroll) {
+  if (S.scn === 'folders') { selectPath(id, true); return; }
+  S.cur = isNaN(+id) ? id : +id;
+  const { sc, ids } = navTargets();
+  if (!sc) return;
+  sc.querySelectorAll('.cur, .cur-top').forEach((e) => e.classList.remove('cur', 'cur-top'));
+  const rows = [...sc.querySelectorAll(`[data-h="${id}"]`)];
+  const groupRows = [...sc.querySelectorAll('[data-k]')].filter((r) => r.dataset.h === String(id) || (rows[0] && r.compareDocumentPosition(rows[0]) & 2 && false));
+  let el = rows[0];
+  if (el) {
+    el.classList.add('cur', 'cur-top');
+    el.dataset.label = `${ids.indexOf(String(id)) + 1} of ${ids.length}`;
+    let n = el.nextElementSibling;
+    while (n && n.dataset.k && n.dataset.h === undefined) { n.classList.add('cur'); n = n.nextElementSibling; }
+    if (scroll) sc.scrollTop = offTop(el, sc) - sc.clientHeight * 0.3;
+    document.querySelectorAll('[data-hunk-item]').forEach((b) => b.setAttribute('aria-current', b.dataset.hunkItem === String(id) ? 'true' : 'false'));
+  }
+  document.querySelectorAll('[data-counter]').forEach((c) => { c.textContent = `${ids.indexOf(String(id)) + 1} of ${ids.length}`; });
+  document.querySelectorAll('.map').forEach(buildMap);
+  void groupRows;
+}
+function diffFilesInOrder() { return allFiles().filter((f) => statusOf(f) !== 'same'); }
+function navFolder(dir) {
+  const fs = diffFilesInOrder();
+  const i = fs.findIndex((f) => f.path === S.sel);
+  const n = fs[i < 0 ? 0 : Math.max(0, Math.min(fs.length - 1, i + dir))];
+  if (n) selectPath(n.path, true);
+}
+function selectPath(p, scroll) {
+  const parts = p.split('/');
+  for (let i = 1; i < parts.length; i++) S.open.add(parts.slice(0, i).join('/'));
+  if (!matches(byPath(p))) S.filter = 'all';
+  S.sel = p;
+  render();
+  const el = document.querySelector(`.fr[data-p="${CSS.escape(p)}"]`);
+  if (el) { if (scroll) el.scrollIntoView({ block: 'center' }); el.focus({ preventScroll: true }); }
+}
+function stepRegion(d) { S.region = (S.region + d + HEX.regions.length) % HEX.regions.length; render(); }
+
+/* ---------- overlays ---------- */
+function toast(msg, undoable, extra = '') { S.toast = { msg, undoable, extra }; S.enter.add('toast'); clearTimeout(S.toastT); S.toastT = setTimeout(() => { S.toast = null; render(); }, 6000); }
+function toastHTML() {
+  if (!S.toast) return '';
+  return `<div class="toast${S.enter.has('toast') ? ' enter' : ''}" role="status"><span>${S.toast.msg}</span>${S.toast.extra}${S.toast.undoable ? `<button class="btn" data-act="undo">${ic('undo', 'sm')}Undo ${kb('Ctrl+Z')}</button>` : ''}<button class="ib" data-act="toast-x" aria-label="Dismiss" style="color:inherit">${ic('x', 'sm')}</button></div>`;
+}
+const VIEW_PARTS = [
+  ['intra', 'Changes inside lines', 'Alt+I'], ['moved', 'Moved code', 'Alt+M'], ['hide', 'Hide unchanged', 'Alt+H'], ['ignWs', 'Ignore whitespace', 'Alt+W'], ['lineNo', 'Line numbers', 'Alt+L'],
+];
+function viewMenuHTML() {
+  if (S.menu !== 'view') return '';
+  const preset = (v, l) => `<button data-act="preset" data-v="${v}" aria-pressed="${S.preset === v}">${l}</button>`;
+  return `<div class="menu${S.enter.has('menu') ? ' enter' : ''}" role="menu" aria-label="View">
+    <div class="mh"><b>View</b><span class="grow" style="flex:1"></span><div class="seg">${preset('simple', 'Simple')}${preset('rich', 'Rich')}${preset('custom', 'Custom')}</div></div>
+    <button class="mi" role="menuitemradio" aria-checked="${S.layout === 'split'}" data-act="layout" data-v="split"><span class="ck">${S.layout === 'split' ? ic('check', 'sm') : ''}</span><span class="t">Side by side</span>${kb('Alt+1')}</button>
+    <button class="mi" role="menuitemradio" aria-checked="${S.layout === 'inline'}" data-act="layout" data-v="inline"><span class="ck">${S.layout === 'inline' ? ic('check', 'sm') : ''}</span><span class="t">Inline</span>${kb('Alt+2')}</button>
+    <hr>${VIEW_PARTS.map(([k, l, key]) => `<button class="mi" role="menuitemcheckbox" aria-checked="${!!S[k]}" data-act="toggle" data-v="${k}"><span class="ck">${S[k] ? ic('check', 'sm') : ''}</span><span class="t">${l}</span>${kb(key)}</button>`).join('')}
+    <hr><button class="mi" data-act="keep-default"><span class="ck"></span><span class="t">Keep as default</span></button></div>`;
+}
+function drawerHTML() {
+  if (!S.drawer) return '';
+  const enter = S.enter.has('drawer') ? ' enter' : '';
+  if (S.drawer === 'L') {
+    let body;
+    if (S.scn === 'merge') {
+      body = `<h3>Base · ${esc(SIDES.merge.base)}</h3><div class="code" style="border:1px solid var(--border);border-radius:var(--r-md);overflow:auto">${mergeSide('B')}</div>`;
+    } else if (S.scn === 'folders') {
+      body = `<h3>Folders with differences</h3><div class="dlist">${folderSummary().map((f) => `<button data-act="nav-folder" data-v="${esc(f.path)}">${ic('folder', 'sm ic-dir')}<span class="t">${esc(f.path)}</span><span class="dl"><span class="p">${f.c.ro}</span> · <span class="m">${f.c.lo}</span> · ${f.c.diff}</span></button>`).join('')}</div>`;
+    } else {
+      const { hunks } = diffModel();
+      body = `<h3>Changes in this file</h3><div class="dlist">${hunks.map((h) => `<button data-act="goto" data-v="${h.h}" data-hunk-item="${h.h}"><span class="sg ${h.kind === 'add' ? 'ro' : h.kind === 'del' ? 'lo' : 'diff'}">${GL[h.kind]}</span><span class="t">${esc(h.sym)}</span><span class="mu num">L${h.l1}</span></button>`).join('')}</div><h3>Other changed files</h3><div class="dlist">${diffFilesInOrder().slice(0, 8).map((f) => `<button data-act="open-file" data-v="${esc(f.path)}">${sg(statusOf(f))}<span class="t">${esc(f.path)}</span></button>`).join('')}</div>`;
+    }
+    return `<aside class="drawer l${enter}" aria-label="Navigator"><div class="dh">${ic('pl', 'sm')}${S.scn === 'merge' ? 'Base' : 'Navigator'}<span class="grow"></span>${kb('Ctrl+B')}<button class="ib" data-act="drawer" data-v="L" aria-label="Close">${ic('x', 'sm')}</button></div><div class="db">${body}</div></aside>`;
+  }
+  let body;
+  if (S.scn === 'folders') {
+    const n = byPath(S.sel);
+    body = `<h3>Selected</h3><dl class="kv"><dt>Path</dt><dd class="mono">${esc(S.sel)}</dd><dt>Status</dt><dd>${n ? STATUS_WORD[statusOf(n)] : ''}</dd><dt>Left</dt><dd>${n && n.L ? `${n.L.size} · ${n.L.date}` : '—'}</dd><dt>Right</dt><dd>${n && n.R ? `${n.R.size} · ${n.R.date}` : '—'}</dd><dt>Raw</dt><dd>bytes differ</dd></dl>
+    <h3>Rules</h3><label><input type="checkbox" data-act="rule" data-v="gitignore" ${S.gitignore ? 'checked' : ''}> Use .gitignore</label><label><input type="checkbox" data-act="rule" data-v="showIgn" ${S.showIgn ? 'checked' : ''}> Show ignored items</label><label for="ign">Also ignore</label><textarea id="ign">*.orig\n.vs/\n**/node_modules/</textarea>
+    <h3>Contents</h3><p class="mu" style="margin:0">Sizes first, then Git object ids, then BLAKE3 in 64 KiB chunks. Files over 64 MiB hash in the background.</p>${Object.entries(S.hashP).map(([p, v]) => `<div class="hp" style="justify-content:space-between">${esc(p.split('/').pop())}<span class="bar" style="width:120px"><i style="--p:${Math.min(1, v)}"></i></span>${Math.round(Math.min(1, v) * 100)}%</div>`).join('')}`;
+  } else if (S.scn === 'merge') {
+    body = `<h3>Sides</h3><dl class="kv"><dt>Base</dt><dd>${SIDES.merge.base}</dd><dt>Left</dt><dd>${SIDES.merge.left}</dd><dt>Right</dt><dd>${SIDES.merge.right}</dd><dt>Result</dt><dd class="mono">${SIDES.merge.path}</dd></dl><h3>Summary</h3><dl class="kv"><dt>Auto-merged</dt><dd>3 blocks</dd><dt>Conflicts</dt><dd>3 (1 whitespace only)</dd><dt>Unsolved</dt><dd>${unsolved()}</dd></dl><p class="mu" style="margin:0">Ferrite never stages. After saving, it shows the git add command to mark the file resolved.</p>`;
+  } else {
+    body = `<h3>Files</h3><dl class="kv"><dt>Left</dt><dd class="mono">${esc(SIDES.file.left)}</dd><dt>Right</dt><dd class="mono">${esc(SIDES.file.right)}</dd><dt>Encoding</dt><dd>UTF-8 · UTF-8</dd><dt>Line ends</dt><dd>CRLF · LF</dd><dt>Sizes</dt><dd>3.1 KB · 3.5 KB</dd></dl><h3>Rules</h3><label><input type="checkbox" data-act="toggle-cb" data-v="ignWs" ${S.ignWs ? 'checked' : ''}> Ignore whitespace</label><label><input type="checkbox" checked disabled> Ignore line endings</label>`;
+  }
+  return `<aside class="drawer r${enter}" aria-label="Inspector"><div class="dh">${ic('pr', 'sm')}Inspector<span class="grow"></span>${kb('Ctrl+I')}<button class="ib" data-act="drawer" data-v="R" aria-label="Close">${ic('x', 'sm')}</button></div><div class="db">${body}</div></aside>`;
+}
+function folderSummary() {
+  const out = [];
+  (function walk(list) { for (const n of list) { if (!n.dir || n.ign) continue; const c = counts(n); if (c.diff + c.orph > 0 && n.depth <= 2) out.push({ path: n.path, name: n.name, depth: n.depth, c, n }); walk(n.kids); } })(TREE);
+  return out;
+}
+function titleBar() {
+  return `<header class="tb"><span class="logo"><b>fe_</b><span class="hide-n">Ferrite</span>${ic('down', 'sm')}</span>
+  <button class="search" data-act="noop" aria-label="Find anywhere (Ctrl+K)">${ic('search', 'sm')}<span>Find anywhere: files, folders, commands</span>${kb('Ctrl+K')}</button>
+  <button class="ib" data-act="theme" aria-label="Switch theme">${ic(document.documentElement.dataset.theme === 'dark' ? 'sun' : 'moon')}</button>
+  <span class="winctl" style="display:flex"><button class="ib" data-act="noop" aria-label="Minimise">${ic('min', 'sm')}</button><button class="ib" data-act="noop" aria-label="Maximise">${ic('sq', 'sm')}</button><button class="ib" data-act="noop" aria-label="Close window">${ic('x', 'sm')}</button></span></header>`;
+}
+const keys = (list) => `<span class="keys">${list.map(([k, l, wide]) => `<span${wide ? ' class="wide"' : ''}>${kb(k)}${l}</span>`).join('')}</span>`;
+const navBtns = () => `<button class="ib" data-act="nav" data-v="-1" title="Previous change (Alt+↑, Shift+F7)" aria-label="Previous change">${ic('up', 'sm')}</button><span class="num mu" data-counter>${navCount()} ${S.scn === 'merge' ? 'conflicts' : 'changes'}</span><button class="ib" data-act="nav" data-v="1" title="Next change (Alt+↓, F7)" aria-label="Next change">${ic('down', 'sm')}</button>`;
+function navCount() { if (S.scn === 'file') return diffModel().hunks.length; if (S.scn === 'merge') return S.regions.filter((r) => r.t === 'conf').length; return TRACE_DIFF.size; }
+const viewBtn = () => `<button class="btn" data-act="menu" data-v="view" aria-haspopup="menu" aria-expanded="${S.menu === 'view'}">${ic('eye', 'sm')}<span class="hide-n">View</span>${kb('Alt+V')}</button>`;
+const layoutSeg = () => (S.narrow ? '' : `<div class="seg" role="group" aria-label="Layout"><button data-act="layout" data-v="split" aria-pressed="${S.layout === 'split'}">${ic('cols', 'sm')}Side by side</button><button data-act="layout" data-v="inline" aria-pressed="${S.layout === 'inline'}">${ic('rows', 'sm')}Inline</button></div>`);
+const hideChip = () => `<button class="chip" data-act="toggle" data-v="hide" aria-pressed="${S.hide}" title="Hide unchanged (Alt+H)">${ic('fold', 'sm')}<span class="hide-n">Hide unchanged</span></button>`;
+const dirtyMark = (side) => (S.dirty[side] ? `<span style="color:var(--accent-text)" title="Unsaved edits">● edited</span>` : '');
+const saveFileBtn = () => `<button class="btn${S.dirty.L || S.dirty.R ? ' pri' : ''}" data-act="save" ${S.dirty.L || S.dirty.R ? '' : 'disabled'}>${ic('save', 'sm')}<span class="hide-n">Save</span>${kb('Ctrl+S')}</button>`;
+function largeTabs() {
+  return `<div class="seg" role="group" aria-label="File"><button data-act="ltab" data-v="text" aria-pressed="${S.largeTab === 'text'}">${ic('code', 'sm')}big_trace.asc <span class="ct">612 MB</span></button><button data-act="ltab" data-v="hex" aria-pressed="${S.largeTab === 'hex'}">${ic('binary', 'sm')}icons.bin <span class="ct">2.4 MB</span></button></div>`;
+}
+
+const TWIN = 'minmax(0,1fr) 64px 92px var(--mid-w) minmax(0,1fr) 64px 92px';
+const UNI = 'minmax(0,1fr) 64px 92px 28px 64px 92px 76px';
+const UNI_N = 'minmax(0,1fr) 28px 64px';
+const spineStyle = 'position:absolute;inset-block:0;left:calc(50% - var(--mid-w) / 2);z-index:2';
+const meta = (n, side) => { const m = n[side]; return `<span class="meta">${m ? m.size : ''}</span><span class="meta">${m ? m.date : ''}</span>`; };
+const gone = (span) => `<span class="fill gone" style="grid-column:span ${span};position:relative"></span>`;
+
+function twinRow(n, i) {
+  const s = statusOf(n), extra = `${hashCell(n)}${s !== 'same' && s !== 'ign' && !n.dir ? sg(s) : ''}`;
+  if (S.narrow) {
+    const side = S.side === 'L' ? 'L' : 'R';
+    const cell = n[side] ? nameCell(n, true, extra) + `<span class="meta">${n[side].size}</span>` : gone(2);
+    return `<div ${rowAttrs(n, i)} style="grid-template-columns:minmax(0,1fr) 72px">${cell}</div>`;
+  }
+  const L = n.L ? nameCell(n, true, extra) + meta(n, 'L') : gone(3);
+  const R = n.R ? nameCell(n, true, n.L ? deltaCell(n) : extra) + meta(n, 'R') : gone(3);
+  return `<div ${rowAttrs(n, i)} style="grid-template-columns:${TWIN}">${L}<span></span>${R}</div>`;
+}
+function uniRow(n, i, opts = {}) {
+  const s = statusOf(n);
+  const right = `${hashCell(n)}${deltaCell(n)}`;
+  const base = S.narrow
+    ? `<div ${rowAttrs(n, i)} style="grid-template-columns:${UNI_N}">${nameCell(n, true)}${sg(s)}<span class="meta">${right || (n.L || n.R || {}).size || ''}</span></div>`
+    : `<div ${rowAttrs(n, i)} style="grid-template-columns:${UNI}">${nameCell(n, true, opts.expand && !n.dir && s === 'diff' ? `<button class="tw" data-act="expand" data-p="${esc(n.path)}" aria-expanded="${S.expanded.has(n.path)}" aria-label="Preview changes" title="Preview changes (Space)">${ic('right', 'sm')}</button>` : '')}${n.L ? meta(n, 'L') : '<span class="meta">—</span><span></span>'}<span style="display:grid;place-items:center">${sg(s)}</span>${n.R ? meta(n, 'R') : '<span class="meta">—</span><span></span>'}<span class="meta">${right}</span></div>`;
+  if (!opts.expand || !S.expanded.has(n.path) || n.dir) return base;
+  return base + preview(n);
+}
+function preview(n) {
+  let inner;
+  if (n.path.endsWith('copy.rs')) {
+    const keepLayout = S.layout, keepHide = S.hide, keepNarrow = S.narrow;
+    S.layout = 'inline'; S.hide = true;
+    inner = diffRows({ layout: 'inline' }).html.replace(/ data-(k|h|tip)="[^"]*"/g, '').replace(/<button class="cp"[^]*?<\/button>/g, '');
+    S.layout = keepLayout; S.hide = keepHide; S.narrow = keepNarrow;
+  } else inner = `<p class="mu" style="margin:0;padding:8px 16px">${n.delta || 'Binary'} · Enter opens the full diff</p>`;
+  return `<div class="pv" style="padding-inline-start:calc(${n.depth} * 16px + 40px)"><div class="pv-in">${inner}</div><div class="pv-f"><button class="btn" data-act="open" data-p="${esc(n.path)}">${ic('cols', 'sm')}Open full diff ${kb('Enter')}</button></div></div>`;
+}
+function folderCmpbar(extraLeft = '') {
+  return `<div class="cmpbar">${extraLeft}${sideChip('left')}<button class="ib" data-act="swap" aria-label="Swap sides">${ic('swap', 'sm')}</button>${sideChip('right')}<span class="grow" style="flex:1"></span>${filterSeg()}${rulesChip()}${hashingNote()}</div>`;
+}
+const folderKeys = () => keys([['Enter', 'Open'], ['Alt+↓', 'Next difference'], ['Ctrl+Alt+←', 'Copy to left', 1], ['Ctrl+I', 'Rules', 1], ['Esc', 'Leave compare', 1]]);
+const fileKeys = () => keys([['Alt+↓', 'Next'], ['F7', 'Next', 1], ['Ctrl+Alt+←/→', 'Copy block', 1], ['Ctrl+Z', 'Undo', 1], ['Alt+V', 'View', 1], ['Esc', 'Back']]);
+const mergeKeys = () => keys([['Alt+↓', 'Next conflict'], ['Alt+1/2/3', 'Left / Right / Both', 1], ['Ctrl+Z', 'Undo', 1], ['Ctrl+B', 'Base', 1], ['Ctrl+S', 'Save']]);
+const statusLine = (left, k) => `<footer class="st">${left}<span class="grow"></span>${k}</footer>`;
+const fileHead = (extra = '') => `<div class="vh">${ic('code', 'sm ic-file')}<span class="vh-name">copy.rs</span><span class="vh-meta hide-n">crates/rusty-fs/src/job · ferrite ↔ ferrite-p42 · both editable</span><span class="grow"></span>${navBtns()}${extra}${saveFileBtn()}</div>`;
+const mergeHead = (extra = '') => `<div class="vh">${ic('merge', 'sm')}<span class="vh-name">journal.rs</span><span class="vh-meta hide-n">main ← feature/compare · base 7c1e04b</span>${counterChip()}<span class="grow"></span>${wsBtn()}${navBtns()}${extra}${saveBtn()}</div>`;
+const largeHead = (extra = '') => `<div class="vh">${largeTabs()}<span class="grow"></span>${S.largeTab === 'hex' ? hexRegionBar() : navBtns()}${extra}</div>`;
+const largeStatus = () => statusLine(S.largeTab === 'hex' ? `<span>icons.bin · ${HEX.size} each · 64 KiB blocks · ${HEX.regions.length} regions differ</span>` : `<span class="hp" data-progline>${progressLine()}</span>`, keys([['Alt+↓', S.largeTab === 'hex' ? 'Next region' : 'Next'], ['Esc', S.largeTab === 'hex' ? 'Back' : 'Stop', 1]]));
+const paneHead = (icon, title, sub, extra = '') => `<div class="pane-h">${icon}<span class="t">${title}</span><span class="hide-n">${sub}</span><span style="flex:1"></span>${extra}</div>`;
+const fileSides = () => `<div class="r split" style="font-family:var(--font-ui);font-size:var(--fs-12);border-bottom:1px solid var(--border);background:var(--rail);min-height:30px;align-items:center"><span></span><span class="tx" style="display:flex;gap:8px;align-items:center">${ic('folder', 'sm ic-dir')}<b>ferrite</b><span class="mu hide-n">D:\\src\\ferrite</span>${dirtyMark('L')}</span><span></span><span></span><span class="tx" style="display:flex;gap:8px;align-items:center">${ic('folder', 'sm ic-dir')}<b>ferrite-p42</b><span class="mu hide-n">D:\\src\\ferrite-p42</span>${dirtyMark('R')}</span></div>`;
+
+const DIRS = [
+  {
+    name: 'Direction 1', axis: 'Twin panes with a shared spine: the change map sits between the two sides, like a zipper you can drag.',
+    folders() {
+      const rows = visibleRows().map(twinRow).join('');
+      const head = S.narrow
+        ? `<div class="cmpbar"><div class="seg"><button data-act="side-n" data-v="L" aria-pressed="${S.side === 'L'}">Left</button><button data-act="side-n" data-v="R" aria-pressed="${S.side === 'R'}">Right</button></div>${filterSeg()}${rulesChip()}</div>`
+        : `<div class="cmpbar">${ic('swap', 'sm')}<b>Compare</b>${filterSeg()}${rulesChip()}${hashingNote()}<span style="flex:1"></span><button class="btn" data-act="exit">${ic('x', 'sm')}Leave compare ${kb('Esc')}</button></div><div class="fr" style="grid-template-columns:${TWIN};min-height:40px;border-bottom:1px solid var(--border);padding-inline:8px"><span style="grid-column:span 3">${sideChip('left')}</span><span></span><span style="grid-column:span 3">${sideChip('right')}</span></div>`;
+      return `${head}<div class="body"><div class="scroller fl" id="sc" data-nav role="treegrid" aria-label="Folder comparison">${rows}</div>${S.narrow ? mapEl('sc', { lanes: 'three' }) : mapEl('sc', { spine: true, lanes: 'two', style: spineStyle })}</div>${statusLine(`<span class="num">${legendCounts()}</span>`, folderKeys())}`;
+    },
+    file() {
+      const d = diffRows({ cpIn: 'ln' });
+      const split = d.layout === 'split';
+      return `${fileHead(`${layoutSeg()}${hideChip()}${viewBtn()}`)}${split ? fileSides() : ''}<div class="body"><div class="scroller" id="sc" data-nav>${d.html}</div>${split ? mapEl('sc', { spine: true, lanes: 'two', style: spineStyle }) : mapEl('sc')}</div>${statusLine(`<span>${d.hunks.length} changes · copy arrows sit on the side they copy from</span>`, fileKeys())}`;
+    },
+    merge() {
+      if (S.narrow) return `${mergeHead(viewBtn())}<div class="body"><div class="scroller" id="sc" data-nav>${mergeResult()}</div>${mapEl('sc', { lanes: 'one' })}</div>${statusLine('', mergeKeys())}`;
+      return `${mergeHead(viewBtn())}<div class="body" style="flex-direction:column"><div class="col" style="flex:1 1 52%;position:relative"><div class="r split" style="font-family:var(--font-ui);font-size:var(--fs-12);background:var(--rail);border-bottom:1px solid var(--border);min-height:30px;align-items:center;grid-template-columns:1fr var(--mid-w) 1fr"><span class="tx">${ic('branch', 'sm')} <b>Left</b> · main (ours)</span><span></span><span class="tx">${ic('branch', 'sm')} <b>Right</b> · feature/compare (theirs)</span></div><div style="position:relative;flex:1;min-height:0;display:flex"><div class="scroller" id="mt" data-follow><div style="display:grid;grid-template-columns:minmax(0,1fr) var(--mid-w) minmax(0,1fr)">${mergeSide('L')}<span></span>${mergeSide('R')}</div></div>${mapEl('mt', { spine: true, lanes: 'one', style: spineStyle })}</div></div><div class="col" style="flex:1 1 48%;border-top:2px solid var(--border)">${paneHead(ic('pen', 'sm'), 'Result', ' · crates/rusty-fs/src/job/journal.rs · editable')}<div style="flex:1;min-height:0;display:flex"><div class="scroller" id="sc" data-nav>${mergeResult({ compact: true })}</div>${mapEl('sc', { lanes: 'one' })}</div></div></div>${statusLine('<span>Auto-merged 3 blocks · conflicts show on both panes above</span>', mergeKeys())}`;
+    },
+    large() {
+      if (S.largeTab === 'hex') {
+        return `${largeHead()}<div class="body">${S.narrow ? `<div class="scroller" id="sc">${hexRows('L', { stack: true })}</div><div style="width:40px;padding:8px 6px;border-inline-start:1px solid var(--border);overflow:auto">${blockGrid(1)}</div>` : `<div class="scroller" id="sc">${hexRows('L')}</div><div style="width:var(--mid-w);padding:8px 6px;border-inline:1px solid var(--border);background:var(--rail);overflow:auto">${blockGrid(1)}</div><div class="scroller" id="sr">${hexRows('R')}</div>`}</div>${largeStatus()}`;
+      }
+      S.largeRows = () => traceRows();
+      const split = !S.narrow;
+      return `${largeHead(viewBtn())}${S.prog < 1 ? progBar() : ''}<div class="body"><div class="scroller" id="sc" data-nav>${traceRows()}</div>${split ? mapEl('sc', { spine: true, lanes: 'two', pend: 1, style: spineStyle }) : mapEl('sc', { pend: 1 })}</div>${largeStatus()}`;
+    },
+  },
+  {
+    name: 'Direction 2', axis: 'Map first: a left navigator column is the map (folders as bars, files as a true minimap), content to its right.',
+    folders() {
+      const scope = S.navFolder ? byPath(S.navFolder) : null;
+      const rows = (scope ? visibleRows(scope.kids) : visibleRows()).map((n, i) => uniRow(n, i)).join('');
+      const sum = folderSummary(), total = counts();
+      const bar = (c) => `<span class="fbar" aria-hidden="true">${['diff', 'lo', 'ro', 'hash', 'same'].map((k) => (c[k] ? `<i class="${k}" style="flex:${c[k]}"></i>` : '')).join('')}</span>`;
+      const nav = `<aside class="navcol" aria-label="Where the differences are"><div class="navsec"><b>Where the differences are</b><span class="mu">Click a folder to focus the list</span></div><div class="dlist"><button data-act="scope" data-v="" aria-current="${!S.navFolder}"><span class="nt"><span class="t">${ic('folder', 'sm ic-dir')} Everything</span><span class="dl"><span class="m">${total.lo}</span> · ${total.diff} · <span class="p">${total.ro}</span></span></span>${bar(total)}</button>${sum.map((f) => `<button data-act="scope" data-v="${esc(f.path)}" aria-current="${S.navFolder === f.path}" style="padding-inline-start:calc(${f.depth} * 12px + 8px)"><span class="nt"><span class="t">${ic('folder', 'sm ic-dir')} ${esc(f.name)}</span><span class="dl"><span class="m">${f.c.lo}</span> · ${f.c.diff} · <span class="p">${f.c.ro}</span></span></span>${bar(f.c)}</button>`).join('')}</div><div class="navsec legend"><span><i style="background:var(--c-chg-mark)"></i>different</span><span><i style="background:var(--c-del-mark)"></i>left only</span><span><i style="background:var(--c-add-mark)"></i>right only</span><span><i style="background:var(--border)"></i>same</span></div></aside>`;
+      const colh = S.narrow ? '' : `<div class="colh" style="grid-template-columns:${UNI};padding-inline:8px"><span>Name ${scope ? `<span class="mu">in ${esc(scope.path)}</span>` : ''}</span><span style="text-align:end">Left</span><span></span><span></span><span style="text-align:end">Right</span><span></span><span style="text-align:end">Lines</span></div>`;
+      return `${folderCmpbar(S.narrow ? `<button class="btn" data-act="drawer" data-v="L">${ic('map', 'sm')}Folders</button>` : '')}${S.narrow ? mapEl('sc', { orient: 'h' }) : ''}<div class="body">${S.narrow ? '' : nav}<div class="col" style="flex:1"><div class="scroller fl" id="sc" data-nav role="treegrid" aria-label="Folder comparison">${colh}${rows}</div></div></div>${statusLine(`<span class="num">${legendCounts()}</span>`, folderKeys())}`;
+    },
+    file() {
+      const d = diffRows({});
+      const list = d.hunks.map((h) => `<button data-act="goto" data-v="${h.h}" data-hunk-item="${h.h}" aria-current="${S.cur === h.h}"><span class="sg ${h.kind === 'add' ? 'ro' : h.kind === 'del' ? 'lo' : h.kind === 'mov' ? 'mov' : h.kind === 'done' ? 'same' : 'diff'}">${GL[h.kind]}</span><span class="nt"><span class="t">${esc(h.sym)}</span><span class="mu num">L${h.l1} · ${KIND_WORD[h.kind]}${h.note ? ' · ' + h.note : ''}</span></span></button>`).join('');
+      const nav = `<aside class="navcol mini" aria-label="File map">${mapEl('sc', { mode: 'mini', style: 'width:96px;border-inline-end:1px solid var(--border);border-inline-start:0' })}<div class="col" style="flex:1"><div class="navsec"><b>${d.hunks.length} changes</b><span class="mu">Drag the map or pick one</span></div><div class="dlist" style="overflow:auto">${list}</div></div></aside>`;
+      return `${fileHead(`${layoutSeg()}${hideChip()}${viewBtn()}`)}${S.narrow ? mapEl('sc', { orient: 'h' }) : ''}<div class="body">${S.narrow ? '' : nav}<div class="col" style="flex:1">${d.layout === 'split' ? fileSides() : ''}<div class="scroller" id="sc" data-nav>${d.html}</div></div></div>${statusLine('<span>Map: each line drawn to its length, changes in colour, the frame is your screen</span>', fileKeys())}`;
+    },
+    merge() {
+      const confs = S.regions.map((r, ri) => ({ r, ri })).filter((x) => x.r.t === 'conf');
+      const list = confs.map(({ r }, ci) => `<button data-act="goto" data-v="${ci}" data-hunk-item="${ci}"><span class="sg ${r.pick ? 'same' : 'lo'}">${r.pick ? '✓' : ci + 1}</span><span class="nt"><span class="t">${r.ws ? 'Whitespace only' : ci === 1 ? 'fn note_progress / progress' : 'fn flush'}</span><span class="mu">${r.pick ? 'solved' : 'unsolved'}</span></span></button>`).join('');
+      const nav = `<aside class="navcol mini" aria-label="Merge map">${mapEl('sc', { mode: 'mini', style: 'width:96px;border-inline-end:1px solid var(--border);border-inline-start:0' })}<div class="col" style="flex:1"><div class="navsec">${counterChip()}${wsBtn()}</div><div class="dlist">${list}</div><div class="navsec"><span class="mu">3 blocks merged on their own</span>${saveBtn()}</div></div></aside>`;
+      return `${mergeHead(viewBtn())}${S.narrow ? mapEl('sc', { orient: 'h', lanes: 'one' }) : ''}<div class="body">${S.narrow ? '' : nav}<div class="scroller" id="sc" data-nav>${mergeResult()}</div></div>${statusLine('', mergeKeys())}`;
+    },
+    large() {
+      if (S.largeTab === 'hex') {
+        const nav = `<aside class="navcol" aria-label="Blocks"><div class="navsec"><b>37 blocks of 64 KiB</b><span class="mu">Coloured blocks differ</span></div><div style="padding:8px 12px">${blockGrid(6)}</div><div class="dlist">${HEX.regions.map((r, i) => `<button data-act="region-go" data-v="${i}" aria-current="${S.region === i}"><span class="sg diff">${i + 1}</span><span class="nt"><span class="t num">0x${r.start.toString(16).toUpperCase().padStart(8, '0')}</span><span class="mu num">${r.bytes.toLocaleString('en')} bytes</span></span></button>`).join('')}</div></aside>`;
+        return `${largeHead()}<div class="body">${S.narrow ? '' : nav}<div class="scroller" id="sc">${S.narrow ? `<div style="padding:8px 12px">${blockGrid(19)}</div>` : ''}${hexRows('L', { stack: true })}</div></div>${largeStatus()}`;
+      }
+      S.largeRows = () => traceRows();
+      const found = [...TRACE_DIFF.keys()].filter((i) => i < TRACE.length * S.prog && TRACE_DIFF.get(i - 1) !== TRACE_DIFF.get(i));
+      const nav = `<aside class="navcol mini" aria-label="File map">${mapEl('sc', { mode: 'mini', pend: 1, style: 'width:96px;border-inline-end:1px solid var(--border);border-inline-start:0' })}<div class="col" style="flex:1"><div class="navsec"><b>Found so far</b><span class="mu">Hatched part is not compared yet</span></div><div class="dlist" data-found>${found.map((i) => `<button data-act="goto" data-v="${i}"><span class="sg diff">~</span><span class="nt"><span class="t num">line ${(1204880 + i).toLocaleString('en')}</span></span></button>`).join('')}</div></div></aside>`;
+      return `${largeHead(viewBtn())}${S.prog < 1 ? progBar() : ''}${S.narrow ? mapEl('sc', { orient: 'h', pend: 1 }) : ''}<div class="body">${S.narrow ? '' : nav}<div class="scroller" id="sc" data-nav>${traceRows()}</div></div>${largeStatus()}`;
+    },
+  },
+  {
+    name: 'Direction 3', axis: 'One list: a single table with status columns, changes preview inline under the row, the map is a horizontal ruler with numbered ticks.',
+    folders() {
+      const rows = visibleRows().map((n, i) => uniRow(n, i, { expand: true })).join('');
+      const colh = S.narrow ? '' : `<div class="colh" style="grid-template-columns:${UNI};padding-inline:8px"><span>Name</span><span style="text-align:end">Left size</span><span>&nbsp;Modified</span><span></span><span style="text-align:end">Right size</span><span>&nbsp;Modified</span><span style="text-align:end">Lines</span></div>`;
+      return `${folderCmpbar()}${mapEl('sc', { orient: 'h' })}<div class="body"><div class="scroller fl" id="sc" data-nav role="treegrid" aria-label="Folder comparison">${colh}${rows}</div></div>${statusLine(`<span class="num">${legendCounts()}</span>`, keys([['Space', 'Preview'], ['Enter', 'Open', 1], ['Alt+↓', 'Next difference'], ['Esc', 'Leave', 1]]))}`;
+    },
+    file() {
+      const d = diffRows({});
+      return `${fileHead(`${layoutSeg()}${hideChip()}${viewBtn()}`)}${mapEl('sc', { orient: 'h', style: 'height:30px' }).replace('data-mode', 'data-numbers="all" data-mode')}${d.layout === 'split' ? fileSides() : ''}<div class="body"><div class="scroller" id="sc" data-nav>${d.html}</div></div>${statusLine(`<span>${d.hunks.length} changes · numbers on the ruler jump to each one</span>`, fileKeys())}`;
+    },
+    merge() {
+      return `${mergeHead(viewBtn())}${mapEl('sc', { orient: 'h', lanes: 'one', style: 'height:30px' }).replace('data-mode', 'data-numbers="all" data-mode')}<div class="body"><div class="scroller" id="sc" data-nav>${mergeResult({ base: !S.narrow })}</div></div>${statusLine('<span>Each conflict lists Left, Right and Base under each other</span>', mergeKeys())}`;
+    },
+    large() {
+      if (S.largeTab === 'hex') return `${largeHead()}<div style="padding:8px 12px;border-bottom:1px solid var(--border)">${blockGrid(HEX.blocks)}</div><div class="body"><div class="scroller" id="sc">${hexRows('L', { stack: true })}</div></div>${largeStatus()}`;
+      S.largeRows = () => traceRows({ inline: true });
+      return `${largeHead(viewBtn())}${S.prog < 1 ? progBar() : ''}${mapEl('sc', { orient: 'h', pend: 1 })}<div class="body"><div class="scroller" id="sc" data-nav>${traceRows({ inline: true })}</div></div>${largeStatus()}`;
+    },
+  },
+  {
+    name: 'Direction 4', axis: 'Calm full window: content at full width, a strip on the right edge of each scroller, everything else behind Ctrl+B, Ctrl+I and Alt+V.',
+    folders() {
+      const pane = (side, id) => {
+        const rows = visibleRows().filter((n) => n[side]).map((n, i) => `<div ${rowAttrs(n, i).replace(/ data-(k|h|tip)="[^"]*"/g, '')}${!n.dir && statusOf(n) !== 'same' && statusOf(n) !== 'ign' ? ` data-k="${statusOf(n)}" data-h="${n.path}" data-tip="${esc(n.name)} · ${STATUS_WORD[statusOf(n)]}"` : ''} style="grid-template-columns:minmax(0,1fr) 64px 92px">${nameCell(n, true, `${hashCell(n)}${n.L && n.R ? deltaCell(n) : ''}`)}${meta(n, side)}</div>`).join('');
+        return `<div class="col" style="flex:1;min-width:0;${side === 'R' ? 'border-inline-start:1px solid var(--border)' : ''}"><div class="pane-h">${sideChip(side === 'L' ? 'left' : 'right')}</div><div style="flex:1;min-height:0;display:flex"><div class="scroller fl" id="${id}" ${side === 'L' || S.narrow ? 'data-nav' : ''} role="treegrid" aria-label="${side === 'L' ? 'Left' : 'Right'} pane">${rows}</div>${mapEl(id)}</div></div>`;
+      };
+      const panes = S.narrow ? pane(S.side, 'sl') : pane('L', 'sl') + pane('R', 'sr');
+      const narrowBar = S.narrow ? `<div class="cmpbar"><div class="seg"><button data-act="side-n" data-v="L" aria-pressed="${S.side === 'L'}">Left</button><button data-act="side-n" data-v="R" aria-pressed="${S.side === 'R'}">Right</button></div></div>` : '';
+      return `${narrowBar}<div class="body">${panes}</div><footer class="st">${filterSeg()}<span class="num hide-n">${legendCounts()}</span>${hashingNote()}<span class="grow"></span>${keys([['Alt+↓', 'Next'], ['Ctrl+B', 'Folders', 1], ['Ctrl+I', 'Rules', 1], ['Alt+V', 'View', 1]])}</footer>`;
+    },
+    file() {
+      const d = diffRows({ wash: true });
+      return `<div class="vh">${ic('code', 'sm ic-file')}<span class="vh-name">copy.rs</span><span class="vh-meta hide-n">ferrite ↔ ferrite-p42 · Rust · UTF-8</span><span class="grow"></span>${navBtns()}${viewBtn()}${saveFileBtn()}</div><div class="body"><div class="scroller" id="sc" data-nav>${d.html}</div>${mapEl('sc')}</div>${statusLine(`<span>${dirtyMark('L') || dirtyMark('R') || 'Calm view: drawers closed'}</span>`, keys([['Alt+↓', 'Next'], ['Ctrl+B', 'Changes', 1], ['Ctrl+I', 'Details', 1], ['Alt+V', 'View']]))}`;
+    },
+    merge() {
+      if (S.narrow) return `${mergeHead()}<div class="body"><div class="scroller" id="sc" data-nav>${mergeResult()}</div>${mapEl('sc', { lanes: 'one' })}</div>${statusLine('', mergeKeys())}`;
+      return `${mergeHead(viewBtn())}<div class="body"><div class="col" style="flex:1"><div class="pane-h">${ic('branch', 'sm')}<span class="t">Left</span> main</div><div class="scroller" id="sl" data-follow>${mergeSide('L')}</div></div><div class="col" style="flex:1.5;border-inline:1px solid var(--border)"><div class="pane-h">${ic('pen', 'sm')}<span class="t">Result</span> journal.rs</div><div style="flex:1;min-height:0;display:flex"><div class="scroller" id="sc" data-nav>${mergeResult({ compact: true })}</div>${mapEl('sc', { lanes: 'one' })}</div></div><div class="col" style="flex:1"><div class="pane-h">${ic('branch', 'sm')}<span class="t">Right</span> feature/compare</div><div class="scroller" id="sr" data-follow>${mergeSide('R')}</div></div></div>${statusLine('<span>Base is in the left drawer</span>', mergeKeys())}`;
+    },
+    large() {
+      if (S.largeTab === 'hex') return `${largeHead()}<div class="body"><div class="scroller" id="sc">${S.narrow ? hexRows('L', { stack: true }) : `<div style="display:grid;grid-template-columns:1fr 1fr">${hexRows('L', { ascii: false })}${hexRows('R', { ascii: false })}</div>`}</div><div style="width:var(--map-w);padding:4px 3px;border-inline-start:1px solid var(--border);background:var(--rail)">${blockGrid(1).replace('class="blocks"', 'class="blocks" style="height:100%;grid-auto-rows:1fr"')}</div></div>${largeStatus()}`;
+      S.largeRows = () => traceRows();
+      return `${largeHead(viewBtn())}<div class="body"><div class="scroller" id="sc" data-nav>${traceRows()}</div>${mapEl('sc', { pend: 1 })}</div>${largeStatus()}`;
+    },
+  },
+];
+function legendCounts() {
+  const c = counts();
+  return `${c.diff} different · ${c.lo} left only · ${c.ro} right only · ${c.same} same${c.hash ? ` · ${c.hash} checking` : ''}`;
+}
+
+const SCN = [['folders', 'Folders', 'F'], ['file', 'File diff', 'D'], ['merge', 'Merge', 'M'], ['large', 'Large & binary', 'L']];
+const stage = document.getElementById('stage');
+const root = document.documentElement;
+root.dataset.theme = new URLSearchParams(location.search).get('theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+function harness() {
+  const scn = new URLSearchParams(location.search).get('s') || (S && S.scn) || 'folders';
+  document.getElementById('hx').innerHTML = `<span class="hx-title">Ferrite · Compare</span><div class="hx-scn" role="group" aria-label="Scenario">${SCN.map(([k, l, key]) => `<button data-scn="${k}" aria-pressed="${scn === k}" title="${l} (${key})">${l} <kbd>${key}</kbd></button>`).join('')}</div><span class="hx-desc">${esc(DIRS[S ? S.dir : 0].axis)}</span><button class="ib hx-theme" data-act="theme" aria-label="Switch theme (T)">${ic(root.dataset.theme === 'dark' ? 'sun' : 'moon')}</button>`;
+}
+function setScn(s) {
+  S.scn = s; S.cur = -1; S.drawer = null; S.menu = null;
+  const u = new URL(location); u.searchParams.set('s', s); history.replaceState(null, '', u);
+  harness(); render(false);
+  startTimers();
+}
+function appHTML() {
+  const D = DIRS[S.dir];
+  return `<div class="app" id="app">${titleBar()}${D[S.scn]()}${drawerHTML()}${viewMenuWrap()}${toastHTML()}</div>`;
+}
+const viewMenuWrap = () => (S.menu ? `<div style="position:absolute;inset-inline-end:0;top:84px;width:100%;pointer-events:none"><div style="pointer-events:auto">${viewMenuHTML()}</div></div>` : '');
+function render(keep = true) {
+  S.narrow = stage.clientWidth < 721;
+  const saved = keep ? [...stage.querySelectorAll('.scroller[id]')].map((e) => [e.id, e.scrollTop]) : [];
+  const focusP = document.activeElement?.closest?.('.fr')?.dataset.p;
+  stage.innerHTML = appHTML();
+  for (const [id, t] of saved) { const e = document.getElementById(id); if (e) e.scrollTop = t; }
+  afterRender();
+  if (focusP) document.querySelector(`.fr[data-p="${CSS.escape(focusP)}"]`)?.focus({ preventScroll: true });
+  S.enter.clear();
+}
+function afterRender() {
+  document.querySelectorAll('.fr.enter').forEach((r, i) => r.style.setProperty('--d', Math.min(i, 12)));
+  document.querySelectorAll('.map').forEach((m) => { wireMap(m); buildMap(m); });
+  if (S.cur !== -1 && S.scn !== 'folders') goHunk(S.cur, false);
+  document.querySelectorAll('[data-follow]').forEach((f) => {
+    const sc = document.getElementById('sc');
+    if (!sc) return;
+    sc.addEventListener('scroll', () => { if (!S._following) f.scrollTop = sc.scrollTop * (f.scrollHeight / Math.max(1, sc.scrollHeight)); }, { passive: true });
+  });
+}
+
+/* timers: background hashing and progressive large diff */
+let timers = [];
+function startTimers() {
+  timers.forEach(clearInterval); timers = [];
+  if (S.scn === 'folders') {
+    timers.push(setInterval(() => {
+      let flip = false;
+      for (const p of Object.keys(S.hashP)) {
+        if (S.hashP[p] >= 1) continue;
+        S.hashP[p] = Math.min(1, S.hashP[p] + (p.endsWith('.hex') ? 0.06 : 0.03));
+        if (S.hashP[p] >= 1) flip = true;
+      }
+      if (flip) { render(); return; }
+      document.querySelectorAll('.fr').forEach((r) => {
+        const p = S.hashP[r.dataset.p];
+        const hp = r.querySelector('.hp');
+        if (p !== undefined && hp) { hp.querySelector('i').style.setProperty('--p', p); hp.lastChild.textContent = Math.round(p * 100) + '%'; }
+      });
+      if (Object.values(S.hashP).every((v) => v >= 1)) timers.forEach(clearInterval);
+    }, 600));
+  }
+  if (S.scn === 'large' && S.largeTab === 'text' && S.prog < 1) {
+    timers.push(setInterval(() => {
+      S.prog = Math.min(1, +(S.prog + 0.04).toFixed(3));
+      const sc = document.getElementById('sc');
+      if (!sc || !S.largeRows) return;
+      if (S.prog >= 1) { render(); timers.forEach(clearInterval); return; }
+      const t = sc.scrollTop; sc.innerHTML = S.largeRows(); sc.scrollTop = t;
+      document.querySelectorAll('.map').forEach((m) => { const pe = m.querySelector('.map-pend'); if (pe) pe.style.transform = `scale${m.classList.contains('h') ? 'X' : 'Y'}(${1 - S.prog})`; buildMap(m); });
+      document.querySelectorAll('.prog i').forEach((i) => i.style.setProperty('--p', S.prog));
+      document.querySelectorAll('[data-progline]').forEach((e) => { e.innerHTML = progressLine(); });
+      const fl = document.querySelector('[data-found]');
+      if (fl) { const found = [...TRACE_DIFF.keys()].filter((i) => i < TRACE.length * S.prog && TRACE_DIFF.get(i - 1) !== TRACE_DIFF.get(i)); fl.innerHTML = found.map((i) => `<button data-act="goto" data-v="${i}"><span class="sg diff">~</span><span class="nt"><span class="t num">line ${(1204880 + i).toLocaleString('en')}</span></span></button>`).join(''); }
+    }, 500));
+  }
+}
+
+/* actions */
+function openRow(p) {
+  const n = byPath(p);
+  if (!n) return;
+  if (n.dir) { S.open.has(p) ? S.open.delete(p) : (S.open.add(p), n.kids.forEach((k) => S.enter.add(k.path))); render(); return; }
+  const s = statusOf(n);
+  if (s === 'lo' || s === 'ro') { toast(`${esc(n.name)} exists only on the ${s === 'lo' ? 'left' : 'right'}. F3 views it.`); render(); return; }
+  if (n.open === 'merge') return setScn('merge');
+  if (n.open === 'hex') { S.largeTab = 'hex'; return setScn('large'); }
+  if (n.open === 'large') { S.largeTab = 'text'; return setScn('large'); }
+  if (s === 'same') { toast(`${esc(n.name)} is the same on both sides`); render(); return; }
+  setScn('file');
+}
+function undo() {
+  const u = S.undo.pop();
+  if (!u) { toast('Nothing to undo'); render(); return; }
+  if (u.type === 'copy') { S.blocks[u.bi] = u.prev; S.dirty = u.dirty; toast('Copy undone'); }
+  if (u.type === 'pick') { S.regions[u.ri].pick = u.prev; S.regions[u.ri].edited = u.edited; toast('Choice undone'); }
+  if (u.type === 'save') { toast('Restored the previous version of copy.rs'); }
+  if (u.type === 'row') { toast(`Restored ${esc(u.name)} on the left`); }
+  render();
+}
+function pick(ri, v) {
+  const r = S.regions[ri];
+  if (!r || r.t !== 'conf') return;
+  S.undo.push({ type: 'pick', ri, prev: r.pick, edited: r.edited });
+  r.pick = v;
+  if (v === 'E') r.edited = r.edited || r.left.slice();
+  if (v && v !== 'E') { const confs = S.regions.filter((x) => x.t === 'conf'); const next = confs.findIndex((x) => !x.pick); if (next >= 0) S.cur = next; }
+  const u = unsolved();
+  toast(u ? `${u} unsolved · Alt+↓ goes to the next conflict` : 'All conflicts solved · Ctrl+S saves', true);
+  render();
+}
+function curConflictIndex() {
+  const confs = S.regions.map((r, i) => [r, i]).filter(([r]) => r.t === 'conf');
+  const c = confs[S.cur] || confs.find(([r]) => !r.pick) || confs[0];
+  return c ? c[1] : -1;
+}
+function save() {
+  if (S.scn === 'merge') {
+    const u = unsolved();
+    if (u) { toast(`Save is locked: ${u} unsolved conflict${u > 1 ? 's' : ''}. Alt+↓ goes to the next one.`); render(); return; }
+    toast('Saved journal.rs. <code>git add crates/rusty-fs/src/job/journal.rs</code> marks it resolved', false, `<button class="btn" data-act="noop">${ic('copy', 'sm')}Copy</button>`);
+    render(); return;
+  }
+  if (S.scn === 'file') {
+    if (!S.dirty.L && !S.dirty.R) { toast('Nothing to save'); render(); return; }
+    const which = [S.dirty.L && 'ferrite', S.dirty.R && 'ferrite-p42'].filter(Boolean).join(' and ');
+    S.dirty = { L: false, R: false };
+    S.undo.push({ type: 'save' });
+    toast(`Saved copy.rs in ${which}. The old version is kept until Ferrite closes.`, false, `<button class="btn" data-act="undo">${ic('undo', 'sm')}Restore previous version</button>`);
+    render();
+  }
+}
+function copyKey(dir) {
+  if (S.scn === 'file') {
+    const { hunks } = diffModel();
+    const h = hunks.find((x) => x.h === S.cur) || hunks.find((x) => x.kind !== 'done');
+    if (h) { copyBlock(h.bi, dir); render(); }
+    return;
+  }
+  if (S.scn === 'merge') { const ri = curConflictIndex(); if (ri >= 0) pick(ri, dir); return; }
+  if (S.scn === 'folders') {
+    const n = byPath(S.sel);
+    if (!n || n.dir) return;
+    if (dir === 'R') { toast('The right side is a Git ref and is read-only. Copy to the left instead.'); render(); return; }
+    if (!n.R) { toast(`${esc(n.name)} has no right side to copy`); render(); return; }
+    S.undo.push({ type: 'row', name: n.name });
+    toast(`Copied ${esc(n.name)} from feature/compare to the left`, true);
+    render();
+  }
+}
+
+stage.addEventListener('click', (e) => {
+  const a = e.target.closest('[data-act]');
+  const row = e.target.closest('.fr');
+  if (!a && row) { S.sel = row.dataset.p; stage.querySelectorAll('.fr').forEach((r) => { r.setAttribute('aria-selected', r.dataset.p === S.sel); r.tabIndex = r.dataset.p === S.sel ? 0 : -1; }); row.focus({ preventScroll: true }); if (S.drawer === 'R') render(); return; }
+  if (!a) { if (S.menu && !e.target.closest('.menu')) { S.menu = null; render(); } return; }
+  const v = a.dataset.v;
+  switch (a.dataset.act) {
+    case 'twist': openRow(a.dataset.p); break;
+    case 'expand': S.expanded.has(a.dataset.p) ? S.expanded.delete(a.dataset.p) : S.expanded.add(a.dataset.p); render(); break;
+    case 'open': openRow(a.dataset.p); break;
+    case 'filter': S.filter = v; render(); break;
+    case 'scope': S.navFolder = v || null; if (v) { v.split('/').forEach((_, i, arr) => S.open.add(arr.slice(0, i + 1).join('/'))); } render(); break;
+    case 'nav-folder': S.drawer = null; S.navFolder = S.dir === 1 ? v : null; selectPath(v, true); break;
+    case 'side-n': S.side = v; render(); break;
+    case 'side': S.menu = null; toast(v === 'right' ? 'Pick a folder, another repository, or a branch, tag or commit (Ctrl+K "Compare branches")' : 'Pick a folder or another repository'); render(); break;
+    case 'swap': toast('Swapped sides'); render(); break;
+    case 'exit': toast('Left compare mode. The panes keep their folders.'); render(); break;
+    case 'nav': nav(+v); break;
+    case 'goto': S.drawer = null; if (S.scn === 'large') { S.cur = +v; render(); goHunk(+v, true); } else { render(); goHunk(+v, true); } break;
+    case 'copy': copyBlock(+a.dataset.b, v); render(); break;
+    case 'undo': S.toast = null; undo(); break;
+    case 'toast-x': S.toast = null; render(); break;
+    case 'save': save(); break;
+    case 'layout': S.layout = v; S.preset = 'custom'; S.menu = null; render(); break;
+    case 'toggle': S[v] = !S[v]; S.preset = 'custom'; render(); break;
+    case 'preset': S.preset = v; if (v === 'simple') Object.assign(S, { intra: false, moved: false, hide: false, layout: 'inline' }); if (v === 'rich') Object.assign(S, { intra: true, moved: true, hide: false, layout: 'split' }); render(); break;
+    case 'keep-default': S.menu = null; toast('Saved as the default in ferrite.toml under [compare.view]'); render(); break;
+    case 'menu': S.menu = S.menu ? null : v; if (S.menu) S.enter.add('menu'); render(); break;
+    case 'drawer': S.drawer = S.drawer === v ? null : v; if (S.drawer) S.enter.add('drawer'); render(); break;
+    case 'pick': pick(+a.dataset.r, v); break;
+    case 'unpick': pick(+a.dataset.r, null); break;
+    case 'edit': pick(+a.dataset.r, 'E'); requestAnimationFrame(() => { const card = document.querySelectorAll('.cf')[confIndex(S.regions[+a.dataset.r])]; card?.querySelectorAll('.code .tx').forEach((t) => { t.contentEditable = 'true'; }); card?.querySelector('.code .tx')?.focus(); }); break;
+    case 'solve-ws': S.regions.forEach((r, ri) => { if (r.t === 'conf' && r.ws && !r.pick) { S.undo.push({ type: 'pick', ri, prev: null }); r.pick = 'L'; } }); toast(`Solved the whitespace-only conflict · ${unsolved()} unsolved`, true); render(); break;
+    case 'region': stepRegion(+v); break;
+    case 'region-go': S.region = +v; render(); break;
+    case 'ltab': S.largeTab = v; render(); startTimers(); break;
+    case 'theme': root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark'; harness(); render(); break;
+    case 'unfold': S.hide = false; S.preset = 'custom'; render(); break;
+    case 'rule': S[v] = a.checked; render(); break;
+    case 'toggle-cb': S[v] = a.checked; render(); break;
+    default: break;
+  }
+});
+stage.addEventListener('dblclick', (e) => {
+  const row = e.target.closest('.fr');
+  if (row && !e.target.closest('[data-act]')) { openRow(row.dataset.p); return; }
+  const tx = e.target.closest('.tx[data-side]');
+  if (tx && S.scn === 'file') {
+    tx.contentEditable = 'true'; tx.focus();
+    tx.addEventListener('blur', () => { tx.contentEditable = 'false'; S.dirty[tx.dataset.side] = true; toast(`Edited ${tx.dataset.side === 'L' ? 'ferrite' : 'ferrite-p42'} side · Ctrl+S saves`, false); render(); }, { once: true });
+  }
+});
+stage.addEventListener('focusout', (e) => {
+  const tx = e.target.closest?.('.cf .tx[contenteditable="true"]');
+  if (!tx) return;
+  const card = tx.closest('.cf');
+  const r = S.regions.filter((x) => x.t === 'conf')[+card.dataset.h];
+  if (r) r.edited = [...card.querySelectorAll('.code .tx')].map((t) => t.textContent);
+});
+document.getElementById('hx').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-scn]');
+  if (b) setScn(b.dataset.scn);
+  if (e.target.closest('[data-act="theme"]')) { root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark'; harness(); render(); }
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) { if (e.key === 'Escape') e.target.blur(); return; }
+  const k = e.key, alt = e.altKey, ctrl = e.ctrlKey || e.metaKey, shift = e.shiftKey;
+  const hit = (fn) => { e.preventDefault(); e.stopImmediatePropagation(); fn(); };
+  if (alt && !ctrl && (k === 'ArrowDown' || k === 'ArrowUp')) return hit(() => nav(k === 'ArrowDown' ? 1 : -1));
+  if (k === 'F7' && S.scn !== 'folders') return hit(() => nav(shift ? -1 : 1));
+  if (ctrl && alt && (k === 'ArrowLeft' || k === 'ArrowRight')) return hit(() => copyKey(k === 'ArrowLeft' ? 'L' : 'R'));
+  if (ctrl && !alt && (k === 'z' || k === 'Z')) return hit(undo);
+  if (ctrl && !alt && (k === 's' || k === 'S')) return hit(save);
+  if (ctrl && !alt && (k === 'b' || k === 'B')) return hit(() => { S.drawer = S.drawer === 'L' ? null : 'L'; S.enter.add('drawer'); render(); });
+  if (ctrl && !alt && (k === 'i' || k === 'I')) return hit(() => { S.drawer = S.drawer === 'R' ? null : 'R'; S.enter.add('drawer'); render(); });
+  if (alt && !ctrl && (k === 'v' || k === 'V')) return hit(() => { S.menu = S.menu ? null : 'view'; S.enter.add('menu'); render(); });
+  if (alt && !ctrl && ['1', '2', '3'].includes(k)) {
+    if (S.scn === 'merge') return hit(() => { const ri = curConflictIndex(); if (ri >= 0) pick(ri, { 1: 'L', 2: 'R', 3: 'LR' }[k]); });
+    if (S.scn === 'file' && k !== '3') return hit(() => { S.layout = k === '1' ? 'split' : 'inline'; render(); });
+  }
+  if (alt && !ctrl) { const t = { h: 'hide', i: 'intra', m: 'moved', w: 'ignWs', l: 'lineNo' }[k.toLowerCase()]; if (t) return hit(() => { S[t] = !S[t]; S.preset = 'custom'; render(); }); }
+  if (k === 'Escape') return hit(() => {
+    if (S.menu) S.menu = null; else if (S.drawer) S.drawer = null; else if (S.toast) S.toast = null;
+    else if (S.scn === 'large' && S.largeTab === 'text' && S.prog < 1) { S.prog = 1; timers.forEach(clearInterval); toast('Stopped. Differences found so far stay listed.'); }
+    else if (S.scn !== 'folders') return setScn('folders');
+    else if (S.filter !== 'all') S.filter = 'all';
+    render();
+  });
+  if (ctrl || alt) return;
+  const row = e.target.closest?.('.fr');
+  if (row && (k === 'ArrowDown' || k === 'ArrowUp')) {
+    return hit(() => { const rows = [...row.parentElement.querySelectorAll('.fr')]; const n = rows[rows.indexOf(row) + (k === 'ArrowDown' ? 1 : -1)]; if (n) { S.sel = n.dataset.p; rows.forEach((r) => { r.setAttribute('aria-selected', r === n); r.tabIndex = r === n ? 0 : -1; }); n.focus(); } });
+  }
+  if (row && k === 'Enter') return hit(() => openRow(row.dataset.p));
+  if (row && k === ' ' && S.dir === 2) return hit(() => { const p = row.dataset.p; S.expanded.has(p) ? S.expanded.delete(p) : S.expanded.add(p); render(); });
+  if (row && (k === 'ArrowRight' || k === 'ArrowLeft')) {
+    const n = byPath(row.dataset.p);
+    if (n && n.dir) return hit(() => { if (k === 'ArrowRight') { S.open.add(n.path); n.kids.forEach((c) => S.enter.add(c.path)); } else S.open.delete(n.path); render(); });
+  }
+  const sc = SCN.find(([, , key]) => key.toLowerCase() === k.toLowerCase());
+  if (sc) return hit(() => setScn(sc[0]));
+  if (k === 't' || k === 'T') return hit(() => { root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark'; harness(); render(); });
+}, true);
+
+let lastNarrow = null;
+addEventListener('resize', () => {
+  const n = stage.clientWidth < 721;
+  if (n !== lastNarrow) { lastNarrow = n; render(); } else document.querySelectorAll('.map').forEach(buildMap);
+});
+
+/* picker (PICKER.md wiring; variant swap re-mounts the app state) */
+const variants = DIRS.map((_, i) => () => i);
+const picker = document.querySelector('.proto-picker');
+const highlight = picker.querySelector('.proto-picker-highlight');
+const items = [...picker.querySelectorAll('.proto-picker-item:not(.proto-picker-replay)')];
+let current = 0;
+function moveHighlight() { const el = items[current]; highlight.style.width = el.offsetWidth + 'px'; highlight.style.transform = `translateX(${el.offsetLeft}px)`; }
+function mount(i) {
+  const scn = (S && S.scn) || new URLSearchParams(location.search).get('s') || 'folders';
+  S = freshState(variants[i](), scn);
+  if (i === 2) S.layout = 'inline';
+  if (i === 3) S.expanded.clear();
+  stage.innerHTML = '';
+  requestAnimationFrame(() => { harness(); lastNarrow = stage.clientWidth < 721; render(false); startTimers(); });
+}
+function setActive(i) {
+  if (i < 0 || i >= variants.length) return;
+  current = i;
+  items.forEach((el, j) => { el.toggleAttribute('data-active', j === i); if (j === i) el.setAttribute('aria-current', 'true'); else el.removeAttribute('aria-current'); });
+  moveHighlight();
+  const url = new URL(location); url.searchParams.set('v', i + 1); history.replaceState(null, '', url);
+  mount(i);
+}
+items.forEach((el, i) => el.addEventListener('click', () => setActive(i)));
+addEventListener('resize', moveHighlight);
+document.addEventListener('keydown', (e) => {
+  if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable) return;
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  if (e.target.closest?.('.fr, .map')) return;
+  const num = parseInt(e.key, 10);
+  if (num >= 1 && num <= variants.length) setActive(num - 1);
+  else if (e.key === 'ArrowRight') setActive((current + 1) % variants.length);
+  else if (e.key === 'ArrowLeft') setActive((current - 1 + variants.length) % variants.length);
+  else if (e.key === 'r' || e.key === 'R') mount(current);
+});
+setActive((parseInt(new URLSearchParams(location.search).get('v'), 10) || 1) - 1);
+requestAnimationFrame(() => requestAnimationFrame(() => picker.setAttribute('data-ready', '')));
+
+</script>
+</body>
+</html>
