@@ -217,7 +217,7 @@ Roles follow the owner's current rules: Sonnet 5.5 (medium or high) for decided 
 | **Part C — disk index** | | | | | | | |
 | C0 | Windows facts for the index | researcher (Sonnet) | medium | — | answers with sources, in the Log | done | |
 | C1 | `rusty-index::file` | api-builder (Sol 6.1) | xhigh | B2 | `cargo nextest run -p rusty-index file` | done | |
-| C2 | `[search]` settings keys | api-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-store settings` | ready | |
+| C2 | `[search]` settings keys | api-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-store settings` | done | |
 | C3 | `rusty-index::host` (walk index) | api-builder (Sonnet) | high | B4, C1, C2 | `cargo nextest run -p rusty-index host` | blocked | |
 | C4 | `rusty-index::usn` | api-builder (Sonnet) | high | B2, C0 | `cargo nextest run -p rusty-index usn` | blocked | |
 | C5 | `rusty-index::ntfs` | api-builder (Sonnet) | high | C4 | Windows CI `test-windows` (`cargo nextest run -p rusty-index ntfs`) | blocked | |
@@ -505,3 +505,4 @@ The original questions:
   - Everything's service serves names only to its own signed client; any local user can list all NTFS names through it. Owner decided (2026-10-20): the index shows all file names, like Everything; a per-user filter may come later as an option.
 - 2026-10-20 — Checked against the Linux-tools idea list (D71): D18 aging written in zoxide's exact form (A3's flat 0.9 is equivalent while uses add 1); D22 a newer pipe generation cancels the running service search; C4 evaluates `usn-journal-rs` before own code; D24 names `mft` for raw `$MFT` later. Folder sizes, job pools and the benchmark harness live in P43.
 - 2026-10-20 — A9 done: `SearchHooks { command_use, record_command, clear }` in `window_view` (passed in `StartOptions.search`), DB-backed in `rusty-app::search_hooks`. Running a command from the box records it on the background executor (actions by action name, argument commands by registry name); `CommandsSource::with_use` loads the aged weights per search and ranks with `rank::score`. Folders and files are not recorded; `frecent` and `record_visit` come with B1.
+- 2026-10-20 — C2 done: `[search]` adds index (auto/service/walk/off), drives, walk-roots, exclude, network, removable and remember, using the existing serde validation and load-error path. Empty drives and walk-roots retain the owner defaults for their later consumers. Default snapshots and the 51-key ledger expectations updated; four search tests cover defaults, parsing and round trips, invalid-value fallback and unknown keys. Store and app check: all 7 steps passed; 846 tests passed, 1 skipped. No search.remember placeholder exists in this checkout.
