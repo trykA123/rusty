@@ -38,7 +38,7 @@ Exit: the spike meets the targets on Linux and the work PC, otherwise D2 is reop
 
 Goal: a file manager the owner can use every day on Windows.
 
-Progress: 74% (183 of 249 items done, 3 being finished counted as half, 63 still to do: (183 + 1.5) ÷ 249). Each part of multi-select and drag and drop, PDF links, Rich ELF and MAP, Ctrl+K and multi-rename counts once; review-only parts are not counted. Moving the remaining texts into translation files is out of the count (after 1.0, D59).
+Progress: 75% (183 of 247 items done, 3 being finished counted as half, 61 still to do: (183 + 1.5) ÷ 247). Each part of multi-select and drag and drop, PDF links, Rich ELF and MAP, Ctrl+K and multi-rename counts once; review-only parts are not counted. Moving the remaining texts into translation files is out of the count (after 1.0, D59).
 
 Done so far:
 
@@ -51,7 +51,8 @@ Done so far:
 - safer session and database store after a crash;
 - multi-select: keys, Shift and Ctrl click, right-drag ranges, left-drag lasso; marks survive the filter, `/` restores them, the footer counts marked files the filter hides;
 - file-type icons per extension (PDF, Office, audio, video, code families, automotive);
-- PDF links follow on click with a back stack; PDF outline tab (faster, with a note for an unreadable outline); only http, https and mailto links open outside Ferrite;
+- PDF links follow on click with a back stack; PDF outline tab (faster, with a note for an unreadable outline); only http, https and mailto links open outside Ferrite; waits for your check with a real PDF;
+- activity strip: one line at the bottom shows what is running; Alt+J opens the drawer with every job;
 - F-key bar off by default;
 - ELF symbols table with resizable columns and names that keep their prefix;
 - HEX and S-record rows of 32 bytes, with padding gaps folded;
@@ -64,16 +65,14 @@ Still open in the alpha, in this order:
 - right-click on empty space: a folder menu with New file (Shift+F7) and the Windows background menu (done, waiting for Windows CI);
 - cache sizes in diagnostics: the diagnostic report shows how much disk each cache uses, backed by a long stress test (in progress);
 - multi-select (done) and drag and drop (built: rules, badge, setting, shortcut planning and drag from the file list; next: dropping in the window, on tabs, crumbs and drives, and drag and drop with Explorer in both directions);
-- PDF links and outline (done; waits for your check with a real PDF);
 - Rich ELF and MAP views, direction "address space first" (D66; the model, owners, groups, strip, treemap and colours are built; the map screens come next);
 - Ctrl+K command center (D60, D61, D63): the box works for commands; the file index engine is built (name table, parallel search, saved index, folder walker); recent files, tabs and folders as sources and the background index service come next (target: global search answers in under 50 ms on 2 million files);
 - multi-rename, Ctrl+M: Total Commander parity plus extras (field tokens from EXIF and audio tags, clean-up toggles, edit names, undo history after a restart, conflict preview, all or nothing); engine done and reviewed, dialog next;
 - DBC and A2L viewer in F3;
 - automotive syntax colours (m4, OIL, DCM, UDL) wired into the text viewer;
 - viewer chrome; pins;
-- spreadsheets in F3 (one item; after 1.0 if it grows);
-- every shortcut changeable;
-- the Follow bug on Windows (last); steadier Windows CI.
+- steadier Windows CI (in progress);
+- the Follow bug on Windows (last).
 
 Scope:
 
@@ -91,10 +90,7 @@ Exit: two weeks of daily use on the work PC with no lost or damaged files.
 
 ## Right after the alpha
 
-In this order:
-
-1. Activity strip replacing the F-key bar, which is now off by default (D67): built and done.
-2. Delete safety net with 1 to 7 days retention (D65).
+1. Delete safety net with 1 to 7 days retention (D65).
 
 ## v1 Beta · v0.9
 
@@ -106,6 +102,8 @@ Goal: safe, configurable and pleasant; modules and theming arrive.
 - core: Parallel and Large files copy modes, copy options, profiles and rules by destination; accessibility basics.
 - package: custom colour themes and icon themes (D16). Idea, not decided: an optional colourful icon theme based on Material Icon Theme (MIT).
 - module: copy path, terminal (Windows Terminal and templates), folder search, external viewer and editor (F3/F4; done; hex view and large files done; viewer foundation done; extra grammars and content detection done; rule lexer and Notepad++ UDL import done; search counts, marks and history (model and store) done), notifications for long operations.
+- module: spreadsheets in F3 (one item; after 1.0 if it grows).
+- core: every shortcut changeable.
 - infra: soak test; start-up and memory benchmark in CI (done; baseline in [perf.md](perf.md)).
 
 Exit: no open data-safety bugs; start-up and memory targets met in CI.
