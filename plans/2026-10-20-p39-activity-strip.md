@@ -28,7 +28,7 @@ The F-key bar is off by default (D67). Its row becomes the activity strip, direc
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | S1 | `fkey-bar` default off | ui-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-store settings`, `-p rusty-ui settings window_view` | ready | |
 | S2 | `activity` model: items, rank, Done timer, from job infos | ui-builder (Opus) | medium | — | `cargo nextest run -p rusty-ui activity` | ready | pure model, no drawing |
-| S3 | strip line, chips, fill, Alt+J drawer, keys; replaces the pill | ui-builder (Opus) | medium | S1, S2 | `cargo nextest run -p rusty-ui window_view::tests::activity`; gallery shots | blocked | |
+| S3 | strip line, chips, fill, Alt+J drawer, keys; replaces the pill | ui-builder (Opus) | medium | S1, S2 | `cargo nextest run -p rusty-ui window_view::tests::activity`; gallery shots | done | job card hidden by default; Ctrl+J shows it; Show on a failure opens it |
 | S4 | review | reviewer (Opus) | high | S3 | review notes; gate; Windows CI | blocked | |
 
 Drag and Background items get producers later (P36 D4/D6; the search index).
@@ -42,3 +42,5 @@ Drag and Background items get producers later (P36 D4/D6; the search index).
 ## Log
 
 - 2026-10-20 — Owner picked direction 4 of the activity-strip prototype; D67 amended.
+- 2026-10-20 — S3 done: activity strip line, chips, fill, Alt+J drawer, strip keys in the registry; job pill removed from the window; gallery pages p39-strip, p39-strips, p39-drawer.
+- 2026-10-20 — S4 review fixes: the primary item keeps its icon and buttons (chips capped at 45%, cut-off chips are no stops); Show closes the drawer before the card opens; focus returns to where it was (pane or viewer); strip state refreshes on job, timer, hover and focus events, not in render; Delete and Space do nothing on "All N"; Show/Dismiss keycaps only while the strip has focus; the band rings when its item has no buttons; a paused chip says Paused; drawer ↑/↓ scrolls the row into view; gallery pages p39-strip-6-1280, p39-strip-6-390, p39-drawer-6-390.
