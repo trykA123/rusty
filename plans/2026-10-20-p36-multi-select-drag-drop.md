@@ -214,7 +214,7 @@ Later, not in P36:
 | K1 | `selection` span and extension | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-core selection` | done (e921926) | |
 | K2a | `command` text forms | api-builder (Sol 6.1) | xhigh | K1 | `cargo nextest run -p rusty-core command`; insta reviewed | done (e921926) | |
 | K2b | `apply::select` | api-builder (Sol 6.1) | xhigh | K2a | `cargo nextest run -p rusty-core apply` | done (e921926) | |
-| K3 | `browser::filter` hidden marks | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-ui browser::filter` | blocked: needs a core event to re-mark rows by name (K2b follow-up) | |
+| K3 | `browser::filter` hidden marks | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-ui browser::filter` | done (`Event::MarksRestored`) | |
 | K4a | `file_list` key actions | ui-builder (Sonnet) | medium | K2b | `cargo nextest run -p rusty-ui file_list` | done | |
 | K4b | bindings, registry, labels, key tests | ui-builder (Sonnet) | medium | K4a | `cargo nextest run -p rusty-ui file_list commands`; `cargo xtask gate` (l10n) | done | |
 | K5 | `file_list` mouse | ui-builder (Opus) | medium | K4b | `cargo nextest run -p rusty-ui file_list window_view::tests::shell_menu` | blocked | |
@@ -709,6 +709,12 @@ Then: gate, Windows CI, merge, an alpha build, and the owner check list (D16, D1
     - Windows: the numpad `+`, `-` and `/` keys map through `MapVirtualKeyW` to the same key names as the main keyboard, so `ctrl-+`, `ctrl--`, `alt-+`, `alt--` and `/` arrive from both. On the main keyboard `+` needs Shift; GPUI clears Shift for symbol keys, so Ctrl+Shift+= is `ctrl-+`.
     - Linux: the main keyboard gives the same names. The numpad gives `add`, `subtract`, `divide` and `multiply` (`KP_*` keysyms), so Num keys do not match the `+`, `-`, `/` bindings. This already holds for the Num+, Num− and Num* mark keys. No default is dropped, because every key arrives on Windows. Aliases such as `ctrl-add` are an owner decision.
   - K3 is blocked: marks of rows hidden by the filter can come back only through a core event (for example `Event::MarksRestored { tab, names }` that marks the rows of the new listing by name and ends the span). The core has no public way to mark rows by name on a given tab. K2b follow-up first, then K3.
+- 2026-10-20 — K3 done on `p36-k`, with the Linux numpad aliases.
+  - Core: `Event::MarksRestored { tab, names }` adds the named rows of the tab's current listing to its marks and ends the span. The replay log prints it as `!marks-restored { tab: N, names: K }` followed by K quoted name lines.
+  - Browser (`browser/filter/marks.rs`): marks of rows that a refilter hides are kept by name per tab and location. After the refilter, the names that are visible again are re-marked through the new event. Navigation and `SelectionClear` (Ctrl+Shift+A, Ctrl+Num−, and the clear after a finished job) empty the set; a reload drops names that no longer exist. `Browser::hidden_marks(tab) -> u64` returns the count for K6.
+  - F5, F6, F8, Ctrl+C/X and drag read `selected_sources`, which only sees marks in the shown listing, so they never touch hidden rows.
+  - `browser/mod.rs` was at the 400-line limit, so `open_row`, `go_up`, `open_at`, `open_tab_at` and `set_launcher` moved unchanged to `browser/open.rs`.
+  - Linux aliases (owner decision): `add`, `subtract`, `multiply`, `divide`, `ctrl-add`, `ctrl-subtract`, `alt-add` and `alt-subtract` are bound beside `+`, `-`, `*`, `/`, `ctrl-+`, `ctrl--`, `alt-+` and `alt--` for mark_pattern, unmark_pattern, invert_marks, restore_marks, mark_all, unmark_all, mark_extension and unmark_extension. `ctrl-multiply` and the other numpad chords stay unbound. The bound-key snapshots gained exactly those 8 rows, and the FileList action count went from 54 to 62.
 
 ## Questions for the owner (answered 2026-10-20)
 
