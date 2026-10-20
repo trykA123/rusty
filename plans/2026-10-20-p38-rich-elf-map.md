@@ -203,7 +203,7 @@ Final once the owner answers Q1–Q3. Workers never reopen them; a worker that f
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | A1 | `fit_name` | ui-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-ui columns::fit` | blocked (Q3) | |
 | A2 | `columns` primitive | ui-builder (Opus) | medium | A1 | `cargo nextest run -p rusty-ui primitives::columns`; gallery shot | blocked | |
-| A3 | ELF table on `columns` | ui-builder (Sonnet) | medium | A2 | `cargo nextest run -p rusty-ui viewer::elf` | blocked | |
+| A3 | ELF table on `columns` | ui-builder (Sonnet) | medium | A2 | `cargo nextest run -p rusty-ui viewer::elf` | done | |
 | A4 | MAP table on `columns` | ui-builder (Sonnet) | medium | A2 | `cargo nextest run -p rusty-ui viewer::map` | blocked | |
 | A5 | CSV table on `columns` | ui-builder (Sonnet) | medium | A2 | `cargo nextest run -p rusty-ui viewer::table` | blocked | |
 | A6 | CAN trace rows as cells | ui-builder (Sonnet) | medium | A2 | `cargo nextest run -p rusty-ui viewer::trace viewer::tests::can_trace` | blocked | |
@@ -517,3 +517,4 @@ The original questions:
 ## Log
 
 - 2026-10-20 — Plan written. Owner picked direction 1 "Address space first" from the Rich ELF/MAP prototype. Measured the owner's files (counts above). Found: TASKING Symbols tables have no size column; Space is printed only when it changes; "N other parts not shown" counts about 955 call-graph lines as part headers; the HEX has 196 gaps of 16 bytes or less. A second 26 MB ELF uses merged sections and about 95 % zero-size labels, so owners come from symbols (D9) and the strip draws symbols inside wide sections (D17). Orchestrator rule D6: Rich never assumes one toolchain's layout.
+- 2026-10-20 — A3 done: the ELF symbol table renders through `columns`; `ColumnSet` gained `set_measured` and `text_chars` (flex column width for `fit_name`).
