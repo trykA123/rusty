@@ -35,7 +35,7 @@ From the Opus review of `store-safety` (2026-10-20). Final.
 
 | Atom | Component | Role | Effort | After | Check | Status | Cost |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Q1 | `store::quarantine`, `store::salvage`, `crash::check_store` | general-purpose (Sonnet high), then reviewer (Opus high) | high | `store-safety` merged | tests below; gate | ready | |
+| Q1 | `store::quarantine`, `store::salvage`, `crash::check_store` | general-purpose (Opus medium), then reviewer (Opus high) | medium | `store-safety` merged | tests below; gate | ready | |
 | Q2 | crash notice | ui-builder (Sonnet medium) | medium | Q1 | notice test; gallery shot | blocked | |
 
 ### Q1 — tests
