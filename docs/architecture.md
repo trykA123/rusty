@@ -88,8 +88,8 @@ Small core features that depend on these:
 | Data | Format | Rules |
 | --- | --- | --- |
 | Settings and keymaps | TOML, hand-editable | Validated on load; invalid files are reported and **never overwritten**; the last valid copy keeps running |
-| Session and workspaces | Versioned binary (`postcard`) with header and checksum | Debounced saves (1 s), atomic replace, previous file kept as `.bak`, recovery from `.bak` on a bad checksum |
-| User data (`rusty.db`, SQLite) | History, frecency, tags, saved searches, module key-value data, job and undo journals | WAL mode; one transaction per job step; `PRAGMA user_version` migrations; `integrity_check` on start-up after a crash |
+| Session and workspaces | Versioned binary (`postcard`) with header and checksum | Debounced saves (1 s), atomic replace, previous file kept as `.bak`, recovery from `.bak` on a bad checksum; a file from a newer version is kept as `.v<version>` and never overwritten |
+| User data (`rusty.db`, SQLite) | History, frecency, tags, saved searches, module key-value data, job and undo journals | WAL mode; one transaction per job step; `PRAGMA user_version` migrations; `integrity_check` on start-up when the `running` marker of the previous run is still there |
 | Job journal (copies, moves, deletes) | Table in `rusty.db`, one row per step, committed per step | Lets an interrupted job resume or roll back after a crash |
 | Undo journal | Table in `rusty.db` | Bounded; entries expire |
 | Cache (`cache.db`, SQLite) | Listings, icons, thumbnails as blobs, folder sizes | Safe to delete at any time; rebuilt on demand; a corrupt file is replaced, never repaired |
