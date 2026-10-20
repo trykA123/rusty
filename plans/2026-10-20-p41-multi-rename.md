@@ -168,7 +168,7 @@ Roles: Sonnet 5.5 medium or high for decided backend and UI work, Opus 5.5 mediu
 | **Part A — engine** | | | | | | | |
 | A1 | `rename::mask` | api-builder (Sonnet) | high | — | `cargo nextest run -p rusty-core rename::tests::mask` | ready | |
 | A2 | `rename::rules` | api-builder (Sonnet) | high | A1 | `cargo nextest run -p rusty-core rename::tests::rules` | blocked | |
-| A3 | `OpKind::Rename` + arms | api-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-core -p rusty-ui op_plan activity job_card` | ready | |
+| A3 | `OpKind::Rename` + arms | api-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-core -p rusty-ui op_plan activity job_card` | done | |
 | A4 | `rename::check` | api-builder (Sonnet) | high | — | `cargo nextest run -p rusty-core rename::tests::check` | ready | |
 | A5 | `rename::order` + `plan_batch` | api-builder (Sonnet) | high | A3, A4 | `cargo nextest run -p rusty-core rename::tests::order` | blocked | |
 | A6 | `fake` case-insensitive mode | api-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-fs fake::tests::fold` | ready | |
@@ -398,3 +398,4 @@ Answered 2026-10-20: the owner left Q1–Q3 to the architect. Q1 F2 with 2 or mo
   - The fake file system compares names case-sensitively only.
   - Ctrl+M is free.
 - 2026-10-20 — Owner: "at least like Total Commander, with the bonus features you choose". Added D20–D26 and Part D (E1–E8); minutes moved to `[i]`, case tokens `[U] [L] [F] [n]`, `[y] [d] [t]` and field tokens added to D3. A1 and A4 started.
+- 2026-10-20 — A3 done: `OpKind::Rename` with arms in core, job card, activity text, confirm text and `op_request`; `activity-renaming`, `activity-renamed` and `activity-rename-failed` added.
