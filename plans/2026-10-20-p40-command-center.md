@@ -199,7 +199,7 @@ Roles follow the owner's current rules: Sonnet 5.5 (medium or high) for decided 
 | A4 | `command_center::query` + `source` contract | api-builder (Sonnet) | high | — | `cargo nextest run -p rusty-ui command_center::tests::query command_center::tests::source` | ready | |
 | A5 | `command_center::rank` + `results` | api-builder (Sonnet) | high | A4 | `cargo nextest run -p rusty-ui command_center::tests::rank command_center::tests::results` | blocked | |
 | A6 | `command_center::commands_source` | ui-builder (Sonnet) | medium | A1, A2, A4 | `cargo nextest run -p rusty-ui command_center::tests::commands_source` | blocked | |
-| A7 | `command_center::view` + gallery page | ui-builder (Opus) | medium | A0, A5 | `cargo nextest run -p rusty-ui command_center::tests::view`; gallery shots light and dark | blocked | |
+| A7 | `command_center::view` + gallery page | ui-builder (Opus) | medium | A0, A5 | `cargo nextest run -p rusty-ui command_center::tests::view`; gallery shots light and dark | done | |
 | A8 | `window_view::command_center` container | ui-builder (Opus) | medium | A6, A7 | `cargo nextest run -p rusty-ui window_view::tests::command_center` | blocked | |
 | A9 | `rusty-app::search_hooks` (command use) | api-builder (Sonnet) | medium | A3, A8 | `cargo nextest run -p rusty-app search_hooks` | blocked | |
 | A10 | review Part A | reviewer (Opus) | high | A9 | review notes; `cargo xtask gate`; Windows CI | blocked | |
@@ -486,3 +486,4 @@ The original questions:
 
 - 2026-10-20 — Plan written from D58–D67, the brief's D68 (not yet in `decisions.md`) and the code at ab89739. Found: `history` and `frecency` tables exist but are unused; `rusty-index` is empty; Ctrl+K is bound but does nothing.
 - 2026-10-20 — Owner picked the A0 look (direction 1 with the top-hit row of direction 3) and accepted Q1–Q3 as recommended.
+- 2026-10-20 — A7 done: `CommandCenter` view (input with argument chip, top-hit row, groups, Show all, prefix hint, no-match line, footer with count or note and key hints), `VirtualList` from 64 rows; events `QueryChanged`, `Moved`, `Run(index, Modifiers)`, `Dismissed`; seven gallery pages `p40-a7-*`. Key actions and bindings stay with A8.
