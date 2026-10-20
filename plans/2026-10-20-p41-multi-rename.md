@@ -105,7 +105,7 @@ Final. The owner asked for at least Total Commander parity plus the bonuses the 
 
   | Key | Action |
   | --- | --- |
-  | Enter | Rename; with problems, move to the first problem instead |
+  | Enter | Rename; with problems, move to the next problem instead |
   | Esc | Close the open menu, otherwise close the tool with no change |
   | Tab / Shift+Tab | Next / previous field |
   | Ctrl+Space | Token menu (in a mask field) |
@@ -115,6 +115,8 @@ Final. The owner asked for at least Total Commander parity plus the bonuses the 
   | Del (in the preview) | Exclude or include the row |
   | Ctrl+S / Ctrl+O | Save a preset / open the preset list |
   | Ctrl+R | Reset every field to its default |
+
+  Enter with problems moves to the next problem after the cursor, wrapping to the first.
 
 - **D17 — Menus.** The `[ ]` button and Ctrl+Space open the D46 menu panel. It lists each token with one line ("[N2-5] · characters 2 to 5 of the name"), filters as the user types, and inserts the token at the caret on Enter. The same panel lists the case choices and the presets.
 - **D18 — Presets.**
@@ -183,7 +185,7 @@ Roles: Sonnet 5.5 medium or high for decided backend and UI work, Opus 5.5 mediu
 | B3 | `browser` rename batch + undo | api-builder (Sonnet) | high | A7 | `cargo nextest run -p rusty-ui browser::tests::rename_batch` | done | |
 | B4 | `view::fields` + token menu | ui-builder (Sonnet) | medium | B2 | `cargo nextest run -p rusty-ui multi_rename::tests::fields`; gallery shots | done | |
 | B5 | `view::preview` + summary | ui-builder (Opus) | medium | B2 | `cargo nextest run -p rusty-ui multi_rename::tests::preview`; gallery shots | done | |
-| B6 | `window_view::multi_rename` | ui-builder (Opus) | medium | B1, B3, B4, B5 | `cargo nextest run -p rusty-ui window_view::tests::multi_rename` | blocked | |
+| B6 | `window_view::multi_rename` | ui-builder (Opus) | medium | B1, B3, B4, B5 | `cargo nextest run -p rusty-ui window_view::tests::multi_rename` | done | |
 | B7 | `rusty-app::rename_hooks` | api-builder (Sonnet) | high | A8, A9, B3 | `cargo nextest run -p rusty-app rename_hooks` | blocked | |
 | B8 | Ctrl+Z flow + activity text | ui-builder (Sonnet) | medium | A3, B1, B3 | `cargo nextest run -p rusty-ui activity window_view::tests::undo` | blocked | |
 | B9 | review Part B | reviewer (Opus) | high | A10, B6–B8 | review notes; gate; Windows CI | blocked | |
@@ -422,3 +424,5 @@ Answered 2026-10-20: the owner left Q1–Q3 to the architect. Q1 F2 with 2 or mo
 - 2026-10-20 — B4 done: `multi_rename::view::fields` (`Fields`, `FieldInputs`, `FieldErrors`, `FieldsEvent`, `FieldMenu`, token table `TOKENS`/`matching`, case texts) is presentational; errors arrive as ready texts and the menu is a styled list, not the D46 `ContextMenu` (B6 decides how it opens and where it sits). Built-in `[=field]` tokens are not in the table yet. Gallery page `p41-b4-fields` (1280 px window only); icons Regex, CaseSensitive and Replace added to `FerriteIcons`; the used ids left `multi_rename::texts`.
 - 2026-10-20 — B4 review (orchestrator), for B6: the token menu is a styled list (`FieldMenu`), B6 decides how it opens; map `RuleError` to the error texts; add the `[=field]` tokens to the menu; the `[ ]` button renders as "[]".
 - 2026-10-20 — B5 done: `multi_rename::view::{PreviewView, PreviewEvent, Shown}` draw the preview on `ColumnSet` and `VirtualList` with row numbers, an include toggle, strikethrough for excluded rows and a footer whose Rename button is off while problems exist. Swap is found in the view, since `RowState` has no swap. Gallery pages `p41-b5-preview` and `p41-b5-preview-large`.
+- 2026-10-20 — B6 done: `window_view::multi_rename` opens from Ctrl+M, F2 or the context-menu Rename with 2+ marks, and Ctrl+K (refused with a status line while the folder loads); the preview runs on the background executor 60 ms after the last change with a generation number, and Enter right after typing waits for the fresh preview; the token, case and preset menus are `FieldMenu` lists under their field (presets under the header button) on the `ContextMenu` keys; `[=field]` tokens are listed and their values are read in the background (`Item.fields`); presets and "Last used" (saved as name `""`) go through `RenameHooks`, with no-op hooks until B7 attaches them. Gallery `p41-b6-tool`, `p41-b6-tool-menu`.
+- 2026-10-21 — B6 fix round after the mid review: a pending Enter runs only if the form is unchanged when its preview lands (typing, Del or a preset load cancels it); Enter re-reads the folder first and, when names changed, refreshes the snapshot, re-runs the preview and asks for a second Enter; Ctrl+K, the app and window menus, settings and the jobs key stay shut while the tool is open; "Nothing to rename." and "folder changed" status lines (`rename-nothing`, `rename-folder-changed`); `rename-busy` shows only while a rename runs; the `[ ]` buttons are a Brackets icon button, because the text glyph showed sub-pixel colour fringes (orange or blue by position) in the screenshots; Enter with problems moves to the next problem after the cursor (D16).
