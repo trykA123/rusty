@@ -205,7 +205,7 @@ Roles follow the owner's current rules: Sonnet 5.5 (medium or high) for decided 
 | A10 | review Part A | reviewer (Opus) | high | A9 | review notes; `cargo xtask gate`; Windows CI | blocked | |
 | **Part B — file sources** | | | | | | | |
 | B1 | visit and open hooks, frecency writer | ui-builder (Sonnet) | medium | A9 | `cargo nextest run -p rusty-ui window_view::tests::visits`; `-p rusty-app search_hooks` | blocked | |
-| B2 | `rusty-index::table` | api-builder (Sonnet) | high | — | `cargo nextest run -p rusty-index table` | ready | |
+| B2 | `rusty-index::table` | api-builder (Sonnet) | high | — | `cargo nextest run -p rusty-index table` | done | |
 | B3 | `rusty-index::search` | api-builder (Sonnet) | high | A1, B2 | `cargo nextest run -p rusty-index search` | blocked | |
 | B4 | `rusty-index::walker` | api-builder (Sonnet) | high | B2 | `cargo nextest run -p rusty-index walker` | blocked | |
 | B5 | Recent and Tabs sources | ui-builder (Sonnet) | medium | A5, B1 | `cargo nextest run -p rusty-ui command_center::tests::file_sources::recent` | blocked | |
@@ -487,3 +487,4 @@ The original questions:
 - 2026-10-20 — Plan written from D58–D67, the brief's D68 (not yet in `decisions.md`) and the code at ab89739. Found: `history` and `frecency` tables exist but are unused; `rusty-index` is empty; Ctrl+K is bound but does nothing.
 - 2026-10-20 — Owner picked the A0 look (direction 1 with the top-hit row of direction 3) and accepted Q1–Q3 as recommended.
 - 2026-10-20 — A6 done: `CommandsSnapshot::build` (pure, testable) and `CommandsSource`; one `ArgKind` (the registry's). Left for A8: reading the focused key-context stack and command-use weights; context text in `detail` is empty; menu-only commands (no action) are skipped.
+- 2026-10-20 — B2 done: `rusty-index::table` (`NameTable`, u32 ids, 31 bytes per entry on 1M and 2M synthetic names).
