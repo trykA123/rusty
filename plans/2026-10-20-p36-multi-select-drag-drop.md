@@ -224,7 +224,7 @@ Later, not in P36:
 | D1 | `op_plan::drop_op` | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-core op_plan::drop` | done (1fe41f4) | |
 | D2 | `Browser::drop_into` | api-builder (Sol 6.1) | xhigh | D1 | `cargo nextest run -p rusty-ui browser::operate` | done (39299b2) | |
 | D3 | `drop-confirm` setting | ui-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-store settings`, `-p rusty-ui settings` | done | |
-| D4 | `drag` badge | ui-builder (Sonnet) | medium | D1 | `cargo nextest run -p rusty-ui drag`; gallery shot | blocked | |
+| D4 | `drag` badge | ui-builder (Sonnet) | medium | D1 | `cargo nextest run -p rusty-ui drag`; gallery shot | done | |
 | D5 | `file_list` drag source and targets | ui-builder (Opus) | medium | D4, K5 | `cargo nextest run -p rusty-ui file_list::tests::drag` | blocked | |
 | D6 | `window_view::drop` | ui-builder (Opus) | medium | D2, D3, D5 | `cargo nextest run -p rusty-ui window_view::tests::drop` | blocked | |
 | D7a | tab and crumb targets | ui-builder (Sonnet) | medium | D6 | `cargo nextest run -p rusty-ui pane_chrome window_view::tests::drop` | blocked | |
@@ -756,3 +756,4 @@ Answers (2026-10-20): Q1 yes, Total Commander right-drag marking. Q2 `never`, as
   - `SHDoDragDrop` with a null `IDropSource` creates the default source (Vista+) and a generic image when none is stored; a custom image goes in through `IDragSourceHelper`.
   - `DoDragDrop` is a modal loop on the STA thread; our window procedure and our own drop target can run nested inside it. Hold no `RefCell` borrow, lock or `&mut` app state across the call; re-read state after it; expect our own window as a target. Start it only from a real mouse message with the button down (not touch or pen).
 - 2026-10-20 — D3 done on `p36-d3`: `[files] drop-confirm = never | moves | always`, default `never`, with a Settings row.
+- 2026-10-20 — D4 done on `p36-d4`: `rusty-ui::drag` badge (DragState, DragBadge, Refusal), `drag-*` strings, gallery page `p36-d4-drag-badge`.
