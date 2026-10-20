@@ -193,15 +193,12 @@ Roles follow the owner's current rules: Sonnet 5.5 (medium or high) for decided 
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | **Part A — commands** | | | | | | | |
 | A0 | box look, 3–4 directions | designer (Opus) | medium | — | prototype file opens; owner picks | done | owner: direction 1 + top hit row of 3 |
-| A1 | `rusty-index::fuzzy` | api-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-index fuzzy` | ready | |
-| A2 | `commands` entries, hidden list, Toggle action | ui-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-ui commands` | ready | |
-| A3 | `rusty-store::db` V4, frecency and command use | api-builder (Opus) | high | — | `cargo nextest run -p rusty-store db` | ready | |
-| A4 | `command_center::query` + `source` contract | api-builder (Sonnet) | high | — | `cargo nextest run -p rusty-ui command_center::tests::query command_center::tests::source` | ready | |
+| A1 | `rusty-index::fuzzy` | api-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-index fuzzy` | done | |
+| A2 | `commands` entries, hidden list, Toggle action | ui-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-ui commands` | done | |
+| A3 | `rusty-store::db` V4, frecency and command use | api-builder (Opus) | high | — | `cargo nextest run -p rusty-store db` | done | |
+| A4 | `command_center::query` + `source` contract | api-builder (Sonnet) | high | — | `cargo nextest run -p rusty-ui command_center::tests::query command_center::tests::source` | done | |
 | A5 | `command_center::rank` + `results` | api-builder (Sonnet) | high | A4 | `cargo nextest run -p rusty-ui command_center::tests::rank command_center::tests::results` | done | |
 | A6 | `command_center::commands_source` | ui-builder (Sonnet) | medium | A1, A2, A4 | `cargo nextest run -p rusty-ui command_center::tests::commands_source` | done | |
-| A7 | `command_center::view` + gallery page | ui-builder (Opus) | medium | A0, A5 | `cargo nextest run -p rusty-ui command_center::tests::view`; gallery shots light and dark | blocked | |
-| A5 | `command_center::rank` + `results` | api-builder (Sonnet) | high | A4 | `cargo nextest run -p rusty-ui command_center::tests::rank command_center::tests::results` | blocked | |
-| A6 | `command_center::commands_source` | ui-builder (Sonnet) | medium | A1, A2, A4 | `cargo nextest run -p rusty-ui command_center::tests::commands_source` | blocked | |
 | A7 | `command_center::view` + gallery page | ui-builder (Opus) | medium | A0, A5 | `cargo nextest run -p rusty-ui command_center::tests::view`; gallery shots light and dark | done | |
 | A8 | `window_view::command_center` container | ui-builder (Opus) | medium | A6, A7 | `cargo nextest run -p rusty-ui window_view::tests::command_center` | blocked | |
 | A9 | `rusty-app::search_hooks` (command use) | api-builder (Sonnet) | medium | A3, A8 | `cargo nextest run -p rusty-app search_hooks` | blocked | |
