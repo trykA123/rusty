@@ -38,7 +38,7 @@ Final. The owner answered Q1–Q4 on 2026-10-20 (see the Log). Workers never reo
   - The plan has 31 atoms. Under the about-15-atoms rule, the orchestrator may save the parts as `p36a-multi-select`, `p36b-drag-drop` and `p36c-explorer-drag`, with the decisions shared.
 - **D2 — The Total Commander mark model stays (D15).** Marks are separate from the cursor; a plain click and plain arrows never change marks. Every new gesture adds or removes marks. Only an explicit unmark-all and the empty-space click (D7) clear them, and both save the marks first (D5).
 - **D3 — Span.** One mechanism serves Shift+keys, Shift+click and right-drag.
-  - The first extend saves the current marks as the *base* and the cursor row as the *anchor*. Every extend sets marks = base with every row in [anchor, cursor] set to `mark` (or cleared, in unmark mode).
+  - The first extend saves the current marks as the *base* and the cursor row as the *anchor*. Every extend sets marks = base with every row in [anchor, cursor] set to `mark` (cleared in unmark mode, flipped from the base in toggle mode).
   - Moving back shrinks the span to the base.
   - The span ends at any other command, and when the listing is replaced.
   - Marks add to what exists (base ∪ span). This differs from Explorer, where Shift+click replaces the selection, and keeps marks safe.
@@ -51,7 +51,7 @@ Final. The owner answered Q1–Q4 on 2026-10-20 (see the Log). Workers never reo
 - **D6 — Marks survive the filter.** 
   - Marks on rows that the filter hides are kept by name and come back when the filter changes or clears.
   - F5, F6, F8, Ctrl+C/X and drag act only on *visible* marked rows, so hidden files are never deleted by surprise.
-  - The footer shows "· N hidden by filter".
+  - The footer shows "· N marked not shown" (marks hidden by the filter or by show-hidden/show-system).
 - **D7 — Mouse.**
   - Ctrl+click toggles the row and moves the cursor there. Shift+click (and Ctrl+Shift+click) extends the span from the cursor to the row.
   - Ctrl and Shift clicks act on mouse up (`on_click`), and mouse-down does not move the cursor while Ctrl or Shift is held. This way Ctrl+drag copies without toggling the row, and the Shift anchor stays the old cursor (the Windows behaviour).
@@ -157,7 +157,7 @@ All keys are in the `FileList` context. Checked against `keymap.toml` and `typed
 
 | Key | Command id → core | Does | Conflicts checked | Owner |
 | --- | --- | --- | --- | --- |
-| Shift+↑ / Shift+↓ | `files.extend_up` / `files.extend_down` → `SelectionExtend { to: Up/Down, unmark: false }` | Extends from the anchor and shrinks when moving back (D3) | None in FileList; the Shift F-key layer only lights while held | — |
+| Shift+↑ / Shift+↓ | `files.extend_up` / `files.extend_down` → `SelectionExtend { to: Up/Down, mode: Mark }` | Extends from the anchor and shrinks when moving back (D3) | None in FileList; the Shift F-key layer only lights while held | — |
 | Shift+PgUp / Shift+PgDn | `files.extend_page_up` / `files.extend_page_down` | As above, by a page | None | — |
 | Shift+Home / Shift+End | `files.extend_first` / `files.extend_last` | As above, to the first or last row | None | — |
 | Ctrl+A, Ctrl+Num+ | `files.mark_all` → `SelectionAll` (now **files and folders**) | Marks every visible row | `ctrl-a` is unused everywhere; `ctrl-+` only in Image/Pdf (other contexts) | — |
@@ -168,7 +168,7 @@ All keys are in the `FileList` context. Checked against `keymap.toml` and `typed
 | Ctrl+click | `PaneCursorMove` + `SelectionToggle`, on mouse up | Toggles one row (D7) | Today a click ignores modifiers | — |
 | Shift+click, Ctrl+Shift+click | `SelectionExtend { to: Row(r) }`, on mouse up | Range from the cursor (D7) | As above | — |
 | Click below the last row | `SelectionClear` (saves) | Unmarks all (D7) | Today: no left handler | yes |
-| Right-drag over rows | `SelectionExtend { to: Row(r), unmark: start_was_marked }` | Paints a range (D8) | Keeps the long-press menu and the prefetch cancel | yes (D8) |
+| Right-drag over rows | `SelectionExtend { to: Row(r), mode: Unmark if the start row was marked, else Mark }` | Paints a range (D8) | Keeps the long-press menu and the prefetch cancel | yes (D8) |
 | Esc during a drag | `cx.stop_active_drag` | Cancels the drag | A capture listener, active only while dragging; Esc otherwise keeps clear-filter → close-preview | — |
 | Space, Insert, Num+, Num−, Num* | unchanged | — | — | — |
 | (no key) marks survive the filter | browser behaviour | D6 | — | yes |
@@ -184,7 +184,7 @@ Later, not in P36:
 | Component | Layer | Contract (in → out) | New / change | Test |
 | --- | --- | --- | --- | --- |
 | `selection` span and extension | core lib | `Selection::extend(cursor, to, unmark)`, `end_span()`, `mark_extension(&Listing, ext, on)` | change | `rusty-core/src/selection/tests/span.rs` (unit + proptest) |
-| `command` text forms | core | `SelectionExtend { to: CursorMove, unmark: bool }`, `SelectionExtension { mark: bool }`, `SelectionRestore` ↔ text | change | command round-trip tests + insta |
+| `command` text forms | core | `SelectionExtend { to: CursorMove, mode: SpanMode }`, `SelectionExtension { mark: bool }`, `SelectionRestore` ↔ text | change | command round-trip tests + insta |
 | `apply::select` | core | commands → `AppState` (span end, `last_marks`, all with folders) | change | `apply/tests/select_span.rs` |
 | `browser::filter` hidden marks | ui controller | refilter keeps hidden names; `hidden_marks(tab) -> u64` | change | `browser/filter/marks_tests.rs` |
 | `file_list` keys | ui | actions → commands | change | `file_list/tests/input.rs` |
@@ -743,3 +743,9 @@ Then: gate, Windows CI, merge, an alpha build, and the owner check list (D16, D1
 *Recommended:* shortcuts yes, as the last part of Part D, since you asked for Alt. Auto-scroll and spring-loading also yes, but optional: they run after the core drag works and can slip to a later alpha without blocking Part X.
 
 Answers (2026-10-20): Q1 yes, Total Commander right-drag marking. Q2 `never`, as in Explorer. Q3 yes to (a), (b) and (c). Q4 yes to shortcuts, auto-scroll and spring-loaded targets. Added D20, the left-drag lasso.
+
+- 2026-10-20 — K7 review fixes on `p36-k`.
+  - Core: `SpanMode { Mark, Unmark, Toggle }` replaces `unmark: bool` in `Selection::extend` and `SelectionExtend`; the text form is `selection.extend { to: down, mode: mark|unmark|toggle }` (printed-commands snapshot updated). Toggle = base XOR span; moving back restores the base. A span target past the last row (`Row(r)` with r ≥ len) holds no rows. `PaneScroll` no longer ends the span.
+  - Lasso: Ctrl toggles (D20). The tracked y is clamped to the list viewport, so a drag past an edge marks only shown rows; the rectangle still follows the raw pointer. A lasso from below that comes back below sends `Row(len)` and shrinks to the base (D3).
+  - Browser: unmark-all and the empty-space click save visible plus filter-hidden marks (D5). `/` under a filter puts saved names the filter hides into the hidden-marks set, and succeeds when only hidden names match.
+  - Footer text is now "N marked not shown", since show-hidden/show-system also hide marks.
