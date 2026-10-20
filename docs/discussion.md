@@ -65,7 +65,7 @@ Modularity, whichever UI:
 
 ## Design rounds
 
-All prototypes live in [`design/prototype`](../design/prototype) (open `picker.html`), with a single-file copy in [`design/commander-bundle.html`](../design/commander-bundle.html). Shared online version: <https://claude.ai/artifact/3NSKQoaSK7ptjxMXjtZGg6> (private until shared).
+The first-round prototypes are no longer in the repository. Shared online version: <https://claude.ai/artifact/3NSKQoaSK7ptjxMXjtZGg6> (private until shared).
 
 **Round 1, four directions**
 
