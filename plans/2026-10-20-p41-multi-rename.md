@@ -168,12 +168,10 @@ Roles: Sonnet 5.5 medium or high for decided backend and UI work, Opus 5.5 mediu
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | **Part A — engine** | | | | | | | |
 | A1 | `rename::mask` | api-builder (Sonnet) | high | — | `cargo nextest run -p rusty-core rename::tests::mask` | done | |
-| A2 | `rename::rules` | api-builder (Sonnet) | high | A1 | `cargo nextest run -p rusty-core rename::tests::rules` | blocked | |
-| A3 | `OpKind::Rename` + arms | api-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-core -p rusty-ui op_plan activity job_card` | ready | |
-| A4 | `rename::check` | api-builder (Sonnet) | high | — | `cargo nextest run -p rusty-core rename::tests::check` | done | |
+| A2 | `rename::rules` | api-builder (Sonnet) | high | A1 | `cargo nextest run -p rusty-core rename::tests::rules` | ready | |
 | A3 | `OpKind::Rename` + arms | api-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-core -p rusty-ui op_plan activity job_card` | done | |
-| A4 | `rename::check` | api-builder (Sonnet) | high | — | `cargo nextest run -p rusty-core rename::tests::check` | ready | |
-| A5 | `rename::order` + `plan_batch` | api-builder (Sonnet) | high | A3, A4 | `cargo nextest run -p rusty-core rename::tests::order` | blocked | |
+| A4 | `rename::check` | api-builder (Sonnet) | high | — | `cargo nextest run -p rusty-core rename::tests::check` | done | |
+| A5 | `rename::order` + `plan_batch` | api-builder (Sonnet) | high | A3, A4 | `cargo nextest run -p rusty-core rename::tests::order` | ready | |
 | A6 | `fake` case-insensitive mode | api-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-fs fake::tests::fold` | done | |
 | A7 | `job::rename` all or nothing | api-builder (Sonnet) | high | A5, A6 | `cargo nextest run -p rusty-fs job::tests::rename`; Windows CI | blocked | |
 | A8 | journal undo queries | api-builder (Sonnet) | high | — | `cargo nextest run -p rusty-store journal` | ready | |
