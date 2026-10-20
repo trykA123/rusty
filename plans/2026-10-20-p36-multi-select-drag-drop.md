@@ -217,8 +217,8 @@ Later, not in P36:
 | K3 | `browser::filter` hidden marks | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-ui browser::filter` | done (`Event::MarksRestored`) | |
 | K4a | `file_list` key actions | ui-builder (Sonnet) | medium | K2b | `cargo nextest run -p rusty-ui file_list` | done | |
 | K4b | bindings, registry, labels, key tests | ui-builder (Sonnet) | medium | K4a | `cargo nextest run -p rusty-ui file_list commands`; `cargo xtask gate` (l10n) | done | |
-| K5 | `file_list` mouse | ui-builder (Opus) | medium | K4b | `cargo nextest run -p rusty-ui file_list window_view::tests::shell_menu` | blocked | |
-| K5b | `file_list` left-drag lasso (D20) | ui-builder (Opus) | medium | K5 | `cargo nextest run -p rusty-ui file_list::tests::lasso` | blocked | |
+| K5 | `file_list` mouse | ui-builder (Opus) | medium | K4b | `cargo nextest run -p rusty-ui file_list window_view::tests::shell_menu` | done | |
+| K5b | `file_list` left-drag lasso (D20) | ui-builder (Opus) | medium | K5 | `cargo nextest run -p rusty-ui file_list::tests::lasso` | done | |
 | K6 | status bar hidden count | ui-builder (Sonnet) | medium | K3, K4b | `cargo nextest run -p rusty-ui status_bar window_view` | blocked | |
 | K7 | review Part K | reviewer (Opus) | high | K5, K6 | review notes; gate; Windows CI | blocked | |
 | D1 | `op_plan::drop_op` | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-core op_plan::drop` | ready | |
@@ -715,6 +715,14 @@ Then: gate, Windows CI, merge, an alpha build, and the owner check list (D16, D1
   - F5, F6, F8, Ctrl+C/X and drag read `selected_sources`, which only sees marks in the shown listing, so they never touch hidden rows.
   - `browser/mod.rs` was at the 400-line limit, so `open_row`, `go_up`, `open_at`, `open_tab_at` and `set_launcher` moved unchanged to `browser/open.rs`.
   - Linux aliases (owner decision): `add`, `subtract`, `multiply`, `divide`, `ctrl-add`, `ctrl-subtract`, `alt-add` and `alt-subtract` are bound beside `+`, `-`, `*`, `/`, `ctrl-+`, `ctrl--`, `alt-+` and `alt--` for mark_pattern, unmark_pattern, invert_marks, restore_marks, mark_all, unmark_all, mark_extension and unmark_extension. `ctrl-multiply` and the other numpad chords stay unbound. The bound-key snapshots gained exactly those 8 rows, and the FileList action count went from 54 to 62.
+
+- 2026-10-20 — K5 and K5b done on `p36-k`.
+  - Rows: Ctrl+click moves the cursor and toggles; Shift+click and Ctrl+Shift+click send `SelectionExtend { to: Row(r) }`. Both act in `on_click`; mouse-down with Ctrl or Shift only takes focus. GPUI fires `on_click` after a movement when no `on_drag` is set, so a click that follows a lasso is swallowed by a flag that the next mouse-down clears (no timers).
+  - Empty click: a plain left click below the last row sends `SelectionClear` on mouse up, not on mouse down, so a lasso that starts there keeps the marks.
+  - Right-drag: the first row change cancels the menu prefetch, puts the cursor back on the start row and starts the span; every row change sends `SelectionExtend { to: Row(r), unmark: start_marked }`. A release after a drag does not toggle.
+  - Lasso: a left press on the gap right of the name text (a `flex_1` zone in the Name cell) or below the last row arms it; past 4 px it draws a rectangle (accent at 12 % alpha, 1 px accent border, no animation) and spans the crossed rows from the start row (or the last row, from below). Ctrl unmarks. Move and release are window listeners, so the lasso follows the pointer anywhere inside the window. A press on the icon or the name text does nothing new (reserved for D9).
+  - Not done: auto-scroll near the list edges (needs a timer while the pointer rests; left to D8). A lasso started below the last row that crossed rows and comes back below them keeps the last row marked, because a span always contains its anchor.
+  - `render_row` and `render_rows` moved to `file_list/rows.rs`. Gallery page "Mouse marks" (`p36-k5-mouse-marks`) drives real pointer events: Ctrl/Shift clicks, a right-drag range and a lasso in progress.
 
 ## Questions for the owner (answered 2026-10-20)
 
