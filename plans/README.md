@@ -111,7 +111,7 @@ rusty/
 │   ├── rusty-ui/           tokens/, primitives/, components/, views/
 │   ├── rusty-ui-gallery/   binary: every component in every state
 │   └── rusty-app/          the binary
-├── xtask/                  cargo xtask gate | size | coverage | binsize
+├── xtask/                  cargo xtask gate | size | l10n | coverage | binsize
 ├── spikes/                 throwaway experiments, outside the default build
 ├── docs/  design/  plans/
 ```
