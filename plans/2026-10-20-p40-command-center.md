@@ -206,8 +206,8 @@ Roles follow the owner's current rules: Sonnet 5.5 (medium or high) for decided 
 | **Part B — file sources** | | | | | | | |
 | B1 | visit and open hooks, frecency writer | ui-builder (Sonnet) | medium | A9 | `cargo nextest run -p rusty-ui window_view::tests::visits`; `-p rusty-app search_hooks` | blocked | |
 | B2 | `rusty-index::table` | api-builder (Sonnet) | high | — | `cargo nextest run -p rusty-index table` | done | |
-| B3 | `rusty-index::search` | api-builder (Sonnet) | high | A1, B2 | `cargo nextest run -p rusty-index search` | blocked | |
-| B4 | `rusty-index::walker` | api-builder (Sonnet) | high | B2 | `cargo nextest run -p rusty-index walker` | blocked | |
+| B3 | `rusty-index::search` | api-builder (Sol 6.1) | xhigh | A1, B2 | `cargo nextest run -p rusty-index search` | ready | |
+| B4 | `rusty-index::walker` | api-builder (Sol 6.1) | xhigh | B2 | `cargo nextest run -p rusty-index walker` | ready | |
 | B5 | Recent and Tabs sources | ui-builder (Sonnet) | medium | A5, B1 | `cargo nextest run -p rusty-ui command_center::tests::file_sources::recent` | blocked | |
 | B6 | Here source | ui-builder (Sonnet) | high | B3, B4, B5 | `cargo nextest run -p rusty-ui command_center::tests::file_sources::here` | blocked | |
 | B7 | Paths source (path mode) | ui-builder (Sonnet) | medium | B5 | `cargo nextest run -p rusty-ui command_center::tests::file_sources::paths` | blocked | |
@@ -216,7 +216,7 @@ Roles follow the owner's current rules: Sonnet 5.5 (medium or high) for decided 
 | B10 | review Part B | reviewer (Opus) | high | B6, B8, B9 | review notes; gate; Windows CI | blocked | |
 | **Part C — disk index** | | | | | | | |
 | C0 | Windows facts for the index | researcher (Sonnet) | medium | — | answers with sources, in the Log | ready | |
-| C1 | `rusty-index::file` | api-builder (Sonnet) | high | B2 | `cargo nextest run -p rusty-index file` | blocked | |
+| C1 | `rusty-index::file` | api-builder (Sol 6.1) | xhigh | B2 | `cargo nextest run -p rusty-index file` | ready | |
 | C2 | `[search]` settings keys | api-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-store settings` | ready | |
 | C3 | `rusty-index::host` (walk index) | api-builder (Sonnet) | high | B4, C1, C2 | `cargo nextest run -p rusty-index host` | blocked | |
 | C4 | `rusty-index::usn` | api-builder (Sonnet) | high | B2, C0 | `cargo nextest run -p rusty-index usn` | blocked | |
