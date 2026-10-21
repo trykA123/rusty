@@ -48,6 +48,22 @@ Outside Downloads the warm time before `main` drops from ≈ 285 ms to ≈ 95 ms
 
 Third set, after `Unblock-File` (Mark of the Web removed): before `main` 320 / 96 / 100 / 95 ms, GPUI start 271 / 249 / 264 / 269 ms, first usable 748 / 500 / 525 / 522 ms, private bytes ≈ 140 MB. Unblocking does not change the time before `main` (≈ 95 ms warm); the lower totals come from GPUI's start, which varies by ±30 ms between sets.
 
+Fourth set, build 3b948e3 (alpha-2026-10-21b), 21 October 2026, outside Downloads and unblocked. Run 1 is the first launch after a restart; runs 2–4 are warm; run 4 used `--left C:\Windows --right C:\Users`.
+
+| Phase | Run 1 | Run 2 | Run 3 | Run 4 |
+| --- | --- | --- | --- | --- |
+| Process start to `main` | 1281 ms | 102 ms | 114 ms | 114 ms |
+| `main` to window opening | 57 ms | 47 ms | 47 ms | 62 ms |
+| Window opening to app running (GPUI start) | 285 ms | 292 ms | 284 ms | 257 ms |
+| App running to window built | 87 ms | 83 ms | 98 ms | 77 ms |
+| Window built to first usable | 35 ms | 39 ms | 48 ms | 30 ms |
+| **Start to first usable** | **1745 ms** | **563 ms** | **591 ms** | **540 ms** |
+| Private bytes, idle | 137.4 MB | 137.1 MB | 136.8 MB | 136.2 MB |
+
+Warm start is where it was on 19 October (median 563 ms against 522–590 ms), although the app gained the Rich memory view, Ctrl+K sources and multi-rename. Memory is slightly lower. The cold start spends 1.28 s before `main`: Windows reads and scans the 98 MB exe after a restart. Ferrite's own part (from `main` to first usable) takes 464 ms cold and about 450 ms warm, so a smaller exe is the main lever for the cold start; GPUI's start (≈ 260–290 ms) is the largest part inside the app.
+
+Same build with `FERRITE_GPU=high-performance` (NVIDIA T1200 Laptop GPU), three warm runs: GPUI's start 1253 / 1238 / 1049 ms (Intel ≈ 260–290 ms), first usable 2218 / 2186 / 1825 ms, private bytes 254 / 256 / 237 MB. The discrete GPU is about three to four times slower to start and uses nearly twice the memory, so the low-power default stays.
+
 ## History
 
 | Date | Commit | Median warm first frame | Max private bytes |
@@ -55,3 +71,4 @@ Third set, after `Unblock-File` (Mark of the Web removed): before `main` 320 / 9
 | 2026-10-18 | 8654608 | 179.8 ms | 67.7 MB |
 | 2026-10-19 | 5844556 (owner's PC, warm median) | 645 ms first usable | 141.8 MB |
 | 2026-10-19 | 5844556 (owner's PC, outside Downloads, warm median) | 590 ms first usable | 140.7 MB |
+| 2026-10-21 | 3b948e3 (owner's PC, warm median) | 563 ms first usable | 137.4 MB |
