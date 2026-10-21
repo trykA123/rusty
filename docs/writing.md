@@ -44,10 +44,11 @@ Use this order. Leave out empty sections.
 2. Fixed
 3. Built but not switched on yet
 4. Known problems
-5. Check on the work PC
-6. One download line
+5. One download line
 
 The documenter writes the notes. The deployer publishes them.
+
+Release notes have no test checklist. Things to try go to the owner directly.
 
 "Built but not switched on yet" lists work that exists but that you cannot try. Never present it as a feature.
 
