@@ -11,7 +11,7 @@ Press Ctrl+K and one box opens. It finds commands, folders and files, like Flow 
 - Run any command by typing a few letters of its name.
 - Jump to a recent folder, a folder in an open tab, or any path.
 - Find files and folders in the current folder by part of the name. Files anywhere on your disks come with the disk index.
-- Coming: run a command that needs a value, such as Go to folder. The box will ask for the value and show a mistake under the input.
+- Run a command that needs a value: Go to folder, Open folder in new tab, Mark by pattern and Unmark by pattern. The box turns into a step with the command name as a chip. Type the folder or the pattern and press Enter. A mistake shows under the input and the box stays open.
 - Open the box with nothing typed. It shows your last 5 commands and your 8 most used folders.
 
 The panel is 640 px wide and sits over the title-bar search. It shows up to 12 rows. A click outside closes it. It does not open over a dialog.
@@ -39,6 +39,12 @@ Commands follow the focus. Movement and editing primitives are hidden.
 - Alt+Enter opens it in a new tab.
 - Ctrl+Shift+C copies the full path.
 - Esc clears the query, then closes the box.
+- In a step, Esc clears what you typed. On an empty step, Esc goes back to the search that found the command. After that, Esc works as above.
+- Shift+Enter, Ctrl+Enter, Alt+Enter and Ctrl+Shift+C do nothing on a command and in a step.
+
+In a step, Enter on an empty input says what to type. A slow or unreachable folder shows "Checking" under the input; if it does not answer, the box says so and stays where it is.
+
+If Enter comes before the file results arrive, the box waits for the best result and runs that.
 
 A click runs the row. Nothing runs on hover, on a timer or when the selection changes.
 
@@ -71,7 +77,6 @@ The `[search]` section has these keys:
 - Done: recent items, tabs, a live walk of the current folder (it stops at 300,000 entries), and paths.
 - Built, not switched on yet: the disk index. It keeps each drive's file ids, so a restart only catches up on changes.
 - Coming: the Windows service and the folder-walk fallback.
-- Coming: commands that ask for a value.
 
 ## Open questions
 
