@@ -1,6 +1,6 @@
 # Rich ELF and MAP views
 
-Status: the data is ready. The new Rich panels are in progress.
+Status: the Rich panels are in for ELF and MAP. The `.mdf` table is in.
 
 ## What it is
 
@@ -57,10 +57,8 @@ Custom mode lets you turn parts on or off: the inspector, the memory strip, the 
 
 ## Done and coming
 
-- Done: the data behind the panels, the shared resizable columns, the ELF, MAP, CSV and CAN tables, the noise filter, the MAP fixes, HEX and MOT folding, the `.mdf` reader, the memory-kind colours and the View-menu parts.
-- In progress: the strip and treemap elements.
-- Coming: the Rich layout in the ELF and MAP views, the `.mdf` viewer polish, and the Alt keys.
-- Until then, Rich does not show the new panels.
+- Done: the data behind the panels, the shared resizable columns, the ELF, MAP, CSV and CAN tables, the noise filter, the MAP fixes, HEX and MOT folding, the `.mdf` reader and table, the memory-kind colours, the View-menu parts, the Rich layout, and the strip and treemap with their keys.
+- Coming: the `.mdf` viewer polish.
 
 ## Open questions
 

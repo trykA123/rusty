@@ -1,6 +1,6 @@
 # Command center
 
-Status: the box, folders, tabs, recent items and paths are in. The disk index is built, not switched on yet.
+Status: the box, folders, tabs, recent items, paths and the Search page are in. The disk index is built, not switched on yet.
 
 ## What it is
 
@@ -76,7 +76,8 @@ The `[search]` section has these keys:
 - Done: Ctrl+K opens the command center in the window.
 - Done: recent items, tabs, a live walk of the current folder (it stops at 300,000 entries), and paths.
 - Built, not switched on yet: the disk index. It keeps each drive's file ids, so a restart only catches up on changes.
-- Coming: the Windows service and the folder-walk fallback.
+- Built, not switched on yet: the Windows index service. Its Install and Remove buttons are not connected, and Ctrl+K does not search through it yet.
+- Coming: the folder-walk fallback.
 
 ## Open questions
 
