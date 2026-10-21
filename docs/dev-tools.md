@@ -19,6 +19,8 @@ Versions are pinned to the latest stable release at the time each tool was added
 | serde (derive) | 1.0.229 | `xtask` |
 | serde_json | 1.0.154 | `xtask` |
 
+`vendor/gpui-pre-windows` is gpui-pre-windows 0.3.9 with Ferrite patches (low-power GPU, drop target that reports keys and effects, posted drag-source hook); its `src/gpui_windows.rs` header lists them.
+
 ## Coverage without rustup
 
 On a system Rust without rustup (for example Arch's `rust` package), `cargo llvm-cov` needs `LLVM_COV=/usr/bin/llvm-cov` and `LLVM_PROFDATA=/usr/bin/llvm-profdata`. The system LLVM must match `rustc -vV` (LLVM 23.1.1 today). CI uses rustup and needs neither.
