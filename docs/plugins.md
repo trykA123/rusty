@@ -113,6 +113,8 @@ Rusty works like a Framework laptop: the core is the mainboard, slots are the ex
 | Security | Hash lookup on VirusTotal, encrypted vaults (VeraCrypt, age), Mark-of-the-Web viewer |
 | Local AI | Semantic search with local models, rename suggestions, photo tagging; network only with explicit permission |
 
+**Example plugin: weekly Downloads folders.** The first small plugin to show how plugins work. It watches the Downloads folder. A new file or folder moves into a folder for its week, for example `2026-10-19 – 2026-10-25`. It needs one folder watch, one move per item and a setting for the folder and the week start. It shows each move in the activity strip and can be undone like any other move. Idea from the owner, 2026-10-21.
+
 **Module packs** (Developer, Photo, Homelab) install a curated set in one step and show every permission first.
 
 ## Versioning
