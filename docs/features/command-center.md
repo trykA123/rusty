@@ -1,6 +1,6 @@
 # Command center
 
-Status: commands are in. Files and the disk index are coming.
+Status: the box, folders, tabs, recent items and paths are in. The disk index is built, not switched on yet.
 
 ## What it is
 
@@ -10,8 +10,8 @@ Press Ctrl+K and one box opens. It finds commands, folders and files, like Flow 
 
 - Run any command by typing a few letters of its name.
 - Jump to a recent folder, a folder in an open tab, or any path.
-- Find a file anywhere on your disks by part of its name.
-- Run a command that needs a value, such as Go to folder. The box asks for the value. A mistake shows under the input.
+- Find files and folders in the current folder by part of the name. Files anywhere on your disks come with the disk index.
+- Coming: run a command that needs a value, such as Go to folder. The box will ask for the value and show a mistake under the input.
 - Open the box with nothing typed. It shows your last 5 commands and your 8 most used folders.
 
 The panel is 640 px wide and sits over the title-bar search. It shows up to 12 rows. A click outside closes it. It does not open over a dialog.
@@ -68,8 +68,9 @@ The `[search]` section has these keys:
 ## Done and coming
 
 - Done: Ctrl+K opens the command center in the window.
-- Coming: recent items, tabs, a live walk of the current folder (it stops at 300,000 entries), and paths.
-- Coming: the disk index with the Windows service and the folder-walk fallback.
+- Done: recent items, tabs, a live walk of the current folder (it stops at 300,000 entries), and paths.
+- Built, not switched on yet: the disk index. It keeps each drive's file ids, so a restart only catches up on changes.
+- Coming: the Windows service and the folder-walk fallback.
 - Coming: commands that ask for a value.
 
 ## Open questions

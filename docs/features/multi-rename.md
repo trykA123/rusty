@@ -1,6 +1,6 @@
 # Multi-rename
 
-Status: built but not switched on yet. The rename engine is done. The window and keys are not connected.
+Status: the window, keys and presets are in. The undo journal is built, not switched on yet.
 
 ## What it is
 
@@ -10,7 +10,7 @@ Mark files and press Ctrl+M to rename them all at once. A live table shows old a
 
 - Rename many files with a pattern, search and replace, case changes and cleanup.
 - See every old and new name in a preview table before you commit.
-- Undo a whole batch with one Ctrl+Z, even after a restart.
+- Undo a whole batch with Ctrl+Z, even after a restart. Ctrl+Z comes next.
 - Save a set of rules as a preset. "Last used" is listed first.
 
 Open it with Ctrl+M, with Rename in the context menu when two or more items are marked, with F2 on two or more marks, or from Ctrl+K. It takes the marked items, or the item under the cursor.
@@ -42,7 +42,7 @@ The order is: pattern, search and replace, case, cleanup, then the check.
 - It never overwrites a file.
 - The batch is all or nothing. If one rename fails or you cancel, every name goes back.
 - Chains, swaps and cycles are ordered safely with temporary names. A case-only rename works.
-- Ctrl+Z undoes the newest batch from the journal. It skips items that changed and counts them. If the undo notice is gone, it asks first. The last 20 batches are kept. There is no redo.
+- Ctrl+Z (comes next) undoes the newest batch from the journal. It skips items that changed and counts them. If the undo notice is gone, it asks first. The last 20 batches are kept. There is no redo.
 
 ## Keys in the tool
 
@@ -79,8 +79,9 @@ A modal panel with a preview table, a "Problems only" filter and a footer such a
 
 ## Done and coming
 
-- Done: masks, rules, planning, the all-or-nothing job, journal undo, presets storage, cleanup, and fields from files, photos and audio tags. The form and preview model are also done.
-- Coming: the window, Ctrl+M, Ctrl+Z for batches and the F2 change.
+- Done: the window, Ctrl+M, F2 on marks, the context menu, Ctrl+K, presets, masks, rules, planning, the all-or-nothing job, cleanup, the preview table, and fields from files, photos and audio tags.
+- Built, not switched on yet: the undo journal.
+- Coming: Ctrl+Z to undo a batch.
 
 ## Open questions
 
