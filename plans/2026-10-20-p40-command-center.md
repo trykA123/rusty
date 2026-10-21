@@ -221,8 +221,9 @@ Roles follow the owner's current rules: Sonnet 5.5 (medium or high) for decided 
 | C3 | `rusty-index::host` (walk index) | api-builder (Sonnet) | high | B4, C1, C2 | `cargo nextest run -p rusty-index host` | done | |
 | C4 | `rusty-index::usn` | api-builder (Sonnet) | high | B2, C0 | `cargo nextest run -p rusty-index usn` | done | |
 | C5 | `rusty-index::ntfs` | api-builder (Sonnet) | high | C4 | Windows CI `test-windows` (`cargo nextest run -p rusty-index ntfs`) | built, waits for Windows CI | |
+| C5b | NTFS index save and restore | api-builder (Sol 6.1) | high | C5 | `cargo nextest run -p rusty-index file ntfs` | done | |
 | C6 | `rusty-index::pipe` | api-builder (Opus) | high | C0, B3 | `cargo nextest run -p rusty-index pipe`; Windows CI | blocked | |
-| C7 | `rusty-app::index_service` | api-builder (Opus) | high | C5, C6, C1 | `cargo nextest run -p rusty-app index_service`; Windows CI; owner check | blocked | |
+| C7 | `rusty-app::index_service` | api-builder (Opus) | high | C5, C5b, C6, C1 | `cargo nextest run -p rusty-app index_service`; Windows CI; owner check | blocked | |
 | C8 | `command_center::index_source` | ui-builder (Sonnet) | high | C3, C6, B10 | `cargo nextest run -p rusty-ui command_center::tests::index_source` | blocked | |
 | C9 | Search settings page | ui-builder (Sonnet) | medium | C2, C7 | `cargo nextest run -p rusty-ui settings`; gallery shot | blocked | |
 | C10 | index activity in the strip | ui-builder (Sonnet) | medium | C8, P39 S3 | `cargo nextest run -p rusty-ui window_view::tests::activity` | blocked | |
@@ -418,6 +419,13 @@ Roles follow the owner's current rules: Sonnet 5.5 (medium or high) for decided 
 - **Check:** Windows CI `cargo nextest run -p rusty-index ntfs` on a VHD or the runner's volume, with admin; the Linux build compiles it out.
 - **Stop if:** the CI runner cannot open a volume handle.
 
+### C5b — NTFS index save and restore
+
+- **Read:** D21–D23; C3–C5 Log lines; `file`, `ntfs`, `usn`, `table`, `host`.
+- **Change:** format version 2 adds a counted `FrnMap` of little-endian u128 references and u32 entry ids. Both index kinds use this version; walk snapshots write an empty map through the existing API. Keep atomic writes, complete in-memory loading and safe Rust. Refuse old versions, malformed files and mismatched counts; the caller deletes and re-enumerates.
+- **API:** `file::save_with_ids` / `load_with_ids` persist the map. `NtfsIndex::snapshot` borrows the table, map and saved journal position only when no rename is pending. `NtfsIndex::restore` validates entry-id bounds, the expected volume serial and journal id, and restores the saved next USN. Pending renames are never persisted. Existing resume checks still require enumeration after a journal change or wrap.
+- **Check:** `cargo nextest run -p rusty-index file ntfs`: restore then apply a later journal batch exactly like the original; refuse old and truncated files, invalid entry ids and wrong journal ids; defer snapshots during pending renames. The walk host still saves and loads. Finish with `cargo xtask check -p rusty-index`.
+
 ### C6 — pipe
 
 - **Read:** C0 answers; D22.
@@ -519,3 +527,4 @@ The original questions:
 - 2026-10-21 — B6 done: `HereSource` and `HereWalks` (`file_sources/here.rs`). One `rusty-index` walk per root runs on its own thread, starts on the first file query, is kept in the window's command-center state, and is reused while the root is the same and a finished walk is under 60 s old. A walk that is still running is reused at any age; one cancelled by closing the box or by a root change is dropped. The cap is 300,000 entries; past it the Files header reads "Files · First 300,000 entries of <root> · the disk index finds the rest" (`Heading::FilesCapped`). The search task now loops: it searches the latest published table, then waits (`ResultSource::wait_for_more`) for the walk to grow and searches again, so hits stream in; a later round keeps the row the user moved to. The walker publishes every 10,000 entries and at the end, so a tree under 10,000 entries shows at completion. Here hits are Open targets like Recent; the merge shows a place once, with order Tabs, then Recent, then Here. Seven source tests, one merge test, one window test.
 - 2026-10-21 — B7 done: `PathsSource` (`file_sources/paths.rs`). Path mode (`C:`, `\`, `~`) splits the input at the last separator, resolves the parent with `typed_location`, and lists its folders through the provider on a worker thread. The source waits 2 s (the P14 listing wait) and polls the cancel flag, so a keystroke or a dead share ends the wait. A hung or lost listing shows the header note "<path> does not answer" (`Heading::Offline`, carried by the new `Notes` next to `Capped`) and no rows. The typed folder gets a "Go to" row when it exists; children are filtered by the last segment. Tab in path mode types the selected folder name and a separator (`completion`). The merge order is Tabs, Recent, Paths, Here. Eleven source tests.
 - 2026-10-21 — B7 review note (orchestrator): for B10: check that a hung network listing in path mode cannot leave one blocked worker thread per keystroke.
+- 2026-10-21 — C5b done: format version 2 persists the counted full-width FRN map; existing walk save/load calls use an empty map. Quiet snapshots omit pending renames; restore validates entry ids, volume serial and journal id, then uses the saved next USN with existing resume checks. Thirteen new pure tests cover persistence, later journal changes, malformed counts and references, identity mismatches, pending renames and wrap recovery; the initial test run failed on the missing APIs. Targeted file/NTFS run: 54 passed. Index check: all 7 steps passed (10.6 s); 146 tests passed, 1 skipped. Windows volume access remains unverified.
