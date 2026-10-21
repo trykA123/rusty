@@ -62,3 +62,4 @@ A long right-click, the Menu key or Shift+F10 opens the Windows context menu for
 - 2026-10-17 — Status closed: M1 (merged 164bd28; decisions D5, D7 came from it) was done but still marked running.
 - 2026-10-19 — Owner: right-click on the empty part of a pane shows no menu, so there is no way to create a file from the mouse. M8 added (background menu and a New file command).
 - 2026-10-21 — Owner checked M8 on the work PC (Windows): right-click on empty space works. M8 done.
+- 2026-10-21 — D72: owner confirmed the native-first menu, restyled, no Ferrite section, and asked to keep the current filter field. Needs a plan section (atoms) before work starts; it comes after P36 X6 drag-out.
