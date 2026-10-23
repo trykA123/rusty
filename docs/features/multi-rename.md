@@ -59,13 +59,13 @@ The order is: pattern, search and replace, case, cleanup, then the check.
 - Del excludes or includes a row.
 - Ctrl+S saves a preset. Ctrl+O opens the preset list.
 - Ctrl+R resets.
-- Ctrl+E edits the names as text.
-- Ctrl+Shift+Up and Ctrl+Shift+Down move a row.
+- Planned: Ctrl+E edits the names as text.
+- Planned: Ctrl+Shift+Up and Ctrl+Shift+Down move a row.
 
 ## Also planned
 
-- Load names from a file, and a counter that restarts per folder.
-- An optional rename log in Settings > Files > Rename log.
+- Edit names as text, load or paste names, and copy the new names.
+- Reorder or sort the preview, and restart the counter per folder for multi-folder sources.
 
 ## Layout
 
@@ -82,6 +82,7 @@ A modal panel with a preview table, a "Problems only" filter and a footer such a
 
 - Done: the window, Ctrl+M, F2 on marks, the context menu, Ctrl+K, presets, masks, rules, planning, the all-or-nothing job, cleanup, the preview table, fields from files, photos and audio tags, the undo journal with Ctrl+Z, and the preview highlights with the 260-character warning.
 - Done on the backend branch: F2 on one item uses the same planner and journal, with undo after a restart. Failed renames keep their error in the pane. Native Windows checks remain pending.
+- Done on the backend branch: Settings > Files > Rename log enables `rename.log` beside `ferrite.toml`. Completed forward batches append quoted original-to-final paths. Staging names, failed batches and undo are omitted. A log error leaves the rename and undo intact and appears in the activity detail.
 
 ## Open questions
 

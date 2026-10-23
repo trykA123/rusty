@@ -41,6 +41,7 @@ pub(super) fn is_item(step: &Step) -> bool {
 pub struct RenameReport {
     pub left: Vec<Location>,
     pub skipped: usize,
+    pub log_error: Option<String>,
 }
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
@@ -64,6 +65,7 @@ pub type UndoLogFactory = Arc<dyn Fn(&UndoOffer) -> Result<Box<dyn OpLog>, Strin
 pub type ListPresets = Arc<dyn Fn() -> Result<RenamePresetList, String> + Send + Sync>;
 pub type SavePreset = Arc<dyn Fn(&str, &str) -> Result<(), String> + Send + Sync>;
 pub type DeletePreset = Arc<dyn Fn(&str) -> Result<(), String> + Send + Sync>;
+pub type WriteRenameLog = Arc<dyn Fn(&OperationPlan) -> Result<(), String> + Send + Sync>;
 
 #[derive(Clone)]
 pub struct RenameHooks {
@@ -72,4 +74,5 @@ pub struct RenameHooks {
     pub presets: ListPresets,
     pub save: SavePreset,
     pub delete: DeletePreset,
+    pub log: Option<WriteRenameLog>,
 }

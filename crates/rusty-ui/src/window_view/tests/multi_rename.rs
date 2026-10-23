@@ -252,6 +252,7 @@ fn the_token_menu_inserts_at_the_caret(cx: &mut TestAppContext) {
 fn memory_hooks(store: &Arc<Mutex<Vec<NamedPreset>>>) -> RenameHooks {
     let (list, save, delete) = (store.clone(), store.clone(), store.clone());
     RenameHooks {
+        log: None,
         last: Arc::new(|| Ok(None)),
         undo_log: Arc::new(|_| Err("none".to_owned())),
         presets: Arc::new(move || {

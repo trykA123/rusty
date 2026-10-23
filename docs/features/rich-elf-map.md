@@ -25,7 +25,7 @@ Under 1,100 px the columns stack.
 - Those files load in the background. Simple never waits.
 - Kinds are code, rodata, data, bss, other and Fill.
 - Owners come from MAP objects, per-function sections and sized symbols. Zero-size global or weak symbols get an estimate. The rest is "(not attributed)". A stripped ELF shows a note instead of the treemap.
-- Module names currently use AUTOSAR `Rte_` and `SchM_` prefixes, then the text up to the first `_` or `.`. The configured prefix list in `ferrite.toml` (`[automotive] modules = [...]`) still needs wiring.
+- Module names use the longest configured prefix in `ferrite.toml` (`[automotive] modules = [...]`), then AUTOSAR `Rte_` and `SchM_` prefixes, then the text up to the first `_` or `.`. The Module prefixes setting edits the same list. Changes regroup open ELF and MAP views in the background; the source line counts modules matched from the list.
 - The treemap shows the top 22 groups and an "N more" tile.
 
 ## Tables

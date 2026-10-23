@@ -107,7 +107,7 @@ pub(crate) fn open(launch: Launch) {
     let memory = open_memory(dirs.as_ref());
     let local = Arc::new(LocalFs::new());
     let (operations, _instance, journal) = operations(dirs.as_ref(), &home, local.as_ref());
-    let rename = crate::rename_hooks::hooks(journal, memory.clone());
+    let rename = crate::rename_hooks::profile_hooks(journal, memory.clone(), dirs.as_ref());
     metrics::mark("databases opened");
     let keys = CacheKeys::new(Arc::new(drive_identity));
     let (cache, disk) = listing_cache(dirs.as_ref(), &keys, &state);

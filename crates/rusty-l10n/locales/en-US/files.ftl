@@ -192,3 +192,4 @@ files-path-copied = { $count ->
     [one] Copied path
    *[other] Copied { $count } paths
 }
+activity-rename-log-failed = Renamed, but could not write rename.log: { $error }. Check the profile folder.

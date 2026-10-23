@@ -116,3 +116,4 @@ viewer-mdf-no-spaces = No spaces defined
 viewer-mdf-spaces = Spaces: { $spaces }
 viewer-mdf-line = Line { $line }: { $reason }
 viewer-mdf-line-cap = Line { $line }: reading stopped at the { $limit } limit
+space-modules-listed = modules: { $count } from your list

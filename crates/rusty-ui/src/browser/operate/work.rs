@@ -11,7 +11,7 @@ use std::time::{Duration, Instant};
 
 use super::{Copying, Ended, JobUpdate, LogFactory, OpRequest};
 use crate::browser::{
-    Message, RenameReport, UndoLogFactory, UndoOffer, Waker, run_batch, run_undo,
+    Message, RenameReport, UndoLogFactory, UndoOffer, Waker, WriteRenameLog, run_batch, run_undo,
 };
 
 const PROGRESS_EVERY: Duration = Duration::from_millis(50);
@@ -89,7 +89,9 @@ pub(super) fn worker_count(
 
 pub(in crate::browser) enum Run {
     Plain,
-    Rename,
+    Rename {
+        log: Option<WriteRenameLog>,
+    },
     Undo {
         offer: UndoOffer,
         log: UndoLogFactory,
@@ -169,7 +171,7 @@ impl JobWork {
     ) -> Result<(JobOutcome, RenameReport), String> {
         let mut log = match &self.run {
             Run::Undo { offer, log } => log(offer)?,
-            Run::Plain | Run::Rename => (self.factory)(&self.plan)?,
+            Run::Plain | Run::Rename { .. } => (self.factory)(&self.plan)?,
         };
         let mut ctx = JobContext {
             ops: self.ops.as_ref(),
@@ -177,12 +179,17 @@ impl JobWork {
             cancel: &self.cancel,
             progress,
         };
-        let (outcome, report) = match &self.run {
+        let (outcome, mut report) = match &self.run {
             Run::Plain => (self.run_plain(&mut ctx), RenameReport::default()),
-            Run::Rename => run_batch(&self.plan, &mut ctx),
+            Run::Rename { .. } => run_batch(&self.plan, &mut ctx),
             Run::Undo { offer, .. } => run_undo(&offer.plan, &offer.done, &mut ctx),
         };
         log.finish(&outcome, self.ops.as_ref());
+        if outcome == JobOutcome::Done
+            && let Run::Rename { log: Some(write) } = &self.run
+        {
+            report.log_error = write(&self.plan).err();
+        }
         Ok((outcome, report))
     }
 

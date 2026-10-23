@@ -26,6 +26,7 @@ mod metrics;
 mod pdf_helper;
 mod profile;
 mod rename_hooks;
+mod rename_log;
 mod search_hooks;
 mod settings;
 mod shell_menu;

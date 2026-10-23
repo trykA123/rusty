@@ -14,6 +14,8 @@ use crate::browser::{
     Browser, JobStatus, JobView, OpLog, Operations, RenameHooks, RenamePresetList, UndoOffer,
 };
 
+mod logging;
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum State {
     Open,
@@ -133,6 +135,7 @@ impl Journal {
     fn hooks(&self) -> RenameHooks {
         let (last, undo) = (self.clone(), self.clone());
         RenameHooks {
+            log: None,
             last: Arc::new(move || Ok(last.offer())),
             undo_log: Arc::new(move |offer: &UndoOffer| {
                 undo.wait_for_gate();

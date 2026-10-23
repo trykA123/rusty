@@ -94,6 +94,7 @@ impl Journal {
     fn hooks(&self) -> RenameHooks {
         let (last, undo) = (self.clone(), self.clone());
         RenameHooks {
+            log: None,
             last: Arc::new(move || Ok(last.offer())),
             undo_log: Arc::new(move |offer: &UndoOffer| {
                 let job = usize::try_from(offer.job).map_err(|e| e.to_string())? - 1;
@@ -456,6 +457,7 @@ fn a_restore_pending_batch_gives_a_start_up_notice_and_ctrl_z_finishes_it(cx: &m
 #[gpui_kit::test]
 fn a_hook_error_shows_on_the_status_line(cx: &mut TestAppContext) {
     let hooks = RenameHooks {
+        log: None,
         last: Arc::new(|| Err("disk gone".to_owned())),
         ..Journal::default().hooks()
     };

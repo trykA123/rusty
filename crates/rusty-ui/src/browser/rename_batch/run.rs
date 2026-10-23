@@ -20,7 +20,11 @@ pub(in crate::browser) fn run_batch(
         }
         RenameOutcome::Stuck { error, left } => {
             let seq = left.first().map_or(0, |first| seq_of(plan, first));
-            let report = RenameReport { left, skipped: 0 };
+            let report = RenameReport {
+                left,
+                skipped: 0,
+                ..RenameReport::default()
+            };
             (JobOutcome::Failed { seq, error }, report)
         }
     }
@@ -118,7 +122,11 @@ pub(in crate::browser) fn run_undo(
         }
     }
     let (left, unsure) = left_under_temporary_names(plan, ops);
-    let report = RenameReport { left, skipped };
+    let report = RenameReport {
+        left,
+        skipped,
+        ..RenameReport::default()
+    };
     let outcome = first.or(unsure).unwrap_or(JobOutcome::Done);
     (outcome, report)
 }
