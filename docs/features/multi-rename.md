@@ -66,7 +66,6 @@ The order is: pattern, search and replace, case, cleanup, then the check.
 
 - Load names from a file, and a counter that restarts per folder.
 - An optional rename log in Settings > Files > Rename log.
-- F2 on one item becomes undoable too.
 
 ## Layout
 
@@ -82,6 +81,7 @@ A modal panel with a preview table, a "Problems only" filter and a footer such a
 ## Done and coming
 
 - Done: the window, Ctrl+M, F2 on marks, the context menu, Ctrl+K, presets, masks, rules, planning, the all-or-nothing job, cleanup, the preview table, fields from files, photos and audio tags, the undo journal with Ctrl+Z, and the preview highlights with the 260-character warning.
+- Done on the backend branch: F2 on one item uses the same planner and journal, with undo after a restart. Failed renames keep their error in the pane. Native Windows checks remain pending.
 
 ## Open questions
 

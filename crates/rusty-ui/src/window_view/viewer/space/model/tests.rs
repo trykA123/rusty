@@ -34,9 +34,19 @@ fn with_mdf() -> Siblings {
             mdf: Some("app.mdf".into()),
             map: None,
             elf: None,
+            ..SiblingNames::default()
         },
         ..Siblings::default()
     }
+}
+
+#[test]
+fn a_sole_companion_is_named_as_such_in_the_provenance() {
+    let elf = parse(demo().expect("demo"));
+    let mut siblings = with_mdf();
+    siblings.names.only_mdf = true;
+    let model = build_model(&elf, None, &siblings, None);
+    assert!(model.provenance.contains("app.mdf, the only .mdf here"));
 }
 
 #[test]

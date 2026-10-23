@@ -209,7 +209,7 @@ fn provenance(
     siblings: &Siblings,
 ) -> String {
     let regions = match region_source {
-        Some(name) => t!("space-from-regions", name = name.to_owned()),
+        Some(name) => region_provenance(name, siblings),
         None => tr("space-from-clusters"),
     };
     [regions, owned, kinds]
@@ -217,6 +217,28 @@ fn provenance(
         .chain(siblings.problems.iter().map(problem_text))
         .collect::<Vec<_>>()
         .join(" · ")
+}
+
+fn region_provenance(name: &str, siblings: &Siblings) -> String {
+    let names = &siblings.names;
+    let extension = if names.only_mdf && names.mdf.as_deref() == Some(name) {
+        Some("mdf")
+    } else if names.only_map && names.map.as_deref() == Some(name) {
+        Some("map")
+    } else {
+        None
+    };
+    let name = extension.map_or_else(
+        || name.to_owned(),
+        |extension| {
+            t!(
+                "space-only-companion",
+                name = name.to_owned(),
+                extension = extension
+            )
+        },
+    );
+    t!("space-from-regions", name = name)
 }
 
 #[cfg(test)]

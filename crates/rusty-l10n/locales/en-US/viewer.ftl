@@ -53,6 +53,7 @@ space-scale-compressed = Compress gaps
 space-scale-true = True scale
 space-loading = Reading the address space…
 space-from-regions = regions from { $name }
+space-only-companion = { $name }, the only .{ $extension } here
 space-from-clusters = regions from address clusters
 space-from-no-symbols = no symbol table
 space-from-map = owners from { $name }

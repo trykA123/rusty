@@ -297,6 +297,21 @@ const RENAMED: [&str; 5] = ["docs", "d.txt", "xa.txt", "xb.txt", "xc.txt"];
 const ORIGINAL: [&str; 5] = ["docs", "a.txt", "b.txt", "c.txt", "d.txt"];
 
 #[gpui_kit::test]
+fn f2_on_one_file_can_be_undone_with_ctrl_z(cx: &mut TestAppContext) {
+    let journal = Journal::default();
+    let rig = open(cx, files(), &journal);
+    rig.press(cx, &["down", "f2", "ctrl-a"]);
+    rig.type_text(cx, "renamed.txt");
+    rig.press(cx, &["enter"]);
+    assert!(rig.listing(cx).contains(&"renamed.txt".to_owned()));
+    rig.press(cx, &["ctrl-z"]);
+    if rig.is_asking(cx) {
+        rig.press(cx, &["enter"]);
+    }
+    assert_eq!(rig.listing(cx), names(&ORIGINAL));
+}
+
+#[gpui_kit::test]
 fn ctrl_z_while_the_done_item_shows_puts_the_names_back_without_asking(cx: &mut TestAppContext) {
     let journal = Journal::default();
     let rig = open(cx, files(), &journal);
