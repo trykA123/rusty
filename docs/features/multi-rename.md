@@ -43,6 +43,9 @@ The order is: pattern, search and replace, case, cleanup, then the check.
 - The batch is all or nothing. If one rename fails or you cancel, every name goes back.
 - Chains, swaps and cycles are ordered safely with temporary names. A case-only rename works.
 - Ctrl+Z undoes the newest batch from the journal. It skips items that changed and counts them. If the undo notice is gone, it asks first. The last 20 batches are kept. There is no redo.
+- Undo and crash recovery compare the recorded file identity before putting a name back. A replacement stays untouched even when its size and timestamp match. Older steps without an identity are skipped.
+- An identity that cannot be read keeps undo retryable. Crash recovery keeps an older unverified rename pending when its original name is missing and its new name still exists.
+- A provider that cannot supply file identities refuses the rename step and puts earlier steps back.
 
 ## Keys in the tool
 

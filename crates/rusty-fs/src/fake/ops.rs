@@ -98,6 +98,21 @@ impl FakeFs {
 }
 
 impl ProviderOps for FakeFs {
+    fn file_identity(&self, location: &Location) -> Result<Option<crate::FileIdentity>, FsError> {
+        let path = self.own_path(location)?;
+        fail_now(self.record_call(&path, FakeOp::Identity), location)?;
+        let identity = self
+            .tree()
+            .identity(&path)
+            .ok_or_else(|| error(FsErrorKind::NotFound, location))?;
+        Ok(self
+            .volume_serial(location)?
+            .map(|volume| crate::FileIdentity {
+                volume,
+                file: u128::from(identity).to_le_bytes(),
+            }))
+    }
+
     fn create_folder(&self, location: &Location) -> Result<(), FsError> {
         let path = self.write_call(location, FakeOp::Create)?;
         let mut tree = self.tree();

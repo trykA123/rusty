@@ -6,6 +6,35 @@ use crate::RenameOutcome;
 
 const SEED: u32 = 7;
 
+#[test]
+fn a_missing_identity_refuses_the_step_and_puts_earlier_renames_back() {
+    let (fs, plan) = simple();
+    fs.set_volume_serial("d/b", None);
+    let outcome = run_batch(&fs, &plan);
+    assert!(
+        matches!(outcome, RenameOutcome::PutBack { seq: 1, error } if error.kind == FsErrorKind::NotSupportedYet)
+    );
+    assert_eq!(names(&fs), ["a", "b", "c"]);
+    assert_eq!(fs.calls("d/b", FakeOp::Rename), 0);
+}
+
+#[test]
+fn an_identity_read_error_refuses_the_step_and_puts_earlier_renames_back() {
+    let (fs, plan) = simple();
+    fs.fault(
+        "d/b",
+        FakeOp::Identity,
+        1,
+        Fault::Fail(FsErrorKind::AccessDenied),
+    );
+    let outcome = run_batch(&fs, &plan);
+    assert!(
+        matches!(outcome, RenameOutcome::PutBack { seq: 1, error } if error.kind == FsErrorKind::AccessDenied)
+    );
+    assert_eq!(names(&fs), ["a", "b", "c"]);
+    assert_eq!(fs.calls("d/b", FakeOp::Rename), 0);
+}
+
 fn rows(fs: &FakeFs, pairs: &[(&str, &str)]) -> Vec<Row> {
     pairs
         .iter()

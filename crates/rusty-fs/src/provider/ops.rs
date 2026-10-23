@@ -2,7 +2,34 @@ use rusty_core::{FsError, FsErrorKind, Location};
 
 use super::{CancelToken, Provider};
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct FileIdentity {
+    pub volume: u64,
+    pub file: [u8; 16],
+}
+
 pub trait ProviderOps: Provider {
+    fn file_identity(&self, _location: &Location) -> Result<Option<FileIdentity>, FsError> {
+        Ok(None)
+    }
+    fn matches_identity(
+        &self,
+        location: &Location,
+        expected: Option<FileIdentity>,
+    ) -> Result<bool, FsError> {
+        let Some(expected) = expected else {
+            return Ok(false);
+        };
+        match self.file_identity(location) {
+            Ok(Some(identity)) => Ok(identity == expected),
+            Ok(None) => Err(FsError {
+                location: Some(location.clone()),
+                ..FsError::new(FsErrorKind::NotSupportedYet)
+            }),
+            Err(error) if error.kind == FsErrorKind::NotFound => Ok(false),
+            Err(error) => Err(error),
+        }
+    }
     fn create_folder(&self, location: &Location) -> Result<(), FsError>;
     fn create_file(&self, location: &Location) -> Result<(), FsError>;
     #[expect(

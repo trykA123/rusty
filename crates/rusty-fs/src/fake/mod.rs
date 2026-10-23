@@ -19,6 +19,7 @@ use watch::Watchers;
 pub enum FakeOp {
     List,
     Metadata,
+    Identity,
     Create,
     Copy,
     Rename,

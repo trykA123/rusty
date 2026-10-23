@@ -29,6 +29,7 @@ struct Record {
     plan: OperationPlan,
     done: Vec<u32>,
     undone: Vec<u32>,
+    identities: std::collections::HashMap<u32, rusty_fs::FileIdentity>,
 }
 
 struct Book {
@@ -75,12 +76,28 @@ impl Journal {
         undone
     }
 
-    fn add(&self, plan: OperationPlan, done: Vec<u32>) {
+    fn add(&self, plan: OperationPlan, done: Vec<u32>, fs: &FakeFs) {
+        let identities = (0_u32..)
+            .zip(&plan.steps)
+            .filter_map(|(seq, step)| {
+                let Step::Rename { target, .. } = step else {
+                    return None;
+                };
+                done.contains(&seq)
+                    .then(|| {
+                        fs.file_identity(target)
+                            .unwrap()
+                            .map(|identity| (seq, identity))
+                    })
+                    .flatten()
+            })
+            .collect();
         self.book().jobs.push(Record {
             state: State::Done,
             plan,
             done,
             undone: Vec::new(),
+            identities,
         });
     }
 
@@ -140,6 +157,7 @@ impl Journal {
                     plan: plan.clone(),
                     done: Vec::new(),
                     undone: Vec::new(),
+                    identities: std::collections::HashMap::new(),
                 });
                 let job = book.jobs.len() - 1;
                 drop(book);
@@ -173,6 +191,24 @@ impl Log {
 }
 
 impl JobLog for Log {
+    fn prepare_rename(
+        &mut self,
+        seq: u32,
+        identity: rusty_fs::FileIdentity,
+    ) -> Result<(), FsError> {
+        self.journal.book().jobs[self.job]
+            .identities
+            .insert(seq, identity);
+        Ok(())
+    }
+
+    fn rename_identity(&self, seq: u32) -> Result<Option<rusty_fs::FileIdentity>, FsError> {
+        Ok(self.journal.book().jobs[self.job]
+            .identities
+            .get(&seq)
+            .copied())
+    }
+
     fn step(&mut self, seq: u32, outcome: StepOutcome) -> Result<(), FsError> {
         let mut book = self.journal.book();
         if outcome == StepOutcome::Done {
@@ -220,6 +256,84 @@ const NAMES: [&str; 5] = ["a", "b", "c", "d", "e"];
 const SWAP_AND_RENAMES: [(&str, &str); 5] =
     [("a", "b"), ("b", "a"), ("c", "x"), ("d", "y"), ("e", "z")];
 const SIMPLE: [(&str, &str); 3] = [("a", "x"), ("b", "y"), ("c", "z")];
+
+#[test]
+fn undo_leaves_a_replacement_with_matching_metadata_alone() {
+    let fs = home(&["a"]);
+    let journal = Journal::new();
+    let mut browser = open(&fs, &journal);
+    run(&mut browser, batch(&fs, &[("a", "x")]), None);
+    let old = fs.metadata(&fs.location("home/x")).unwrap();
+    fs.remove("home/x");
+    fs.add_entry("home", old);
+    undo(&mut browser, &journal);
+    assert_eq!(listed(&browser), ["x"]);
+    assert_eq!(last_job(&browser).report.skipped, 1);
+    assert_eq!(last_job(&browser).status, JobStatus::Done);
+}
+
+#[test]
+fn undo_keeps_an_in_place_edit_and_restores_its_original_name() {
+    let fs = home(&["a"]);
+    let journal = Journal::new();
+    let mut browser = open(&fs, &journal);
+    run(&mut browser, batch(&fs, &[("a", "x")]), None);
+    fs.add_file("home/x", 99);
+    undo(&mut browser, &journal);
+    assert_eq!(listed(&browser), ["a"]);
+    assert_eq!(size_of(&fs, "a"), Some(99));
+    assert_eq!(last_job(&browser).report.skipped, 0);
+}
+
+#[test]
+fn undo_skips_an_older_batch_without_recorded_identities() {
+    let fs = home(&["a"]);
+    let journal = Journal::new();
+    let mut browser = open(&fs, &journal);
+    run(&mut browser, batch(&fs, &[("a", "x")]), None);
+    journal.book().jobs[0].identities.clear();
+    undo(&mut browser, &journal);
+    assert_eq!(listed(&browser), ["x"]);
+    assert_eq!(last_job(&browser).report.skipped, 1);
+}
+
+#[test]
+fn an_unreadable_identity_stops_undo_and_a_retry_finishes_it() {
+    let fs = home(&["a"]);
+    let journal = Journal::new();
+    let mut browser = open(&fs, &journal);
+    run(&mut browser, batch(&fs, &[("a", "x")]), None);
+    fs.fault(
+        "home/x",
+        FakeOp::Identity,
+        1,
+        Fault::Fail(FsErrorKind::AccessDenied),
+    );
+    undo(&mut browser, &journal);
+    assert_eq!(listed(&browser), ["x"]);
+    assert_eq!(journal.state(), State::RestorePending);
+    assert!(matches!(last_job(&browser).status, JobStatus::Failed(_)));
+    undo(&mut browser, &journal);
+    assert_eq!(listed(&browser), ["a"]);
+    assert_eq!(journal.state(), State::Undone);
+}
+
+#[test]
+fn an_unavailable_identity_keeps_undo_pending_until_it_can_be_checked() {
+    let fs = home(&["a"]);
+    let journal = Journal::new();
+    let mut browser = open(&fs, &journal);
+    run(&mut browser, batch(&fs, &[("a", "x")]), None);
+    let volume = fs.volume_serial(&fs.location("home/x")).unwrap().unwrap();
+    fs.set_volume_serial("home/x", None);
+    undo(&mut browser, &journal);
+    assert_eq!(listed(&browser), ["x"]);
+    assert_eq!(journal.state(), State::RestorePending);
+    fs.set_volume("home/x", volume);
+    undo(&mut browser, &journal);
+    assert_eq!(listed(&browser), ["a"]);
+    assert_eq!(journal.state(), State::Undone);
+}
 
 fn home(names: &[&str]) -> Arc<FakeFs> {
     let fs = FakeFs::new();
@@ -792,7 +906,7 @@ fn undo_lists_a_temporary_name_left_by_a_step_that_was_never_journaled() {
     let temporary = target_of(&plan, to_temporary);
     fs.rename_entry("home/c", "home/x");
     fs.rename_entry(&source_of(&plan, to_temporary), &temporary);
-    journal.add(plan, vec![u32::try_from(to_x).unwrap()]);
+    journal.add(plan, vec![u32::try_from(to_x).unwrap()], &fs);
     undo(&mut browser, &journal);
     let job = last_job(&browser);
     assert_eq!(job.status, JobStatus::Done);

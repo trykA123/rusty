@@ -41,6 +41,10 @@ struct Counting<'a> {
 }
 
 impl JobLog for Counting<'_> {
+    fn rename_identity(&self, seq: u32) -> Result<Option<rusty_fs::FileIdentity>, FsError> {
+        self.inner.rename_identity(seq)
+    }
+
     fn step(&mut self, seq: u32, outcome: StepOutcome) -> Result<(), FsError> {
         self.inner.step(seq, outcome)
     }
@@ -100,7 +104,7 @@ pub(in crate::browser) fn run_undo(
         if !done.contains(&seq) {
             continue;
         }
-        let result = match still_undoable(ops, source, target) {
+        let result = match still_undoable(ops, &counting, (seq, source, target)) {
             Ok(true) => ops.rename(target, source).map(|()| StepOutcome::Done),
             Ok(false) => {
                 skipped += usize::from(is_item(step));
@@ -144,10 +148,13 @@ fn is_there(ops: &dyn ProviderOps, location: &Location) -> Result<bool, FsError>
 
 fn still_undoable(
     ops: &dyn ProviderOps,
-    source: &Location,
-    target: &Location,
+    log: &dyn JobLog,
+    (seq, source, target): (u32, &Location, &Location),
 ) -> Result<bool, FsError> {
-    Ok(is_there(ops, target)? && !is_there(ops, source)?)
+    if !is_there(ops, target)? || is_there(ops, source)? {
+        return Ok(false);
+    }
+    ops.matches_identity(target, log.rename_identity(seq)?)
 }
 
 fn left_under_temporary_names(

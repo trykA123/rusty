@@ -30,6 +30,7 @@ struct Record {
     plan: OperationPlan,
     done: Vec<u32>,
     undone: Vec<u32>,
+    identities: std::collections::HashMap<u32, rusty_fs::FileIdentity>,
 }
 
 #[derive(Clone, Default)]
@@ -44,12 +45,28 @@ impl Journal {
         self.book().last().map(|record| record.state)
     }
 
-    fn add(&self, plan: OperationPlan, done: Vec<u32>, state: State) {
+    fn add(&self, plan: OperationPlan, (done, state): (Vec<u32>, State), fs: &FakeFs) {
+        let identities = (0_u32..)
+            .zip(&plan.steps)
+            .filter_map(|(seq, step)| {
+                let Step::Rename { target, .. } = step else {
+                    return None;
+                };
+                done.contains(&seq)
+                    .then(|| {
+                        fs.file_identity(target)
+                            .unwrap()
+                            .map(|identity| (seq, identity))
+                    })
+                    .flatten()
+            })
+            .collect();
         self.book().push(Record {
             state,
             plan,
             done,
             undone: Vec::new(),
+            identities,
         });
     }
 
@@ -100,6 +117,7 @@ impl Journal {
                         plan: plan.clone(),
                         done: Vec::new(),
                         undone: Vec::new(),
+                        identities: std::collections::HashMap::new(),
                     });
                     book.len() - 1
                 };
@@ -127,6 +145,21 @@ impl Log {
 }
 
 impl JobLog for Log {
+    fn prepare_rename(
+        &mut self,
+        seq: u32,
+        identity: rusty_fs::FileIdentity,
+    ) -> Result<(), FsError> {
+        self.journal.book()[self.job]
+            .identities
+            .insert(seq, identity);
+        Ok(())
+    }
+
+    fn rename_identity(&self, seq: u32) -> Result<Option<rusty_fs::FileIdentity>, FsError> {
+        Ok(self.journal.book()[self.job].identities.get(&seq).copied())
+    }
+
     fn step(&mut self, seq: u32, outcome: StepOutcome) -> Result<(), FsError> {
         if outcome == StepOutcome::Done {
             self.journal.book()[self.job].done.push(seq);
@@ -362,7 +395,7 @@ fn crashed_halfway(fs: &FakeFs, journal: &Journal) {
     let plan = plan_of(fs, &[("a.txt", "x1.txt"), ("b.txt", "x2.txt")]);
     apply(fs, &plan);
     let done = (0..u32::try_from(plan.steps.len()).expect("steps")).collect();
-    journal.add(plan, done, State::Pending);
+    journal.add(plan, (done, State::Pending), fs);
 }
 
 #[gpui_kit::test]
@@ -370,7 +403,7 @@ fn the_next_ctrl_z_asks_before_it_undoes_an_older_batch(cx: &mut TestAppContext)
     let (fs, journal) = (files(), Journal::default());
     let older = plan_of(&fs, &[("d.txt", "x9.txt")]);
     apply(&fs, &older);
-    journal.add(older, vec![0], State::Done);
+    journal.add(older, (vec![0], State::Done), &fs);
     let rig = open(cx, fs, &journal);
     rig.rename_three(cx);
     rig.press(cx, &["ctrl-z"]);

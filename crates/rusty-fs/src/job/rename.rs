@@ -1,5 +1,10 @@
-use rusty_core::{FsError, Location, OperationPlan, Step};
+use std::collections::HashMap;
 
+use rusty_core::{FsError, FsErrorKind, Location, OpKind, OperationPlan, Step};
+
+use crate::FileIdentity;
+
+use super::aside::presence;
 use super::{
     HeldFile, JobContext, JobLog, JobOutcome, Journaled, PlacedFile, StepOutcome, roll_back, run,
 };
@@ -25,9 +30,23 @@ struct Tracking<'a> {
     done: Vec<u32>,
     failed: Vec<u32>,
     undone: Vec<u32>,
+    identities: HashMap<u32, FileIdentity>,
 }
 
 impl JobLog for Tracking<'_> {
+    fn prepare_rename(&mut self, seq: u32, identity: FileIdentity) -> Result<(), FsError> {
+        self.inner.prepare_rename(seq, identity)?;
+        self.identities.insert(seq, identity);
+        Ok(())
+    }
+
+    fn rename_identity(&self, seq: u32) -> Result<Option<FileIdentity>, FsError> {
+        match self.identities.get(&seq) {
+            Some(identity) => Ok(Some(*identity)),
+            None => self.inner.rename_identity(seq),
+        }
+    }
+
     fn step(&mut self, seq: u32, outcome: StepOutcome) -> Result<(), FsError> {
         match outcome {
             StepOutcome::Done => self.done.push(seq),
@@ -76,6 +95,7 @@ pub(super) fn run_rename(plan: &OperationPlan, ctx: &mut JobContext<'_>) -> Rena
         done: Vec::new(),
         failed: Vec::new(),
         undone: Vec::new(),
+        identities: HashMap::new(),
     };
     let mut inner = JobContext {
         ops: *ops,
@@ -114,6 +134,38 @@ pub(super) fn run_rename(plan: &OperationPlan, ctx: &mut JobContext<'_>) -> Rena
             None => RenameOutcome::Cancelled,
         },
     }
+}
+
+pub(super) fn prepare(
+    seq: u32,
+    step: (OpKind, &Step),
+    ctx: &mut JobContext<'_>,
+) -> Result<(), FsError> {
+    let (OpKind::Rename, Step::Rename { source, .. }) = step else {
+        return Ok(());
+    };
+    let identity = ctx.ops.file_identity(source)?.ok_or_else(|| FsError {
+        location: Some(source.clone()),
+        ..FsError::new(FsErrorKind::NotSupportedYet)
+    })?;
+    ctx.log.prepare_rename(seq, identity)
+}
+
+pub(super) fn verified(seq: u32, step: &Step, ctx: &JobContext<'_>) -> Result<bool, FsError> {
+    let Step::Rename { source, target } = step else {
+        return Ok(false);
+    };
+    let identity = ctx.log.rename_identity(seq)?;
+    if identity.is_none()
+        && presence(ctx.ops, source)?.is_none()
+        && presence(ctx.ops, target)?.is_some()
+    {
+        return Err(FsError {
+            location: Some(target.clone()),
+            ..FsError::new(FsErrorKind::NotSupportedYet)
+        });
+    }
+    ctx.ops.matches_identity(target, identity)
 }
 
 fn left_over(plan: &OperationPlan, failed: &[u32], undone: &[u32], done: &[u32]) -> Vec<Location> {

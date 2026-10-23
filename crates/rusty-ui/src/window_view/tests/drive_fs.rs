@@ -113,6 +113,13 @@ impl Provider for DriveFs {
 }
 
 impl ProviderOps for DriveFs {
+    fn file_identity(
+        &self,
+        location: &Location,
+    ) -> Result<Option<rusty_fs::FileIdentity>, FsError> {
+        self.fake.file_identity(&self.fake(location))
+    }
+
     fn create_folder(&self, location: &Location) -> Result<(), FsError> {
         self.fake.create_folder(&self.fake(location))
     }
