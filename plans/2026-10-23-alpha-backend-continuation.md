@@ -44,7 +44,7 @@ Finish remaining backend work in the four-feature alpha before starting later ro
 | M3 | Preview ordering and sorting | self | high | M1 | headless reorder, exclusion and execution regressions | done (Linux gate) | |
 | D1 | External drag bridge and right-button menu | Codex Sol 6.1 | xhigh | — | drag/drop regressions and platform review | done; native Windows pending | |
 | V1 | Integration, docs and available gate | self | high | M2, M3, D1 | full Linux gate and native screenshots | done (Linux) | |
-| V2 | Push and inspect Windows CI | self | high | V1 | remote SHA and CI results | Windows CI pending | |
+| V2 | Push and inspect Windows CI | self | high | V1 | remote SHA and CI results | pushed; Windows build/lint passed, four logging tests failed | |
 
 ## Done when
 
@@ -86,3 +86,5 @@ The current alpha follows D75's four-feature scope. Work below stays unmerged on
 - 2026-10-23 — External hover performs no metadata I/O. Captured allowed effects and target identity prevent forbidden operations or silent tab retargeting. Unix external drops are Copy-only. The gate caught a gallery dependency import, the page-table size limit and two untranslated adapter errors; corrected them without relaxing checks. Gallery page order now matches its enum ids.
 
 - 2026-10-23 — Final combined gate passed all 10 steps: 7,060 tests passed, 14 skipped, plus doc tests (174.7 seconds). Inspected six native Linux gallery screenshots at 1280×720 in both themes for the name editor, token menu and right-button drop menu. Fixed the missing counter icon and updated the two keymap count fixtures for seven new commands. Implementation is ready for the authorised branch push. Native Windows OLE checks, Ctrl+K owner review and work-PC measurements remain open; no post-alpha work or deployment.
+
+- 2026-10-23 — Roadmap refresh: checked application commit ddda8d0b against Windows CI 39937857823. Build and Clippy passed; the Windows suite has 7,073 passes, four rename-log failures and 15 skips. Updated the HTML and Markdown roadmap to distinguish implementation, unreleased work and release validation. No application code changes.

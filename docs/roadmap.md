@@ -1,6 +1,6 @@
 # Rusty roadmap
 
-Updated 20 October 2026. The visual version is [`design/roadmap.html`](../design/roadmap.html). Scope rules are in [decisions.md](decisions.md) (D13, D14). Plain-language specs for the bigger features are in [features/](features/).
+Updated 23 October 2026. The visual version is [`design/roadmap.html`](../design/roadmap.html). Scope rules are in [decisions.md](decisions.md) (D13, D14). Plain-language specs for the bigger features are in [features/](features/).
 
 Kinds: **core** is always on; **module** can be turned off; **package** is data only (themes, keymaps); **infra** is build, CI and release work.
 
@@ -38,55 +38,27 @@ Exit: the spike meets the targets on Linux and the work PC, otherwise D2 is reop
 
 Goal: a file manager the owner can use every day on Windows.
 
-Progress: 76% (190 of 253 items done, 3 being finished counted as half, 60 still to do: (190 + 1.5) ÷ 253). Each part of multi-select and drag and drop, PDF links, Rich ELF and MAP, Ctrl+K and multi-rename counts once; review-only parts are not counted. Moving the remaining texts into translation files is out of the count (after 1.0, D59).
+The alpha has four focus areas. The latest implementation is available for review; it is not in the 21d download. The old percentages mixed implementation with release validation, so status is shown separately.
 
-Done so far:
+| Feature | Implemented | Still open |
+| --- | --- | --- |
+| Multi-select and drag and drop | Marking, internal targets, shortcuts, external drag bridge and right-button choices | Native Explorer/OLE checks; optional auto-scroll and hover-open. Linux external drops are Copy-only. |
+| Rich ELF and MAP | Rich views, memory models, companion discovery and live configured module prefixes | Shared table refinements, final review and work-PC checks |
+| Ctrl+K command center | Commands, recent files, tabs, folder and path sources, disk index, Search settings and optional Windows service | Final service checks, documentation review and work-PC measurements |
+| Multi-rename | Single and batch journaled rename, identity-safe undo/recovery, edited/imported/pasted/copied names, sorting, ordering, folder counters and optional log | Four Windows rename-log test failures; native recovery checks |
 
-- component library and gallery; two panes with tabs and history; session restore; virtualised list with quick filter;
-- copy, move, rename and new folder, Recycle Bin and Shift+Del with plans, progress, cancel and a crash-safe journal; light and dark themes;
-- Oxidised iron syntax colours (D64);
-- CAN traces in TRC and Vector BLF; DBC and A2L readers (the F3 viewer for them is not done);
-- TASKING map wrapped rows, map part headers, `.mdf` memory definition reader;
-- Alt+M opens the context menu;
-- safer session and database store after a crash;
-- multi-select: keys, Shift and Ctrl click, right-drag ranges, left-drag lasso; marks survive the filter, `/` restores them, the footer counts marked files the filter hides;
-- file-type icons per extension (PDF, Office, audio, video, code families, automotive);
-- PDF links follow on click with a back stack; PDF outline tab (faster, with a note for an unreadable outline); only http, https and mailto links open outside Ferrite; waits for your check with a real PDF;
-- activity strip: one line at the bottom shows what is running; Alt+J opens the drawer with every job;
-- F-key bar off by default;
-- ELF symbols table with resizable columns and names that keep their prefix;
-- HEX and S-record rows of 32 bytes, with padding gaps folded;
-- memory regions from TASKING `.mdf` files; linker fill counted apart from real data (model);
-- drag and drop between the panes: drag files by icon or name onto the other pane or a folder row; Move on the same drive, Copy across drives; Ctrl copies, Shift moves; a badge says what happens; Esc cancels; the "Drag and drop" setting asks before a dragged move;
-- Ctrl+K ranks the commands you run often higher;
-- built, not switched on: Alt-drop shortcuts (create and undo, long paths; the drop does not make them yet); Rich ELF and MAP memory strip, treemap and a lookup of the matching MAP or memory definition next to the open file (the screens come next); multi-rename keys (Ctrl+M, Ctrl+Z; the dialog comes next); a Search section in the settings file and the reader of the NTFS change journal for the file index;
-- built, not switched on: Ctrl+K file index engine (name table, parallel search, saved index, folder walker); multi-rename engine (Total Commander masks, clean-up, file, photo and audio fields, safe put-back; reviewed); ELF owners (who uses each byte).
+Verification of the latest application changes:
 
-Still open in the alpha, in this order:
+- Linux: all 10 gate steps passed; 7,060 tests passed, 14 skipped, plus documentation tests.
+- Windows: build and Clippy passed; 7,073 tests passed, four failed and 15 were skipped. All failures concern rename logging.
+- Native Linux screenshots were inspected in both themes. Explorer/OLE behavior, service permissions and work-PC measurements still need owner checks.
+- [Windows CI results](https://github.com/trykA123/rusty/actions/runs/39937857823).
 
-- right-click on empty space: a folder menu with New file (Shift+F7) and the Windows background menu (done, waiting for Windows CI);
-- cache sizes in diagnostics: the diagnostic report shows how much disk each cache uses, backed by a long stress test (in progress);
-- multi-select and drag and drop between the panes (both done; next: dropping on tabs, crumbs and drives, Alt-drop shortcuts switched on, and drag and drop with Explorer in both directions);
-- Rich ELF and MAP views, direction "address space first" (D66; the model, owners, groups, memory strip, treemap, colours and the matching-file lookup are built; the map screens come next);
-- Ctrl+K command center (D60, D61, D63): the box works for commands and ranks the ones you use often; the file index engine is built (name table, parallel search, saved index, folder walker, change journal reader, Search settings); recent files, tabs and folders as sources and the background index service come next (target: global search answers in under 50 ms on 2 million files);
-- multi-rename, Ctrl+M: Total Commander parity plus extras (field tokens from EXIF and audio tags, clean-up toggles, edit names, undo history after a restart, conflict preview, all or nothing); engine done and reviewed, keys in, dialog next;
-- DBC and A2L viewer in F3;
-- colouring for m4, OIL and DCM files: the viewer learns which words are keywords, strings and comments in these files, in whichever colour set you pick, and imports your own Notepad++ language files;
-- viewer chrome; pins;
-- steadier Windows CI (in progress);
-- the Follow bug on Windows (last).
+The latest downloadable alpha remains 21d: indexed Ctrl+K search, Search settings, optional Windows service, F4 on folders and F9 path copying. The latest work adds native drag wiring, rename safety and controls, and Rich companion/prefix improvements.
 
-Scope:
+Next: fix Windows logging, get a green test run, then complete native Windows and work-PC checks. Alpha sign-off remains open. DBC/A2L viewer screens, automotive colours and viewer chrome are beta work under D75.
 
-- core: tiled panes and tabs with history; session restore; virtualised file list with sorting, quick filter and shell icons.
-- core: component library in `rusty-ui` (primitives and Rusty components) with the component gallery and headless UI tests (D25).
-- core: Total Commander selection (D15); native context menu on a long right-click.
-- core: drive bar with mapped network drives, reconnect, Alt+F1, UNC paths and an offline state (D19) (done, from plan P14).
-- core: copy, move, rename, new folder, Recycle Bin, Shift+Del with a warning; plan before acting; background job queue.
-- core: copy engine in Auto and Standard modes (D22); Explorer clipboard; lock owner in errors; command line; key contexts; per-monitor DPI.
-- infra: copy benchmark against Explorer, `robocopy /MT` and TeraCopy.
-- core: pins, shortcuts in TOML; new UI text goes into Fluent files (English only); moving the old texts is after 1.0 (D59).
-- package: built-in light and dark themes following Windows.
+The foundation already includes two panes, tabs, history, session restore, file operations, virtual lists, themes, the viewer, selection and the activity strip. The beta and later phases below retain their existing scope.
 
 Exit: two weeks of daily use on the work PC with no lost or damaged files.
 
