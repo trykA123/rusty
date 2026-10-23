@@ -10,6 +10,8 @@ use super::{open_options, options_for, press, settle};
 use crate::browser::{NamedPreset, RenameHooks, RenamePresetList};
 use crate::window_view::FerriteWindow;
 
+mod parity;
+
 struct Rig {
     window: AnyWindowHandle,
     view: Entity<FerriteWindow>,

@@ -196,8 +196,8 @@ Roles: Sonnet 5.5 medium or high for decided backend and UI work, Opus 5.5 mediu
 | E1 | `rename::fields` registry + file, exif | api-builder (Sonnet) | high | A1 | `cargo nextest run -p rusty-core -p rusty-ui rename::fields` | done | |
 | E2 | audio provider (`lofty`) | api-builder (Sonnet) | medium | E1 | `cargo nextest run -p rusty-ui rename::fields::audio` | done | |
 | E3 | clean-up rules | api-builder (Sonnet) | medium | A2 | `cargo nextest run -p rusty-core rename::tests::cleanup` | done | |
-| E4 | Edit names, load, paste, copy | ui-builder (Opus) | medium | B6 | `cargo nextest run -p rusty-ui window_view::tests::multi_rename` | blocked | |
-| E5 | row order, column sort, counter per folder | ui-builder (Sonnet) | high | B6 | `cargo nextest run -p rusty-ui multi_rename window_view::tests::multi_rename` | blocked | |
+| E4 | Edit names, load, paste, copy | Codex Sol 6.1 | high | B6 | `cargo nextest run -p rusty-ui window_view::tests::multi_rename` | built on backend branch; Linux gate passed, native Windows pending | |
+| E5 | row order, column sort, counter per folder | Codex Sol 6.1 | high | B6 | `cargo nextest run -p rusty-ui multi_rename window_view::tests::multi_rename` | built on backend branch; Linux gate passed, native Windows pending | |
 | E6 | change and match highlights, long-path warning | ui-builder (Sonnet) | medium | B5 | `cargo nextest run -p rusty-ui multi_rename::tests::preview`; gallery shots | done | |
 | E7 | undo history + rename log | Codex Sol 6.1 | high | B7, B8 | `cargo nextest run -p rusty-app rename_hooks -p rusty-ui window_view::tests::undo` | built on backend branch; Linux gate passed, Windows checks pending | |
 | E8 | review Part D | reviewer (Opus) | high | E1–E7 | review notes; gate; Windows CI | blocked | |

@@ -12,6 +12,8 @@ Mark files and press Ctrl+M to rename them all at once. A live table shows old a
 - See every old and new name in a preview table before you commit.
 - Undo a whole batch with Ctrl+Z, even after a restart.
 - Save a set of rules as a preset. "Last used" is listed first.
+- Edit names one per line, load a UTF-8 list, paste a list, or copy the preview's new names.
+- Move rows or sort a column to change counter order. Restart counters in each source folder.
 
 Open it with Ctrl+M, with Rename in the context menu when two or more items are marked, with F2 on two or more marks, or from Ctrl+K. It takes the marked items, or the item under the cursor.
 
@@ -59,13 +61,17 @@ The order is: pattern, search and replace, case, cleanup, then the check.
 - Del excludes or includes a row.
 - Ctrl+S saves a preset. Ctrl+O opens the preset list.
 - Ctrl+R resets.
-- Planned: Ctrl+E edits the names as text.
-- Planned: Ctrl+Shift+Up and Ctrl+Shift+Down move a row.
+- Ctrl+E opens or hides the name editor. Enter in the editor inserts a line; Ctrl+Down returns to the preview.
+- Ctrl+Shift+O loads names from a UTF-8 file (up to 16 MiB).
+- Ctrl+Shift+V pastes names. Ctrl+Shift+C copies the new names.
+- Ctrl+Shift+Up and Ctrl+Shift+Down move the preview row.
+- Ctrl+Shift+F toggles Counter per folder.
 
-## Also planned
+## Edited names and row order
 
-- Edit names as text, load or paste names, and copy the new names.
-- Reorder or sort the preview, and restart the counter per folder for multi-folder sources.
+Edited names override the rules for each row and show as "Edited". The list includes excluded rows. A different line count blocks Rename until corrected. Blank, invalid or conflicting names retain the same safety checks as generated names. Reset clears the overrides.
+
+Click a column heading to sort the preview; click again to reverse it. Edits and exclusions move with their original files. Counters follow the new order and excluded rows consume no number. Counter per folder restarts numbering for each parent folder in a multi-folder input.
 
 ## Layout
 
@@ -83,6 +89,7 @@ A modal panel with a preview table, a "Problems only" filter and a footer such a
 - Done: the window, Ctrl+M, F2 on marks, the context menu, Ctrl+K, presets, masks, rules, planning, the all-or-nothing job, cleanup, the preview table, fields from files, photos and audio tags, the undo journal with Ctrl+Z, and the preview highlights with the 260-character warning.
 - Done on the backend branch: F2 on one item uses the same planner and journal, with undo after a restart. Failed renames keep their error in the pane. Native Windows checks remain pending.
 - Done on the backend branch: Settings > Files > Rename log enables `rename.log` beside `ferrite.toml`. Completed forward batches append quoted original-to-final paths. Staging names, failed batches and undo are omitted. A log error leaves the rename and undo intact and appears in the activity detail.
+- Done on the backend branch: edited/imported/pasted names, copy export, preview ordering and sorting, and counters per folder. Native Windows checks remain pending.
 
 ## Open questions
 

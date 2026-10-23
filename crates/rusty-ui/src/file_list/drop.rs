@@ -1,8 +1,8 @@
 use std::rc::Rc;
 
 use gpui_kit::{
-    App, Div, DragMoveEvent, Entity, ExternalPaths, InteractiveElement, MouseButton, Stateful,
-    StatefulInteractiveElement, Styled, Window, div,
+    App, Div, DragMoveEvent, Entity, ExternalDragPayload, ExternalPaths, InteractiveElement,
+    MouseButton, Stateful, StatefulInteractiveElement, Styled, Window, div,
 };
 use rusty_core::PaneId;
 use rusty_fs::EntryKind;
@@ -14,6 +14,7 @@ use crate::drag::{DragBadge, FileDrag};
 use crate::tokens::Theme;
 
 type DragStartHandler = Rc<dyn Fn(&FileDrag, &mut Window, &mut App) -> Entity<DragBadge>>;
+type DragOutHandler = Rc<dyn Fn(&FileDrag, &mut Window, &mut App) -> Option<ExternalDragPayload>>;
 type DropHandler = Rc<dyn Fn(&DropEvent, &mut Window, &mut App)>;
 type HoverHandler = Rc<dyn Fn(&Option<DropSpot>, &mut Window, &mut App)>;
 
@@ -40,6 +41,7 @@ pub struct DropEvent {
 pub(super) struct Wiring {
     pane: Option<PaneId>,
     on_drag_start: Option<DragStartHandler>,
+    on_drag_out: Option<DragOutHandler>,
     on_drop: Option<DropHandler>,
     on_hover: Option<HoverHandler>,
 }
@@ -57,6 +59,15 @@ impl FileList {
         handler: impl Fn(&FileDrag, &mut Window, &mut App) -> Entity<DragBadge> + 'static,
     ) -> Self {
         self.drag.on_drag_start = Some(Rc::new(handler));
+        self
+    }
+
+    #[must_use]
+    pub fn on_drag_out(
+        mut self,
+        handler: impl Fn(&FileDrag, &mut Window, &mut App) -> Option<ExternalDragPayload> + 'static,
+    ) -> Self {
+        self.drag.on_drag_out = Some(Rc::new(handler));
         self
     }
 
@@ -142,6 +153,7 @@ pub(super) fn grip(ctx: &Rc<ListContext>, row: u64) -> Stateful<Div> {
     let name = ctx.name_at(row);
     let (state, pressed) = (ctx.state.clone(), ctx.state.clone());
     let press_name = name.clone();
+    let outgoing = ctx.drag.on_drag_out.clone();
     grip.on_mouse_down(MouseButton::Left, move |_, _, cx| {
         let name = press_name.clone();
         pressed.update(cx, |state, _| state.pressed_name = Some(name));
@@ -160,6 +172,9 @@ pub(super) fn grip(ctx: &Rc<ListContext>, row: u64) -> Stateful<Div> {
             window,
             cx,
         )
+    })
+    .external_drag_payload(move |drag: &FileDrag, window, cx| {
+        outgoing.as_ref()?.as_ref()(drag, window, cx)
     })
 }
 

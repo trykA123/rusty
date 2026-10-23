@@ -1,6 +1,6 @@
 # Remaining alpha backend work
 
-Status: partial — rename and Rich backend changes verified on Linux; alpha integration and Windows checks remain · Repo: `/mnt/Sabrent/homelab/rusty-backend` · Branch: `backend/rename-undo-safety` · Started: 2026-10-23
+Status: implementation complete and verified on Linux — native Windows checks and work-PC measurements remain · Repo: `/mnt/Sabrent/homelab/rusty-backend` · Branch: `backend/rename-undo-safety` · Started: 2026-10-23
 
 ## Goal
 
@@ -8,7 +8,7 @@ Finish remaining backend work in the four-feature alpha before starting later ro
 
 ## Decisions
 
-- D1 — Continue from `df756b9e` in this worktree. No merge, push or deployment.
+- D1 — Continue in this worktree. The owner authorised completing the remaining alpha work and pushing `backend/rename-undo-safety` on 2026-10-23. No merge or deployment.
 - D2 — Use Codex only; any worker runs must use Sol 6.1 high or xhigh. No Claude agents.
 - D3 — Alpha work: single-file rename through the journaled batch engine (P41 C1), optional rename log (P41 E7), Rich ELF/MAP sibling discovery and configured module prefixes (P38 D8/D9), then remaining external drag platform integration (P36 X2/X6). Sibling discovery is independent of the rename log.
 - D4 — Preserve single-rename validation, cursor behavior, filter behavior and error reporting. Refuse overlapping rename jobs. Create file and create folder retain their existing paths.
@@ -17,6 +17,8 @@ Finish remaining backend work in the four-feature alpha before starting later ro
 - D7 — Beyond alpha: database quarantine/salvage, delete retention and general undo, shared job pools and folder sizes, compare/Git/merge, and beta copy options. Do not claim alpha complete while its backend items or native verification remain open.
 - D8 — Module prefixes use the existing list setting control and live settings delivery. Keep the model's prefix snapshot through regrouping and selection; reject results built for an older prefix list.
 - D9 — Rename logging is off by default. Capture the flag when starting a forward rename. Append one completed batch to `config/rename.log` on the job worker, collapse staging moves into original-to-final pairs, quote paths, and lock the file during append. A logging error reports a warning without changing a completed rename or its undo journal. Failed, cancelled and undo jobs do not append.
+- D10 — Complete P36 X2/X3/X6 and P41 E4/E5 before pushing. Use isolated Codex Sol 6.1 high/xhigh workers for the drag bridge and rename model. Keep post-alpha work out of this continuation.
+- D11 — Edited names override masks by row and retain normal validation. Reject mismatched line counts. Reordering carries edits and exclusions with each source and invalidates metadata caches and pending execution. File import runs off the UI thread with a bounded UTF-8 read.
 
 ## Components
 
@@ -37,6 +39,12 @@ Finish remaining backend work in the four-feature alpha before starting later ro
 | L1 | Optional rename log backend | self | high | N3 | log adapter and job tests | done (Linux) | |
 | R1 | Companion folder discovery | self | high | — | file hook and sibling tests | done (Linux) | |
 | R2 | Configured module prefixes | self | high | R1 | store and model tests | done (Linux) | |
+| M1 | Edited names and folder counters model | Codex Sol 6.1 | high | — | model regression tests | done (Linux) | |
+| M2 | Name editor, import, paste and copy | self | high | M1 | headless command and import regressions | done (Linux gate) | |
+| M3 | Preview ordering and sorting | self | high | M1 | headless reorder, exclusion and execution regressions | done (Linux gate) | |
+| D1 | External drag bridge and right-button menu | Codex Sol 6.1 | xhigh | — | drag/drop regressions and platform review | done; native Windows pending | |
+| V1 | Integration, docs and available gate | self | high | M2, M3, D1 | full Linux gate and native screenshots | done (Linux) | |
+| V2 | Push and inspect Windows CI | self | high | V1 | remote SHA and CI results | Windows CI pending | |
 
 ## Done when
 
@@ -51,8 +59,8 @@ The current alpha follows D75's four-feature scope. Work below stays unmerged on
 
 | Phase | Remaining work |
 | --- | --- |
-| Alpha | P36 X2/X6: incoming external-drop bridge and outgoing drag wiring. X3's right-button drop menu remains integration work. The shell drag adapter and vendored platform hooks already exist. |
-| Alpha parity | P41 E4/E5: editable/imported/pasted name lists and copy export, preview row reordering/sorting, and counters per folder for multi-folder sources. The form currently has no edited-name overrides and the preview uses one ordinal across all rows; these need model work as well as command integration. |
+| Alpha | P36 X2/X3/X6 implementation is complete on this branch: incoming bridge, outgoing wiring and right-button choices. Native Windows OLE checks remain pending. Unix incoming external drops permit Copy only until native modifiers can be captured. |
+| Alpha parity | P41 E4/E5 implementation is complete on this branch: edited/imported/pasted names and copy export, preview ordering and sorting, and per-folder counters. The Linux gate and native light/dark screenshots passed. |
 | Alpha verification | Native Windows checks for rename/recovery, drag, SCM/UAC/ACL and NTFS/USN; Ctrl+K final review, docs and work-PC measurements. |
 | Optional alpha tooling | P43 B1–B3: informational listing, walk and index benchmark harness. These do not block alpha. |
 | After alpha | P35: quarantine damaged `ferrite.db` with WAL/SHM and salvage trusted state. Current degraded-mode handling does not implement quarantine. |
@@ -73,3 +81,8 @@ The current alpha follows D75's four-feature scope. Work below stays unmerged on
 - 2026-10-23 — Both new log behavior regressions failed first. Added the optional profile adapter and worker callback, with nonfatal activity feedback. All 613 targeted settings, Rich model, rename and activity tests pass, including actual append/reopen/concurrent-file tests and live settings-file reload. Full gate and isolated light/dark settings screenshots are running.
 - 2026-10-23 — Inspected the Files and module-prefix controls in native Linux gallery screenshots at 1280×720, light and dark, using an isolated headless Cage display. The gate required grouping rename settings, moving profile-hook assembly into its adapter, and separating general setting rows from the field contract. No lint or size limits were relaxed. Windows verification remains pending.
 - 2026-10-23 — Logging and module prefixes passed `CARGO_BUILD_JOBS=8 nice -n 10 cargo xtask gate`: all 10 steps, 6,996 tests passed, 14 skipped, plus doc tests (180.1 seconds). No post-alpha feature was started because alpha integration and parity gaps remain. Main stays at ce5af5c9; no merge, push or deployment.
+- 2026-10-23 — Owner authorised completing alpha gaps and pushing this branch, using only Codex Sol 6.1 high/xhigh workers. Integrated model and external-drag changes from isolated worktrees. The rename suite passed 87 tests (one timing test skipped), the core rename suite passed 162, and the drag worker passed 118 targeted tests. Full combined verification is running.
+- 2026-10-23 — Review regressions reproduced stale counter validation, hidden-editor edits, edited-row reordering, mismatched editor reopening and a cursor panic after source removal. Fixed all five. Toggle events carry stable source identity; provisional row order updates immediately. Two core regressions also reproduced folder-alias collisions under insensitive folding and now pass.
+- 2026-10-23 — External hover performs no metadata I/O. Captured allowed effects and target identity prevent forbidden operations or silent tab retargeting. Unix external drops are Copy-only. The gate caught a gallery dependency import, the page-table size limit and two untranslated adapter errors; corrected them without relaxing checks. Gallery page order now matches its enum ids.
+
+- 2026-10-23 — Final combined gate passed all 10 steps: 7,060 tests passed, 14 skipped, plus doc tests (174.7 seconds). Inspected six native Linux gallery screenshots at 1280×720 in both themes for the name editor, token menu and right-button drop menu. Fixed the missing counter icon and updated the two keymap count fixtures for seven new commands. Implementation is ready for the authorised branch push. Native Windows OLE checks, Ctrl+K owner review and work-PC measurements remain open; no post-alpha work or deployment.

@@ -12,6 +12,7 @@ mod console;
 mod crash;
 mod crash_report;
 mod diag;
+mod drag;
 mod drives;
 mod editor;
 mod files;
