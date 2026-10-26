@@ -64,6 +64,48 @@ Warm start is where it was on 19 October (median 563 ms against 522–590 ms), a
 
 Same build with `NAVO_GPU=high-performance` (NVIDIA T1200 Laptop GPU), three warm runs: GPUI's start 1253 / 1238 / 1049 ms (Intel ≈ 260–290 ms), first usable 2218 / 2186 / 1825 ms, private bytes 254 / 256 / 237 MB. The discrete GPU is about three to four times slower to start and uses nearly twice the memory, so the low-power default stays.
 
+## Heavy benchmark
+
+`navo bench` stresses search, indexing and big folders without opening a window. Animation smoothness is measured separately with Record performance.
+
+How to run it on the work PC:
+
+1. Open a terminal in the folder with `navo.exe`.
+2. Run `navo.exe bench --root D:\navo-bench --files 3000000`.
+3. Wait. The terminal shows each phase, then a summary table.
+4. Send `navo-bench-<date>-<time>.json` and `.md` from the folder with `navo.exe`.
+
+Options: `--root` is a new or empty folder (the bench refuses a folder with files in it). `--files` defaults to 2,000,000. `--keep` keeps the generated files; without it the bench deletes them at the end. `--out <file.json>` writes the reports elsewhere. If the run is stopped with Ctrl+C, delete the `--root` folder by hand. The exit code is non-zero only on errors, never on slow numbers.
+
+What each number means:
+
+- **Fixture.** The same seeded tree every run: folders up to 12 levels deep, mixed extensions (.c .h .elf .map .a2l .dbc .pdf .png …), long and Unicode names, one folder with 500,000 files and one with 100,000. Files are empty. Generation time measures the disk, not Navo.
+- **Index.** The Ctrl+K disk index built by the folder walker, the same path the app uses without the index service. The NTFS MFT reader needs the elevated service, so the bench does not measure it. Wall time, entries per second, memory before, at peak and after (private and resident), and the index file size and save time.
+- **Ctrl+K search.** Eleven fixed queries through the real Ctrl+K file search (query parsing, index search, ranking, at most 500 results). Cold is the first run; p50, p95, p99 and max come from 50 warm runs.
+- **Folder listing.** The two huge folders opened through the real file list: time to list, each sort (size, date, extension, name) and each keystroke of the type-to-filter text `sensor`.
+- **Incremental update.** 10,000 changes (4,000 new files, 3,000 renames, 3,000 deletes) in one folder, and how long until the index shows all of them. Windows only; the bench stops waiting after 300 s and says so.
+
+Linux result, 26 October 2026, release build of 6873ea0 with the bench added, 14 CPUs, ext4 on NVMe, 2,000,000 files in 24,423 folders (generated in 5.8 s):
+
+| Measure | Value |
+| --- | --- |
+| Index: 2,024,424 entries | 2.7 s (742,610 entries/s) |
+| Index memory: before, peak, after (private) | 8.2 MB, 72.7 MB, 72.8 MB |
+| Process peak working set | 140.7 MB |
+| Index size on disk, save time | 56.3 MB, 165 ms |
+| Ctrl+K exact name, warm p50 / p99 | 9.9 / 14.1 ms |
+| Ctrl+K prefix `brake_contr`, p50 / p99 | 28.7 / 40.0 ms |
+| Ctrl+K one letter `a`, p50 / p99 | 33.8 / 51.8 ms |
+| Ctrl+K path fragment `huge-100k/sensor`, p50 / p99 | 122.7 / 145.4 ms |
+| Ctrl+K other queries (fuzzy, extension, Unicode, no match), p50 | 9.9–22.9 ms |
+| 500,000-file folder: list | 933 ms |
+| 500,000-file folder: sort by size, date, extension, name | 121, 297, 603, 510 ms |
+| 500,000-file folder: each filter keystroke | 92–150 ms |
+| 100,000-file folder: list, slowest sort, slowest keystroke | 159 ms, 93 ms, 17 ms |
+| Incremental update | not measured on Linux (the folder watcher there does not cover subfolders) |
+
+The path fragment is the slowest query, because it builds the full path of every candidate. Sorting and filtering the 500,000-file folder take a visible 0.1–0.6 s per step.
+
 ## History
 
 | Date | Commit | Median warm first frame | Max private bytes |
