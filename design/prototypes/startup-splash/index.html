@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Start-up splash</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Chakra+Petch:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: light;
+  --page-bg: oklch(96.2% 0.005 260); --page-surface: oklch(99.2% 0.002 260); --page-line: oklch(88% 0.008 260);
+  --page-text: oklch(21% 0.012 260); --page-muted: oklch(46% 0.02 260); --page-accent: oklch(50% 0.18 262); --page-sel: oklch(93% 0.035 262);
+  --sp-bg: oklch(98.5% 0.004 60); --sp-line: oklch(86% 0.008 60); --sp-text: oklch(22% 0.012 60); --sp-muted: oklch(45% 0.015 60);
+  --sp-accent: oklch(52% 0.168 42); --sp-track: oklch(91% 0.006 60); --sp-err: oklch(50% 0.18 27); --sp-keybg: oklch(94% 0.006 60);
+  --tile-bg: oklch(19% 0.01 60); --tile-fg: oklch(94% 0.006 80); --tile-bar: oklch(66% 0.17 42);
+  --sp-shadow: 0 1px 2px oklch(20% 0.01 60 / .18), 0 12px 32px oklch(20% 0.01 60 / .22);
+  --desk-a: oklch(80% 0.03 215); --desk-b: oklch(68% 0.05 200);
+  --win-bg: oklch(97% 0.004 260); --win-bar: oklch(92% 0.006 260); --win-line: oklch(85% 0.008 260); --win-row: oklch(90% 0.008 260);
+  --font-page: "Archivo", "Segoe UI", sans-serif; --font-brand: "Chakra Petch", "Archivo", sans-serif;
+  --fs-12: .75rem; --fs-13: .8125rem; --fs-14: .875rem; --fs-24: 1.5rem;
+  --r-md: 6px; --r-lg: 12px; --r-win: 14px;
+  --ease-out: cubic-bezier(.2,.8,.2,1);
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page-bg: oklch(12% 0.008 260); --page-surface: oklch(16% 0.008 260); --page-line: oklch(28% 0.012 260);
+  --page-text: oklch(93% 0.006 260); --page-muted: oklch(72% 0.016 260); --page-accent: oklch(72% 0.13 262); --page-sel: oklch(30% 0.07 262);
+  --sp-bg: oklch(18% 0.008 60); --sp-line: oklch(31% 0.01 60); --sp-text: oklch(94% 0.006 60); --sp-muted: oklch(72% 0.014 60);
+  --sp-accent: oklch(72% 0.143 42); --sp-track: oklch(27% 0.01 60); --sp-err: oklch(76% 0.15 27); --sp-keybg: oklch(24% 0.008 60);
+  --tile-bg: oklch(11% 0.008 60); --tile-fg: oklch(94% 0.006 80); --tile-bar: oklch(70% 0.16 42);
+  --sp-shadow: 0 1px 2px oklch(0% 0 0 / .5), 0 14px 36px oklch(0% 0 0 / .55);
+  --desk-a: oklch(30% 0.03 215); --desk-b: oklch(22% 0.03 220);
+  --win-bg: oklch(17% 0.008 260); --win-bar: oklch(21% 0.008 260); --win-line: oklch(30% 0.012 260); --win-row: oklch(25% 0.01 260);
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--page-bg); color: var(--page-text); font-family: var(--font-page); line-height: 1.5; -webkit-font-smoothing: antialiased; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--page-accent); outline-offset: 2px; }
+kbd { font-family: ui-monospace, "Cascadia Mono", monospace; font-size: var(--fs-12); }
+.page { max-width: 1280px; margin-inline: auto; padding: 16px; }
+h1 { font-size: var(--fs-24); margin: 0; line-height: 1.2; }
+.lede { margin: 4px 0 0; color: var(--page-muted); font-size: var(--fs-14); max-width: 80ch; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; padding-block: 8px; margin-block: 12px 0; border-bottom: 1px solid var(--page-line); }
+.group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.group-label { font-size: var(--fs-12); color: var(--page-muted); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+.seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--page-line); border-radius: var(--r-md); background: var(--page-surface); padding: 2px; gap: 2px; }
+.seg button, .act { border: 0; background: transparent; padding: 4px 10px; min-height: 36px; min-width: 36px; border-radius: 4px; cursor: pointer; font-size: var(--fs-14); color: var(--page-muted); }
+.seg button:hover { color: var(--page-text); }
+.seg button[aria-pressed="true"] { background: var(--page-sel); color: var(--page-text); font-weight: 600; }
+.act { border: 1px solid var(--page-line); background: var(--page-surface); color: var(--page-text); font-weight: 600; }
+
+.desk { position: relative; margin-top: 12px; height: 560px; border-radius: var(--r-lg); overflow: hidden; background: linear-gradient(160deg, var(--desk-a), var(--desk-b)); isolation: isolate; }
+.main-win { position: absolute; inset: 5% 6%; background: var(--win-bg); border: 1px solid var(--win-line); border-radius: var(--r-win); overflow: hidden; opacity: 0; display: flex; flex-direction: column; box-shadow: var(--sp-shadow); }
+.main-win .tb { height: 32px; background: var(--win-bar); border-bottom: 1px solid var(--win-line); display: flex; align-items: center; gap: 8px; padding-inline: 10px; font-size: var(--fs-12); color: var(--page-muted); }
+.main-win .tb i { width: 16px; height: 16px; border-radius: 4px; background: var(--tile-bg); display: block; }
+.main-win .panes { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--win-line); }
+.main-win .pane { background: var(--win-bg); padding: 10px; display: grid; align-content: start; gap: 6px; }
+.main-win .pane b { height: 10px; border-radius: 3px; background: var(--win-row); display: block; }
+.main-win .pane b:nth-child(3n) { width: 70%; } .main-win .pane b:nth-child(3n+1) { width: 88%; }
+.main-win.on { opacity: 1; transition: opacity .24s var(--ease-out); }
+.main-win.on.instant { transition: none; }
+
+.slot { position: absolute; left: 50%; top: 50%; width: 0; height: 0; z-index: 5; }
+.splash { position: absolute; left: 0; top: 0; transform: translate(-50%, -50%); width: min(420px, 92vw); background: var(--sp-bg); border: 1px solid var(--sp-line); border-radius: var(--r-win); box-shadow: var(--sp-shadow); color: var(--sp-text); overflow: hidden; opacity: 0; visibility: hidden; transform-origin: center; }
+.splash.show { visibility: visible; opacity: 1; transition: opacity .16s var(--ease-out), transform .16s var(--ease-out); }
+.splash.enter { opacity: 0; transform: translate(-50%, -49%) scale(.985); }
+.splash.leave { transition: opacity .2s var(--ease-out), transform .2s var(--ease-out); opacity: 0; }
+.splash.morph { transition: opacity .32s var(--ease-out), transform .32s var(--ease-out); opacity: 0; }
+.splash.hidden { visibility: hidden; opacity: 0; }
+
+.tile { background: var(--tile-bg); color: var(--tile-fg); border-radius: 22%; display: grid; place-items: center; font-family: var(--font-brand); font-weight: 700; flex: none; position: relative; border: 1px solid oklch(50% 0.01 60 / .25); }
+.tile .m { display: inline-flex; align-items: flex-end; line-height: 1; }
+.tile .bar { display: inline-block; background: var(--tile-bar); }
+.name { font-family: var(--font-brand); font-weight: 600; letter-spacing: .01em; }
+.ver { color: var(--sp-muted); font-size: var(--fs-12); font-variant-numeric: tabular-nums; }
+.status { font-size: var(--fs-13); color: var(--sp-muted); min-height: 20px; }
+.status.err { color: var(--sp-err); }
+.status.slow { color: var(--sp-text); }
+.track { height: 3px; background: var(--sp-track); border-radius: 2px; overflow: hidden; position: relative; }
+.fill { position: absolute; inset: 0; background: var(--sp-accent); transform-origin: left center; transform: scaleX(0); transition: transform .35s var(--ease-out); }
+.ind { position: absolute; inset: 0; width: 40%; background: var(--sp-accent); border-radius: 2px; animation: slide 1.9s ease-in-out infinite; }
+@keyframes slide { 0% { transform: translateX(-100%); } 100% { transform: translateX(250%); } }
+.pulse { animation: pulse 2.6s ease-in-out infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
+.ring { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--sp-track); border-top-color: var(--sp-accent); animation: spin 1.4s linear infinite; flex: none; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.err .track .fill, .is-error .fill { background: var(--sp-err); }
+.is-error .ind { animation: none; width: 100%; background: var(--sp-err); opacity: .5; }
+.is-error .ring { animation: none; border-top-color: var(--sp-err); }
+.is-error .pulse { animation: none; }
+.btns { display: none; gap: 8px; }
+.is-error .btns:not(.slowbtn), .is-slow:not(.is-error) .btns.slowbtn { display: flex; }
+.is-error .d4 .status { white-space: normal; }
+.sbtn { border: 1px solid var(--sp-line); background: var(--sp-keybg); color: var(--sp-text); border-radius: var(--r-md); padding: 4px 12px; min-height: 32px; font-size: var(--fs-13); cursor: pointer; }
+.sbtn.pri { border-color: transparent; background: var(--sp-text); color: var(--sp-bg); font-weight: 600; }
+.hint { font-size: var(--fs-12); color: var(--sp-muted); display: flex; align-items: center; gap: 6px; }
+.hint kbd { background: var(--sp-keybg); border: 1px solid var(--sp-line); border-radius: 4px; padding: 0 5px; color: var(--sp-text); }
+.rec { display: none; font-size: var(--fs-12); color: var(--sp-text); border-left: 3px solid var(--sp-accent); padding-left: 8px; }
+.is-recovery .rec { display: block; }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; font-size: var(--fs-13); color: var(--sp-muted); }
+.steps li { display: flex; align-items: center; gap: 8px; }
+.steps li::before { content: ""; width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid var(--sp-muted); flex: none; }
+.steps li.done { color: var(--sp-muted); } .steps li.done::before { background: var(--sp-muted); }
+.steps li.cur { color: var(--sp-text); font-weight: 500; } .steps li.cur::before { border-color: var(--sp-accent); background: var(--sp-accent); }
+
+/* direction 1: tile hero */
+.d1 { padding: 28px 28px 22px; display: grid; justify-items: center; gap: 14px; text-align: center; }
+.d1 .tile { width: 72px; height: 72px; font-size: 38px; }
+.d1 .tile .bar { width: 15px; height: 4px; margin: 0 0 7px 3px; }
+.d1 .name { font-size: 22px; } .d1 .track { width: 100%; }
+/* direction 2: steps */
+.d2 { padding: 20px 22px; display: grid; gap: 14px; }
+.d2 .top { display: flex; align-items: center; gap: 12px; }
+.d2 .tile { width: 40px; height: 40px; font-size: 21px; }
+.d2 .tile .bar { width: 9px; height: 3px; margin: 0 0 4px 2px; }
+.d2 .name { font-size: 17px; line-height: 1.1; } .d2 .pct { margin-left: auto; font-size: var(--fs-12); color: var(--sp-muted); font-variant-numeric: tabular-nums; }
+/* direction 3: wordmark + tip */
+.d3 { padding: 30px 28px 18px; display: grid; gap: 16px; }
+.d3 .wm { font-family: var(--font-brand); font-weight: 600; font-size: 38px; line-height: 1; letter-spacing: -.005em; display: flex; align-items: baseline; }
+.d3 .wm u { text-decoration: none; color: var(--sp-accent); margin-left: 1px; }
+.d3 .ver { margin-left: 10px; align-self: flex-end; }
+.d3 .foot { border-top: 1px solid var(--sp-line); margin-inline: -28px; padding: 10px 28px 0; }
+/* direction 4: strip */
+.d4 { padding: 14px 16px; display: grid; gap: 10px; width: 100%; }
+.d4 .row { display: flex; align-items: center; gap: 12px; }
+.d4 .tile { width: 36px; height: 36px; font-size: 19px; }
+.d4 .tile .bar { width: 8px; height: 3px; margin: 0 0 4px 2px; }
+.d4 .col { display: grid; min-width: 0; flex: 1; }
+.d4 .name { font-size: 15px; line-height: 1.2; } .d4 .status { min-height: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.s4 { width: min(380px, 92vw); }
+
+.log { margin-top: 10px; display: grid; gap: 4px; font-size: var(--fs-13); color: var(--page-muted); }
+.log code { font-family: ui-monospace, monospace; color: var(--page-text); }
+.rules { margin-top: 8px; padding: 12px 16px; border: 1px solid var(--page-line); border-radius: var(--r-lg); background: var(--page-surface); font-size: var(--fs-13); }
+.rules h2 { font-size: var(--fs-14); margin: 0 0 4px; }
+.rules p { margin: 2px 0; color: var(--page-muted); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+@media (prefers-reduced-motion: reduce) {
+  .ind, .ring, .pulse { animation: none !important; }
+  .ind { width: 100%; opacity: .35; }
+  .fill, .splash, .splash.show, .splash.leave, .splash.morph, .main-win.on { transition: none !important; }
+}
+.rm .ind, .rm .ring, .rm .pulse { animation: none !important; }
+.rm .ind { width: 100%; opacity: .35; }
+.rm .fill, .rm .splash, .rm .main-win.on { transition: none !important; }
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>Start-up splash, four directions</h1>
+  <p class="lede">A small borderless window that appears only when start-up is slow. It follows the system theme in the app; the toggle below only previews. Reduced motion (system setting, or the toggle) makes every cue static.</p>
+  <div class="toolbar" role="toolbar" aria-label="Prototype controls">
+    <div class="group"><span class="group-label">Direction</span>
+      <div class="seg" id="dirs"><button data-v="1">1</button><button data-v="2">2</button><button data-v="3">3</button><button data-v="4">4</button></div></div>
+    <div class="group"><span class="group-label">State</span>
+      <div class="seg" id="states"><button data-v="fast">Fast</button><button data-v="normal">Normal</button><button data-v="slow">Slow</button><button data-v="recovery">Recovery</button><button data-v="error">Error</button></div></div>
+    <div class="group"><span class="group-label">Theme</span>
+      <div class="seg" id="themes"><button data-v="light">Light</button><button data-v="dark">Dark</button></div></div>
+    <div class="group"><span class="group-label">Motion</span>
+      <div class="seg" id="motion"><button data-v="on">Normal</button><button data-v="off">Reduced</button></div></div>
+    <button class="act" id="replay" type="button">Replay start-up</button>
+  </div>
+  <div class="desk" id="desk" aria-label="Mock desktop">
+    <div class="main-win" id="main" aria-hidden="true"><div class="tb"><i></i><span class="mname">Ferrite</span></div>
+      <div class="panes"><div class="pane"><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b></div><div class="pane"><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b></div></div></div>
+    <div class="slot"><div class="splash" id="splash" role="status" aria-live="polite"></div></div>
+  </div>
+  <div class="log" id="log" aria-live="off"></div>
+  <div class="rules" id="rules"></div>
+</div>
+<script>
+const BRAND = { name: "Ferrite", mark: "fe", cursor: true, version: "0.9.2-alpha" };
+const RULES = { threshold: 200, minVisible: 700, slowAfter: 3000, fastStart: 120, normalStart: 1900, slowStart: 6500, errorAt: 2300 };
+const STEPS = ["Opening session", "Reading drives", "Restoring tabs"];
+const RECOVERY = "Recovering an interrupted copy…";
+const HINTS = ["<kbd>Ctrl</kbd>+<kbd>K</kbd> opens the command palette", "<kbd>Tab</kbd> switches pane, <kbd>F5</kbd> copies", "<kbd>Alt</kbd>+<kbd>V</kbd> opens the View menu"];
+const HANDOFF = { 1: "fade", 2: "morph", 3: "fade", 4: "close" };
+
+const $ = (s) => document.querySelector(s);
+const state = { dir: 1, st: "normal", theme: matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light", motion: "on" };
+let timers = [], runId = 0;
+
+const mark = (cls = "") => `<span class="tile ${cls}" aria-hidden="true"><span class="m">${BRAND.mark}${BRAND.cursor ? '<span class="bar"></span>' : ""}</span></span>`;
+const prog = (d) => d === 4 || d === 3 ? `<div class="track"><div class="ind"></div></div>` : "";
+
+function markup(d) {
+  const rec = `<div class="rec">The copy stays paused until you confirm it in the main window.</div>`;
+  const slowBtn = `<div class="btns slowbtn"><button class="sbtn" type="button">Show details</button></div>`;
+  const errBtn = `<div class="btns"><button class="sbtn pri" type="button">Show details</button><button class="sbtn" type="button">Close</button></div>`;
+  if (d === 1) return `<div class="d1">${mark()}<div><div class="name">${BRAND.name}</div><div class="ver">Version ${BRAND.version}</div></div>
+    <div class="track" style="width:100%"><div class="ind"></div></div><div class="status" data-status></div>${rec}${slowBtn}${errBtn}</div>`;
+  if (d === 2) return `<div class="d2"><div class="top">${mark()}<div><div class="name">${BRAND.name}</div><div class="ver">${BRAND.version}</div></div><span class="pct" data-pct>0%</span></div>
+    <div class="track"><div class="fill" data-fill></div></div><ul class="steps" data-steps>${STEPS.map((s) => `<li>${s}</li>`).join("")}</ul><div class="status" data-status></div>${rec}${slowBtn}${errBtn}</div>`;
+  if (d === 3) return `<div class="d3"><div class="wm"><span>${BRAND.name.toLowerCase()}</span><u class="pulse">_</u><span class="ver">${BRAND.version}</span></div>
+    ${prog(3)}<div class="status" data-status></div>${rec}${slowBtn}${errBtn}
+    <div class="foot hint" data-hint><span>Tip</span><span data-tip></span></div></div>`;
+  return `<div class="d4"><div class="row">${mark()}<div class="col"><div class="name">${BRAND.name} <span class="ver">${BRAND.version}</span></div><div class="status" data-status></div></div><span class="ring"></span></div>${rec}${slowBtn}${errBtn}</div>`;
+}
+
+const log = (m) => { const e = document.createElement("div"); e.innerHTML = `<code>${Math.round(performance.now() - t0).toString().padStart(5)} ms</code> ${m}`; $("#log").appendChild(e); };
+let t0 = 0;
+const at = (ms, fn, id) => timers.push(setTimeout(() => id === runId && fn(), ms));
+const reduced = () => state.motion === "off" || matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function setStatus(text, cls = "") { const s = $("#splash [data-status]"); if (s) { s.textContent = text; s.className = "status " + cls; } }
+function setStep(i) {
+  const lis = document.querySelectorAll("#splash [data-steps] li");
+  lis.forEach((li, n) => { li.className = n < i ? "done" : n === i ? "cur" : ""; });
+  const f = $("#splash [data-fill]"); if (f) f.style.transform = `scaleX(${i / STEPS.length + (i < STEPS.length ? 0.1 : 0)})`;
+  const p = $("#splash [data-pct]"); if (p) p.textContent = Math.round(Math.min(1, i / STEPS.length) * 100) + "%";
+}
+
+function stop() { timers.forEach(clearTimeout); timers = []; runId++; }
+
+function reset() {
+  stop();
+  const sp = $("#splash"); sp.className = "splash"; sp.style.transform = ""; sp.innerHTML = ""; sp.classList.remove("show");
+  $("#main").className = "main-win"; $("#log").innerHTML = "";
+  $(".slot").style.transform = "";
+}
+
+function run() {
+  reset();
+  const id = runId, d = state.dir, st = state.st, R = RULES, sp = $("#splash"), main = $("#main");
+  const total = st === "fast" ? R.fastStart : st === "slow" ? R.slowStart : st === "error" ? R.errorAt : st === "recovery" ? R.normalStart + 600 : R.normalStart;
+  t0 = performance.now();
+  log("process started, main window loading hidden");
+  let shownAt = null, finished = false;
+
+  const finish = () => {
+    finished = true;
+    if (shownAt === null) { log("ready before threshold, no splash"); main.classList.add("on", "instant"); return; }
+    const wait = Math.max(0, shownAt + R.minVisible - performance.now());
+    if (wait) log(`ready, holding splash ${Math.round(wait)} ms to reach the ${R.minVisible} ms minimum`);
+    at(wait, () => handoff(), id);
+  };
+  const handoff = () => {
+    const h = HANDOFF[d]; log(`hand-off: ${h}`);
+    const rm = reduced();
+    main.classList.add("on");
+    if (rm || h === "close") { sp.classList.add("hidden"); sp.classList.remove("show"); if (!rm) { main.style.transition = ""; } return; }
+    if (h === "fade") { sp.classList.add("leave"); sp.classList.remove("show"); return; }
+    const a = sp.getBoundingClientRect(), b = main.getBoundingClientRect();
+    sp.style.transformOrigin = "center";
+    sp.classList.add("morph"); sp.classList.remove("show");
+    sp.style.transform = `translate(-50%, -50%) scale(${(b.width / a.width).toFixed(3)}, ${(b.height / a.height).toFixed(3)})`;
+  };
+
+  at(R.threshold, () => {
+    if (finished) return;
+    sp.innerHTML = markup(d);
+    sp.classList.toggle("is-recovery", st === "recovery");
+    sp.classList.add("enter"); void sp.offsetWidth;
+    sp.classList.add("show"); sp.classList.remove("enter");
+    shownAt = performance.now(); log(`slower than ${R.threshold} ms, splash shown`);
+    const tip = $("#splash [data-tip]"); if (tip) tip.innerHTML = HINTS[0];
+    if (st === "recovery") setStatus(RECOVERY); else setStatus(STEPS[0] + "…");
+    setStep(0);
+  }, id);
+
+  if (st !== "fast") {
+    const span = (st === "error" ? R.errorAt : total) - R.threshold;
+    STEPS.forEach((s, i) => at(R.threshold + (span * i) / (STEPS.length + 0.4), () => {
+      if (shownAt === null) return;
+      if (!(st === "recovery" && i === 0)) setStatus(s + "…");
+      if (st === "recovery" && i === 1) setStatus(RECOVERY);
+      setStep(i); if (i) log(`step: ${s}`);
+    }, id));
+    at(R.threshold + 2200, () => { const t = $("#splash [data-tip]"); if (t) t.innerHTML = HINTS[1]; }, id);
+    at(R.threshold + 4400, () => { const t = $("#splash [data-tip]"); if (t) t.innerHTML = HINTS[2]; }, id);
+  }
+  if (st === "slow") at(R.slowAfter, () => {
+    if (shownAt === null) return;
+    sp.classList.add("is-slow"); setStatus("Taking longer than usual. Still working.", "slow"); log("slow start (> 3 s): honest message, details button");
+  }, id);
+  if (st === "error") at(R.errorAt, () => {
+    if (shownAt === null) return;
+    sp.classList.add("is-error"); setStatus("Could not read session file. Ferrite stays open with defaults.", "err");
+    const f = $("#splash [data-fill]"); if (f) f.style.transform = "scaleX(1)";
+    log("start-up error: splash stays, shows message and buttons, never auto-closes");
+  }, id);
+  if (st === "error") return;
+  at(total, () => { if (shownAt !== null) setStep(STEPS.length); finish(); }, id);
+}
+
+function bind(sel, key) {
+  document.querySelectorAll(sel + " button").forEach((b) => b.addEventListener("click", () => {
+    state[key] = key === "dir" ? Number(b.dataset.v) : b.dataset.v; sync(); if (key === "theme" || key === "motion") { if (key === "motion") run(); return; } run();
+  }));
+}
+function sync() {
+  document.documentElement.dataset.theme = state.theme;
+  document.documentElement.classList.toggle("rm", state.motion === "off");
+  [["#dirs", "dir"], ["#states", "st"], ["#themes", "theme"], ["#motion", "motion"]].forEach(([s, k]) =>
+    document.querySelectorAll(s + " button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.v === String(state[k])))));
+  $("#desk").style.height = innerWidth < 600 ? "520px" : "560px";
+  $(".mname").textContent = BRAND.name;
+  $("#rules").innerHTML = `<h2>Behaviour rules (all directions)</h2>
+    <p>Show after <b>${RULES.threshold} ms</b> without a ready main window. Once shown, stay at least <b>${RULES.minVisible} ms</b>. Slow start after <b>${RULES.slowAfter / 1000} s</b>: message and a details button. Error: splash stays, shows the cause and Details / Close, no auto-close. Recovery: first status line names the interrupted copy; the copy stays paused until confirmed in the main window.</p>
+    <p>Hand-off for this direction: <b>${HANDOFF[state.dir]}</b>. The splash window never takes focus from the main window once it opens.</p>`;
+}
+bind("#dirs", "dir"); bind("#states", "st"); bind("#themes", "theme"); bind("#motion", "motion");
+$("#replay").addEventListener("click", run);
+sync(); run();
+</script>
+</body>
+</html>
