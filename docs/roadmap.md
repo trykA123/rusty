@@ -51,25 +51,26 @@ Windows CI is green: 7,118 tests passed. Linux passed all 10 gate steps.
 
 Merged after that release: six built-in colour themes. They are Open sea (the default), Red bill, Black cap, Fine mesh, Grain, and Ink and amber. Each has a light and a dark form. Pick one in Settings > Appearance > Colour theme. It applies at once.
 
+### Merged since that release
+
+- **Navo.** The app has a new name and the `n_` icon. Your Ferrite profile (settings, tabs, history) moves to Navo once, safely, with crash recovery. The old folder is renamed to "Ferrite.migrated-to-navo". An installed Ferrite Index service is upgraded from a one-time notice.
+- **Start-up splash.** A small native Windows window with the `n_` icon and the "navo" wordmark. It shows only when start-up takes longer than half a second, and fades out. It does not appear on Linux.
+- **New right-click menu.** The real Windows shell menu in Navo's style. The filter sits at the top. Submenus open in place, with a back row. Shift adds the extended items. If anything fails, the classic Windows menu opens instead.
+- **Fixes from the final reviews** of the Ctrl+K index service and of Rich ELF and MAP.
+
 ### Now in progress
 
-- **Rename to Navo.** The app gets a new name and a new `n_` icon. Your existing profile (settings, tabs, history) moves once, safely, with crash recovery. Afterwards the old Ferrite folder is renamed to "Ferrite.migrated-to-navo". The installed index service is upgraded from a one-time notice. The rename is built: profile move, start order, instance names, the index service upgrade, program name, on-screen text, icons, CI and docs. It is waiting for Windows CI and the owner check on the work PC.
-- **Start-up splash.** A small native Windows window shows the `n_` icon and the "navo" wordmark. It appears only when start-up takes longer than 200 ms. It does not appear on Linux.
-- **New right-click menu.** It shows the real Windows shell menu in Navo's style. The filter sits at the top. Submenus open in place, with a back row. You get the full classic menu, and Shift adds the extended items. If anything fails, the classic Windows menu opens instead. Two builds are being made side by side so the owner can compare quality.
+- **Record performance.** A menu command records frame times, CPU, memory and the latency of opening folders and Ctrl+K while you use the app, then saves a `navo-performance-*.zip` to send. It is built and waiting for Windows CI.
+- **Delete safety net (1 to 7 days retention).** The retention engine, recovery, quarantine and crash-safe temporary-file cleanup are built and reviewed. All of it sits behind an experimental launch flag, so normal use does not change. The last review fixes and the move onto the Navo names are being made now. After it merges, still missing for users: turning it on in delete and overwrite jobs, its settings, a "Recently deleted" view, and general undo.
 - **Fonts.** Space Grotesk for the brand, Inter for the interface, JetBrains Mono for paths and viewers. Decided. Not built yet.
-
-### After the backend merge
-
-The delete safety net (1 to 7 days retention) has its own branch. Its retention engine, recovery, quarantine and crash-safe temporary-file cleanup are built and reviewed. All of it sits behind an experimental launch flag, so normal use does not change. The branch is being moved onto the current main.
-
-After it merges, the safety net engine is in the app but still off by default. Still missing for users: turning it on in delete and overwrite jobs, its settings, a "Recently deleted" view, and general undo. A faster lookup for very large retention catalogs is parked.
 
 Still open for alpha sign-off:
 
-- Owner checks on the work PC: Explorer drag, the index service, and rename on a FAT or exFAT USB stick.
+- Owner checks on the work PC: Explorer drag, the index service, rename on a FAT or exFAT USB stick, the Rich ELF and MAP views, the profile move to Navo, and the splash.
+- A heavy benchmark: millions of indexed files, search latency, long lists, memory, and animation smoothness recorded on the work PC.
 - Two weeks of daily use with no lost or damaged files.
 
-The latest downloadable alpha is the pre-release alpha-2026-10-26. It has all four alpha features. The colour themes came after it. DBC/A2L viewer screens, automotive colours and viewer chrome are beta work (D75).
+The latest downloadable alpha is the pre-release alpha-2026-10-26d. It has all four alpha features, the colour themes, the splash and the new right-click menu. The Navo rename comes in the next build. DBC/A2L viewer screens, automotive colours and viewer chrome are beta work (D75).
 
 The foundation already includes two panes, tabs, history, session restore, file operations, virtual lists, themes, the viewer, selection and the activity strip. The beta and later phases below retain their existing scope.
 
@@ -77,9 +78,10 @@ Exit: two weeks of daily use on the work PC with no lost or damaged files.
 
 ## Right after the alpha
 
-1. Rename to Navo (D78, D79): new name, new icon, a quiet start-up splash and the new fonts. Work has started (see Now in progress). The six built-in colour themes with Open sea as the default are already on main.
-2. Delete safety net with 1 to 7 days retention (D65). It continues on its own branch. The engine is built behind an experimental flag (see After the backend merge).
-3. Background work: job queues, folder sizes and speed tests, from ideas in Linux tools (planned; after the alpha).
+1. Delete safety net turned on for users (D65): delete and overwrite jobs, its settings and a "Recently deleted" view.
+2. The new fonts (D78).
+3. Background work: job queues, folder sizes and speed tests, from ideas in Linux tools.
+4. Raw/Pretty formatting in F3: format JSON, XML and similar on open.
 
 ## v1 Beta · v0.9
 
