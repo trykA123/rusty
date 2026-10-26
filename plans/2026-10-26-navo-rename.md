@@ -251,3 +251,4 @@ A1 → (A2, A3, A6, A7, A9 in parallel) → A4 → A5; A7 → A8; A10 after `ui/
 
 ## Log
 - 2026-10-26 — Plan drafted from the inventory at e077fb5a.
+- 2026-10-26 — `ui/navo-splash`: native Win32 splash (D79) on its own thread, timing core tested; masks from `scripts/build-splash.sh` in `assets/brand/splash`. A13 can start after it merges.
