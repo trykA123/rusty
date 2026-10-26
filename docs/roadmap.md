@@ -93,6 +93,8 @@ Goal: safe, configurable and pleasant; modules and theming arrive.
 - module: copy path, terminal (Windows Terminal and templates), folder search, external viewer and editor (F3/F4; done; hex view and large files done; viewer foundation done; extra grammars and content detection done; rule lexer and Notepad++ UDL import done; search counts, marks and history (model and store) done), notifications for long operations.
 - module: spreadsheets in F3 (one item; after 1.0 if it grows).
 - core: every shortcut changeable.
+- core: responsive layout (D80): minimum window size, columns aligned under their headers with names cut by an ellipsis, columns that drop in order on narrow windows, one pane below a set width, tab overflow, and layout tests at fixed widths in the gate.
+- core: more than two panes, tiled like Hyprland (D80): split, move and resize panes from the keyboard. Needs a design round and a plan first.
 - infra: soak test; start-up and memory benchmark in CI (done; baseline in [perf.md](perf.md)).
 
 Exit: no open data-safety bugs; start-up and memory targets met in CI.
