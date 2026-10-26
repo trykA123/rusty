@@ -1,10 +1,10 @@
 # P35 · Quarantine a damaged ferrite.db after a crash
 
-Status: ready (after `store-safety` merges) · Repo: `<repo>` · Branch: `p35-q1` · Started: 2026-10-20
+Status: storage, startup and notice complete on Linux; native Windows pending · Repo: the backend worktree · Branch: `backend/alpha-validation` · Started: 2026-10-20
 
 ## Goal
 
-When the integrity check after a crash finds `ferrite.db` damaged, Ferrite sets the file aside with its WAL, starts on a fresh database, carries over every table that is still sound, rolls back the crashed run's jobs only from a journal that passed its own check, and tells the user what happened. Today (with `store-safety`'s interim sentinel) a damaged database only blocks recovery and leaves the session unjournaled until the user acts.
+When the integrity check after a crash finds `ferrite.db` damaged, Ferrite sets the file aside with its WAL, starts on a fresh database, carries over every table that is still sound, rolls back the crashed run's jobs only from a journal that passed its own check, and tells the user what happened. The former interim sentinel only blocked recovery and left the session unjournaled until the user acted.
 
 ## Decisions
 
@@ -35,8 +35,8 @@ From the Opus review of `store-safety` (2026-10-20). Final.
 
 | Atom | Component | Role | Effort | After | Check | Status | Cost |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Q1 | `store::quarantine`, `store::salvage`, `crash::check_store` | general-purpose (Opus medium), then reviewer (Opus high) | medium | `store-safety` merged | tests below; gate | ready | |
-| Q2 | crash notice | ui-builder (Sonnet medium) | medium | Q1 | notice test; gallery shot | blocked | |
+| Q1 | `store::quarantine`, `store::salvage`, `crash::check_store` | main agent; Sol 6.1 xhigh review | high | `store-safety` merged | tests below; gate | done (Linux gate and review) | |
+| Q2 | crash notice | main agent; Sol 6.1 xhigh review | high | Q1 | notice test; gallery shot | done (Linux gate, native screenshots and review) | |
 
 ### Q1 — tests
 
@@ -51,8 +51,12 @@ Reuse `corrupt_middle_page` from `db/tests/guards.rs`:
 ## Done when
 
 - A crash plus a damaged `ferrite.db` leads, on the next start, to a fresh journaled db, the damaged copy kept under `corrupt-N`, sound data carried over, and a notice naming what was reset.
-- The gate, Windows CI and an Opus review are green.
+- The gate, Windows CI and the owner's requested Sol 6.1 xhigh review are green.
 
 ## Log
 
 - 2026-10-20 — Plan written from the Opus review of `store-safety`; that branch carries the interim `check-failed` sentinel (no recovery while it exists).
+- 2026-10-23 — Owner requested continued backend implementation. Storage work is split into [quarantine and salvage backend](2026-10-23-p35-recovery-backend.md), with startup activation and the persistent notice following separately. A durable slot record strengthens D2: an unrecorded orphan WAL is isolated in a separate empty slot rather than attached to an unrelated older database. The current schema also requires preserving `command_use` and `rename_preset`. Main-agent implementation; Sol 6.1 xhigh reviews only.
+- 2026-10-23 — Storage APIs and 28 Linux regressions are complete; the full gate passed all 10 steps with 7,088 tests passed, 14 skipped, plus documentation tests (188.0 seconds). Review found a non-STRICT SQLite field-type issue; the regression failed first and the fix passed review. Startup activation and the persistent notice are not implemented yet; native Windows sharing remains pending. See [storage recovery contracts](../docs/storage-recovery.md).
+- 2026-10-24 — Implemented startup activation and the persistent notice in the [startup integration plan](2026-10-24-p35-startup-notice.md). The main agent implemented all changes. The single Sol 6.1 xhigh reviewer confirmed both notice fixes and no unresolved findings. All 141 targeted tests and four inspected native light/dark screenshots pass; final Linux gate is running. Native Windows runtime verification remains pending.
+- 2026-10-24 — Final integration gate passed all 10 steps in 209.0 seconds: 7,117 tests passed, 14 skipped, plus documentation tests. Two final-binary native runs also preserved the exact damaged source, opened a healthy replacement and retained the notice across a clean restart. Inspected both real app themes. No unresolved Sol 6.1 xhigh findings. Native Windows runtime checks remain the outstanding P35 verification boundary.
