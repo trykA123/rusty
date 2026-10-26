@@ -1,6 +1,6 @@
 # Rusty roadmap
 
-Updated 23 October 2026. The visual version is [`design/roadmap.html`](../design/roadmap.html). Scope rules are in [decisions.md](decisions.md) (D13, D14). Plain-language specs for the bigger features are in [features/](features/).
+Updated 26 October 2026. The visual version is [`design/roadmap.html`](../design/roadmap.html). Scope rules are in [decisions.md](decisions.md) (D13, D14). Plain-language specs for the bigger features are in [features/](features/).
 
 Kinds: **core** is always on; **module** can be turned off; **package** is data only (themes, keymaps); **infra** is build, CI and release work.
 
@@ -38,25 +38,23 @@ Exit: the spike meets the targets on Linux and the work PC, otherwise D2 is reop
 
 Goal: a file manager the owner can use every day on Windows.
 
-The alpha has four focus areas. The latest implementation is available for review; it is not in the 21d download. The old percentages mixed implementation with release validation, so status is shown separately.
+All four alpha features are built. The latest work is on main, but it is not in the 21d download yet. Status is shown instead of percentages, because the old percentages mixed building with release checks.
 
-| Feature | Implemented | Still open |
+| Feature | Built | Still open |
 | --- | --- | --- |
-| Multi-select and drag and drop | Marking, internal targets, shortcuts, external drag bridge and right-button choices | Native Explorer/OLE checks; optional auto-scroll and hover-open. Linux external drops are Copy-only. |
-| Rich ELF and MAP | Rich views, memory models, companion discovery and live configured module prefixes | Shared table refinements, final review and work-PC checks |
-| Ctrl+K command center | Commands, recent files, tabs, folder and path sources, disk index, Search settings and optional Windows service | Final service checks, documentation review and work-PC measurements |
-| Multi-rename | Single and batch journaled rename, identity-safe undo/recovery, edited/imported/pasted/copied names, sorting, ordering, folder counters and optional log | Four Windows rename-log test failures; native recovery checks |
+| Multi-select and drag and drop | Marking, drops between panes, folders, tabs, path crumbs and drives, Alt-drop shortcuts, drag to and from Explorer, right-button drop choices, auto-scroll near list edges, and folders, tabs and drives that open on hover | Owner check of Explorer drag on the work PC. Linux external drops are Copy-only. |
+| Rich ELF and MAP | Rich views, memory models, companion discovery and live module prefixes | Final review and work-PC checks |
+| Ctrl+K command center | Commands, recent files, tabs, folder and path sources, disk index, Search settings and the optional Windows service | Owner check of the index service on the work PC |
+| Multi-rename | Journaled rename with safe undo and crash recovery; edited, imported, pasted and copied names; sorting, ordering and folder counters; optional rename log. Rename works on FAT and exFAT drives; undo there checks size and time first. | Owner check of rename on a FAT or exFAT USB stick |
 
-Verification of the latest application changes:
+Windows CI is green: 7,118 tests passed. Linux passed all 10 gate steps.
 
-- Linux: all 10 gate steps passed; 7,060 tests passed, 14 skipped, plus documentation tests.
-- Windows: build and Clippy passed; 7,073 tests passed, four failed and 15 were skipped. All failures concern rename logging.
-- Native Linux screenshots were inspected in both themes. Explorer/OLE behavior, service permissions and work-PC measurements still need owner checks.
-- [Windows CI results](https://github.com/trykA123/rusty/actions/runs/39937857823).
+Still open for alpha sign-off:
 
-The latest downloadable alpha remains 21d: indexed Ctrl+K search, Search settings, optional Windows service, F4 on folders and F9 path copying. The latest work adds native drag wiring, rename safety and controls, and Rich companion/prefix improvements.
+- Owner checks on the work PC: Explorer drag, the index service, and rename on a FAT or exFAT USB stick.
+- Two weeks of daily use with no lost or damaged files.
 
-Next: fix Windows logging, get a green test run, then complete native Windows and work-PC checks. Alpha sign-off remains open. DBC/A2L viewer screens, automotive colours and viewer chrome are beta work under D75.
+The latest downloadable alpha remains 21d: indexed Ctrl+K search, Search settings, optional Windows service, F4 on folders and F9 path copying. DBC/A2L viewer screens, automotive colours and viewer chrome are beta work (D75).
 
 The foundation already includes two panes, tabs, history, session restore, file operations, virtual lists, themes, the viewer, selection and the activity strip. The beta and later phases below retain their existing scope.
 
@@ -64,8 +62,9 @@ Exit: two weeks of daily use on the work PC with no lost or damaged files.
 
 ## Right after the alpha
 
-1. Delete safety net with 1 to 7 days retention (D65).
-2. Background work: job queues, folder sizes and speed tests, from ideas in Linux tools (planned; after the alpha).
+1. Rename to Navo (D78): new name, new icon, a quiet start-up splash, six built-in colour themes with Open sea as the default, and the Inter and JetBrains Mono fonts (D76). Files and profile names move later, with a migration plan.
+2. Delete safety net with 1 to 7 days retention (D65). It continues on its own branch.
+3. Background work: job queues, folder sizes and speed tests, from ideas in Linux tools (planned; after the alpha).
 
 ## v1 Beta · v0.9
 
