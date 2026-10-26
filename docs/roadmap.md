@@ -38,7 +38,7 @@ Exit: the spike meets the targets on Linux and the work PC, otherwise D2 is reop
 
 Goal: a file manager the owner can use every day on Windows.
 
-All four alpha features are built. The latest work is on main, but it is not in the 21d download yet. Status is shown instead of percentages, because the old percentages mixed building with release checks.
+All four alpha features are built. They are in the pre-release alpha-2026-10-26. Status is shown instead of percentages, because the old percentages mixed building with release checks.
 
 | Feature | Built | Still open |
 | --- | --- | --- |
@@ -49,12 +49,27 @@ All four alpha features are built. The latest work is on main, but it is not in 
 
 Windows CI is green: 7,118 tests passed. Linux passed all 10 gate steps.
 
+Merged after that release: six built-in colour themes. They are Open sea (the default), Red bill, Black cap, Fine mesh, Grain, and Ink and amber. Each has a light and a dark form. Pick one in Settings > Appearance > Colour theme. It applies at once.
+
+### Now in progress
+
+- **Rename to Navo.** The app gets a new name and a new `n_` icon. Your existing profile (settings, tabs, history) moves once, safely, with crash recovery. Afterwards the old Ferrite folder is renamed to "Ferrite.migrated-to-navo". The installed index service is upgraded from a one-time notice. Done: profile folder names and temporary-file names. The move engine is built and in its review-fix round. Still to do: app start order, instance names, the index service, the program name, on-screen text, icons, CI and docs. This page says Ferrite until the rename lands.
+- **Start-up splash.** A small native Windows window shows the `n_` icon and the "navo" wordmark. It appears only when start-up takes longer than 200 ms. It does not appear on Linux.
+- **New right-click menu.** It shows the real Windows shell menu in Ferrite's style. The filter sits at the top. Submenus open in place, with a back row. You get the full classic menu, and Shift adds the extended items. If anything fails, the classic Windows menu opens instead. Two builds are being made side by side so the owner can compare quality.
+- **Fonts.** Space Grotesk for the brand, Inter for the interface, JetBrains Mono for paths and viewers. Decided. Not built yet.
+
+### After the backend merge
+
+The delete safety net (1 to 7 days retention) has its own branch. Its retention engine, recovery, quarantine and crash-safe temporary-file cleanup are built and reviewed. All of it sits behind an experimental launch flag, so normal use does not change. The branch is being moved onto the current main.
+
+After it merges, the safety net engine is in the app but still off by default. Still missing for users: turning it on in delete and overwrite jobs, its settings, a "Recently deleted" view, and general undo. A faster lookup for very large retention catalogs is parked.
+
 Still open for alpha sign-off:
 
 - Owner checks on the work PC: Explorer drag, the index service, and rename on a FAT or exFAT USB stick.
 - Two weeks of daily use with no lost or damaged files.
 
-The latest downloadable alpha remains 21d: indexed Ctrl+K search, Search settings, optional Windows service, F4 on folders and F9 path copying. DBC/A2L viewer screens, automotive colours and viewer chrome are beta work (D75).
+The latest downloadable alpha is the pre-release alpha-2026-10-26. It has all four alpha features. The colour themes came after it. DBC/A2L viewer screens, automotive colours and viewer chrome are beta work (D75).
 
 The foundation already includes two panes, tabs, history, session restore, file operations, virtual lists, themes, the viewer, selection and the activity strip. The beta and later phases below retain their existing scope.
 
@@ -62,8 +77,8 @@ Exit: two weeks of daily use on the work PC with no lost or damaged files.
 
 ## Right after the alpha
 
-1. Rename to Navo (D78): new name, new icon, a quiet start-up splash, six built-in colour themes with Open sea as the default, and the Inter and JetBrains Mono fonts (D76). Files and profile names move later, with a migration plan.
-2. Delete safety net with 1 to 7 days retention (D65). It continues on its own branch.
+1. Rename to Navo (D78, D79): new name, new icon, a quiet start-up splash and the new fonts. Work has started (see Now in progress). The six built-in colour themes with Open sea as the default are already on main.
+2. Delete safety net with 1 to 7 days retention (D65). It continues on its own branch. The engine is built behind an experimental flag (see After the backend merge).
 3. Background work: job queues, folder sizes and speed tests, from ideas in Linux tools (planned; after the alpha).
 
 ## v1 Beta · v0.9
