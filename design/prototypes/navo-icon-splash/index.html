@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Navo icon and splash</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+--bg:oklch(95.5% 0.012 225.0);--surface:oklch(98.5% 0.008 225.0);--raised:oklch(99.8% 0.000 225.0);--border:oklch(89.0% 0.014 225.0);--selected:oklch(90.0% 0.046 218.0);--text:oklch(22.0% 0.014 225.0);--muted:oklch(48.8% 0.017 225.0);--border-strong:oklch(64.8% 0.017 225.0);--on-accent:oklch(99.0% 0.004 225.0);--accent:oklch(52.0% 0.092 218.0);--accent-text:oklch(48.8% 0.086 218.0);--danger:oklch(36.0% 0.144 22.0);
+--space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:24px;--space-6:32px;
+--radius-s:4px;--radius-m:8px;--radius-l:12px;
+--fs-12:.75rem;--fs-13:.8125rem;--fs-14:.875rem;--fs-16:1rem;--fs-20:1.25rem;--fs-24:1.5rem;
+--f-brand:"Space Grotesk",system-ui,sans-serif;--f-ui:"Inter",system-ui,sans-serif;--f-mono:"JetBrains Mono",ui-monospace,monospace;
+color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+--bg:oklch(19.0% 0.014 225.0);--surface:oklch(22.5% 0.014 225.0);--raised:oklch(26.5% 0.014 225.0);--border:oklch(33.0% 0.014 225.0);--selected:oklch(33.0% 0.058 218.0);--text:oklch(93.8% 0.014 225.0);--muted:oklch(72.0% 0.017 225.0);--border-strong:oklch(54.8% 0.017 225.0);--on-accent:oklch(19.0% 0.012 225.0);--accent:oklch(76.0% 0.110 218.0);--accent-text:oklch(76.0% 0.110 218.0);--danger:oklch(73.0% 0.166 22.0);color-scheme:dark;}
+}
+:root[data-theme="dark"]{
+--bg:oklch(19.0% 0.014 225.0);--surface:oklch(22.5% 0.014 225.0);--raised:oklch(26.5% 0.014 225.0);--border:oklch(33.0% 0.014 225.0);--selected:oklch(33.0% 0.058 218.0);--text:oklch(93.8% 0.014 225.0);--muted:oklch(72.0% 0.017 225.0);--border-strong:oklch(54.8% 0.017 225.0);--on-accent:oklch(19.0% 0.012 225.0);--accent:oklch(76.0% 0.110 218.0);--accent-text:oklch(76.0% 0.110 218.0);--danger:oklch(73.0% 0.166 22.0);color-scheme:dark;}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:400 var(--fs-16)/1.5 var(--f-ui);overflow-x:hidden}
+h1{font:600 var(--fs-24)/1.2 var(--f-brand);margin:0}
+h2{font:600 var(--fs-20)/1.25 var(--f-brand);margin:0}
+p{margin:0}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1240px;margin-inline:auto;padding:var(--space-4)}
+header.top{position:sticky;top:0;z-index:10;background:var(--bg);border-bottom:1px solid var(--border)}
+.bar{display:flex;flex-wrap:wrap;gap:var(--space-2) var(--space-4);align-items:center;padding-block:var(--space-3)}
+.grp{display:flex;align-items:center;gap:var(--space-2);flex-wrap:wrap;min-width:0}
+.lbl{font-size:var(--fs-12);color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.picker{display:flex;gap:2px;padding:2px;background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius-m)}
+.picker button,.btn{min-height:36px;min-width:36px;padding:0 var(--space-3);border:0;border-radius:var(--radius-s);background:transparent;color:var(--text);cursor:pointer;font:500 var(--fs-14) var(--f-ui)}
+.picker button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
+.picker button:hover:not([aria-pressed="true"]){background:var(--selected)}
+.btn{background:var(--surface);border:1px solid var(--border-strong)}
+.btn:hover{background:var(--selected)}
+section.sec{margin-block:var(--space-6)}
+.intro{display:grid;gap:var(--space-2);margin-bottom:var(--space-4);max-width:80ch}
+.intro p,.note{color:var(--muted);font-size:var(--fs-14)}
+.note b{color:var(--text)}
+.grid{display:grid;gap:var(--space-4);grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr))}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-l);padding:var(--space-4);display:grid;gap:var(--space-3);align-content:start;min-width:0}
+.card h3{margin:0;font:600 var(--fs-13)/1.3 var(--f-mono);color:var(--text)}
+.sizes{display:flex;flex-wrap:wrap;gap:var(--space-4);align-items:flex-end}
+.cell{display:grid;gap:var(--space-1);justify-items:start;font-size:var(--fs-12);color:var(--muted)}
+canvas{display:block}
+.zoom{border:1px dashed var(--border-strong);max-width:100%}
+.zooms{display:flex;flex-wrap:wrap;gap:var(--space-3)}
+
+.stage{position:relative;height:300px;border:1px dashed var(--border-strong);border-radius:var(--radius-l);display:grid;place-items:center;background:var(--bg);overflow:hidden;min-width:0}
+.stage .after{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-size:var(--fs-13);text-align:center;padding:var(--space-4)}
+.spl{position:relative;width:min(320px,calc(100% - 24px));height:240px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-l);box-shadow:0 8px 28px oklch(0% 0 0 / .14);overflow:hidden;display:grid;grid-template-rows:1fr 56px;justify-items:center;opacity:0;transition:opacity 150ms ease-out}
+.spl.on{opacity:1}
+.spl .mid{align-self:center;display:grid;justify-items:center;gap:var(--space-3);padding-top:var(--space-4)}
+.wmk{font:600 22px/1 var(--f-brand);letter-spacing:-.01em;color:var(--text);display:inline-flex;align-items:flex-end}
+.spl .stat{align-self:start;text-align:center;font-size:var(--fs-12);line-height:1.4;color:var(--muted);padding-inline:var(--space-4);min-height:40px}
+.spl .stat .err{color:var(--danger);font-weight:500}
+.spl .stat .act{display:flex;gap:var(--space-2);justify-content:center;margin-top:var(--space-2)}
+.spl .stat .btn{min-height:28px;min-width:28px;font-size:var(--fs-12);padding:0 var(--space-3)}
+.spl .stat pre{margin:var(--space-2) 0 0;font:400 11px/1.4 var(--f-mono);color:var(--muted);white-space:pre-wrap}
+.hair{position:absolute;left:0;right:0;bottom:0;height:2px;background:color-mix(in oklch,var(--border) 70%,transparent);overflow:hidden}
+.hair i{display:block;width:30%;height:2px;background:var(--accent-text);animation:slide 1.7s cubic-bezier(.4,0,.2,1) infinite}
+@keyframes slide{from{transform:translateX(-100%)}to{transform:translateX(340%)}}
+.s2 .bar-el{animation:breathe 1.8s ease-in-out infinite alternate}
+@keyframes breathe{from{opacity:1}to{opacity:.3}}
+.cur{display:inline-block;width:.5em;height:2px;margin:0 0 .1em .12em;background:var(--accent-text);transform-origin:left center;animation:grow 2s ease-in-out infinite alternate}
+@keyframes grow{from{transform:scaleX(1);opacity:1}to{transform:scaleX(.35);opacity:.45}}
+.spl[data-state="error"] .hair i,.spl[data-state="error"] .bar-el,.spl[data-state="error"] .cur{animation:none}
+.spl[data-state="error"] .hair{display:none}
+.spl[data-state="error"] .cur{opacity:.45;transform:scaleX(.35)}
+.spl .hide{display:none}
+@media (prefers-reduced-motion:reduce){
+  .spl{transition:none}
+  .hair i,.s2 .bar-el,.cur{animation:none!important}
+  .hair i{transform:translateX(110%)}
+  .cur{transform:none}
+}
+
+.win{border:1px solid var(--border-strong);border-radius:var(--radius-m);overflow:hidden;background:var(--bg);max-width:560px}
+.win .ttl{display:flex;align-items:center;gap:var(--space-2);height:32px;padding-left:10px;background:var(--raised);border-bottom:1px solid var(--border)}
+.win .ttl b{font:600 12px/1 var(--f-brand);letter-spacing:-.005em}
+.win .ttl .ctl{margin-left:auto;display:flex;color:var(--muted)}
+.win .ttl .ctl span{width:40px;height:32px;display:grid;place-items:center}
+.win .body{height:56px;display:grid;place-items:center;font-size:var(--fs-12);color:var(--muted)}
+.task{margin-top:var(--space-3);max-width:560px;height:48px;border:1px solid var(--border);border-radius:var(--radius-m);background:var(--surface);display:flex;align-items:center;justify-content:center;gap:var(--space-2)}
+.task .ti{width:40px;height:40px;display:grid;place-items:center;border-radius:var(--radius-s);position:relative}
+.task .ti.act{background:var(--selected)}
+.task .ti.act::after{content:"";position:absolute;bottom:2px;left:50%;width:12px;height:3px;margin-left:-6px;border-radius:2px;background:var(--accent-text)}
+.task .ph{width:20px;height:20px;border-radius:5px;background:var(--border-strong);opacity:.6}
+.lock{display:flex;align-items:center;gap:var(--space-3);margin-top:var(--space-3)}
+.lock b{font:600 28px/1 var(--f-brand);letter-spacing:-.01em}
+table{border-collapse:collapse;width:100%;font-size:var(--fs-13)}
+th,td{text-align:left;padding:6px var(--space-2);border-bottom:1px solid var(--border);vertical-align:top}
+th{color:var(--muted);font-weight:600}
+.tw{overflow-x:auto}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap bar">
+  <h1>navo</h1>
+  <div class="grp"><span class="lbl">Theme</span>
+    <div class="picker" id="themes" role="group" aria-label="Theme"><button data-v="light" aria-pressed="true">Light</button><button data-v="dark" aria-pressed="false">Dark</button></div></div>
+</div></header>
+<main class="wrap">
+
+<section class="sec" id="icons">
+  <div class="intro"><h2>Icon n_ in Space Grotesk</h2>
+  <p>The real Space Grotesk <b>n</b> glyph, drawn on canvas with the loaded font, plus an accent cursor bar on a rounded tile. Icon colours are fixed (an app icon does not follow the theme), so switch theme to see each tile on a light and a dark surface. 32 px and 16 px canvases are real pixels: view at 100% display scaling for 1:1.</p></div>
+  <div class="grid" id="vgrid"></div>
+
+  <div class="intro" style="margin-top:var(--space-5)"><h2>Weight and bar variants</h2>
+  <p>Variant A tile. Each shown at 64 px, real 16 px, and the 16 px zoomed 10x.</p></div>
+  <div class="grid" id="wgrid"></div>
+
+  <div class="intro" style="margin-top:var(--space-5)"><h2>Hand-hinted 16 px</h2>
+  <p>Pixel grid drawn by hand: 2 px stems, curved shoulder, 2 px bar on the baseline, chamfered corners. Next to it, the font-rendered 16 px for the same tile.</p></div>
+  <div class="grid" id="hgrid"></div>
+  <p class="note" id="pick" style="margin-top:var(--space-3)"></p>
+</section>
+
+<section class="sec" id="splash">
+  <div class="intro"><h2>Splash, lighter</h2>
+  <p>Icon, wordmark, one quiet cue. Window about 320 px wide. Rules: shown after 200 ms, kept at least 700 ms, slow-start line after 3 s, error stays with Details and Close. Reduced motion shows everything static. All three run the same simulated start.</p></div>
+  <div class="bar" style="padding-top:0">
+    <div class="grp"><span class="lbl">Start</span>
+      <div class="picker" id="modes" role="group" aria-label="Start mode"><button data-v="normal" aria-pressed="true">Normal</button><button data-v="slow" aria-pressed="false">Slow</button><button data-v="error" aria-pressed="false">Error</button></div></div>
+    <button class="btn" id="replay">Replay</button>
+    <span class="note" id="clock" aria-live="off"></span>
+  </div>
+  <div class="grid" id="sgrid"></div>
+</section>
+
+<section class="sec" id="mock">
+  <div class="intro"><h2>16 px in the Windows chrome</h2><p>Chosen icon in a title bar (16 px), the taskbar (24 px) and a lockup with the wordmark.</p></div>
+  <div class="win"><div class="ttl"><canvas id="m16" data-draw="16"></canvas><b>navo</b><span class="note" style="font-size:12px">Documents</span>
+    <div class="ctl" aria-hidden="true"><span><svg width="10" height="10"><path d="M0 5h10" stroke="currentColor"/></svg></span><span><svg width="10" height="10"><rect x=".5" y=".5" width="9" height="9" fill="none" stroke="currentColor"/></svg></span><span><svg width="10" height="10"><path d="M0 0l10 10M10 0L0 10" stroke="currentColor"/></svg></span></div></div>
+    <div class="body">Dual-pane file manager</div></div>
+  <div class="task" aria-hidden="true"><span class="ti"><span class="ph"></span></span><span class="ti"><span class="ph"></span></span><span class="ti act"><canvas id="m24"></canvas></span><span class="ti"><span class="ph"></span></span></div>
+  <div class="lock"><canvas id="m64"></canvas><b>navo</b></div>
+</section>
+
+<section class="sec">
+  <h2>Contrast</h2>
+  <div class="tw"><table id="ctab"><thead><tr><th>Pair</th><th>Ratio</th><th>Need</th></tr></thead><tbody></tbody></table></div>
+</section>
+</main>
+<script>
+const FONT='"Space Grotesk"';
+const C={
+  dark:{tile:'oklch(17% 0.016 225)',glyph:'oklch(94% 0.014 225)',bar:'oklch(76% 0.110 218)',edge:null},
+  accent:{tile:'oklch(52% 0.092 218)',glyph:'oklch(99% 0.004 225)',bar:'oklch(99% 0.004 225)',edge:null},
+  light:{tile:'oklch(98.5% 0.008 225)',glyph:'oklch(22% 0.014 225)',bar:'oklch(52% 0.092 218)',edge:'oklch(72% 0.017 225)'}
+};
+const V={
+  A:{n:'A dark tile, 600',c:'dark',w:600,bw:.23,bh:.075,dy:0},
+  B:{n:'B accent tile, 600',c:'accent',w:600,bw:.23,bh:.075,dy:0},
+  C:{n:'C light tile, 600',c:'light',w:600,bw:.23,bh:.075,dy:0},
+  D:{n:'D dark tile, 700, heavy bar',c:'dark',w:700,bw:.26,bh:.095,dy:0}
+};
+const W=[
+  {n:'A 500',c:'dark',w:500,bw:.23,bh:.065,dy:0},
+  {n:'A 600',c:'dark',w:600,bw:.23,bh:.075,dy:0},
+  {n:'A 700',c:'dark',w:700,bw:.23,bh:.09,dy:0},
+  {n:'bar short, thick',c:'dark',w:600,bw:.15,bh:.1,dy:0},
+  {n:'bar long, thin',c:'dark',w:600,bw:.32,bh:.06,dy:0},
+  {n:'bar below baseline',c:'dark',w:600,bw:.23,bh:.075,dy:.07}
+];
+const PICK='A';
+const cv=document.createElement('canvas').getContext('2d');
+function layout(S,v){
+  cv.font=`${v.w} ${S*.9}px ${FONT}`;
+  const m=cv.measureText('n');
+  const iw=m.actualBoundingBoxLeft+m.actualBoundingBoxRight,asc=m.actualBoundingBoxAscent;
+  let bw=v.bw*S,bh=Math.max(S<=64?2:1,v.bh*S),gap=.06*S;
+  if(S<=64){bw=Math.round(bw);bh=Math.round(bh);gap=Math.round(gap)}
+  const gw=iw+gap+bw,x0=(S-gw)/2,base=(S+asc)/2+v.dy*S*.5;
+  let by=base-bh+v.dy*S;
+  let bx=x0+iw+gap;
+  if(S<=64){bx=Math.round(bx);by=Math.round(by)}
+  return{fs:S*.9,tx:x0+m.actualBoundingBoxLeft,ty:base,bx,by,bw,bh,r:S*.22};
+}
+function rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r)}
+function draw(cnv,S,v,col){
+  cnv.width=S;cnv.height=S;cnv.style.width=S+'px';cnv.style.height=S+'px';
+  const x=cnv.getContext('2d'),L=layout(S,v),c=col||C[v.c];
+  x.clearRect(0,0,S,S);
+  rr(x,0,0,S,S,L.r);x.fillStyle=c.tile;x.fill();
+  if(c.edge){rr(x,.5,.5,S-1,S-1,L.r);x.strokeStyle=c.edge;x.lineWidth=1;x.stroke()}
+  x.fillStyle=c.glyph;x.font=`${v.w} ${L.fs}px ${FONT}`;x.textBaseline='alphabetic';x.fillText('n',L.tx,L.ty);
+  x.fillStyle=c.bar;x.fillRect(L.bx,L.by,L.bw,L.bh);
+}
+const HINT=[
+'................',
+'................',
+'................',
+'................',
+'..XXXXXX........',
+'..XX..XXX.......',
+'..XX...XX.......',
+'..XX...XX.......',
+'..XX...XX.......',
+'..XX...XX..BBBB.',
+'..XX...XX..BBBB.',
+'................',
+'................',
+'................',
+'................',
+'................'];
+function drawHint(cnv,c){
+  cnv.width=16;cnv.height=16;cnv.style.width='16px';cnv.style.height='16px';
+  const x=cnv.getContext('2d');x.clearRect(0,0,16,16);
+  x.fillStyle=c.tile;x.fillRect(0,2,16,12);x.fillRect(2,0,12,16);x.fillRect(1,1,14,14);
+  x.globalAlpha=.5;x.fillRect(1,0,1,1);x.fillRect(0,1,1,1);x.fillRect(14,0,1,1);x.fillRect(15,1,1,1);x.fillRect(0,14,1,1);x.fillRect(1,15,1,1);x.fillRect(15,14,1,1);x.fillRect(14,15,1,1);x.globalAlpha=1;
+  if(c.edge){x.fillStyle=c.edge;x.globalAlpha=.8;[[2,0,12,1],[2,15,12,1],[0,2,1,12],[15,2,1,12]].forEach(r=>x.fillRect(...r));x.globalAlpha=1}
+  HINT.forEach((row,j)=>[...row].forEach((ch,i)=>{if(ch==='.')return;x.fillStyle=ch==='X'?c.glyph:c.bar;x.fillRect(i,j,1,1)}));
+}
+function zoom(src,z){
+  const c=document.createElement('canvas');c.width=src.width*z;c.height=src.height*z;c.className='zoom';
+  c.style.width=c.width+'px';c.style.height=c.height+'px';
+  const x=c.getContext('2d');x.imageSmoothingEnabled=false;x.drawImage(src,0,0,c.width,c.height);return c;
+}
+function el(h){const t=document.createElement('template');t.innerHTML=h.trim();return t.content.firstChild}
+function mk(S,v,label){const c=document.createElement('canvas');draw(c,S,v);const d=el(`<div class="cell"><span>${label||S}</span></div>`);d.prepend(c);return d}
+
+function build(){
+  const vg=document.getElementById('vgrid');vg.innerHTML='';
+  for(const k in V){
+    const v=V[k],card=el(`<div class="card"><h3>${v.n}</h3><div class="sizes"></div><div class="zooms"></div></div>`);
+    const s=card.querySelector('.sizes'),z=card.querySelector('.zooms');
+    [256,64,32,16].forEach(S=>s.append(mk(S,v)));
+    const c16=document.createElement('canvas'),c32=document.createElement('canvas');draw(c16,16,v);draw(c32,32,v);
+    z.append(zoom(c16,10),zoom(c32,10));
+    vg.append(card);
+  }
+  const wg=document.getElementById('wgrid');wg.innerHTML='';
+  W.forEach(v=>{
+    const card=el(`<div class="card"><h3>${v.n}</h3><div class="sizes"></div></div>`),s=card.querySelector('.sizes');
+    s.append(mk(64,v),mk(16,v));
+    const c16=document.createElement('canvas');draw(c16,16,v);s.append(zoom(c16,10));
+    wg.append(card);
+  });
+  const hg=document.getElementById('hgrid');hg.innerHTML='';
+  ['dark','accent','light'].forEach(k=>{
+    const card=el(`<div class="card"><h3>hinted vs font, ${k} tile</h3><div class="sizes"></div></div>`),s=card.querySelector('.sizes');
+    const h=document.createElement('canvas');drawHint(h,C[k]);
+    const f=document.createElement('canvas');draw(f,16,{...V.A,c:k});
+    const hc=el('<div class="cell"><span>hinted 16</span></div>');hc.prepend(h);
+    const fc=el('<div class="cell"><span>font 16</span></div>');fc.prepend(f);
+    s.append(hc,fc,zoom(h,10),zoom(f,10));
+    hg.append(card);
+  });
+  const pv=V[PICK];
+  draw(document.getElementById('m16'),16,pv);draw(document.getElementById('m24'),24,pv);draw(document.getElementById('m64'),64,pv);
+  document.getElementById('pick').innerHTML='<b>Reads best at 16 px:</b> variant A, dark tile with light glyph. The glyph has the highest tile contrast and the bar stays a separate 2 px mark. The accent tile (B) is close on dark taskbars; the light tile (C) loses its edge on light surfaces.';
+}
+
+function svgIcon(S,v){
+  const L=layout(S,v),c=C[v.c];
+  return `<svg width="${S}" height="${S}" viewBox="0 0 ${S} ${S}" aria-hidden="true"><rect width="${S}" height="${S}" rx="${L.r}" fill="${c.tile}"/>${c.edge?`<rect x=".5" y=".5" width="${S-1}" height="${S-1}" rx="${L.r}" fill="none" stroke="${c.edge}"/>`:''}<text x="${L.tx}" y="${L.ty}" font-family="Space Grotesk" font-weight="${v.w}" font-size="${L.fs}" fill="${c.glyph}">n</text><rect class="bar-el" x="${L.bx}" y="${L.by}" width="${L.bw}" height="${L.bh}" fill="${c.bar}"/></svg>`;
+}
+const DIRS=[
+ {k:'s1',t:'1 hairline: 2 px bar slides along the window edge',mid:()=>`${svgIcon(72,V[PICK])}<span class="wmk">navo</span>`,hair:true},
+ {k:'s2',t:'2 icon cursor: the icon bar fades slowly in and out',mid:()=>`${svgIcon(72,V[PICK])}<span class="wmk">navo</span>`},
+ {k:'s3',t:'3 wordmark cursor: a bar after navo shrinks and grows',mid:()=>`${svgIcon(72,V[PICK])}<span class="wmk">navo<i class="cur"></i></span>`}
+];
+const SP=[];
+function buildSplash(){
+  const g=document.getElementById('sgrid');g.innerHTML='';SP.length=0;
+  DIRS.forEach(d=>{
+    const card=el(`<div class="card"><h3>${d.t}</h3><div class="stage"><div class="after hide">Main window opens here</div><div class="spl ${d.k}" role="status" data-state="idle"><div class="mid">${d.mid()}</div><div class="stat"></div>${d.hair?'<div class="hair"><i></i></div>':''}</div></div></div>`);
+    g.append(card);SP.push({spl:card.querySelector('.spl'),stat:card.querySelector('.stat'),after:card.querySelector('.after')});
+  });
+}
+let timers=[],mode='normal',t0=0,tick;
+const clear=()=>{timers.forEach(clearTimeout);timers=[];clearInterval(tick)};
+const at=(ms,f)=>timers.push(setTimeout(f,ms));
+function replay(){
+  clear();t0=performance.now();let shownAt=null,done=false;
+  SP.forEach(s=>{s.spl.classList.remove('on');s.spl.dataset.state='loading';s.stat.innerHTML='';s.after.classList.add('hide')});
+  const clk=document.getElementById('clock');
+  tick=setInterval(()=>{clk.textContent=((performance.now()-t0)/1000).toFixed(1)+' s'},100);
+  at(200,()=>{if(done)return;shownAt=performance.now();SP.forEach(s=>s.spl.classList.add('on'))});
+  const hide=()=>{SP.forEach(s=>{s.spl.classList.remove('on');s.after.classList.remove('hide')});clearInterval(tick)};
+  if(mode==='slow')at(3000,()=>{if(!done)SP.forEach(s=>s.stat.innerHTML='Still starting. This can take a moment.')});
+  const finish={normal:450,slow:6000,error:1500}[mode];
+  at(finish,()=>{
+    done=true;
+    if(mode==='error'){
+      clearInterval(tick);
+      SP.forEach(s=>{s.spl.dataset.state='error';s.stat.innerHTML='<div class="err">Navo could not start.</div><div class="act"><button class="btn det">Details</button><button class="btn cls">Close</button></div><pre hidden>config.toml, line 12: unknown key "pane.sort"</pre>';
+        s.stat.querySelector('.det').onclick=()=>{const p=s.stat.querySelector('pre');p.hidden=!p.hidden};
+        s.stat.querySelector('.cls').onclick=hide});
+      if(shownAt===null)SP.forEach(s=>s.spl.classList.add('on'));
+      return;
+    }
+    if(shownAt===null){hide();return}
+    const wait=Math.max(0,shownAt+700-performance.now());
+    at(wait,hide);
+  });
+}
+const setPressed=(g,v)=>g.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===v));
+document.getElementById('themes').onclick=e=>{const b=e.target.closest('button');if(!b)return;document.documentElement.dataset.theme=b.dataset.v;setPressed(e.currentTarget,b.dataset.v);buildContrast()};
+document.getElementById('modes').onclick=e=>{const b=e.target.closest('button');if(!b)return;mode=b.dataset.v;setPressed(e.currentTarget,mode);replay()};
+document.getElementById('replay').onclick=replay;
+
+function buildContrast(){
+  const rows=[['A glyph on tile','16.06:1','3:1'],['A bar on tile','9.18:1','3:1'],['B glyph on tile','5.19:1','3:1'],['C glyph on tile','16.57:1','3:1'],['C bar on tile','5.12:1','3:1']];
+  document.querySelector('#ctab tbody').innerHTML=rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('');
+}
+const dark=matchMedia('(prefers-color-scheme:dark)');
+Promise.all([400,500,600,700].map(w=>document.fonts.load(`${w} 20px ${FONT}`))).then(()=>document.fonts.ready).then(()=>{build();buildSplash();buildContrast();setTimeout(replay,100)});
+</script>
+</body>
+</html>
