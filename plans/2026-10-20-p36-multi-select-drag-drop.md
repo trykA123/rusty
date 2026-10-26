@@ -230,18 +230,18 @@ Later, not in P36:
 | D7a | tab and crumb targets | ui-builder (Sonnet) | medium | D6 | `cargo nextest run -p rusty-ui pane_chrome window_view::tests::drop` | done | |
 | D7b | drive pill target | ui-builder (Sonnet) | medium | D7a | same | done | |
 | V1 | planner same-volume check | api-builder (Sol 6.1) | xhigh | D2 | `cargo nextest run -p rusty-ui browser::operate`; Linux cross-device test | done (e4f06a1) | |
-| D8 | auto-scroll, spring-loaded targets (optional) | ui-builder (Opus) | medium | D7b | `cargo nextest run -p rusty-ui window_view::tests::drop` | blocked | |
+| D8 | auto-scroll, spring-loaded targets (optional) | ui-builder (Opus) | medium | D7b | `cargo nextest run -p rusty-ui window_view::tests::drop` | done | |
 | L1 | `OpKind::Link` plan | api-builder (Sol 6.1) | xhigh | D2 | `cargo nextest run -p rusty-core op_plan` | done | |
 | L2 | `ProviderOps::make_link` + job step + undo | api-builder (Sol 6.1) | xhigh | L1 | `cargo nextest run -p rusty-fs job`; Windows CI `test-windows` | done | |
 | L3 | Link in drop and badge | ui-builder (Sonnet) | medium | L2, D7b | `cargo nextest run -p rusty-ui window_view::tests::drop drag` | done | |
 | D9 | review Part D | reviewer (Opus) | high | D7b, V1, L3 (D8 if run) | review notes; gate; Windows CI | blocked | |
 | X0 | OLE facts | researcher (Sonnet) | medium | — | answers with sources, in the Log | done (Log) | |
 | X1 | vendored drop target | api-builder (Opus) | medium | X0 | `cargo build --target x86_64-pc-windows-msvc` in CI; unit test of the key-state mapping | done (Windows CI); owner check pending | |
-| X2 | `DropPlatform` bridge, external drops | ui-builder (Opus) | medium | X1, D9 | `cargo nextest run -p rusty-ui window_view::tests::drop_external` | blocked | |
-| X3 | drop menu | ui-builder (Sonnet) | medium | X2 | same | blocked | |
+| X2 | `DropPlatform` bridge, external drops | ui-builder (Opus) | medium | X1, D9 | `cargo test -p rusty-ui drop --lib` | done (Linux); Windows pending | |
+| X3 | drop menu | ui-builder (Sonnet) | medium | X2 | same | done (Linux); Windows pending | |
 | X4 | `rusty-shell::drag_out` | api-builder (Opus) | medium | X0 | `cargo nextest run -p rusty-shell drag_out` (Windows CI) | done | |
 | X5 | vendored drag-source hook | api-builder (Opus) | medium | X1, X4 | Windows CI build; owner check | done (Windows CI); owner check pending | |
-| X6 | drag-out wiring | ui-builder (Opus) | medium | X5, X2 | `cargo nextest run -p rusty-ui window_view::tests::drag_out` | blocked | |
+| X6 | drag-out wiring | ui-builder (Opus) | medium | X5, X2 | `cargo test -p rusty-ui drop --lib` | done (Linux); Windows pending | |
 | X7 | review Part X | reviewer (Opus) | high | X3, X6 | review notes; gate; Windows CI; owner check list | blocked | |
 
 Parallel lanes:
@@ -771,3 +771,11 @@ Answers (2026-10-20): Q1 yes, Total Commander right-drag marking. Q2 `never`, as
 - 2026-10-21 — X5 built, waits for Windows CI: the drag-source hook stores one handler, posts the payload to its window, takes it before the modal call without borrowing state or taking the input callback, then sends `FileDropEvent::Ended`; the Linux UI check passed (7 steps; 2172 tests passed, 1 skipped). Handler registration and Explorer checks remain for the next atom and Windows.
 - 2026-10-21 — X1 and X5 pass Windows CI (run 39536709862): the vendored drop target and drag-source hook compile; key-state test green. Owner checks wait for X2 and X6.
 - 2026-10-21 — Owner on 21c: dragging files from Ferrite into other apps (VS Code and others) does not work; Total Commander does it. Owner: this comes before the Follow bug. Order now: finish Ctrl+K (21d), then X6 drag-out wiring (X2 external drops with it if X6 needs the bridge), then X7 review.
+
+- 2026-10-23 — X2/X3/X6 integration: `DropPlatform` carries native keys, allowed effects, path conversion and native source paths. Incoming hover freezes paths and uses the planner's conservative self/descendant rules without filesystem reads. Source restrictions and modal blocking apply before job planning. Windows records the allowed-effect mask before dispatch and refuses when no target sets a hint; incoming moves still return None to prevent source deletion.
+- 2026-10-23 — Right-button drops use the existing context menu with Copy, Move, shortcuts and Cancel. Permissions and the target are frozen for the menu; Esc restores focus. Hovered tabs snapshot pane, index, tab id and location, so navigation or replacement refuses the release. Linux external drops are safely Copy-only until native modifiers are available; this tightens D18's earlier default-operation fallback.
+- 2026-10-23 — Outgoing rows resolve the frozen selection into native paths, register the existing shell handler, retain the session while the platform owns it, and refresh unwatched source folders on Ended. A failed handoff cleans up on release. GPUI's test-window accessor is private; local tests observe the actual row resolver and UI lifecycle, but cannot force platform acceptance. Actual promotion, OLE reentry, Explorer effects, cancellation and source deletion behavior remain native Windows checks. No commit, merge, push or deployment.
+
+- 2026-10-23 — Combined backend branch gate passed all 10 steps: 7,060 tests passed, 14 skipped, plus doc tests. Inspected the native drop-menu gallery in light and dark at 1280×720. Windows build and native OLE checks remain pending.
+- 2026-10-26 — D8 done on `ui/alpha-drag-autoscroll`: `window_view/spring.rs` owns the timers in the drag session. A list reports its 24 px top and bottom bands for internal drags (`FileList::on_edge`); each 50 ms tick scrolls that pane one row through `PaneScroll` and drops a stale row hover, so the drop lands where the ring is. Hover-open: 800 ms on a folder row navigates its pane and the next drop in that pane lands in the opened folder until a new hover report; 500 ms on a tab activates it; 800 ms on the drive pill opens the menu without taking focus, and its rows take drops (`Over::Menu`). Leaving the target, Esc and the drop cancel timers; Esc and the drop close a menu the hover opened; reduce motion turns all of it off. Pane-targeted commands go through browser focus, so the scrolled pane gets browser focus; Esc and the drop restore the source pane.
+- 2026-10-26 — D8 review fixes: a release away from any target now returns focus to the source pane (as Esc does); a scroll tick also clears the sprung-folder landing; auto-scroll stops once the platform drag is gone; an external drag that exits cancels a pending hover-open.
