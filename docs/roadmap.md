@@ -10,7 +10,7 @@ Kinds: **core** is always on; **module** can be turned off; **package** is data 
 | --- | --- |
 | Cold start to first usable frame | ≤ 400 ms |
 | Warm start | ≤ 150 ms |
-| Summon from tray (v1.2) | ≤ 50 ms |
+| Summon from tray (beta) | ≤ 50 ms |
 | RAM, two panes, idle | < 80 MB |
 | Portable `.exe` | no limit (D44); CI guard 160 MiB |
 
@@ -87,17 +87,43 @@ Exit: two weeks of daily use on the work PC with no lost or damaged files.
 
 Goal: safe, configurable and pleasant; modules and theming arrive.
 
-- core: workspaces (Alt+1…9); refresh mode per network location; undo for every job from the UI (journal and recovery already built; each step reversible, compensable or final; undo offers only what it can do).
+The owner set the beta order on 26 October 2026 (D81). Items marked **priority** are built first. The items moved in from v1.0 and later versions come next. Everything else in the beta follows.
+
+Built first (priority):
+
+- core: workspaces (Alt+1…9). **priority**
+- core: accessibility basics: Narrator reads lists and dialogs, focus visible everywhere, reduced motion, high contrast, UI scale. **priority**
+- core: responsive layout (D80): minimum window size, columns aligned under their headers with names cut by an ellipsis, columns that drop in order on narrow windows, one pane below a set width, tab overflow, and layout tests at fixed widths in the gate. Built, being merged. **priority**
+- core: more than two panes, tiled like Hyprland (D80): split, move and resize panes from the keyboard. Needs a design round and a plan first. **priority**
+- core: clone a tab into the other pane. **priority**
+- core: cache sizes in diagnostics, with a long stress test. **priority**
+- module: open a terminal here (Windows Terminal and templates); copy path (F9) and folder search (Ctrl+K) are already in. **priority**
+- module: DBC and A2L viewer in F3. **priority**
+- module: viewer chrome and pins. **priority**
+- module: rich map, deeper: a picked tile keeps its colour; the map can show one module so its files fill the space. **priority**
+- module: Follow on Windows (Alt+F), a known bug. **priority**
+
+Moved in from v1.0 and later:
+
+- core: find files by content and attributes, with results as a pane you can work in.
+- core: virtual collections: a pane can hold search results, recent changes or files picked from many folders.
+- core: archives as folders (zip, 7z, tar with gz, xz and zst): browse, extract and pack through the job engine; safe extraction.
+- core: properties drawer for attributes, timestamps and permissions.
+- module: preview pane and thumbnails.
+- core: saved column sets.
+- module: clipboard history and notes; summon hotkey and tray.
+
+After these:
+
+- core: refresh mode per network location; undo for every job from the UI (journal and recovery already built; each step reversible, compensable or final; undo offers only what it can do).
 - core: module registry with runtime on/off and safe mode; settings window generated from module schemas.
 - core: per-case confirmations, date and size formats, ignore list.
-- core: Parallel and Large files copy modes, copy options, profiles and rules by destination; accessibility basics.
+- core: Parallel and Large files copy modes, copy options, profiles and rules by destination.
 - package: custom colour themes and icon themes (D16). Idea, not decided: an optional colourful icon theme based on Material Icon Theme (MIT).
-- module: copy path, terminal (Windows Terminal and templates), folder search, external viewer and editor (F3/F4; done; hex view and large files done; viewer foundation done; extra grammars and content detection done; rule lexer and Notepad++ UDL import done; search counts, marks and history (model and store) done), notifications for long operations.
-- module: spreadsheets in F3 (one item; after 1.0 if it grows).
+- module: external viewer and editor (F3/F4; done; hex view and large files done; viewer foundation done; extra grammars and content detection done; rule lexer and Notepad++ UDL import done; search counts, marks and history (model and store) done), notifications for long operations.
+- module: spreadsheets in F3 (one item; after 1.0 if it grows); colouring for m4, OIL and DCM files.
 - core: every shortcut changeable.
-- core: responsive layout (D80): minimum window size, columns aligned under their headers with names cut by an ellipsis, columns that drop in order on narrow windows, one pane below a set width, tab overflow, and layout tests at fixed widths in the gate.
-- core: more than two panes, tiled like Hyprland (D80): split, move and resize panes from the keyboard. Needs a design round and a plan first.
-- infra: soak test; start-up and memory benchmark in CI (done; baseline in [perf.md](perf.md)).
+- infra: Windows installer (NSIS); steadier Windows tests; soak test; start-up and memory benchmark in CI (done; baseline in [perf.md](perf.md)).
 
 Exit: no open data-safety bugs; start-up and memory targets met in CI.
 
@@ -105,11 +131,9 @@ Exit: no open data-safety bugs; start-up and memory targets met in CI.
 
 Replaces Total Commander for daily work (D39). Parity features are built to beat TC, not copy it.
 
-- core: find files by content and attributes, with results as a pane you can work on; saved searches.
-- core: virtual collections: a pane can hold search results, recent changes or files picked from many folders.
-- core: archives as folders (zip, 7z, tar with gz, xz and zst): browse, extract and pack through the job engine; safe extraction.
+- core: saved searches.
 - core: compare and sync, better than Beyond Compare where it counts (D40): folder compare in the panes, a calm full-window look with a change map on each scroller (chosen; after the alpha), sync as a plan with undo, cached BLAKE3 hashes, syntax-aware text diff, paged diff for huge and binary files (planned for the first version), image compare; engine in the shared `rusty-compare` crate.
-- core: checksums (BLAKE3, SHA-256, SHA-1, MD5) with verify; properties drawer for attributes, timestamps and permissions; images in F3.
+- core: checksums (BLAKE3, SHA-256, SHA-1, MD5) with verify; images in F3.
 - infra: signed portable `.exe` and installer; user guide.
 - core: optional default file manager (Win+E).
 - package: Total Commander keymap.
@@ -118,13 +142,12 @@ Exit: every target is met on a clean Windows 11 machine, and a week of work runs
 
 ## v1.1 · See and find
 
-- module: preview pane, thumbnails, auto switch view.
+- module: auto switch view.
 - package: language packages for the F3 viewer (D38).
-- core: saved column sets.
 
 ## v1.2 · Power tools
 
-- module: Git, duplicates and disk usage, clipboard history and notes, summon hotkey and tray.
+- module: Git, duplicates and disk usage.
 - package: import of Zed and VS Code colour themes.
 - Native editing for each kind: A table edits like a spreadsheet. A tree edits keys and values in place.
 
