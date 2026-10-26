@@ -40,7 +40,7 @@ docs 73/15, CHANGELOG 30, `.github` 28/1, scripts 10/2, README 5, xtask 4/4, ass
   `_SAMPLE_FONT`, `_BIN_DIR`. `RUSTY_EXE_LIMIT` stays.
 - **Strings:** Fluent 2 (`settings.ftl:41`, `viewer.ftl:13`); about 30 Rust literals in rusty-ui, rusty-app,
   rusty-core, rusty-store, rusty-fs, rusty-diag, rusty-shell, rusty-index.
-- **Assets:** `assets/brand/ferrite{,-16,-24,-32,-48,-wordmark}.svg`, `ferrite.ico`, 7 PNGs, `ferrite.desktop`;
+- **Assets:** `assets/brand/ferrite{,-16,-24,-32,-48,-wordmark}.svg`, `ferrite.ico`, 7 PNG files, `ferrite.desktop`;
   `scripts/build-icons.sh`, `scripts/install-local.sh`.
 - **Codename leaks:** none in Fluent, window, assets or version info. Only the gallery (dev tool),
   log targets (`rusty_app::…`) and backtraces show `rusty`; they stay.
