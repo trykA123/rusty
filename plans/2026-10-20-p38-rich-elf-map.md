@@ -207,15 +207,15 @@ Final once the owner answers Q1–Q3. Workers never reopen them; a worker that f
 | A2 | `columns` primitive | ui-builder (Opus) | medium | A1 | `cargo nextest run -p rusty-ui primitives::columns`; gallery shot | done | |
 | A3 | ELF table on `columns` | ui-builder (Sonnet) | medium | A2 | `cargo nextest run -p rusty-ui viewer::elf` | done | |
 | A4 | MAP table on `columns` | ui-builder (Sonnet) | medium | A2 | `cargo nextest run -p rusty-ui viewer::map` | done | |
-| A5 | CSV table on `columns` | ui-builder (Sonnet) | medium | A2 | `cargo nextest run -p rusty-ui viewer::table` | ready | |
-| A6 | CAN trace rows as cells | ui-builder (Sonnet) | medium | A2 | `cargo nextest run -p rusty-ui viewer::trace viewer::tests::can_trace` | ready | |
+| A5 | CSV table on `columns` | ui-builder (Sonnet) | medium | A2 | `cargo nextest run -p rusty-ui viewer::table` | moved to beta (D74/D75) | orchestrator 2026-10-26 |
+| A6 | CAN trace rows as cells | ui-builder (Sonnet) | medium | A2 | `cargo nextest run -p rusty-ui viewer::trace viewer::tests::can_trace` | moved to beta (D74/D75) | orchestrator 2026-10-26 |
 | A7 | ELF noise filter (model) | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-automotive elf_query` | done | |
 | A8 | ELF noise filter (UI) | ui-builder (Sonnet) | medium | A7, A3 | `cargo nextest run -p rusty-ui viewer::elf`; `cargo xtask gate` (l10n) | done | |
 | A9 | MAP headers, Space, sizes (model) | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-automotive map` | done | |
 | A10 | MAP status and Size column (UI) | ui-builder (Sonnet) | medium | A9, A4 | `cargo nextest run -p rusty-ui viewer::map` | done | |
 | A11 | `Layout` options (model) | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-automotive layout memory` | done | |
 | A12 | HEX/MOT 32-byte rows and folded gaps (UI) | ui-builder (Sonnet) | medium | A11 | `cargo nextest run -p rusty-ui viewer::memory` | done | |
-| A13 | review Part A | reviewer (Opus) | high | A3–A6, A8, A10, A12 | review notes; gate; Windows CI | blocked | |
+| A13 | review Part A | reviewer (Opus) | high | A3–A6, A8, A10, A12 | review notes; gate; Windows CI | done: one Opus review for A13 and C11; fixes in the review fix round | |
 | B1 | `mdf` parser | api-builder (Sol 6.1) | xhigh | — | `cargo nextest run -p rusty-automotive mdf` | done | |
 | B2 | `space::kind` and regions | api-builder (Sol 6.1) | xhigh | B1 | `cargo nextest run -p rusty-automotive space_regions` | done | |
 | B3 | `space::owners_elf` | api-builder (Sol 6.1) | xhigh | B2 | `cargo nextest run -p rusty-automotive space_owners` | done | |
@@ -237,7 +237,7 @@ Final once the owner answers Q1–Q3. Workers never reopen them; a worker that f
 | C8 | Rich container in the MAP view | ui-builder (Sonnet) | medium | C7, A10 | `cargo nextest run -p rusty-ui viewer::space viewer::map`; screenshots | done | |
 | C9 | strip, treemap and Alt keys | ui-builder (Opus) | medium | C8 | `cargo nextest run -p rusty-ui viewer::space::keys commands`; `cargo xtask gate` | done | |
 | C10 | large-file UI check | ui-builder (Opus) | medium | C9, B7 | `cargo nextest run --release -p rusty-ui viewer::space::large --run-ignored all` | done | |
-| C11 | review Part C | reviewer (Opus) | high | C10 | review notes; gate; Windows CI; owner check list | blocked | |
+| C11 | review Part C | reviewer (Opus) | high | C10 | review notes; gate; Windows CI; owner check list | done: one Opus review for A13 and C11; fixes in the review fix round | |
 
 Parallel lanes:
 - A1 → A2 → A3, A4, A5, A6 in parallel. A7, A9 and A11 start at once.
@@ -557,3 +557,5 @@ The original questions:
 - 2026-10-21 — Owner on 21c with a real ELF (beta or after): (1) a picked treemap tile must not turn solid blue; show the pick as a border and keep the tile's colour and text. (2) Drill into a group: open the treemap on one module (for example ReProg) so its object files fill the map, instead of a dark "333 more" tile and unlabelled slivers. Also seen: "N more" can take most of a group when the group has hundreds of small parts.
 - 2026-10-23 — D8 sole-companion fallback is implemented on backend/rename-undo-safety. FileHooks can discover candidates in the background; both lookups share one bounded, cancellable scan. Same stem wins; multiple candidates stay unchosen; body limits and format sniffers still apply; a different-stem ELF is never guessed. The provenance identifies a sole MDF or MAP. Configured module prefixes and native Windows verification remain open.
 - 2026-10-23 — D9 configured prefixes are implemented on the same backend branch. `[automotive] modules` is a typed list, editable through the existing settings control and reloaded live. ELF/MAP model builds, regrouping and block highlights retain the same prefix snapshot; stale results are rejected. Provenance counts matched configured modules. Headless ELF and MAP live-regroup tests and the live file-reload test pass; native Windows checks remain open.
+- 2026-10-26 — Final review fixes: MAP section names keep their kind in the muted prefix (`.text.Com.`; D12 amended), and a short width shortens only the module part. The region panel scrolls the focused strip into view. Duplicate `.mdf` chip names are numbered in linear time. Name cells measure the UI font and end with an ellipsis when they still overflow. The provenance line names both files when the `.map` gives the regions and the `.mdf` the starts. The noise bar counts only the symbols that match the filter. Sums near `u64::MAX` saturate. File bytes and the measured character widths are computed once, outside render. "start estimated" is not shown: no place in the layout shows a region start yet.
+- 2026-10-26 — Final review (Opus medium) for A13 and C11: fix first. Fixed on fix/rich-elf-map-review: MAP names keep their kind, focused strips scroll into view, linear .mdf duplicate naming, name width measured in the UI font with an ellipsis, two-file provenance, saturating sums, no model work in render. A5 and A6 (CSV and CAN trace column resizing) move to the beta. Next: Windows CI, merge, owner check on the work PC.
