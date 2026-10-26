@@ -1,12 +1,12 @@
 # Writing rules
 
-How Ferrite text is written. These rules cover specs, commits, release notes, the changelog and pull requests.
+How Navo text is written. These rules cover specs, commits, release notes, the changelog and pull requests.
 
 ## One rule
 
 Human text never shows plan ids, atom ids, branch names, file paths or internal type names. Ids go only on a trailing `Refs:` line.
 
-Key names (Ctrl+K), menu names and setting names are fine. Use the product name Ferrite, not the codename.
+Key names (Ctrl+K), menu names and setting names are fine. Use the product name Navo, not the codename.
 
 ## Two-layer specs
 

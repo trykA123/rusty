@@ -1,6 +1,6 @@
 # Navo rename: names, profile migration, index service upgrade
 
-Status: drafting · Repo: `rusty` · Branch: `feature/navo-rename` (new worktree from `main` e077fb5a) · Started: 2026-10-26
+Status: built, waiting for Windows CI and the owner check · Repo: `rusty` · Branch: `feature/navo-rename` (new worktree from `main` e077fb5a) · Started: 2026-10-26
 
 ## Goal
 The product the user sees is Navo (D78): `navo.exe`, the window, the icon, the profile folders, the
@@ -58,7 +58,7 @@ docs 73/15, CHANGELOG 30, `.github` 28/1, scripts 10/2, README 5, xtask 4/4, ass
 - D5 — Internal identifiers and `rusty-*` crates stay. A later mechanical plan may rename them.
 - D6 — Migration copies; it never moves across roots. Staging folders sit next to their targets, so
   each commit is one same-volume rename. This also covers redirected `%APPDATA%`.
-- D7 — Migrated: `navo.toml`, `.defaults-pending`, `keymap.toml`, `rename.log`, `navo.db` (+ `-wal`),
+- D7 — Migrated: `navo.toml`, `.defaults-pending`, `keymap.toml`, `rename.log` (+ `.1`), `navo.db` (+ `-wal`),
   `session.bin`. Not migrated (rebuilt): `cache.db`, `logs/`, `index/`, `running`, `ferrite.lock`, `-shm`.
 - D8 — Verification is byte equality of every copied file, then `PRAGMA quick_check` on the copy only
   to log it. A damaged old database moves as it is; the existing quarantine (P35) handles it.
@@ -143,21 +143,21 @@ Mechanical word swaps (A11, A12, A14, A15) may touch more than 3 files; each edi
 
 | Atom | Component | Role | Effort | After | Check | Status | Cost |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| A1 | `brand`, `temp-names` (core) | patcher | medium | — | `cargo xtask check -p rusty-core` | ready | |
-| A2 | `temp-names` (fs) | patcher | medium | A1 | `cargo xtask check -p rusty-fs` | blocked | |
-| A3 | `store-dirs` | api-builder | medium | A1 | `cargo xtask check -p rusty-store` | blocked | |
-| A4 | `migration` | senior (Opus) | medium | A3 | `cargo xtask check -p rusty-app` | blocked | |
-| A5 | `legacy-probe`, `start-order` | senior (Opus) | medium | A4, A6 | `cargo xtask check -p rusty-app` + Windows CI | blocked | |
-| A6 | `instance-names` | patcher | medium | A1 | `cargo xtask check -p rusty-app` | blocked | |
-| A7 | `index-service` names | patcher | medium | A1 | `cargo xtask check -p rusty-app -p rusty-index` | blocked | |
-| A8 | `index-service` upgrade | senior (Opus) | medium | A7 | `cargo xtask check -p rusty-app` + Windows CI | blocked | |
-| A9 | `env-bin` | patcher | medium | A1 | `cargo xtask check -p rusty-app` | blocked | |
-| A10 | `legacy-values` | api-builder | medium | A3, `ui/navo-themes` merged | `cargo xtask check -p rusty-store -p rusty-ui` | blocked | |
-| A11 | `ui-strings` (rusty-ui) | ui-builder | medium | A10 | `cargo xtask check -p rusty-ui` | blocked | |
-| A12 | `ui-strings` (other crates, Fluent) | patcher | medium | A9 | `cargo xtask check -p rusty-app -p rusty-core -p rusty-store -p rusty-fs -p rusty-diag -p rusty-shell -p rusty-index -p rusty-l10n` | blocked | |
-| A13 | `brand-assets` | ui-builder | medium | `ui/navo-splash` merged | `scripts/build-icons.sh` | blocked | |
-| A14 | `ci-scripts` | patcher | medium | A9, A13 | `cargo xtask gate` (once, by orchestrator) | blocked | |
-| A15 | `docs` | patcher | medium | A1–A14 | grep below | blocked | |
+| A1 | `brand`, `temp-names` (core) | patcher | medium | — | `cargo xtask check -p rusty-core` | done | |
+| A2 | `temp-names` (fs) | patcher | medium | A1 | `cargo xtask check -p rusty-fs` | done | |
+| A3 | `store-dirs` | api-builder | medium | A1 | `cargo xtask check -p rusty-store` | done | |
+| A4 | `migration` | senior (Opus) | medium | A3 | `cargo xtask check -p rusty-app` | done | |
+| A5 | `legacy-probe`, `start-order` | senior (Opus) | medium | A4, A6 | `cargo xtask check -p rusty-app` + Windows CI | done | |
+| A6 | `instance-names` | patcher | medium | A1 | `cargo xtask check -p rusty-app` | done | |
+| A7 | `index-service` names | patcher | medium | A1 | `cargo xtask check -p rusty-app -p rusty-index` | done | |
+| A8 | `index-service` upgrade | senior (Opus) | medium | A7 | `cargo xtask check -p rusty-app` + Windows CI | done | |
+| A9 | `env-bin` | patcher | medium | A1 | `cargo xtask check -p rusty-app` | done | |
+| A10 | `legacy-values` | api-builder | medium | A3, `ui/navo-themes` merged | `cargo xtask check -p rusty-store -p rusty-ui` | done | |
+| A11 | `ui-strings` (rusty-ui) | ui-builder | medium | A10 | `cargo xtask check -p rusty-ui` | done | |
+| A12 | `ui-strings` (other crates, Fluent) | patcher | medium | A9 | `cargo xtask check -p rusty-app -p rusty-core -p rusty-store -p rusty-fs -p rusty-diag -p rusty-shell -p rusty-index -p rusty-l10n` | done | |
+| A13 | `brand-assets` | ui-builder | medium | `ui/navo-splash` merged | `scripts/build-icons.sh` | done | |
+| A14 | `ci-scripts` | patcher | medium | A9, A13 | `cargo xtask gate` (once, by orchestrator) | done | |
+| A15 | `docs` | patcher | medium | A1–A14 | grep below | done | |
 ### A1 — Brand constants and core temp names
 - **Read:** `rusty-core/src/lib.rs`, `op_plan/mod.rs:1-30`, `op_plan/names.rs`, `rename/order.rs:180-200`.
 - **Change:** new `rusty-core/src/brand.rs` (D2 names, legacy names, `TEMP_SUFFIX = ".navo-part"`,
@@ -227,7 +227,8 @@ A1 → (A2, A3, A6, A7, A9 in parallel) → A4 → A5; A7 → A8; A10 after `ui/
 ## Windows verification (owner's work PC, before merge)
 1. Fresh user: only `%APPDATA%\Navo` and `%LOCALAPPDATA%\Navo` appear.
 2. Ferrite profile with settings, shortcuts, two tabs, rename history and one killed copy job: Navo
-   starts with all of it; the job is recovered once; `MOVED-TO-NAVO.txt` in both old roots.
+   starts with all of it; the job is recovered once; both old folders are renamed to
+   `Ferrite.migrated-to-navo`, and `%LOCALAPPDATA%\Navo` holds `migrated-from-ferrite.json`.
 3. `NAVO_CRASH_TEST=1`, `NAVO_MIGRATION_TEST_EXIT` at each phase: the next start resumes or rolls back; no `Navo.staging` remains.
 4. Ferrite open: Navo says "Close Ferrite", migrates nothing; after closing, Try again works.
 5. Old `ferrite.exe` after migration: starts with old settings, no session, no jobs; Navo unchanged.
@@ -240,8 +241,9 @@ A1 → (A2, A3, A6, A7, A9 in parallel) → A4 → A5; A7 → A8; A10 after `ui/
 
 ## Rollback
 1. Revert the squash commit; republish the previous Ferrite build.
-2. A user back on Ferrite: close Navo; copy `%LOCALAPPDATA%\Navo\navo.db` (+ `-wal`) to
-   `%LOCALAPPDATA%\Ferrite\ferrite.db`; delete both `MOVED-TO-NAVO.txt`.
+2. A user back on Ferrite: close Navo; rename both `Ferrite.migrated-to-navo` folders back to
+   `Ferrite`; copy `%LOCALAPPDATA%\Navo\navo.db` (+ `-wal`) to `%LOCALAPPDATA%\Ferrite\ferrite.db`;
+   delete `%LOCALAPPDATA%\Navo\migrated-from-ferrite.json`.
 3. Service: `navo --index-service remove`, then `ferrite --index-service install`.
 
 ## Done when
@@ -251,4 +253,8 @@ A1 → (A2, A3, A6, A7, A9 in parallel) → A4 → A5; A7 → A8; A10 after `ui/
 
 ## Log
 - 2026-10-26 — Plan drafted from the inventory at e077fb5a.
+- 2026-10-26 — A1 done: `rusty-core::brand` (names, temp prefixes, `is_part_name`, `is_rename_temp`); `TEMP_SUFFIX` now `.navo-part`, rename temps `.navo-rename-`.
 - 2026-10-26 — `ui/navo-splash`: native Win32 splash (D79) on its own thread, timing core tested; masks from `scripts/build-splash.sh` in `assets/brand/splash`. A13 can start after it merges.
+- 2026-10-26 — A7 done: service `Navo Index`, pipe `navo-index`, `%ProgramFiles%\Navo\Index\navo.exe` with `navo.exe.<nonce>` temporaries, `%ProgramData%\Navo\index`; index magic unchanged.
+- 2026-10-26 — A8 done: `install` carries the Ferrite `service.json`, installs Navo Index, waits up to 30 s for `navo-index`, then removes Ferrite Index and its trusted folders; a crash or failed delete keeps the old one detected for the next install. `remove` handles both names. Status has `legacy_present`; a quiet notice offers Upgrade until dismissed (marker `index-upgrade-dismissed` in the data root). Windows CI must still compile the SCM glue.
+- 2026-10-26 — Final-review fixes: Windows folder sync is best-effort in the migration (error logged); `rename.log.1` migrates; `FERRITE_LOG` warnings reach the log and name their variable; a user profile migrates without the instance lock; generic "file in use" dialog; the Ferrite `service.json` is carried only when Navo has none; leftover Ferrite index files are a warning, not a failed install.

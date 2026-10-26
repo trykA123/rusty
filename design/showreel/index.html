@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Ferrite showreel</title>
+<link rel="stylesheet" href="src/reel.css">
+<link rel="stylesheet" href="src/scenes.css">
+</head>
+<body>
+<main id="stage" aria-label="Ferrite showreel"></main>
+<script type="module">
+import { build, renderFrame, DURATION } from './src/timeline.js';
+import { FPS } from './src/script.js';
+
+const refs = build(document.getElementById('stage'));
+window.reel = {
+  fps: FPS,
+  duration: DURATION,
+  frames: Math.round(FPS * DURATION),
+  frame: (n) => renderFrame(refs, n / FPS),
+  at: (t) => renderFrame(refs, t),
+};
+const preview = new URLSearchParams(location.search).get('t');
+if (preview !== null) renderFrame(refs, Number(preview));
+document.fonts.ready.then(() => { window.reel.ready = true; });
+</script>
+</body>
+</html>

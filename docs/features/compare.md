@@ -13,8 +13,8 @@ Compare two folders, two Git refs of one repository, or two repositories, in the
 - Read the folder compare in the panes. Rows line up and a missing file leaves a gap.
 - Filter by All, Differences, Orphans or Same. `.gitignore` rules apply. "Show ignored" turns them off.
 - Open a file pair as a full-window diff. Changed words are marked inside paired lines.
-- Edit a real side. Ferrite keeps the encoding, the BOM and the line endings of each line. Save refuses if the file changed on disk. A Git ref side is read-only.
-- Copy a file or hunk to the other side. Each copy is one job with a journal. The old version stays until Ferrite closes. "Restore previous version" brings it back.
+- Edit a real side. Navo keeps the encoding, the BOM and the line endings of each line. Save refuses if the file changed on disk. A Git ref side is read-only.
+- Copy a file or hunk to the other side. Each copy is one job with a journal. The old version stays until Navo closes. "Restore previous version" brings it back.
 
 Statuses: same, different, only left, only right, type conflict, case conflict, unavailable and "same after rules".
 
@@ -49,8 +49,8 @@ Settings > Compare holds:
 ## What was decided
 
 - No size wall. The owner asked for it to be "really outstanding".
-- Without Git, Ferrite uses the built-in engine and says so once. The installed engine needs Git 2.36 or newer.
-- Ferrite never writes into `.git` and never stages anything.
+- Without Git, Navo uses the built-in engine and says so once. The installed engine needs Git 2.36 or newer.
+- Navo never writes into `.git` and never stages anything.
 - Folder sync waits for the delete safety net and job undo.
 
 ## Merge (before 1.0)
@@ -59,7 +59,7 @@ Settings > Compare holds:
 - One-sided changes are taken automatically.
 - A counter shows unsolved conflicts. Save stays off until it reaches zero.
 - Whitespace-only conflicts resolve in bulk.
-- `ferrite compare` and `ferrite merge` work with `git difftool` and `git mergetool`.
+- `navo compare` and `navo merge` work with `git difftool` and `git mergetool`.
 
 ## Done and coming
 

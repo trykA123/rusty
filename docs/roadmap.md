@@ -26,7 +26,7 @@ Goal: prove the stack and build the factory.
 
 - infra: foundation plan; Cargo workspace with the eleven crates; quality gate; Windows CI producing a portable `.exe` per push.
 - infra: GPUI spike on design B with 100k entries, three panes and the drawer; `nucleo` against `frizbee` on 2 million names; built on `gpui-kit`, including its AccessKit support.
-- core: storage layer with SQLite from day one (`ferrite.db`, `cache.db`, migrations) and the session snapshot (D17).
+- core: storage layer with SQLite from day one (`navo.db`, `cache.db`, migrations) and the session snapshot (D17).
 - core: diagnostics with redacted logs, memory and performance statistics and a hand-saved report (D20).
 - core: serialisable commands, layout tree, multi-window state and `apply()` with property tests.
 - core: locations and providers, record and replay, one error model, I/O queues per volume, experimental flags (D21).
@@ -53,9 +53,9 @@ Merged after that release: six built-in colour themes. They are Open sea (the de
 
 ### Now in progress
 
-- **Rename to Navo.** The app gets a new name and a new `n_` icon. Your existing profile (settings, tabs, history) moves once, safely, with crash recovery. Afterwards the old Ferrite folder is renamed to "Ferrite.migrated-to-navo". The installed index service is upgraded from a one-time notice. Done: profile folder names and temporary-file names. The move engine is built and in its review-fix round. Still to do: app start order, instance names, the index service, the program name, on-screen text, icons, CI and docs. This page says Ferrite until the rename lands.
+- **Rename to Navo.** The app gets a new name and a new `n_` icon. Your existing profile (settings, tabs, history) moves once, safely, with crash recovery. Afterwards the old Ferrite folder is renamed to "Ferrite.migrated-to-navo". The installed index service is upgraded from a one-time notice. The rename is built: profile move, start order, instance names, the index service upgrade, program name, on-screen text, icons, CI and docs. It is waiting for Windows CI and the owner check on the work PC.
 - **Start-up splash.** A small native Windows window shows the `n_` icon and the "navo" wordmark. It appears only when start-up takes longer than 200 ms. It does not appear on Linux.
-- **New right-click menu.** It shows the real Windows shell menu in Ferrite's style. The filter sits at the top. Submenus open in place, with a back row. You get the full classic menu, and Shift adds the extended items. If anything fails, the classic Windows menu opens instead. Two builds are being made side by side so the owner can compare quality.
+- **New right-click menu.** It shows the real Windows shell menu in Navo's style. The filter sits at the top. Submenus open in place, with a back row. You get the full classic menu, and Shift adds the extended items. If anything fails, the classic Windows menu opens instead. Two builds are being made side by side so the owner can compare quality.
 - **Fonts.** Space Grotesk for the brand, Inter for the interface, JetBrains Mono for paths and viewers. Decided. Not built yet.
 
 ### After the backend merge
@@ -132,7 +132,7 @@ Exit: each module turns off without a restart and costs nothing while off.
 
 - Jenkins links to network folders: paste a Jenkins link and jump to the matching network folder, using rules you set once.
 - Built-in web view: optional.
-- Workflows and automations: chain actions so Ferrite does repeat work for you.
+- Workflows and automations: chain actions so Navo does repeat work for you.
 - Visual builder: build workflows by drawing them, like n8n.
 
 ## v2.0 · Open platform

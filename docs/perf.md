@@ -1,6 +1,6 @@
 # Performance
 
-Every push to `main` runs the `perf-windows` CI job: one first run (the closest a runner gets to a cold start) and five warm runs of `ferrite --metrics <file.json>` on a generated fixture (one folder with 5,000 files, one with 200 folders of 25 files each). The job summary shows min, median and max next to the [v1.0 targets](roadmap.md#v10-targets).
+Every push to `main` runs the `perf-windows` CI job: one first run (the closest a runner gets to a cold start) and five warm runs of `navo --metrics <file.json>` on a generated fixture (one folder with 5,000 files, one with 200 folders of 25 files each). The job summary shows min, median and max next to the [v1.0 targets](roadmap.md#v10-targets).
 
 The GitHub runner renders in software (Microsoft Basic Render Driver), so frame times are relative, not absolute. The job fails only when the median warm first frame is above 300 ms or private bytes in any run are above 160,000,000 (2× each target). The owner's work-PC run with `--metrics` is the real reference and goes here when available.
 
@@ -35,7 +35,7 @@ Work laptop, Intel UHD Graphics, build 5844556 (alpha-2026-10-19a), 19 October 2
 
 Against the v1.0 targets (cold ≤ 400 ms, warm ≤ 150 ms, RAM < 80 MB) all three miss on real hardware. Most of the gap is before `main` (76–739 ms, versus 16 ms on CI) and in GPUI's start on a real GPU (≈ 215–250 ms, versus 62 ms with the software renderer). Private bytes double with a real GPU.
 
-Second set, same build, after moving `ferrite.exe` out of Downloads (runs 1–4; run 1 is the first launch from the new folder):
+Second set, same build, after moving `navo.exe` out of Downloads (runs 1–4; run 1 is the first launch from the new folder):
 
 | Phase | Run 1 | Run 2 | Run 3 | Run 4 |
 | --- | --- | --- | --- | --- |
@@ -60,9 +60,9 @@ Fourth set, build 3b948e3 (alpha-2026-10-21b), 21 October 2026, outside Download
 | **Start to first usable** | **1745 ms** | **563 ms** | **591 ms** | **540 ms** |
 | Private bytes, idle | 137.4 MB | 137.1 MB | 136.8 MB | 136.2 MB |
 
-Warm start is where it was on 19 October (median 563 ms against 522–590 ms), although the app gained the Rich memory view, Ctrl+K sources and multi-rename. Memory is slightly lower. The cold start spends 1.28 s before `main`: Windows reads and scans the 98 MB exe after a restart. Ferrite's own part (from `main` to first usable) takes 464 ms cold and about 450 ms warm, so a smaller exe is the main lever for the cold start; GPUI's start (≈ 260–290 ms) is the largest part inside the app.
+Warm start is where it was on 19 October (median 563 ms against 522–590 ms), although the app gained the Rich memory view, Ctrl+K sources and multi-rename. Memory is slightly lower. The cold start spends 1.28 s before `main`: Windows reads and scans the 98 MB exe after a restart. Navo's own part (from `main` to first usable) takes 464 ms cold and about 450 ms warm, so a smaller exe is the main lever for the cold start; GPUI's start (≈ 260–290 ms) is the largest part inside the app.
 
-Same build with `FERRITE_GPU=high-performance` (NVIDIA T1200 Laptop GPU), three warm runs: GPUI's start 1253 / 1238 / 1049 ms (Intel ≈ 260–290 ms), first usable 2218 / 2186 / 1825 ms, private bytes 254 / 256 / 237 MB. The discrete GPU is about three to four times slower to start and uses nearly twice the memory, so the low-power default stays.
+Same build with `NAVO_GPU=high-performance` (NVIDIA T1200 Laptop GPU), three warm runs: GPUI's start 1253 / 1238 / 1049 ms (Intel ≈ 260–290 ms), first usable 2218 / 2186 / 1825 ms, private bytes 254 / 256 / 237 MB. The discrete GPU is about three to four times slower to start and uses nearly twice the memory, so the low-power default stays.
 
 ## History
 

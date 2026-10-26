@@ -17,7 +17,7 @@ A Cargo workspace; dependencies point down the table.
 | Crate | Job | Platform |
 | --- | --- | --- |
 | `rusty-core` | Pure model and logic: paths, entries, panes, tabs, layout tree, workspaces, pins, selection, sort/filter, the command set, operation planning. No I/O. | any |
-| `rusty-store` | Settings (TOML), session snapshot (`postcard`), SQLite databases `ferrite.db` and `cache.db`; atomic writes, versions, migrations, recovery. Built in the Foundation phase | any |
+| `rusty-store` | Settings (TOML), session snapshot (`postcard`), SQLite databases `navo.db` and `cache.db`; atomic writes, versions, migrations, recovery. Built in the Foundation phase | any |
 | `rusty-fs` | Listing, metadata, watching, the job engine (copy, move, recycle, delete) with progress, cancel, verification and the undo journal | Windows first, Linux for development |
 | `rusty-cache` | Bounded caches: listings, icons, thumbnails, enrichments; budgets and eviction | any |
 | `rusty-index` | Fuzzy matching (`nucleo`), folder search (`ignore`), global search through Rusty's own index and the `rusty-indexd` service (D23) | Windows for global |
@@ -89,20 +89,20 @@ Small core features that depend on these:
 | --- | --- | --- |
 | Settings and keymaps | TOML, hand-editable | Validated on load; invalid files are reported and **never overwritten**; the last valid copy keeps running |
 | Session and workspaces | Versioned binary (`postcard`) with header and checksum | Debounced saves (1 s), atomic replace, previous file kept as `.bak`, recovery from `.bak` on a bad checksum; a file from a newer version is kept as `.v<version>` and never overwritten |
-| User data (`ferrite.db`, SQLite) | History, frecency, tags, saved searches, module key-value data, job and undo journals | WAL mode; one transaction per job step; `PRAGMA user_version` migrations; `integrity_check` on start-up when the `running` marker of the previous run is still there |
-| Job journal (copies, moves, deletes) | Table in `ferrite.db`, one row per step, committed per step | Lets an interrupted job resume or roll back after a crash |
-| Undo journal | Table in `ferrite.db` | Bounded; entries expire |
+| User data (`navo.db`, SQLite) | History, frecency, tags, saved searches, module key-value data, job and undo journals | WAL mode; one transaction per job step; `PRAGMA user_version` migrations; `integrity_check` on start-up when the `running` marker of the previous run is still there |
+| Job journal (copies, moves, deletes) | Table in `navo.db`, one row per step, committed per step | Lets an interrupted job resume or roll back after a crash |
+| Undo journal | Table in `navo.db` | Bounded; entries expire |
 | Cache (`cache.db`, SQLite) | Listings, icons, thumbnails as blobs, folder sizes | Safe to delete at any time; rebuilt on demand; a corrupt file is replaced, never repaired |
 | Global search index | Own file format under `index/`, memory-mapped (`rkyv`) | Rebuilt when missing or from an older version |
 
 - **Atomic writes:** write `name.tmp`, flush, then `ReplaceFileW` / `MoveFileExW(MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH)`.
-- **Failed integrity check:** a corrupt database writes a sticky `ferrite.db.check-failed` file next to it; while it exists every start runs the check and no job is recovered or journaled; only a passing check removes it.
+- **Failed integrity check:** a corrupt database writes a sticky `navo.db.check-failed` file next to it; while it exists every start runs the check and no job is recovered or journaled; only a passing check removes it.
 - **Single writer:** one process per user session (a named mutex); a second launch hands its arguments to the first instance and exits.
 - **Migrations:** each format has a version (`PRAGMA user_version` for SQLite); migrations are pure functions with fixture tests for every old version.
 - **SQLite from the start:** `rusqlite` with bundled SQLite is part of `rusty-store` from the Foundation phase, so every later feature stores its data in the same place.
 - **Crashes:** a panic hook writes a redacted crash report (see Diagnostics) and the last session; the next start offers to restore it and to save the report.
 
-Storage lives in `%APPDATA%\Rusty` (settings, `ferrite.db`), `%LOCALAPPDATA%\Rusty` (session, `cache.db`, index). **Portable mode:** if `rusty.toml` sits next to the executable, everything lives beside it instead.
+Storage lives in `%APPDATA%\Navo` (settings, `navo.db`), `%LOCALAPPDATA%\Navo` (session, `cache.db`, index). **Portable mode:** if `navo.toml` sits next to the executable, everything lives beside it instead.
 
 ## Speed: caching, lazy loading, pre-warming
 
@@ -117,7 +117,7 @@ Storage lives in `%APPDATA%\Rusty` (settings, `ferrite.db`), `%LOCALAPPDATA%\Rus
 Start-up order:
 
 1. Read the session snapshot (small, one file) and draw the last layout immediately. The snapshot also holds about 100 visible rows per pane, marked as cached, so the first frame needs one file read and **no database**.
-2. Open `ferrite.db` and `cache.db` in the background, fill the rest of the panes from the listing cache and revalidate everything.
+2. Open `navo.db` and `cache.db` in the background, fill the rest of the panes from the listing cache and revalidate everything.
 3. Start everything else **lazily**: plugins, global index connection, git, thumbnails and terminals start on first use or after the app is idle.
 
 Targets are measured with `tracing` spans in every build and checked by a start-up benchmark in CI on Windows.
@@ -216,7 +216,7 @@ Reusable components from the first screen (D25). Rule: the app is assembled from
 - **Links are never followed when deleting or moving.** Symlinks and junctions are removed as links; recursive operations stop at reparse points.
 - **Re-check at execution.** Paths are canonicalised and re-validated just before each step, so a changed folder can't redirect an operation.
 - **Copies are safe:** written to a temporary name, verified (size, `xxh3` or SHA-256; see Copy engine), then renamed. Conflicts follow an explicit policy (ask, skip, rename, overwrite older).
-- **Overwrites keep the old file until the job ends:** the job journal records the old target, then it moves into a `.ferrite-held-<pid>-<time>-<run>` folder next to it, one per job run (same volume, so a rename), and the new file takes its place. A job cut short by a crash puts the old file back at the next start, but never over a file that changed since: then the old file comes back beside it as `name (before copy).ext`. A finished job deletes its held files. Without a journal the new file replaces the old one in one step.
+- **Overwrites keep the old file until the job ends:** the job journal records the old target, then it moves into a `.navo-held-<pid>-<time>-<run>` folder next to it, one per job run (same volume, so a rename), and the new file takes its place. A job cut short by a crash puts the old file back at the next start, but never over a file that changed since: then the old file comes back beside it as `name (before copy).ext`. A finished job deletes its held files. Without a journal the new file replaces the old one in one step.
 - **Undo** covers rename, move, copy and Recycle Bin operations.
 - **Keyboard and mouse guards:** F8 and Del act only when the file list has focus, repeated presses are debounced, and drag-and-drop between drives copies by default.
 
@@ -314,7 +314,7 @@ From the Foundation phase, so problems found in testing come with evidence (D20)
 - No file contents, clipboard data, search queries, file names typed by the user or credentials, ever.
 - A test runs a session with canary values (a user name, paths, a server name, a search query) and fails if any of them appears in the logs or the report.
 
-**Where it lives:** a rolling log in `%LOCALAPPDATA%\Rusty\logs` (3 × 10 MB), already redacted. **Help → Save diagnostic report** writes `rusty-report-<date>.zip` with a readable `report.json` and a summary of what it contains; the user can open it before sharing.
+**Where it lives:** a rolling log in `%LOCALAPPDATA%\Navo\logs` (3 × 10 MB), already redacted. **Help → Save diagnostic report** writes `navo-report-<date>.zip` with a readable `report.json` and a summary of what it contains; the user can open it before sharing.
 
 **Raw memory dumps** (`MiniDumpWriteDump`) contain whatever was in memory, including file names. They are off by default, can be turned on for one session, stay local, and are deleted after 7 days.
 

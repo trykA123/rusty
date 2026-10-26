@@ -6,7 +6,7 @@ Status: marking and internal dragging are done. Explorer drag wiring and the rig
 
 Mark many files with keys or the mouse. Drag them to the other pane, a folder, a tab, a breadcrumb or a drive pill to copy or move them. Drag files to and from Explorer through the native Windows bridge once its pending platform checks pass.
 
-Ferrite keeps the Total Commander mark model. Marks are separate from the cursor. A plain click and plain arrows never change marks.
+Navo keeps the Total Commander mark model. Marks are separate from the cursor. A plain click and plain arrows never change marks.
 
 ## What you can do
 
@@ -54,12 +54,12 @@ Marks survive the type-to-filter. Operations act only on visible marked rows. Th
 
 Implemented, with native Windows checks still pending:
 
-- Dropping from Explorer into Ferrite uses the same targets and planner. Ferrite performs incoming moves itself and never asks the source to delete again.
-- Native Ctrl, Shift and Alt modifiers select the operation. Ferrite refuses an operation the source does not allow.
+- Dropping from Explorer into Navo uses the same targets and planner. Navo performs incoming moves itself and never asks the source to delete again.
+- Native Ctrl, Shift and Alt modifiers select the operation. Navo refuses an operation the source does not allow.
 - A right-button drag from Explorer shows a menu: Copy here, Move here, Create shortcuts here, Cancel.
 - Virtual files, such as Outlook attachments, zip contents and phones, are refused.
-- Dragging out to Explorer uses the shell's drag with the frozen visible selection. Ferrite never deletes after a drag out.
-- Returning to Ferrite restores the internal drag. Ending a native drag refreshes unwatched source folders.
+- Dragging out to Explorer uses the shell's drag with the frozen visible selection. Navo never deletes after a drag out.
+- Returning to Navo restores the internal drag. Ending a native drag refreshes unwatched source folders.
 - Open dialogs refuse drops. A target tab that navigated or was replaced during hover refuses the drop.
 
 ## Settings

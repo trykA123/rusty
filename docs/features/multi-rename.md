@@ -40,7 +40,7 @@ The order is: pattern, search and replace, case, cleanup, then the check.
 ### Safety
 
 - Any problem blocks Rename: an invalid name, an empty name, a duplicate new name, or a clash with an item outside the batch.
-- Windows compares names without case. Ferrite follows that.
+- Windows compares names without case. Navo follows that.
 - It never overwrites a file.
 - The batch is all or nothing. If one rename fails or you cancel, every name goes back.
 - Chains, swaps and cycles are ordered safely with temporary names. A case-only rename works.
@@ -88,7 +88,7 @@ A modal panel with a preview table, a "Problems only" filter and a footer such a
 
 - Done: the window, Ctrl+M, F2 on marks, the context menu, Ctrl+K, presets, masks, rules, planning, the all-or-nothing job, cleanup, the preview table, fields from files, photos and audio tags, the undo journal with Ctrl+Z, and the preview highlights with the 260-character warning.
 - Done on the backend branch: F2 on one item uses the same planner and journal, with undo after a restart. Failed renames keep their error in the pane. Native Windows checks remain pending.
-- Done on the backend branch: Settings > Files > Rename log enables `rename.log` beside `ferrite.toml`. Completed forward batches append quoted original-to-final paths. Staging names, failed batches and undo are omitted. A log error leaves the rename and undo intact and appears in the activity detail.
+- Done on the backend branch: Settings > Files > Rename log enables `rename.log` beside `navo.toml`. Completed forward batches append quoted original-to-final paths. Staging names, failed batches and undo are omitted. A log error leaves the rename and undo intact and appears in the activity detail.
 - Done on the backend branch: edited/imported/pasted names, copy export, preview ordering and sorting, and counters per folder. Native Windows checks remain pending.
 
 ## Open questions
