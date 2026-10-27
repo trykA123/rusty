@@ -87,7 +87,7 @@ The owner reordered the beta on 27 October 2026 (D85). Built in this order:
 3. core: workspaces (Alt+1…9) with the tray: named workspaces, drafts, Save and Discard. Model, commands and session file done.
 4. core: more than two panes, tiled like Hyprland (D80): presets on Ctrl+L, split, move, resize, swap and close from the keyboard, own presets. Tile notation, pane operations and applying a layout done.
 5. core: find files by content and attributes in Ctrl+K, with results as a tab you can work in; virtual collections (saved searches, snapshots, files picked by hand). Query, content matcher and collection store done.
-6. module: clipboard history and notes; summon hotkey and tray.
+6. module: clipboard history and saved items (snippets, commands, paths, encrypted secrets, folder notes) in a Ctrl+K-style palette, as a module you can switch off (D87); summon hotkey and tray.
 7. core: background work that never waits: job pools with priorities, folder sizes that cancel when you leave, size on disk, hard links counted once.
 8. core: accessibility basics: Narrator reads lists, dialogs and Ctrl+K, focus visible everywhere, reduced motion, contrast themes, UI scale. Mostly done.
 
