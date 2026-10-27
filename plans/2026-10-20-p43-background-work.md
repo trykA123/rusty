@@ -65,28 +65,28 @@ After the alpha, except four small atoms that help alpha features in progress: *
 | Atom | Component | Role | Effort | After | Check | Status | Cost |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | J0 | `paste` drop refusal (alpha) | patcher (Sonnet) | medium | — | `cargo nextest run -p rusty-ui browser::operate::tests::drop` | ready | |
-| J1 | `io_queue` limits and classifier | api-builder (Sonnet) | high | — | `cargo nextest run -p rusty-fs io_queue` | ready | |
-| J2 | `io_queue::submit_then` | api-builder (Sonnet) | high | J1 | `cargo nextest run -p rusty-fs io_queue::tests::runner` | blocked | |
-| J3 | `io_queue::pools` | api-builder (Sonnet) | medium | J1 | `cargo nextest run -p rusty-fs io_queue::tests::pools` | blocked | |
-| J4 | `browser` on `Pools` | ui-builder (Sonnet) | medium | J3 | `cargo nextest run -p rusty-ui browser` | blocked | |
-| J5 | size owner per tab | ui-builder (Sonnet) | high | J4 | `cargo nextest run -p rusty-ui browser::tests` | blocked | |
-| J6 | preview folder reads on `Pools` | ui-builder (Sonnet) | medium | J3 | `cargo nextest run -p rusty-ui window_view::preview` | blocked | |
-| J7 | preview file loads on `Pools` | ui-builder-high (Opus) | high | J2, J6 | `cargo nextest run -p rusty-ui window_view::preview` | blocked | |
-| J8 | file jobs wait on a shared slow drive | ui-builder (Sonnet) | high | Q1 | `cargo nextest run -p rusty-ui browser::operate` | blocked | |
+| J1 | `io_queue` limits and classifier | api-builder (Sonnet) | high | — | `cargo nextest run -p rusty-fs io_queue` | done | |
+| J2 | `io_queue::submit_then` | api-builder (Sonnet) | high | J1 | `cargo nextest run -p rusty-fs io_queue::tests::runner` | done | |
+| J3 | `io_queue::pools` | api-builder (Sonnet) | medium | J1 | `cargo nextest run -p rusty-fs io_queue::tests::pools` | done | |
+| J4 | `browser` on `Pools` | ui-builder (Sonnet) | medium | J3 | `cargo nextest run -p rusty-ui browser` | done | |
+| J5 | size owner per tab | ui-builder (Sonnet) | high | J4 | `cargo nextest run -p rusty-ui browser::tests` | done | |
+| J6 | preview folder reads on `Pools` | ui-builder (Sonnet) | medium | J3 | `cargo nextest run -p rusty-ui window_view::preview` | done | |
+| J7 | preview file loads on `Pools` | ui-builder-high (Opus) | high | J2, J6 | `cargo nextest run -p rusty-ui window_view::preview` | done | |
+| J8 | file jobs wait on a shared slow drive | ui-builder (Sonnet) | high | Q1 | `cargo nextest run -p rusty-ui browser::operate` | done | |
 | J9 | review Part J | reviewer (Opus) | high | J5, J7, J8 | review notes; `cargo xtask gate`; Windows CI | blocked | |
-| S0 | Windows size facts | researcher (Sonnet) | medium | — | answers with sources, in the Log | ready | |
-| S1 | `provider::list_sizes` + `FakeFs` | api-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-fs fake` | ready | |
-| S2 | Unix `list_sizes` | api-builder (Sonnet) | medium | S1 | `cargo nextest run -p rusty-fs local::tests::listing` | blocked | |
-| S3 | Windows `list_sizes` | api-builder (Opus) | high | S0, S2 | Windows CI `cargo nextest run -p rusty-fs local::tests::windows` | blocked | |
-| S4 | `measure::walk` on disk and links | api-builder (Sonnet) | high | S1 | `cargo nextest run -p rusty-fs measure` | blocked | |
-| S5 | `[files]` size keys | api-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-store settings` | ready | |
+| S0 | Windows size facts | researcher (Sonnet) | medium | — | answers with sources, in the Log | done | |
+| S1 | `provider::list_sizes` + `FakeFs` | api-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-fs fake` | done | |
+| S2 | Unix `list_sizes` | api-builder (Sonnet) | medium | S1 | `cargo nextest run -p rusty-fs local::tests::listing` | done | |
+| S3 | Windows `list_sizes` | api-builder (Opus) | high | S0, S2 | Windows CI `cargo nextest run -p rusty-fs local::tests::windows` | running | |
+| S4 | `measure::walk` on disk and links | api-builder (Sonnet) | high | S1 | `cargo nextest run -p rusty-fs measure` | done | |
+| S5 | `[files]` size keys | api-builder (Sonnet) | medium | — | `cargo nextest run -p rusty-store settings` | done | |
 | S6 | size mode in the list and settings | ui-builder (Sonnet) | medium | S4, S5, J4 | `cargo nextest run -p rusty-ui browser settings` | blocked | |
 | S7 | measure shown folders | ui-builder (Opus) | high | S6, J5, Q2 | `cargo nextest run -p rusty-ui browser::tests` | blocked | |
 | S8 | preview: on disk and link note | ui-builder (Sonnet) | medium | S4, S5 | `cargo nextest run -p rusty-ui window_view::preview`; gallery shots | blocked | |
 | S9 | review Part S | reviewer (Opus) | high | S3, S7, S8 | review notes; gate; Windows CI | blocked | |
-| B1 | `xtask::stats` (alpha) | api-builder (Sonnet) | medium | — | `cargo nextest run -p xtask stats bench_copy` | ready | |
-| B2 | `bench-walk`: list and size (alpha) | api-builder (Sonnet) | medium | B1 | `cargo nextest run -p xtask bench_walk`; `cargo xtask bench-walk <tmp> --runs 3` prints the table | blocked | |
-| B3 | `bench-walk`: index targets (alpha) | api-builder (Sonnet) | medium | B2 | `cargo nextest run -p xtask bench_walk`; `--targets index` prints rows | blocked | |
+| B1 | `xtask::stats` (alpha) | api-builder (Sonnet) | medium | — | `cargo nextest run -p xtask stats bench_copy` | done | |
+| B2 | `bench-walk`: list and size (alpha) | api-builder (Sonnet) | medium | B1 | `cargo nextest run -p xtask bench_walk`; `cargo xtask bench-walk <tmp> --runs 3` prints the table | done | |
+| B3 | `bench-walk`: index targets (alpha) | api-builder (Sonnet) | medium | B2 | `cargo nextest run -p xtask bench_walk`; `--targets index` prints rows | running | |
 | B4 | docs and informational CI step | infra-builder (Sonnet) | medium | B3 | `cargo xtask gate` (docs links); CI step `continue-on-error` | blocked | |
 
 ### J0 — drop refusal follows Windows case rules
@@ -191,3 +191,4 @@ All three answered 2026-10-20: the owner accepted the recommendations.
 - 2026-10-20 — Owner accepted Q1–Q3 as recommended; J8 can proceed on that rule.
 - 2026-10-27 — J1–J7 on main (e3f795d1). J8, S1, S5, B1 started.
 - 2026-10-27 — S0 answers. (1) `GetFileInformationByHandleEx` with `FileIdExtdDirectoryInfo` (0x13) returns `FILE_ID_EXTD_DIR_INFO` per entry: `EndOfFile`, `AllocationSize`, attributes, reparse tag and a 128-bit `FILE_ID_128` ([docs](https://learn.microsoft.com/en-us/windows/win32/api/winbase/ns-winbase-file_id_extd_dir_info)). `FileIdBothDirectoryInfo` (0xa) gives the same sizes with a 64-bit id ([docs](https://learn.microsoft.com/en-us/windows/win32/api/winbase/ns-winbase-file_id_both_dir_info)). windows-sys features: `Win32_Storage_FileSystem` (already used). (2) No directory class gives the link count; that needs one open per file (`FileStandardInfo.NumberOfLinks`), too slow. Keep D9: key every file by its id in one set per walk. (3) Some volumes refuse the 128-bit class with `ERROR_INVALID_PARAMETER`, SMBv1 with `ERROR_INVALID_LEVEL`; Boost falls back per directory iterator, not for good ([Boost patch](https://www.boost.org/patches/1.82.0/0002-filesystem-fix-win-smbv1-dir-iterator.patch/)). S3 plan: Extd → Both (64-bit id, volume serial as `LinkKey.1`) → plain listing with `on_disk: None, link: None`. (4) FAT ids come from the directory entry offset and can change ([docs](https://learn.microsoft.com/en-us/windows/win32/api/winbase/ns-winbase-file_id_both_dir_info)); stable within one walk, which is all D9 needs. (5) UNVERIFIED: `AllocationSize` for compressed and sparse NTFS files is the allocated size (what Explorer calls "Size on disk"); for OneDrive cloud-only placeholders it is 0 or small; over SMB the server reports it. S3's Windows CI test with a sparse file and a hard link settles (5).
+- 2026-10-27 — J8, S1, S2, S4, S5, B1, B2 done (Codex hit its limit at 07:30; S3 and B3 finished by Claude agents). bench-walk on Linux, warm medians: list 5,000 files 4.1 ms; size of 100,000 entries 110 ms; 5 searches on 1,000,000 names 486 ms; index save 121 ms, load 327 ms. Next: S3 on Windows CI, S6–S8, J9 review.
