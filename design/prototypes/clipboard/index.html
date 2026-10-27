@@ -1,0 +1,776 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Navo: clipboard and saved items (R12)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: light;
+  --bg: oklch(99.2% 0.002 260);
+  --rail: oklch(96.2% 0.005 260);
+  --zebra: oklch(97.6% 0.004 260);
+  --line: oklch(88% 0.008 260);
+  --text: oklch(21% 0.012 260);
+  --muted: oklch(46% 0.02 260);
+  --faint: oklch(60% 0.016 260);
+  --hover: oklch(95% 0.008 260);
+  --sel-bg: oklch(93% 0.035 262);
+  --accent: oklch(50% 0.18 262);
+  --accent-text: oklch(46% 0.17 262);
+  --on-accent: oklch(99.2% 0.002 260);
+  --mark: oklch(53% 0.2 30);
+  --folder: oklch(55% 0.13 80);
+  --k-code: oklch(50% 0.15 262);
+  --k-doc: oklch(51% 0.13 235);
+  --k-sheet: oklch(48% 0.12 165);
+  --ok-text: oklch(46% 0.13 150);
+  --warn-text: oklch(45% 0.11 70);
+  --warn-wash: oklch(96% 0.035 80);
+  --raised: oklch(99.8% 0.001 260);
+  --field: oklch(96.5% 0.006 250);
+  --cap: oklch(99.8% 0.001 260);
+  --cap-edge: oklch(84% 0.01 260);
+  --page: oklch(96.2% 0.005 260);
+  --desk: oklch(90% 0.012 250);
+  --scrim: oklch(21% 0.012 260 / 0.12);
+  --shadow-2: 0 2px 6px oklch(21% 0.012 260 / 0.08), 0 8px 20px -10px oklch(21% 0.012 260 / 0.2);
+  --shadow-3: 0 18px 44px -12px oklch(21% 0.012 260 / 0.28), 0 2px 6px oklch(21% 0.012 260 / 0.06), 0 0 0 1px var(--line);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: oklch(16% 0.008 260); --rail: oklch(19% 0.01 260); --zebra: oklch(18% 0.009 260); --line: oklch(28% 0.012 260);
+    --text: oklch(93% 0.006 260); --muted: oklch(72% 0.016 260); --faint: oklch(58% 0.014 260); --hover: oklch(22% 0.012 260);
+    --sel-bg: oklch(30% 0.07 262); --accent: oklch(72% 0.13 262); --accent-text: oklch(78% 0.11 262); --on-accent: oklch(16% 0.008 260);
+    --mark: oklch(72% 0.16 30); --folder: oklch(80% 0.11 85); --k-code: oklch(76% 0.1 262); --k-doc: oklch(75% 0.1 235); --k-sheet: oklch(75% 0.1 165);
+    --ok-text: oklch(76% 0.13 150); --warn-text: oklch(80% 0.12 75); --warn-wash: oklch(24% 0.035 75);
+    --raised: oklch(20.5% 0.011 260); --field: oklch(17.5% 0.01 250); --cap: oklch(24% 0.012 260); --cap-edge: oklch(11% 0.008 260);
+    --page: oklch(12% 0.008 260); --desk: oklch(22% 0.02 250); --scrim: oklch(5% 0.005 260 / 0.35);
+    --shadow-2: 0 2px 6px oklch(0% 0 0 / 0.35), 0 10px 24px -10px oklch(0% 0 0 / 0.6);
+    --shadow-3: 0 22px 48px -12px oklch(0% 0 0 / 0.7), 0 0 0 1px var(--line);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: oklch(16% 0.008 260); --rail: oklch(19% 0.01 260); --zebra: oklch(18% 0.009 260); --line: oklch(28% 0.012 260);
+  --text: oklch(93% 0.006 260); --muted: oklch(72% 0.016 260); --faint: oklch(58% 0.014 260); --hover: oklch(22% 0.012 260);
+  --sel-bg: oklch(30% 0.07 262); --accent: oklch(72% 0.13 262); --accent-text: oklch(78% 0.11 262); --on-accent: oklch(16% 0.008 260);
+  --mark: oklch(72% 0.16 30); --folder: oklch(80% 0.11 85); --k-code: oklch(76% 0.1 262); --k-doc: oklch(75% 0.1 235); --k-sheet: oklch(75% 0.1 165);
+  --ok-text: oklch(76% 0.13 150); --warn-text: oklch(80% 0.12 75); --warn-wash: oklch(24% 0.035 75);
+  --raised: oklch(20.5% 0.011 260); --field: oklch(17.5% 0.01 250); --cap: oklch(24% 0.012 260); --cap-edge: oklch(11% 0.008 260);
+  --page: oklch(12% 0.008 260); --desk: oklch(22% 0.02 250); --scrim: oklch(5% 0.005 260 / 0.35);
+  --shadow-2: 0 2px 6px oklch(0% 0 0 / 0.35), 0 10px 24px -10px oklch(0% 0 0 / 0.6);
+  --shadow-3: 0 22px 48px -12px oklch(0% 0 0 / 0.7), 0 0 0 1px var(--line);
+}
+:root {
+  --font-ui: "Inter", "Segoe UI Variable Text", "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --fs-12: 0.75rem; --fs-13: 0.8125rem; --fs-14: 0.875rem; --fs-16: 1rem; --fs-20: 1.25rem;
+  --s1: 2px; --s2: 4px; --s3: 6px; --s4: 8px; --s6: 12px; --s7: 16px; --s8: 24px; --s9: 32px;
+  --r-sm: 4px; --r-md: 6px; --r-lg: 8px; --r-xl: 12px; --r-pill: 999px;
+  --row: 32px; --bar: 36px; --task: 40px;
+  --z-sheet: 10; --z-toast: 30; --z-picker: 40;
+  --fade: 80ms;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--page); color: var(--text); font-family: var(--font-ui); font-size: var(--fs-13); line-height: 1.4; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-align: inherit; }
+input, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ic { width: 15px; height: 15px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+.ic.sm { width: 13px; height: 13px; }
+.mono { font-family: var(--font-mono); font-size: 0.95em; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+mark { background: none; color: var(--accent-text); font-weight: 600; }
+kbd { display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 18px; padding-inline: var(--s2); border-radius: var(--r-sm); background: var(--cap); box-shadow: inset 0 0 0 1px var(--line), 0 1px 0 var(--cap-edge); color: var(--accent-text); font-family: var(--font-ui); font-size: var(--fs-12); font-weight: 600; line-height: 1; white-space: nowrap; flex: none; }
+.fade { animation: fade var(--fade) ease-out; }
+@keyframes fade { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .fade { animation: none; } }
+
+.kd-text { color: var(--muted); } .kd-files, .kd-path { color: var(--folder); } .kd-command { color: var(--k-code); }
+.kd-snippet { color: var(--k-doc); } .kd-secret { color: var(--warn-text); } .kd-note { color: var(--k-sheet); }
+
+/* harness */
+.page { max-width: 1440px; margin-inline: auto; padding: var(--s7) var(--s7) 96px; display: grid; gap: var(--s6); }
+.top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--s6); }
+h1 { margin: 0; font-size: var(--fs-20); font-weight: 700; line-height: 1.2; }
+.lede { margin: var(--s2) 0 0; color: var(--muted); max-width: 90ch; }
+.ctl { display: flex; flex-wrap: wrap; gap: var(--s4) var(--s6); align-items: center; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--bg); padding: var(--s1); gap: var(--s1); }
+.seg-l { font-size: var(--fs-12); color: var(--muted); font-weight: 600; margin-right: var(--s2); }
+.seg button { padding: var(--s2) var(--s6); border-radius: var(--r-sm); color: var(--muted); min-height: 28px; font-size: var(--fs-13); }
+.seg button[aria-pressed="true"] { background: var(--sel-bg); color: var(--text); font-weight: 600; }
+.dirhead { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s4) var(--s6); }
+.dirhead h2 { margin: 0; font-size: var(--fs-16); font-weight: 600; }
+.dirhead .n { font-family: var(--font-mono); color: var(--accent-text); font-weight: 500; }
+.dirhead p { margin: 0; color: var(--muted); }
+.notes { display: grid; grid-template-columns: max-content 1fr; gap: var(--s3) var(--s7); margin: 0; padding: var(--s7); background: var(--bg); border: 1px solid var(--line); border-radius: var(--r-lg); }
+.notes dt { font-weight: 600; } .notes dd { margin: 0; max-width: 100ch; }
+@media (max-width: 560px) { .page { padding-inline: var(--s4); } .notes { grid-template-columns: 1fr; } .notes dd { margin-bottom: var(--s4); } }
+
+/* scene */
+.scene { position: relative; container: scene / inline-size; height: clamp(560px, calc(100dvh - 210px), 760px); border: 1px solid var(--line); border-radius: var(--r-xl); overflow: hidden; background: var(--bg); box-shadow: var(--shadow-2); }
+.scene.tray { background: var(--desk); }
+.navo { position: absolute; inset: 0; display: flex; flex-direction: column; }
+.tbar { flex: none; height: var(--bar); display: flex; align-items: center; gap: var(--s4); padding-inline: var(--s6); border-bottom: 1px solid var(--line); background: var(--rail); font-weight: 600; min-width: 0; }
+.tbar .path { font-family: var(--font-mono); font-weight: 400; color: var(--muted); font-size: var(--fs-12); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tbar .sp { flex: 1; }
+.logo { width: 18px; height: 18px; border-radius: 5px; background: var(--accent); color: var(--on-accent); display: grid; place-items: center; font-size: 11px; font-weight: 700; flex: none; }
+.panes { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; }
+.pane { border-right: 1px solid var(--line); overflow: hidden; }
+.pane:last-child { border-right: 0; }
+.frow { height: 24px; display: flex; align-items: center; gap: var(--s4); padding-inline: var(--s6); color: var(--muted); white-space: nowrap; overflow: hidden; }
+.frow:nth-child(even) { background: var(--zebra); }
+.frow .ic { color: var(--folder); }
+.frow .sz { margin-left: auto; font-variant-numeric: tabular-nums; }
+@container scene (width < 720px) { .panes { grid-template-columns: 1fr; } .pane + .pane { display: none; } }
+.desk { position: absolute; inset: 0 0 var(--task) 0; }
+.otherapp { position: absolute; left: 6%; top: 8%; width: min(560px, 80%); height: 56%; background: var(--bg); border: 1px solid var(--line); border-radius: var(--r-lg); box-shadow: var(--shadow-2); overflow: hidden; }
+.otherapp .tbar { font-weight: 500; }
+.otherapp pre { margin: 0; padding: var(--s6); color: var(--muted); font-family: var(--font-mono); font-size: var(--fs-12); white-space: pre-wrap; }
+.taskbar { position: absolute; inset: auto 0 0 0; height: var(--task); background: var(--rail); border-top: 1px solid var(--line); display: flex; align-items: center; gap: var(--s4); padding-inline: var(--s6); }
+.taskbar .sp { flex: 1; }
+.tray-ico { display: inline-flex; align-items: center; gap: var(--s3); padding: var(--s2) var(--s4); border-radius: var(--r-md); background: var(--sel-bg); font-size: var(--fs-12); font-weight: 600; }
+.taskbar .clock { font-size: var(--fs-12); color: var(--muted); font-variant-numeric: tabular-nums; }
+.scrim { position: absolute; inset: 0; background: var(--scrim); }
+.closed { position: absolute; inset: 40% 0 auto 0; display: flex; justify-content: center; }
+.closed button { display: inline-flex; gap: var(--s4); align-items: center; padding: var(--s4) var(--s6); border-radius: var(--r-pill); background: var(--raised); box-shadow: var(--shadow-3); }
+
+/* shared bits */
+.field { display: flex; align-items: center; gap: var(--s4); min-width: 0; height: 32px; padding-inline: var(--s6) var(--s2); border-radius: var(--r-md); background: var(--field); box-shadow: inset 0 0 0 1px var(--line); color: var(--muted); }
+.field:focus-within { box-shadow: inset 0 0 0 1px var(--accent); }
+.field input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--text); font-size: var(--fs-14); }
+.field input::placeholder { color: var(--muted); opacity: 1; }
+.hints { display: flex; align-items: center; gap: var(--s6); min-width: 0; overflow: hidden; white-space: nowrap; color: var(--muted); font-size: var(--fs-12); }
+.hint { display: inline-flex; align-items: center; gap: var(--s2); flex: none; }
+.act { display: inline-flex; align-items: center; gap: var(--s3); height: 26px; padding-inline: var(--s4) var(--s2); border-radius: var(--r-md); color: var(--text); font-size: var(--fs-12); font-weight: 500; white-space: nowrap; }
+.act:hover { background: var(--hover); }
+.act.primary { background: var(--accent); color: var(--on-accent); }
+.act.primary kbd { background: color-mix(in oklch, var(--on-accent) 18%, transparent); color: var(--on-accent); box-shadow: none; }
+.vault { display: flex; align-items: center; gap: var(--s3); color: var(--warn-text); font-size: var(--fs-12); }
+.vault-box { display: flex; gap: var(--s4); align-items: flex-start; padding: var(--s4) var(--s6); border-radius: var(--r-md); background: var(--warn-wash); color: var(--text); font-size: var(--fs-12); }
+.vault-box .ic { color: var(--warn-text); margin-top: 1px; }
+.mask { letter-spacing: 0.12em; color: var(--muted); }
+.tag { display: inline-flex; align-items: center; gap: var(--s2); height: 18px; padding-inline: var(--s3); border-radius: var(--r-sm); background: var(--rail); color: var(--muted); font-size: var(--fs-12); white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+.tag.here { background: var(--sel-bg); color: var(--accent-text); font-weight: 500; }
+.empty { display: grid; gap: var(--s4); justify-items: start; padding: var(--s8) var(--s7); color: var(--muted); max-width: 52ch; }
+.empty h3 { margin: 0; color: var(--text); font-size: var(--fs-14); font-weight: 600; }
+.empty p { margin: 0; }
+.empty .row { display: flex; flex-wrap: wrap; gap: var(--s4); }
+.privnote { display: flex; align-items: center; gap: var(--s3); color: var(--muted); font-size: var(--fs-12); }
+.ellip { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.cnt { font-variant-numeric: tabular-nums; color: var(--muted); font-weight: 400; }
+
+/* toast */
+.toast { position: absolute; left: 50%; bottom: var(--s8); z-index: var(--z-toast); width: max-content; max-width: calc(100% - 2 * var(--s7)); transform: translateX(-50%); display: flex; align-items: center; gap: var(--s4); padding: var(--s4) var(--s6); border-radius: var(--r-lg); background: var(--raised); box-shadow: var(--shadow-3); font-size: var(--fs-13); }
+.scene.tray .toast { bottom: calc(var(--task) + var(--s6)); }
+.toast .ic { color: var(--ok-text); }
+.toast.secret .ic { color: var(--warn-text); }
+.toast .t { font-variant-numeric: tabular-nums; color: var(--muted); }
+
+/* 1 · palette with modes */
+.d1 { position: absolute; z-index: var(--z-sheet); top: 10%; inset-inline: 0; margin-inline: auto; width: min(680px, calc(100% - 2 * var(--s4))); max-height: calc(100% - 10% - var(--s8)); display: flex; flex-direction: column; background: var(--raised); border-radius: var(--r-xl); box-shadow: var(--shadow-3); overflow: hidden; container: pal / inline-size; }
+.scene.tray .d1 { max-height: calc(100% - 10% - var(--task) - var(--s6)); }
+.d1 .in { padding: var(--s4); }
+.d1 .field { height: 40px; border-radius: var(--r-pill); }
+.d1 .modes { display: flex; gap: var(--s2); padding: 0 var(--s4) var(--s4); overflow-x: auto; scrollbar-width: none; align-items: center; }
+.d1 .mode { display: inline-flex; align-items: center; gap: var(--s3); height: 26px; padding-inline: var(--s4); border-radius: var(--r-pill); color: var(--muted); font-size: var(--fs-12); font-weight: 500; white-space: nowrap; }
+.d1 .mode:hover { background: var(--hover); }
+.d1 .mode[aria-selected="true"] { background: var(--sel-bg); color: var(--accent-text); font-weight: 600; }
+.d1 .modes .sp { flex: 1; min-width: var(--s4); }
+.d1 .list { flex: 1 1 auto; min-height: 0; overflow-y: auto; border-top: 1px solid var(--line); padding: var(--s2) var(--s4); scrollbar-width: thin; }
+.d1 .head { display: flex; gap: var(--s4); align-items: center; height: 26px; padding: var(--s2) var(--s4) 0; color: var(--muted); font-size: var(--fs-12); font-weight: 600; }
+.d1 .opt { display: grid; grid-template-columns: 20px 1fr auto; align-items: center; column-gap: var(--s4); min-height: var(--row); padding: var(--s2) var(--s4); border-radius: var(--r-md); }
+.d1 .opt:hover { background: var(--hover); }
+.d1 .opt[aria-selected="true"] { background: var(--sel-bg); }
+.d1 .opt .tt { min-width: 0; display: flex; gap: var(--s4); align-items: baseline; }
+.d1 .opt .tt .v { flex: 0 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.d1 .opt .tt .m { color: var(--muted); font-size: var(--fs-12); white-space: nowrap; flex: 1 1 0; min-width: 0; }
+.d1 .opt .rt .m { white-space: nowrap; }
+.d1 .opt .rt { display: flex; gap: var(--s3); align-items: center; color: var(--muted); font-size: var(--fs-12); }
+.d1 .pv { grid-column: 2 / -1; display: grid; gap: var(--s3); padding: var(--s2) 0 var(--s3); }
+.d1 .pv pre { margin: 0; padding: var(--s4) var(--s6); border-radius: var(--r-md); background: var(--bg); box-shadow: inset 0 0 0 1px var(--line); font-family: var(--font-mono); font-size: var(--fs-12); white-space: pre-wrap; word-break: break-all; max-height: 7.5em; overflow: hidden; }
+.d1 .pv pre.prose { font-family: var(--font-ui); font-size: var(--fs-13); line-height: 1.5; word-break: normal; overflow-wrap: anywhere; }
+.d1 .pv .acts { display: flex; flex-wrap: wrap; gap: var(--s2); }
+.d1 .foot { flex: none; display: flex; align-items: center; gap: var(--s6); min-height: 32px; padding: var(--s2) var(--s6); border-top: 1px solid var(--line); background: var(--rail); }
+.d1 .foot .hints { margin-left: auto; }
+@container pal (width < 520px) { .d1 .opt .tt .m, .d1 .hint.x, .d1 .opt .rt .when { display: none; } .d1 .foot { flex-wrap: wrap; } .d1 .foot .hints { margin-left: 0; } }
+
+/* 2 · side sheet with tabs */
+.d2 { position: absolute; z-index: var(--z-sheet); top: var(--bar); right: 0; bottom: 0; width: min(440px, 100%); display: flex; flex-direction: column; background: var(--raised); border-left: 1px solid var(--line); box-shadow: var(--shadow-3); container: sheet / inline-size; }
+.scene.tray .d2 { top: var(--s4); right: var(--s4); bottom: calc(var(--task) + var(--s4)); width: min(420px, calc(100% - 2 * var(--s4))); border: 0; border-radius: var(--r-xl); overflow: hidden; }
+.d2 .hd { flex: none; display: flex; align-items: center; gap: var(--s4); height: 44px; padding-inline: var(--s6) var(--s4); }
+.d2 .hd h3 { margin: 0; font-size: var(--fs-14); font-weight: 600; }
+.d2 .hd .sp { flex: 1; }
+.d2 .tabs { flex: none; display: flex; padding-inline: var(--s6); border-bottom: 1px solid var(--line); gap: var(--s6); }
+.d2 .tab { position: relative; display: inline-flex; gap: var(--s3); align-items: center; height: 34px; color: var(--muted); font-weight: 500; }
+.d2 .tab[aria-selected="true"] { color: var(--text); font-weight: 600; }
+.d2 .tab[aria-selected="true"]::after { content: ""; position: absolute; inset: auto 0 -1px 0; height: 2px; background: var(--accent); border-radius: 2px; }
+.d2 .tabs .sp { flex: 1; }
+.d2 .tabs .hint { align-self: center; }
+.d2 .srch { flex: none; padding: var(--s6); display: flex; gap: var(--s4); }
+.d2 .srch .field { flex: 1; }
+.d2 .body { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 0 var(--s6) var(--s6); scrollbar-width: thin; }
+.d2 .sec { display: flex; align-items: center; gap: var(--s4); padding: var(--s6) var(--s2) var(--s3); color: var(--muted); font-size: var(--fs-12); font-weight: 600; }
+.d2 .sec .sp { flex: 1; }
+.d2 .card { display: grid; grid-template-columns: 20px 1fr; column-gap: var(--s4); row-gap: var(--s2); padding: var(--s4) var(--s6); border-radius: var(--r-lg); border: 1px solid transparent; }
+.d2 .card + .card { margin-top: var(--s2); }
+.d2 .card:hover { background: var(--hover); }
+.d2 .card[aria-selected="true"] { background: var(--sel-bg); border-color: color-mix(in oklch, var(--accent) 35%, transparent); }
+.d2 .card .ic { margin-top: 2px; }
+.d2 .card .l1 { min-width: 0; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.d2 .card .l2 { grid-column: 2; min-width: 0; color: var(--muted); font-size: var(--fs-12); display: flex; gap: var(--s4); align-items: center; }
+.d2 .card .l2 .v { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.d2 .card .bar { grid-column: 2; display: flex; flex-wrap: wrap; gap: var(--s2); padding-top: var(--s3); }
+.d2 .note-ed { display: grid; gap: var(--s4); padding: var(--s6); border-radius: var(--r-lg); border: 1px solid var(--line); background: var(--bg); }
+.d2 .note-ed textarea { width: 100%; min-height: 96px; resize: vertical; border: 0; outline: 0; background: transparent; line-height: 1.5; font-size: var(--fs-13); }
+.d2 .note-ed .meta { display: flex; gap: var(--s4); align-items: center; color: var(--muted); font-size: var(--fs-12); flex-wrap: wrap; }
+.d2 .ft { flex: none; display: flex; align-items: center; gap: var(--s6); min-height: 32px; padding: var(--s2) var(--s6); border-top: 1px solid var(--line); background: var(--rail); }
+@container sheet (width < 400px) { .d2 .hint.x { display: none; } }
+
+/* 3 · two-column library */
+.d3 { position: absolute; z-index: var(--z-sheet); inset: var(--bar) 0 0 0; display: flex; flex-direction: column; background: var(--bg); container: lib / inline-size; }
+.scene.tray .d3 { inset: 5% 6% calc(var(--task) + 5%) 6%; border-radius: var(--r-xl); box-shadow: var(--shadow-3); overflow: hidden; }
+.d3 .wbar { flex: none; height: var(--bar); display: flex; align-items: center; gap: var(--s4); padding-inline: var(--s6) var(--s4); border-bottom: 1px solid var(--line); background: var(--rail); font-weight: 600; }
+.d3 .wbar .sp { flex: 1; }
+.d3 .cols { flex: 1; min-height: 0; display: grid; grid-template-columns: 220px 1fr; }
+.d3 nav { border-right: 1px solid var(--line); background: var(--rail); overflow-y: auto; padding: var(--s4); }
+.d3 nav h4 { margin: var(--s6) var(--s4) var(--s2); font-size: var(--fs-12); color: var(--muted); font-weight: 600; }
+.d3 nav h4:first-child { margin-top: var(--s2); }
+.d3 .col { width: 100%; display: flex; align-items: center; gap: var(--s4); height: 30px; padding-inline: var(--s4); border-radius: var(--r-md); color: var(--text); }
+.d3 .col:hover { background: var(--hover); }
+.d3 .col[aria-current="true"] { background: var(--sel-bg); color: var(--accent-text); font-weight: 600; }
+.d3 .col .cnt { margin-left: auto; font-size: var(--fs-12); }
+.d3 .col .ellip { flex: 1; }
+.d3 .main { min-width: 0; min-height: 0; display: flex; flex-direction: column; }
+.d3 .tools { flex: none; display: flex; align-items: center; gap: var(--s4); padding: var(--s4) var(--s6); border-bottom: 1px solid var(--line); }
+.d3 .tools .field { flex: 1; max-width: 420px; }
+.d3 .tools .sp { flex: 1; }
+.d3 .colsel { display: none; }
+.d3 .tbl { flex: 1 1 auto; min-height: 0; overflow-y: auto; scrollbar-width: thin; }
+.d3 .th, .d3 .tr { display: grid; grid-template-columns: 24px minmax(140px, 1.1fr) minmax(160px, 2fr) 150px 84px; align-items: center; column-gap: var(--s6); padding-inline: var(--s6); }
+.d3 .th { position: sticky; top: 0; height: 28px; background: var(--bg); border-bottom: 1px solid var(--line); color: var(--muted); font-size: var(--fs-12); font-weight: 600; z-index: 1; }
+.d3 .tr { height: var(--row); }
+.d3 .tr:nth-child(odd) { background: var(--zebra); }
+.d3 .tr:hover { background: var(--hover); }
+.d3 .tr[aria-selected="true"] { background: var(--sel-bg); }
+.d3 .tr .c { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.d3 .tr .w { color: var(--muted); font-size: var(--fs-12); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.d3 .tr .sc { font-size: var(--fs-12); }
+.d3 .th .w { text-align: right; }
+.d3 .det { flex: none; border-top: 1px solid var(--line); background: var(--rail); padding: var(--s6) var(--s7); display: grid; gap: var(--s4); max-height: 46%; overflow-y: auto; }
+.d3 .det .dh { display: flex; align-items: center; gap: var(--s4); flex-wrap: wrap; }
+.d3 .det .dh h3 { margin: 0; font-size: var(--fs-14); font-weight: 600; }
+.d3 .det .dh .sp { flex: 1; }
+.d3 .det pre { margin: 0; padding: var(--s4) var(--s6); background: var(--bg); border-radius: var(--r-md); box-shadow: inset 0 0 0 1px var(--line); font-family: var(--font-mono); font-size: var(--fs-12); white-space: pre-wrap; word-break: break-all; }
+.d3 .det pre.prose { font-family: var(--font-ui); font-size: var(--fs-13); line-height: 1.5; }
+.d3 .det .acts { display: flex; flex-wrap: wrap; gap: var(--s2); }
+.d3 .ft { flex: none; display: flex; align-items: center; gap: var(--s6); min-height: 30px; padding: var(--s2) var(--s6); border-top: 1px solid var(--line); background: var(--rail); }
+.d3 .ft .hints { margin-left: auto; }
+@container lib (width < 980px) { .d3 .th, .d3 .tr { grid-template-columns: 24px minmax(120px, 1fr) minmax(120px, 1.4fr) 64px; } .d3 .sc { display: none; } }
+@container lib (width < 680px) {
+  .d3 .cols { grid-template-columns: 1fr; }
+  .d3 nav { display: none; }
+  .d3 .colsel { display: inline-flex; }
+  .d3 .th { display: none; }
+  .d3 .tr { grid-template-columns: 24px 1fr 72px; height: auto; min-height: 44px; padding-block: var(--s3); row-gap: var(--s1); }
+  .d3 .tr .c.val { grid-column: 2 / -1; grid-row: 2; color: var(--muted); font-size: var(--fs-12); }
+  .d3 .ft .hint.x { display: none; }
+  .d3 .tools .hint, .d3 .tools .sp, .d3 .tools .field kbd { display: none; }
+  .d3 .tools .field { min-width: 0; }
+  .d3 .det { max-height: 52%; }
+}
+.d3 .colmenu { position: absolute; z-index: 2; top: 84px; left: var(--s6); width: min(280px, calc(100% - 2 * var(--s6))); max-height: 70%; overflow-y: auto; background: var(--raised); border-radius: var(--r-lg); box-shadow: var(--shadow-3); padding: var(--s4); }
+.d3 .colmenu h4 { margin: var(--s4) var(--s4) var(--s2); font-size: var(--fs-12); color: var(--muted); font-weight: 600; }
+
+/* picker */
+.proto-picker { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: var(--z-picker); display: flex; align-items: center; gap: 2px; padding: 4px; border-radius: 999px; background: oklch(18% 0.01 260 / 0.9); box-shadow: 0 0 0 1px oklch(100% 0 0 / 0.08) inset, 0 8px 24px oklch(0% 0 0 / 0.24); font-size: 13px; user-select: none; }
+.proto-picker button { height: 28px; min-width: 36px; padding: 0 12px; border-radius: 999px; color: oklch(100% 0 0 / 0.6); text-align: center; }
+.proto-picker button:hover { color: oklch(100% 0 0 / 0.9); }
+.proto-picker button[aria-current="true"] { background: oklch(100% 0 0 / 0.14); color: oklch(100% 0 0); font-weight: 600; }
+.proto-picker button:focus-visible { outline: 2px solid oklch(100% 0 0 / 0.5); }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="top">
+    <div>
+      <h1>Clipboard and saved items <span class="cnt">R12 · B9 Always at hand</span></h1>
+      <p class="lede">Three shapes for one feature: what you copied lately, and what you keep on purpose (snippets, commands, paths, secrets, notes). Keys 1–3 switch the direction outside a text field; letters start a search. The scene is live: ↑ ↓, Enter, Ctrl+S, Alt+R, Tab and Esc work.</p>
+    </div>
+    <div class="ctl">
+      <div><span class="seg-l">Theme</span><span class="seg" role="group" aria-label="Theme"><button data-theme-set="light">Light</button><button data-theme-set="dark">Dark</button></span></div>
+      <div><span class="seg-l">Data</span><span class="seg" role="group" aria-label="Data"><button data-data="normal">Filled</button><button data-data="empty">Empty</button><button data-data="long">Long list</button></span></div>
+      <div><span class="seg-l">Opened</span><span class="seg" role="group" aria-label="Opened from"><button data-ctx="navo">Inside Navo</button><button data-ctx="tray">From any app</button></span></div>
+    </div>
+  </header>
+  <div class="dirhead"><span class="n" id="dir-n">1</span><h2 id="dir-t"></h2><p id="dir-q"></p></div>
+  <main class="scene" id="scene" aria-label="Prototype scene"></main>
+  <dl class="notes" id="notes"></dl>
+</div>
+<nav class="proto-picker" aria-label="Directions">
+  <button data-dir="0">1</button><button data-dir="1">2</button><button data-dir="2">3</button>
+</nav>
+<script>
+const IC = {
+  search: '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+  text: '<path d="M17 6.1H3"/><path d="M21 12.1H3"/><path d="M15.1 18H3"/>',
+  files: '<path d="M15 2h-4a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8z"/><path d="M15 2v6h6"/><path d="M5 7a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h8a2 2 0 0 0 1.7-1"/>',
+  path: '<path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/>',
+  command: '<polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/>',
+  snippet: '<path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/>',
+  secret: '<rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  note: '<path d="M15.5 3H5a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2V8.5L15.5 3Z"/><path d="M15 3v6h6"/>',
+  history: '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/>',
+  saved: '<path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>',
+  all: '<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>',
+  shield: '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>',
+  eye: '<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>',
+  eyeoff: '<path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.53 13.53 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/>',
+  copy: '<rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',
+  check: '<path d="M20 6 9 17l-5-5"/>',
+  plus: '<path d="M5 12h14"/><path d="M12 5v14"/>',
+  x: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+  globe: '<circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>',
+  down: '<path d="m6 9 6 6 6-6"/>',
+  pause: '<rect x="14" y="4" width="4" height="16" rx="1"/><rect x="6" y="4" width="4" height="16" rx="1"/>',
+};
+const ic = (n, cls = "") => `<svg class="ic ${cls}" viewBox="0 0 24 24" aria-hidden="true">${IC[n]}</svg>`;
+const K = (k) => k.split(" ").map((x) => `<kbd>${x}</kbd>`).join("");
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+function hl(s, q) {
+  if (!q) return esc(s);
+  const i = s.toLowerCase().indexOf(q.toLowerCase());
+  if (i < 0) return esc(s);
+  return esc(s.slice(0, i)) + "<mark>" + esc(s.slice(i, i + q.length)) + "</mark>" + esc(s.slice(i + q.length));
+}
+const KIND = { text: "Text", files: "Files", path: "Path", command: "Command", snippet: "Snippet", secret: "Secret", note: "Note" };
+const HERE = "D:\\Projects\\ecu-a2";
+const MONO = new Set(["path", "command", "files"]);
+
+const HIST0 = [
+  { k: "text", v: "Flash with TASKING 6.3r1; 6.2 breaks the .mdf import", src: "Teams", t: "1 min" },
+  { k: "files", v: ["ecu_a2_main.elf", "ecu_a2_main.map", "ecu_a2.mdf"], dir: "D:\\Projects\\ecu-a2\\build\\out", src: "Navo", t: "4 min" },
+  { k: "path", v: "D:\\Projects\\ecu-a2\\build\\out\\ecu_a2_main.elf", src: "Navo", t: "6 min" },
+  { k: "command", v: "cargo xtask check -p rusty-index", src: "Terminal", t: "12 min" },
+  { k: "text", v: "https://ci.example.lan/job/ecu-a2/1482/console", src: "Edge", t: "25 min" },
+  { k: "text", v: "0x8000_4A10  .text.CanIf_RxIndication  1 284 B", src: "Navo F3", t: "40 min" },
+  { k: "files", v: ["DBC_PT_CAN_v14.dbc", "A2L_ecu_a2_r7.a2l"], dir: "\\\\fileserver\\calib\\r7", src: "Navo", t: "1 h" },
+  { k: "command", v: "git log --oneline -20 origin/main", src: "Terminal", t: "2 h" },
+  { k: "text", v: "Review notes for the CAN gateway: timeouts at 50 ms, not 20.", src: "Outlook", t: "Yesterday" },
+  { k: "path", v: "\\\\fileserver\\calib\\r7\\A2L_ecu_a2_r7.a2l", src: "Navo", t: "Yesterday" },
+];
+const SAVED0 = [
+  { k: "command", title: "Check the index crate", v: "cargo xtask check -p rusty-index", t: "Today", scope: "global" },
+  { k: "command", title: "Flash ECU A2 over CAN", v: "tricore-flash --port PCAN_USB1 --baud 500k build\\out\\ecu_a2_main.hex", t: "2 days", scope: HERE },
+  { k: "path", title: "ECU A2 build output", v: "D:\\Projects\\ecu-a2\\build\\out", t: "Today", scope: "global" },
+  { k: "path", title: "Calibration share", v: "\\\\fileserver\\calib\\r7", t: "Last week", scope: "global" },
+  { k: "snippet", title: "Review reply", v: "Thanks, merged. The flash script now checks the .mdf version first.", t: "3 days", scope: "global" },
+  { k: "snippet", title: "Signature", v: "Regards,\nadmin", t: "Today", scope: "global" },
+  { k: "secret", title: "Build server SSH", v: "k7#Qm2-vX9!pLr4e", user: "admin", t: "Today", scope: "global" },
+  { k: "secret", title: "Artifactory token", v: "AKCp8ihxR2b9TqWm4sLkZ7", user: "ci-bot", t: "Last week", scope: "global" },
+  { k: "note", title: "ECU A2: flashing", v: "Use TASKING 6.3r1. 6.2 breaks the .mdf import.\nPower-cycle after flashing; the bootloader keeps the old CRC.", t: "Today", scope: HERE },
+  { k: "note", title: "Release checklist", v: "1. Tag the commit\n2. Build both targets\n3. Upload the zip and the map files", t: "Last week", scope: "global" },
+];
+function longHist() {
+  const out = [];
+  const units = ["min", "h", "days"];
+  for (let i = 0; i < 500; i++) {
+    const b = HIST0[i % HIST0.length];
+    const n = Math.floor(i / HIST0.length);
+    const v = Array.isArray(b.v) ? b.v.map((f) => (n ? f.replace(".", `_${n}.`) : f)) : n ? `${b.v} (${n})` : b.v;
+    out.push({ ...b, v, t: i < 10 ? b.t : `${1 + Math.floor(i / 70)} ${units[Math.min(2, Math.floor(i / 60))]}` });
+  }
+  return out;
+}
+function longSaved() {
+  const out = [];
+  for (let i = 0; i < 140; i++) {
+    const b = SAVED0[i % SAVED0.length];
+    const n = Math.floor(i / SAVED0.length);
+    out.push({ ...b, title: n ? `${b.title} ${n + 1}` : b.title });
+  }
+  return out;
+}
+const DATA = {
+  normal: () => ({ hist: HIST0, saved: SAVED0 }),
+  empty: () => ({ hist: [], saved: [] }),
+  long: () => ({ hist: longHist(), saved: longSaved() }),
+};
+
+const G = { dir: 0, theme: "light", data: "normal", ctx: "navo" };
+const ST = [
+  { mode: "all", sel: 0, q: "", rev: null, closed: false },
+  { mode: "history", sel: 0, q: "", rev: null, closed: false },
+  { mode: "recent", sel: 0, q: "", rev: null, closed: false, menu: false },
+];
+let D = DATA.normal();
+let animate = true;
+
+const title = (it) => it.title || (Array.isArray(it.v) ? `${it.v.length} files from ${it.dir}` : it.v.split("\n")[0]);
+const vtext = (it) => (Array.isArray(it.v) ? it.v.join("\n") : it.v);
+const match = (it, q) => !q || (title(it) + " " + (it.k === "secret" ? it.user || "" : vtext(it))).toLowerCase().includes(q.toLowerCase());
+const hist = () => D.hist.map((x, i) => ({ ...x, id: "h" + i, from: "hist" }));
+const saved = () => D.saved.map((x, i) => ({ ...x, id: "s" + i, from: "saved" }));
+const scopeTag = (it) => it.scope && it.scope !== "global" ? `<span class="tag ${it.scope === HERE && G.ctx === "navo" ? "here" : ""} mono">${ic("path", "sm")}${esc(it.scope.split("\\").pop())}</span>` : `<span class="tag">${ic("globe", "sm")}Global</span>`;
+const mask = () => `<span class="mask" aria-label="hidden">••••••••••••</span>`;
+
+function valueHtml(it, q, s) {
+  if (it.k === "secret") return s.rev === it.id ? `<span class="mono">${esc(it.v)}</span>` : mask();
+  const v = Array.isArray(it.v) ? it.v.join(", ") : it.v.split("\n").join(" · ");
+  return MONO.has(it.k) ? `<span class="mono">${hl(v, q)}</span>` : hl(v, q);
+}
+function enterLabel(it) {
+  if (G.ctx === "tray") return it.k === "secret" ? "Paste, hidden" : "Paste";
+  return it.k === "secret" ? "Copy, hidden" : it.k === "path" ? "Go to" : "Copy";
+}
+function actions(it, s) {
+  const a = [`<button class="act primary" data-act="copy">${ic(it.k === "secret" ? "eyeoff" : "copy", "sm")}${enterLabel(it)} ${K("↵")}</button>`];
+  if (G.ctx === "tray" && it.k !== "secret") a.push(`<button class="act" data-act="copyonly">Copy only ${K("Ctrl+C")}</button>`);
+  if (G.ctx === "navo" && it.k === "path") a.push(`<button class="act" data-act="copyonly">Copy ${K("Ctrl+C")}</button>`);
+  if (G.ctx === "navo" && it.k === "files") a.push(`<button class="act" data-act="pastehere">Paste here ${K("Ctrl+V")}</button>`);
+  if (it.k === "secret") a.push(`<button class="act" data-act="reveal">${ic(s.rev === it.id ? "eyeoff" : "eye", "sm")}${s.rev === it.id ? "Hide" : "Show"} ${K("Alt+R")}</button>`, `<button class="act" data-act="copyuser">Copy user ${K("Alt+U")}</button>`);
+  if (it.from === "hist") a.push(`<button class="act" data-act="save">${ic("saved", "sm")}Save ${K("Ctrl+S")}</button>`);
+  else a.push(`<button class="act" data-act="edit">Edit ${K("F2")}</button>`);
+  a.push(`<button class="act" data-act="del">Delete ${K("Del")}</button>`);
+  return a.join("");
+}
+const privLine = () => `<span class="privnote">${ic("shield", "sm")}Secrets and copies that apps mark private are never recorded.</span>`;
+const vaultLine = () => `<span class="vault">${ic("shield", "sm")}Secrets are stored encrypted on this PC.</span>`;
+
+function emptyBox(kind) {
+  const M = {
+    hist: ["Nothing copied yet", "Text and file lists you copy anywhere appear here, newest first. They are kept across restarts.", `${K("Ctrl+N")} New saved item`],
+    saved: ["Nothing saved yet", "Keep snippets, commands, paths, secrets and notes here. Save one from the history, or add a new one.", `${K("Ctrl+S")} Save from history ${K("Ctrl+N")} New`],
+    secret: ["No secrets yet", "Secrets are masked, copied without showing, cleared from the clipboard after 30 s and never recorded in history. They are stored encrypted on this PC.", `${K("Ctrl+N")} New secret`],
+    note: ["No notes yet", G.ctx === "navo" ? `Write a note for ${HERE}, or a global one. A folder note shows whenever you open that folder.` : "Write a global note, or one for a folder. A folder note shows whenever you open that folder.", `${K("Ctrl+N")} New note`],
+    search: ["No matches", "Nothing in the history or saved items has this text. Secrets match by name only.", `${K("Esc")} Clear search`],
+  }[kind];
+  return `<div class="empty fade"><h3>${M[0]}</h3><p>${M[1]}</p><div class="row hints">${M[2]}</div>${kind === "hist" ? privLine() : ""}</div>`;
+}
+
+function background(dirIdx) {
+  if (G.ctx === "tray") {
+    return `<div class="desk"><div class="otherapp"><div class="tbar">Notepad <span class="path">release-notes.txt</span></div><pre>Release 0.9.3\n\n- Index: memory by part\n- Store: collections\n\n|</pre></div></div>
+    <div class="taskbar"><span class="cnt">Windows taskbar</span><span class="sp"></span><span class="tray-ico"><span class="logo">N</span>Navo in the tray · ${K("Win+Alt+V")}</span><span class="clock">21:40</span></div>`;
+  }
+  const names = ["build", "docs", "src", "tools", "ecu_a2.mdf", "ecu_a2_main.elf", "ecu_a2_main.map", "CMakeLists.txt", "README.md", "flash.ps1", "notes.txt", "release.toml"];
+  const rows = (o) => Array.from({ length: 30 }, (_, i) => { const n = names[(i + o) % names.length]; return `<div class="frow">${ic(n.includes(".") ? "note" : "path", "sm")}<span>${n}</span><span class="sz">${n.includes(".") ? ((i * 37) % 900) + 12 + " KB" : "&lt;DIR&gt;"}</span></div>`; }).join("");
+  const title = dirIdx === 2 && !ST[2].closed ? "Library" : HERE;
+  return `<div class="navo"><div class="tbar"><span class="logo">N</span>Navo <span class="path">${esc(title)}</span><span class="sp"></span><span class="hint">${K("Ctrl+Shift+V")}</span></div><div class="panes"><div class="pane">${rows(0)}</div><div class="pane">${rows(5)}</div></div></div>`;
+}
+function closedBtn() {
+  const k = G.ctx === "tray" ? "Win+Alt+V" : "Ctrl+Shift+V";
+  return `<div class="closed"><button data-act="open">${ic("history", "sm")}Open clipboard and saved items ${K(k)}</button></div>`;
+}
+
+/* ---------- direction 1: palette with modes ---------- */
+const D1_MODES = [["all", "All", "all"], ["recent", "Recent", "history"], ["saved", "Saved", "saved"], ["secrets", "Secrets", "secret"], ["notes", "Notes", "note"]];
+function d1List(s) {
+  const h = hist(), sv = saved();
+  const pick = { all: [...h, ...sv], recent: h, saved: sv.filter((x) => x.k !== "secret" && x.k !== "note"), secrets: sv.filter((x) => x.k === "secret"), notes: sv.filter((x) => x.k === "note") }[s.mode];
+  return pick.filter((x) => match(x, s.q));
+}
+function d1(s) {
+  const list = d1List(s);
+  s.sel = Math.min(s.sel, Math.max(0, list.length - 1));
+  const h = hist().filter((x) => match(x, s.q)), sv = saved().filter((x) => match(x, s.q));
+  const counts = { all: h.length + sv.length, recent: h.length, saved: sv.filter((x) => x.k !== "secret" && x.k !== "note").length, secrets: sv.filter((x) => x.k === "secret").length, notes: sv.filter((x) => x.k === "note").length };
+  const modes = D1_MODES.map(([id, label, icn]) => `<button class="mode" role="tab" aria-selected="${s.mode === id}" data-mode="${id}">${ic(icn, "sm")}${label} <span class="cnt">${counts[id]}</span></button>`).join("");
+  let body = "";
+  if (!list.length) {
+    const kind = s.q ? "search" : { all: "hist", recent: "hist", saved: "saved", secrets: "secret", notes: "note" }[s.mode];
+    body = emptyBox(kind);
+  } else {
+    let lastFrom = "";
+    body = list.map((it, i) => {
+      let head = "";
+      if (s.mode === "all" && it.from !== lastFrom) { head = `<div class="head">${it.from === "hist" ? "Recent clipboard" : "Saved"} <span class="cnt">${it.from === "hist" ? list.filter((x) => x.from === "hist").length : list.filter((x) => x.from === "saved").length}</span></div>`; lastFrom = it.from; }
+      const on = i === s.sel;
+      const meta = it.from === "hist" ? `${esc(it.src)}` : it.k === "secret" ? esc(it.user || "") : "";
+      const primary = it.from === "saved" ? `<span class="v">${hl(it.title, s.q)}</span>` + (it.k === "secret" ? "" : `<span class="m ellip ${MONO.has(it.k) ? "mono" : ""}">${MONO.has(it.k) ? hl(it.v, s.q) : ""}</span>`) : `<span class="v">${valueHtml(it, s.q, s)}</span>`;
+      let pv = "";
+      if (on) {
+        const content = it.k === "secret"
+          ? `<div class="vault-box">${ic("shield", "sm")}<div>${s.rev === it.id ? `<span class="mono">${esc(it.v)}</span>` : mask()} · user <span class="mono">${esc(it.user)}</span><br>Copied without showing, cleared from the clipboard after 30 s, never recorded in history. Stored encrypted on this PC.</div></div>`
+          : it.from === "saved" || it.k === "files" || vtext(it).length > 60 ? `<pre class="${MONO.has(it.k) ? "" : "prose"}">${esc(it.k === "files" ? it.dir + "\n" + it.v.map((f) => "  " + f).join("\n") : vtext(it))}</pre>` : "";
+        pv = `<div class="pv">${content}<div class="acts">${actions(it, s)}</div></div>`;
+      }
+      return `${head}<div class="opt" role="option" aria-selected="${on}" data-i="${i}">${ic(it.k, "kd-" + it.k)}<div class="tt">${primary}${it.from === "hist" && !on ? "" : ""}</div><div class="rt"><span class="m">${meta}</span>${it.from === "saved" ? scopeTag(it) : ""}<span class="when">${esc(it.t)}</span></div>${pv}</div>`;
+    }).join("");
+  }
+  const foot = s.mode === "secrets" ? vaultLine() : s.mode === "recent" || s.mode === "all" ? `<span class="cnt">${D.hist.length} kept · last 500</span>` : `<span class="cnt">${list.length} items</span>`;
+  return `<section class="d1 ${animate ? "fade" : ""}" role="dialog" aria-label="Clipboard and saved items">
+    <div class="in"><label class="field">${ic("search")}<span class="sr">Search</span><input id="q" value="${esc(s.q)}" placeholder="Search history and saved items" autocomplete="off"><kbd>${G.ctx === "tray" ? "Win+Alt+V" : "Ctrl+Shift+V"}</kbd></label></div>
+    <div class="modes" role="tablist">${modes}<span class="sp"></span><span class="hint">${K("Tab")}</span></div>
+    <div class="list ${animate ? "fade" : ""}" role="listbox" id="list">${body}</div>
+    <div class="foot">${foot}<div class="hints"><span class="hint">${K("↑ ↓")} Move</span><span class="hint">${K("↵")} ${G.ctx === "tray" ? "Paste" : "Copy"}</span><span class="hint x">${K("Ctrl+S")} Save</span><span class="hint x">${K("Ctrl+N")} New</span><span class="hint">${K("Esc")} Close</span></div></div>
+  </section>`;
+}
+
+/* ---------- direction 2: side sheet with tabs ---------- */
+const D2_TABS = [["history", "History"], ["saved", "Saved"], ["notes", "Notes"]];
+const D2_ORDER = ["command", "path", "snippet", "secret"];
+function d2List(s) {
+  if (s.mode === "history") return hist().filter((x) => match(x, s.q));
+  if (s.mode === "saved") return D2_ORDER.flatMap((k) => saved().filter((x) => x.k === k && match(x, s.q)));
+  const notes = saved().filter((x) => x.k === "note" && match(x, s.q));
+  return G.ctx === "navo" ? [...notes.filter((x) => x.scope === HERE), ...notes.filter((x) => x.scope !== HERE)] : notes;
+}
+function d2Card(it, i, s) {
+  const on = i === s.sel;
+  const l1 = it.from === "saved" ? hl(it.title, s.q) : valueHtml(it, s.q, s);
+  const l2 = it.from === "hist" ? `<span>${esc(it.src)} · ${esc(it.t)}</span>${it.k === "files" ? `<span class="v mono">${esc(it.dir)}</span>` : ""}` : it.k === "secret" ? `${s.rev === it.id ? `<span class="v mono">${esc(it.v)}</span>` : mask()}<span>${esc(it.user)}</span>` : `<span class="v ${MONO.has(it.k) ? "mono" : ""}">${hl(it.v.split("\n").join(" · "), s.q)}</span>`;
+  return `<div class="card" role="option" aria-selected="${on}" data-i="${i}">${ic(it.k, "kd-" + it.k)}<div class="l1">${l1}</div><div class="l2">${l2}</div>${on ? `<div class="bar">${actions(it, s)}</div>` : ""}</div>`;
+}
+function d2(s) {
+  const list = d2List(s);
+  s.sel = Math.min(s.sel, Math.max(0, list.length - 1));
+  const counts = { history: D.hist.length, saved: D.saved.filter((x) => x.k !== "note").length, notes: D.saved.filter((x) => x.k === "note").length };
+  const tabs = D2_TABS.map(([id, l]) => `<button class="tab" role="tab" aria-selected="${s.mode === id}" data-mode="${id}">${l} <span class="cnt">${counts[id]}</span></button>`).join("");
+  let body = "";
+  if (!list.length && !(s.mode === "notes" && G.ctx === "navo" && !s.q)) body = emptyBox(s.q ? "search" : { history: "hist", saved: "saved", notes: "note" }[s.mode]);
+  else if (s.mode === "history") {
+    let last = "";
+    body = list.map((it, i) => { const g = it.t === "Yesterday" || /days/.test(it.t) ? "Earlier" : "Today"; const head = g !== last ? `<div class="sec">${g}</div>` : ""; last = g; return head + d2Card(it, i, s); }).join("") + `<div class="sec">${privLine()}</div>`;
+  } else if (s.mode === "saved") {
+    let last = "";
+    body = list.map((it, i) => {
+      let head = "";
+      if (it.k !== last) { last = it.k; const n = list.filter((x) => x.k === it.k).length; head = `<div class="sec">${ic(it.k, "sm kd-" + it.k)}${KIND[it.k]}s <span class="cnt">${n}</span><span class="sp"></span>${it.k === "secret" ? vaultLine() : ""}</div>`; }
+      return head + d2Card(it, i, s);
+    }).join("");
+  } else {
+    const here = list.filter((x) => x.scope === HERE);
+    const rest = list.filter((x) => x.scope !== HERE);
+    let html = "";
+    if (G.ctx === "navo") {
+      html += `<div class="sec">${ic("path", "sm kd-path")}This folder <span class="tag here mono">${esc(HERE)}</span></div>`;
+      const n = here[0];
+      html += n ? `<div class="note-ed" data-i="0"><textarea aria-label="Note for this folder">${esc(n.v)}</textarea><div class="meta">Saved as you type · ${esc(n.t)}<span class="sp"></span>${K("Ctrl+E")} Edit ${K("Ctrl+Shift+C")} Copy</div></div>`
+        : `<div class="note-ed"><textarea aria-label="Note for this folder" placeholder="Write a note for this folder. It shows whenever you open it."></textarea><div class="meta">Saved as you type</div></div>`;
+      html += `<div class="sec">${ic("globe", "sm")}Other notes <span class="cnt">${rest.length}</span></div>`;
+      html += rest.length ? rest.map((it, j) => d2Card(it, here.length + j, s)).join("") : `<p class="cnt">No other notes.</p>`;
+    } else html = list.map((it, i) => d2Card(it, i, s)).join("");
+    body = html;
+  }
+  const where = G.ctx === "tray" ? `<span class="logo">N</span>` : "";
+  return `<aside class="d2 ${animate ? "fade" : ""}" role="dialog" aria-label="Clipboard and saved items">
+    <div class="hd">${where}<h3>Clipboard</h3><span class="sp"></span><span class="hint">${K(G.ctx === "tray" ? "Win+Alt+V" : "Ctrl+Shift+V")}</span><button class="act" data-act="close" aria-label="Close">${ic("x", "sm")}${K("Esc")}</button></div>
+    <div class="tabs" role="tablist">${tabs}<span class="sp"></span><span class="hint">${K("Tab")}</span></div>
+    <div class="srch"><label class="field">${ic("search")}<span class="sr">Search</span><input id="q" value="${esc(s.q)}" placeholder="Search ${s.mode}" autocomplete="off"></label><button class="act" data-act="new">${ic("plus", "sm")}New ${K("Ctrl+N")}</button></div>
+    <div class="body ${animate ? "fade" : ""}" role="listbox" id="list">${body}</div>
+    <div class="ft hints"><span class="hint">${K("↑ ↓")} Move</span><span class="hint">${K("↵")} ${G.ctx === "tray" ? "Paste" : "Copy"}</span><span class="hint x">${K("Ctrl+S")} Save</span><span class="hint x">${K("Alt+R")} Show secret</span></div>
+  </aside>`;
+}
+
+/* ---------- direction 3: two-column library ---------- */
+const D3_COLS = [
+  ["Clipboard", [["recent", "Recent", "history"]]],
+  ["Saved", [["all", "All saved", "all"], ["snippet", "Snippets", "snippet"], ["command", "Commands", "command"], ["path", "Paths", "path"], ["secret", "Secrets", "secret"], ["note", "Notes", "note"]]],
+];
+function d3List(s) {
+  if (s.mode === "recent") return hist().filter((x) => match(x, s.q));
+  if (s.mode === "all") return saved().filter((x) => match(x, s.q));
+  if (s.mode.startsWith("scope:")) { const sc = s.mode.slice(6); return saved().filter((x) => x.k === "note" && x.scope === sc && match(x, s.q)); }
+  return saved().filter((x) => x.k === s.mode && match(x, s.q));
+}
+function d3Count(id) {
+  if (id === "recent") return D.hist.length;
+  if (id === "all") return D.saved.length;
+  return D.saved.filter((x) => x.k === id).length;
+}
+function d3Nav(s) {
+  const sc = [...new Set(D.saved.filter((x) => x.k === "note").map((x) => x.scope))];
+  const scopes = sc.map((x) => `<button class="col" aria-current="${s.mode === "scope:" + x}" data-mode="scope:${esc(x)}">${ic(x === "global" ? "globe" : "path", "sm")}<span class="ellip ${x === "global" ? "" : "mono"}">${x === "global" ? "Global" : esc(x)}</span></button>`).join("");
+  return D3_COLS.map(([h, items]) => `<h4>${h}</h4>` + items.map(([id, l, icn]) => `<button class="col" aria-current="${s.mode === id}" data-mode="${id}">${ic(icn, "sm kd-" + id)}<span class="ellip">${l}</span><span class="cnt">${d3Count(id)}</span></button>`).join("")).join("") + (scopes ? `<h4>Notes by folder</h4>${scopes}` : "");
+}
+function d3Label(m) {
+  if (m.startsWith("scope:")) return m === "scope:global" ? "Global notes" : m.slice(6).split("\\").pop() + " notes";
+  for (const [, items] of D3_COLS) for (const [id, l] of items) if (id === m) return l;
+  return m;
+}
+function d3(s) {
+  const list = d3List(s);
+  s.sel = Math.min(s.sel, Math.max(0, list.length - 1));
+  const isHist = s.mode === "recent";
+  const th = isHist ? `<div class="th"><span></span><span>Content</span><span>Detail</span><span class="sc">From</span><span class="w">When</span></div>`
+    : `<div class="th"><span></span><span>Name</span><span>Value</span><span class="sc">Folder</span><span class="w">Used</span></div>`;
+  const rows = list.map((it, i) => {
+    const a = isHist ? `<span class="c">${valueHtml(it, s.q, s)}</span>` : `<span class="c">${hl(it.title, s.q)}</span>`;
+    const b = isHist ? `<span class="c val ${it.k === "files" ? "mono" : ""}">${it.k === "files" ? esc(it.dir) : KIND[it.k]}</span>` : `<span class="c val">${valueHtml(it, s.q, s)}</span>`;
+    const c = isHist ? `<span class="c sc">${esc(it.src)}</span>` : `<span class="c sc">${scopeTag(it)}</span>`;
+    return `<div class="tr" role="option" aria-selected="${i === s.sel}" data-i="${i}">${ic(it.k, "kd-" + it.k)}${a}${b}${c}<span class="w">${esc(it.t)}</span></div>`;
+  }).join("");
+  let det = "";
+  const it = list[s.sel];
+  if (it) {
+    const content = it.k === "secret"
+      ? `<div class="vault-box">${ic("shield", "sm")}<div>${s.rev === it.id ? `<span class="mono">${esc(it.v)}</span>` : mask()} · user <span class="mono">${esc(it.user)}</span><br>Stored encrypted on this PC. Copy puts it on the clipboard without showing it and clears it after 30 s. Never recorded in history.</div></div>`
+      : `<pre class="${MONO.has(it.k) ? "" : "prose"}">${esc(it.k === "files" ? it.dir + "\n" + it.v.map((f) => "  " + f).join("\n") : vtext(it))}</pre>`;
+    det = `<section class="det ${animate ? "fade" : ""}" aria-label="Details"><div class="dh">${ic(it.k, "kd-" + it.k)}<h3 class="ellip">${esc(title(it))}</h3><span class="tag">${KIND[it.k]}</span>${it.from === "saved" ? scopeTag(it) : `<span class="tag">${esc(it.src)}</span>`}<span class="sp"></span></div>${content}<div class="acts">${actions(it, s)}</div></section>`;
+  }
+  let main;
+  if (!list.length) {
+    const kind = s.q ? "search" : isHist ? "hist" : s.mode === "secret" ? "secret" : s.mode === "note" || s.mode.startsWith("scope:") ? "note" : "saved";
+    main = `<div class="tbl">${emptyBox(kind)}</div>`;
+  } else main = `<div class="tbl ${animate ? "fade" : ""}" role="listbox" id="list">${th}${rows}</div>${det}`;
+  const foot = s.mode === "secret" ? vaultLine() : isHist ? privLine() : `<span class="cnt">${list.length} items</span>`;
+  const menu = s.menu ? `<div class="colmenu fade" role="menu">${d3Nav(s)}</div>` : "";
+  const wbar = G.ctx === "tray" ? `<div class="wbar"><span class="logo">N</span>Navo Library<span class="sp"></span><span class="hint">${K("Win+Alt+V")}</span><button class="act" data-act="close" aria-label="Close">${ic("x", "sm")}${K("Esc")}</button></div>`
+    : `<div class="wbar">${ic("history", "sm")}Library<span class="sp"></span><button class="act" data-act="close">Back to files ${K("Esc")}</button></div>`;
+  return `<section class="d3 ${animate ? "fade" : ""}" aria-label="Library">${wbar}
+    <div class="cols"><nav aria-label="Collections">${d3Nav(s)}</nav>
+    <div class="main"><div class="tools"><button class="act colsel" data-act="menu">${esc(d3Label(s.mode))}${ic("down", "sm")}</button><label class="field">${ic("search")}<span class="sr">Search</span><input id="q" value="${esc(s.q)}" placeholder="Search ${esc(d3Label(s.mode).toLowerCase())}" autocomplete="off"><kbd>Ctrl+F</kbd></label><span class="sp"></span><span class="hint">${K("Tab")} Next list</span><button class="act" data-act="new">${ic("plus", "sm")}New ${K("Ctrl+N")}</button></div>
+    ${main}
+    <div class="ft">${foot}<div class="hints"><span class="hint">${K("↑ ↓")} Move</span><span class="hint">${K("↵")} ${G.ctx === "tray" ? "Paste" : "Copy"}</span><span class="hint x">${K("F2")} Edit</span><span class="hint x">${K("Ctrl+S")} Save</span></div></div>
+    </div></div>${menu}</section>`;
+}
+
+const DIRS = [
+  { t: "Palette with modes", q: "A Ctrl+K-style list with five modes; the selected row opens in place with its actions.", r: d1, list: d1List, modes: D1_MODES.map((m) => m[0]),
+    n: [["Opens", "Win+Alt+V from any app (Navo stays in the tray), Ctrl+Shift+V inside Navo. Floats at the top of the window or screen; Esc closes and focus returns where it was."],
+      ["Shape", "One search field, mode chips (All, Recent, Saved, Secrets, Notes) on Tab. The selected row expands with a preview and its actions, each with its key."],
+      ["Strengths", "Fastest path: summon, type three letters, Enter pastes into the app you came from. Same muscle memory as Ctrl+K, so it can later be a Ctrl+K mode."],
+      ["Costs", "Editing notes and long snippets needs another surface (F2 opens an editor sheet). Folder notes are less visible: they show only in Notes or when searched."]] },
+  { t: "Side sheet with tabs", q: "A drawer over the right side: History, Saved (grouped by kind) and Notes with the current folder's note on top.", r: d2, list: d2List, modes: D2_TABS.map((m) => m[0]),
+    n: [["Opens", "Inside Navo it is a drawer over the panes (D58: never a column). From any app it docks to the right screen edge as its own small window."],
+      ["Shape", "Three tabs with counts, search per tab, two-line cards; the selected card shows its action bar. Notes put this folder's note on top as an editable field."],
+      ["Strengths", "Calmest of the three and closest to the drawers users already know. Folder notes are first-class and editable in place. The panes stay visible beside it."],
+      ["Costs", "Narrow: long commands and paths cut off sooner. Search is per tab, so finding something without knowing where it lives takes a Tab or two."]] },
+  { t: "Two-column library", q: "A full view like F3: collections on the left, a table on the right and an editable detail strip below.", r: d3, list: d3List, modes: ["recent", "all", "snippet", "command", "path", "secret", "note"],
+    n: [["Opens", "Inside Navo it replaces the panes like F3 (Esc back to files). From any app it opens as its own Navo window over the screen."],
+      ["Shape", "Collections (Recent, All saved, one per kind, notes by folder) on the left, columns Name, Value, Folder, Used, and a detail strip with the full value and actions. Below 680 px the collections become a menu button."],
+      ["Strengths", "Best for many saved items: sortable columns, notes by folder, room to edit. Looks and works like a Navo folder, so file-manager keys carry over."],
+      ["Costs", "Heaviest to summon for a quick paste; covers the panes. Most work in GPUI: a second table and an editor."]] },
+];
+
+const scene = document.getElementById("scene");
+let toastTimer = null, tick = null;
+function toast(html, secret = false, secs = 0) {
+  clearTimeout(toastTimer); clearInterval(tick);
+  let el = scene.querySelector(".toast");
+  if (!el) { el = document.createElement("div"); el.setAttribute("role", "status"); scene.appendChild(el); }
+  el.className = "toast fade" + (secret ? " secret" : "");
+  const paint = () => { el.innerHTML = `${ic(secret ? "shield" : "check")}<span>${html}</span>${secs ? `<span class="t">Clears in ${secs} s</span>` : ""}`; };
+  paint();
+  if (secs) tick = setInterval(() => { secs -= 1; if (secs <= 0) { clearInterval(tick); html = "Clipboard cleared."; secs = 0; } paint(); }, 1000);
+  toastTimer = setTimeout(() => { clearInterval(tick); el.remove(); }, secret ? 31000 : 2600);
+}
+
+function render() {
+  const s = ST[G.dir];
+  const qf = document.activeElement && document.activeElement.id === "q";
+  const caret = qf ? document.activeElement.selectionStart : 0;
+  const listEl = document.getElementById("list");
+  const top = listEl ? listEl.scrollTop : 0;
+  const t = scene.querySelector(".toast");
+  scene.className = "scene " + (G.ctx === "tray" ? "tray" : "navo-mode");
+  scene.innerHTML = background(G.dir) + (s.closed ? closedBtn() : DIRS[G.dir].r(s));
+  if (t) scene.appendChild(t);
+  const nl = document.getElementById("list");
+  if (nl) { nl.scrollTop = animate ? 0 : top; const se = nl.querySelector('[aria-selected="true"]'); if (se) se.scrollIntoView({ block: "nearest" }); }
+  const mc = scene.querySelector('.d1 .modes'); const ma = mc && mc.querySelector('[aria-selected="true"]'); if (ma) mc.scrollLeft = Math.max(0, ma.offsetLeft - mc.clientWidth / 2 + ma.offsetWidth / 2);
+  if (qf) { const q = document.getElementById("q"); if (q) { q.focus(); q.setSelectionRange(caret, caret); } }
+  animate = false;
+}
+function syncHarness() {
+  document.documentElement.dataset.theme = G.theme;
+  document.querySelectorAll("[data-theme-set]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.themeSet === G.theme)));
+  document.querySelectorAll("[data-data]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.data === G.data)));
+  document.querySelectorAll("[data-ctx]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.ctx === G.ctx)));
+  document.querySelectorAll("[data-dir]").forEach((b) => b.setAttribute("aria-current", String(+b.dataset.dir === G.dir)));
+  const d = DIRS[G.dir];
+  document.getElementById("dir-n").textContent = G.dir + 1;
+  document.getElementById("dir-t").textContent = d.t;
+  document.getElementById("dir-q").textContent = d.q;
+  document.getElementById("notes").innerHTML = d.n.map(([a, b]) => `<dt>${a}</dt><dd>${b}</dd>`).join("");
+  const u = new URL(location); u.searchParams.set("v", G.dir + 1); u.searchParams.set("theme", G.theme); u.searchParams.set("data", G.data); u.searchParams.set("ctx", G.ctx); history.replaceState(null, "", u);
+}
+function setDir(i) { G.dir = i; animate = true; syncHarness(); render(); }
+function cur() { const s = ST[G.dir]; return DIRS[G.dir].list(s)[s.sel]; }
+function setMode(m) { const s = ST[G.dir]; s.mode = m; s.sel = 0; s.rev = null; s.menu = false; animate = true; render(); }
+
+function doAct(a) {
+  const s = ST[G.dir];
+  if (a === "open") { s.closed = false; animate = true; render(); return; }
+  if (a === "close") { s.closed = true; s.menu = false; render(); return; }
+  if (a === "menu") { s.menu = !s.menu; render(); return; }
+  if (a === "new") { toast("New item: pick a kind, then type. Not built in this prototype."); return; }
+  const it = cur();
+  if (!it) return;
+  const name = esc(title(it).slice(0, 40));
+  if (a === "copy" || a === "copyonly") {
+    if (it.k === "secret") toast(`${a === "copy" && G.ctx === "tray" ? "Pasted" : "Copied"} “${name}” without showing it. Not in history.`, true, 30);
+    else if (a === "copy" && it.k === "path" && G.ctx === "navo") toast(`Opened <span class="mono">${esc(it.v)}</span> in the active pane.`);
+    else toast(`${a === "copy" && G.ctx === "tray" ? "Pasted into Notepad" : "Copied"}: ${name}`);
+    if (a === "copy" && G.ctx === "tray") { s.closed = true; render(); }
+  } else if (a === "pastehere") toast(`Copying ${it.v.length} files into <span class="mono">${esc(HERE)}</span>.`);
+  else if (a === "reveal" && it.k === "secret") { s.rev = s.rev === it.id ? null : it.id; render(); }
+  else if (a === "copyuser" && it.k === "secret") toast(`Copied user name <span class="mono">${esc(it.user)}</span>.`);
+  else if (a === "save" && it.from === "hist") toast(`Saved as ${KIND[it.k === "text" ? "snippet" : it.k === "files" ? "path" : it.k]}. ${K("F2")} rename, ${K("Ctrl+Z")} undo.`);
+  else if (a === "edit") toast("Edit opens the item in an editor. Not built in this prototype.");
+  else if (a === "del") toast(`Deleted “${name}”. ${K("Ctrl+Z")} Undo.`);
+}
+
+document.addEventListener("click", (e) => {
+  const t = e.target.closest("button, [data-i]");
+  if (!t) return;
+  if (t.dataset.themeSet) { G.theme = t.dataset.themeSet; syncHarness(); return; }
+  if (t.dataset.data) { G.data = t.dataset.data; D = DATA[G.data](); ST.forEach((s) => { s.sel = 0; s.q = ""; }); animate = true; syncHarness(); render(); return; }
+  if (t.dataset.ctx) { G.ctx = t.dataset.ctx; ST.forEach((s) => (s.closed = false)); animate = true; syncHarness(); render(); return; }
+  if (t.dataset.dir) { setDir(+t.dataset.dir); return; }
+  if (t.dataset.mode) { setMode(t.dataset.mode); return; }
+  if (t.dataset.act) { doAct(t.dataset.act); return; }
+  if (t.dataset.i !== undefined && !e.target.closest("textarea")) { ST[G.dir].sel = +t.dataset.i; ST[G.dir].rev = null; render(); }
+});
+document.addEventListener("input", (e) => { if (e.target.id === "q") { const s = ST[G.dir]; s.q = e.target.value; s.sel = 0; render(); } });
+document.addEventListener("keydown", (e) => {
+  const s = ST[G.dir];
+  const tg = e.target;
+  const inText = tg.tagName === "TEXTAREA" || (tg.tagName === "INPUT" && tg.id !== "q");
+  const inQ = tg.id === "q";
+  if (inText) { if (e.key === "Escape") tg.blur(); return; }
+  if (!inQ && !e.ctrlKey && !e.altKey && !e.metaKey && /^[1-3]$/.test(e.key)) { setDir(+e.key - 1); e.preventDefault(); return; }
+  if (s.closed) {
+    if ((e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "v") || e.key === "Enter") { e.preventDefault(); doAct("open"); }
+    return;
+  }
+  const n = DIRS[G.dir].list(s).length;
+  if (e.key === "ArrowDown") { s.sel = Math.min(n - 1, s.sel + 1); s.rev = null; render(); e.preventDefault(); }
+  else if (e.key === "ArrowUp") { s.sel = Math.max(0, s.sel - 1); s.rev = null; render(); e.preventDefault(); }
+  else if (e.key === "Tab" && (inQ || tg === document.body)) {
+    const ms = DIRS[G.dir].modes; const i = ms.indexOf(s.mode);
+    setMode(ms[(Math.max(0, i) + (e.shiftKey ? ms.length - 1 : 1)) % ms.length]); e.preventDefault();
+    const q = document.getElementById("q"); if (q && inQ) q.focus();
+  }
+  else if (e.key === "Enter" && (inQ || tg === document.body)) { doAct(e.ctrlKey ? "copyonly" : "copy"); e.preventDefault(); }
+  else if (e.ctrlKey && e.key.toLowerCase() === "s") { doAct("save"); e.preventDefault(); }
+  else if (e.ctrlKey && e.key.toLowerCase() === "n") { doAct("new"); e.preventDefault(); }
+  else if (e.altKey && e.key.toLowerCase() === "r") { doAct("reveal"); e.preventDefault(); }
+  else if (e.altKey && e.key.toLowerCase() === "u") { doAct("copyuser"); e.preventDefault(); }
+  else if (e.key === "F2") { doAct("edit"); e.preventDefault(); }
+  else if (e.key === "Delete" && !inQ) { doAct("del"); e.preventDefault(); }
+  else if (e.key === "Escape") { if (s.menu) { s.menu = false; render(); } else if (s.q) { s.q = ""; s.sel = 0; render(); } else doAct("close"); e.preventDefault(); }
+  else if (!inQ && e.key.length === 1 && /[a-z]/i.test(e.key) && !e.ctrlKey && !e.altKey && !e.metaKey) { const q = document.getElementById("q"); if (q) q.focus(); }
+});
+
+const P = new URLSearchParams(location.search);
+G.dir = Math.min(2, Math.max(0, (+P.get("v") || 1) - 1));
+G.theme = P.get("theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+G.data = DATA[P.get("data")] ? P.get("data") : "normal";
+G.ctx = P.get("ctx") === "tray" ? "tray" : "navo";
+if (P.get("mode")) ST[G.dir].mode = P.get("mode");
+if (P.get("sel")) ST[G.dir].sel = +P.get("sel");
+D = DATA[G.data]();
+syncHarness();
+render();
+</script>
+</body>
+</html>
