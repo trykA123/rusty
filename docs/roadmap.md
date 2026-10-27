@@ -1,6 +1,6 @@
 # Rusty roadmap
 
-Updated 26 October 2026. The visual version is [`design/roadmap.html`](../design/roadmap.html). Scope rules are in [decisions.md](decisions.md) (D13, D14). Plain-language specs for the bigger features are in [features/](features/).
+Updated 27 October 2026. The visual version is [`design/roadmap.html`](../design/roadmap.html). Scope rules are in [decisions.md](decisions.md) (D13, D14). Plain-language specs for the bigger features are in [features/](features/).
 
 Kinds: **core** is always on; **module** can be turned off; **package** is data only (themes, keymaps); **infra** is build, CI and release work.
 
@@ -20,7 +20,7 @@ Product discussion, prototypes A–L (B chosen), architecture, plugin model, dec
 
 ## Foundation · v0.1 · done
 
-Done 15 October 2026: P1–P8 passed their gates; PoC 1 and PoC 2 passed on the work PC.
+Done 15 October 2026: P1–P8 passed their gates; PoC 1 and PoC 2 passed on a Windows PC.
 
 Goal: prove the stack and build the factory.
 
@@ -32,7 +32,7 @@ Goal: prove the stack and build the factory.
 - core: locations and providers, record and replay, one error model, I/O queues per volume, experimental flags (D21).
 - infra: fake file system with fault injection and a hostile-name corpus.
 
-Exit: the spike meets the targets on Linux and the work PC, otherwise D2 is reopened.
+Exit: the spike meets the targets on Linux and a Windows PC, otherwise D2 is reopened.
 
 ## v1 Alpha · v0.5 · now
 
@@ -42,9 +42,9 @@ All four alpha features are built. They are in the pre-release alpha-2026-10-26.
 
 | Feature | Built | Still open |
 | --- | --- | --- |
-| Multi-select and drag and drop | Marking, drops between panes, folders, tabs, path crumbs and drives, Alt-drop shortcuts, drag to and from Explorer, right-button drop choices, auto-scroll near list edges, and folders, tabs and drives that open on hover | Owner check of Explorer drag on the work PC. Linux external drops are Copy-only. |
-| Rich ELF and MAP | Rich views, memory models, companion discovery and live module prefixes | Final review and work-PC checks |
-| Ctrl+K command center | Commands, recent files, tabs, folder and path sources, disk index, Search settings and the optional Windows service | Owner check of the index service on the work PC |
+| Multi-select and drag and drop | Marking, drops between panes, folders, tabs, path crumbs and drives, Alt-drop shortcuts, drag to and from Explorer, right-button drop choices, auto-scroll near list edges, and folders, tabs and drives that open on hover | Owner check of Explorer drag on a Windows PC. Linux external drops are Copy-only. |
+| Rich ELF and MAP | Rich views, memory models, companion discovery and live module prefixes | Final review and Windows checks |
+| Ctrl+K command center | Commands, recent files, tabs, folder and path sources, disk index, Search settings and the optional Windows service | Owner check of the index service on a Windows PC |
 | Multi-rename | Journaled rename with safe undo and crash recovery; edited, imported, pasted and copied names; sorting, ordering and folder counters; optional rename log. Rename works on FAT and exFAT drives; undo there checks size and time first. | Owner check of rename on a FAT or exFAT USB stick |
 
 Windows CI is green: 7,118 tests passed. Linux passed all 10 gate steps.
@@ -66,64 +66,32 @@ Merged after that release: six built-in colour themes. They are Open sea (the de
 
 Still open for alpha sign-off:
 
-- Owner checks on the work PC: Explorer drag, the index service, rename on a FAT or exFAT USB stick, the Rich ELF and MAP views, the profile move to Navo, and the splash.
-- A heavy benchmark: millions of indexed files, search latency, long lists, memory, and animation smoothness recorded on the work PC.
+- Owner checks on a Windows PC: Explorer drag, the index service, rename on a FAT or exFAT USB stick, the Rich ELF and MAP views, the profile move to Navo, and the splash.
+- A heavy benchmark: millions of indexed files, search latency, long lists, memory, and animation smoothness recorded on a Windows PC.
 - Two weeks of daily use with no lost or damaged files.
 
 The latest downloadable alpha is the pre-release alpha-2026-10-26d. It has all four alpha features, the colour themes, the splash and the new right-click menu. The Navo rename comes in the next build. DBC/A2L viewer screens, automotive colours and viewer chrome are beta work (D75).
 
 The foundation already includes two panes, tabs, history, session restore, file operations, virtual lists, themes, the viewer, selection and the activity strip. The beta and later phases below retain their existing scope.
 
-Exit: two weeks of daily use on the work PC with no lost or damaged files.
-
-## Right after the alpha
-
-1. Delete safety net turned on for users (D65): delete and overwrite jobs, its settings and a "Recently deleted" view.
-2. The new fonts (D78).
-3. Background work: job queues, folder sizes and speed tests, from ideas in Linux tools.
-4. Raw/Pretty formatting in F3: format JSON, XML and similar on open.
+Exit: two weeks of daily use on a Windows PC with no lost or damaged files.
 
 ## v1 Beta · v0.9
 
-Goal: safe, configurable and pleasant; modules and theming arrive.
+Goal: fast search, workspaces and tiled panes, safe deletes.
 
-The owner set the beta order on 26 October 2026 (D81). Items marked **priority** are built first. The items moved in from v1.0 and later versions come next. Everything else in the beta follows.
+The owner reordered the beta on 27 October 2026 (D85). Built in this order:
 
-Built first (priority):
+1. core: search index like Everything: Ctrl+K answers at once from the Navo Index service, even while it updates; no folder walks on NTFS drives; the service starts from its saved index; less memory; a benchmark next to Everything. The busy-answer fix is done.
+2. core: delete safety net (D65): Shift+Del and overwrites keep the old files 1–7 days, a "Recently deleted" view, Ctrl+Z restores. Merged for the next release.
+3. core: workspaces (Alt+1…9) with the tray: named workspaces, drafts, Save and Discard. Model, commands and session file done.
+4. core: more than two panes, tiled like Hyprland (D80): presets on Ctrl+L, split, move, resize, swap and close from the keyboard, own presets. Tile notation, pane operations and applying a layout done.
+5. core: find files by content and attributes in Ctrl+K, with results as a tab you can work in; virtual collections (saved searches, snapshots, files picked by hand). Query, content matcher and collection store done.
+6. module: clipboard history and notes; summon hotkey and tray.
+7. core: background work that never waits: job pools with priorities, folder sizes that cancel when you leave, size on disk, hard links counted once.
+8. core: accessibility basics: Narrator reads lists, dialogs and Ctrl+K, focus visible everywhere, reduced motion, contrast themes, UI scale. Mostly done.
 
-- core: workspaces (Alt+1…9). **priority**
-- core: accessibility basics: Narrator reads lists and dialogs, focus visible everywhere, reduced motion, high contrast, UI scale. **priority**
-- core: responsive layout (D80): minimum window size, columns aligned under their headers with names cut by an ellipsis, columns that drop in order on narrow windows, one pane below a set width, tab overflow, and layout tests at fixed widths in the gate. Built, being merged. **priority**
-- core: more than two panes, tiled like Hyprland (D80): split, move and resize panes from the keyboard. Needs a design round and a plan first. **priority**
-- core: clone a tab into the other pane. **priority**
-- core: cache sizes in diagnostics, with a long stress test. **priority**
-- module: open a terminal here (Windows Terminal and templates); copy path (F9) and folder search (Ctrl+K) are already in. **priority**
-- module: DBC and A2L viewer in F3. **priority**
-- module: viewer chrome and pins. **priority**
-- module: rich map, deeper: a picked tile keeps its colour; the map can show one module so its files fill the space. **priority**
-- module: Follow on Windows (Alt+F), a known bug. **priority**
-
-Moved in from v1.0 and later:
-
-- core: find files by content and attributes, with results as a pane you can work in.
-- core: virtual collections: a pane can hold search results, recent changes or files picked from many folders.
-- core: archives as folders (zip, 7z, tar with gz, xz and zst): browse, extract and pack through the job engine; safe extraction.
-- core: properties drawer for attributes, timestamps and permissions.
-- module: preview pane and thumbnails.
-- core: saved column sets.
-- module: clipboard history and notes; summon hotkey and tray.
-
-After these:
-
-- core: refresh mode per network location; undo for every job from the UI (journal and recovery already built; each step reversible, compensable or final; undo offers only what it can do).
-- core: module registry with runtime on/off and safe mode; settings window generated from module schemas.
-- core: per-case confirmations, date and size formats, ignore list.
-- core: Parallel and Large files copy modes, copy options, profiles and rules by destination.
-- package: custom colour themes and icon themes (D16). Idea, not decided: an optional colourful icon theme based on Material Icon Theme (MIT).
-- module: external viewer and editor (F3/F4; done; hex view and large files done; viewer foundation done; extra grammars and content detection done; rule lexer and Notepad++ UDL import done; search counts, marks and history (model and store) done), notifications for long operations.
-- module: spreadsheets in F3 (one item; after 1.0 if it grows); colouring for m4, OIL and DCM files.
-- core: every shortcut changeable.
-- infra: Windows installer (NSIS); steadier Windows tests; soak test; start-up and memory benchmark in CI (done; baseline in [perf.md](perf.md)).
+Done earlier in the beta: responsive layout and new fonts (D80), clone a tab into the other pane, open a terminal here, cache sizes in diagnostics, Follow on Windows, the DBC and A2L outline in F3.
 
 Exit: no open data-safety bugs; start-up and memory targets met in CI.
 
@@ -131,12 +99,11 @@ Exit: no open data-safety bugs; start-up and memory targets met in CI.
 
 Replaces Total Commander for daily work (D39). Parity features are built to beat TC, not copy it.
 
-- core: saved searches.
-- core: compare and sync, better than Beyond Compare where it counts (D40): folder compare in the panes, a calm full-window look with a change map on each scroller (chosen; after the alpha), sync as a plan with undo, cached BLAKE3 hashes, syntax-aware text diff, paged diff for huge and binary files (planned for the first version), image compare; engine in the shared `rusty-compare` crate.
-- core: checksums (BLAKE3, SHA-256, SHA-1, MD5) with verify; images in F3.
-- infra: signed portable `.exe` and installer; user guide.
-- core: optional default file manager (Win+E).
-- package: Total Commander keymap.
+1. core: compare and sync, better than Beyond Compare where it counts (D40): folder compare in the panes, a calm full-window look with a change map on each scroller (chosen), sync as a plan with undo, cached BLAKE3 hashes, syntax-aware text diff, paged diff for huge and binary files, image compare; engine in the shared `rusty-compare` crate.
+2. infra: signed portable `.exe` and the NSIS installer (D73), whose uninstaller also removes the index service; user guide; soak test; steadier Windows tests.
+3. core: optional default file manager (Win+E).
+4. core: inspector column with preview and properties, thumbnails, archives as folders (zip, 7z, tar with gz, xz and zst). File details, owner and hashes are done.
+5. core: module registry with runtime on/off and safe mode; settings window generated from module schemas; notifications for long operations.
 
 Exit: every target is met on a clean Windows 11 machine, and a week of work runs without opening Total Commander.
 
@@ -144,28 +111,32 @@ Exit: every target is met on a clean Windows 11 machine, and a week of work runs
 
 - module: auto switch view.
 - package: language packages for the F3 viewer (D38).
+- core: checksums (BLAKE3, SHA-256, SHA-1, MD5) with verify; images in F3.
+- package: Total Commander keymap.
 
-## v1.2 · Power tools
+## v1.2 · Git
 
-- module: Git, duplicates and disk usage.
-- package: import of Zed and VS Code colour themes.
-- Native editing for each kind: A table edits like a spreadsheet. A tree edits keys and values in place.
-
-Exit: each module turns off without a restart and costs nothing while off.
-
-## Connect and automate · after v1
-
-- Jenkins links to network folders: paste a Jenkins link and jump to the matching network folder, using rules you set once.
-- Built-in web view: optional.
-- Workflows and automations: chain actions so Navo does repeat work for you.
-- Visual builder: build workflows by drawing them, like n8n.
+- module: Git: status in the file list, history, diff and the usual commands.
 
 ## v2.0 · Open platform
 
 - core: WASM plugins (versioned WIT API, permissions, sandbox); Lua scripting.
 - infra: plugin SDK, template, dev mode with hot reload.
 - core: new slots for metadata providers, view modes, transforms, automation rules and status badges; module packs (D24).
-- module: Everything (optional), embedded terminal (ConPTY), SFTP/S3/rclone.
-- package: more languages, Romanian first.
+- module: SFTP; S3 and rclone are still open.
+- package: language packs, Romanian first.
+- core: undo for every job from a history list; per-case confirmations.
+- core: refresh mode per network location, ignore list; Parallel and Large files copy modes, copy options, profiles and rules by destination; date and size formats.
+- package: custom colour themes and icon themes (D16); every shortcut changeable.
+- module: more in F3: Raw/Pretty for JSON, XML and YAML; spreadsheets; colouring for m4, OIL and DCM files; CSV and CAN trace column resize.
+- Jenkins links to network folders; optional built-in web view; workflows and automations; a visual workflow builder.
+- module: Everything (optional), embedded terminal (ConPTY).
 
 Exit: a third-party plugin is built, installed and updated without touching Rusty's code.
+
+## Later
+
+- module: duplicates and disk usage.
+- package: import of Zed and VS Code colour themes.
+- Native editing for each kind: a table edits like a spreadsheet; a tree edits keys and values in place.
+- module: DBC and A2L in F3, the rest: find in the outline, the DBC and A2L inspectors, problems, the narrow layout and bookmarks.

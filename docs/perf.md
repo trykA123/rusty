@@ -2,7 +2,7 @@
 
 Every push to `main` runs the `perf-windows` CI job: one first run (the closest a runner gets to a cold start) and five warm runs of `navo --metrics <file.json>` on a generated fixture (one folder with 5,000 files, one with 200 folders of 25 files each). The job summary shows min, median and max next to the [v1.0 targets](roadmap.md#v10-targets).
 
-The GitHub runner renders in software (Microsoft Basic Render Driver), so frame times are relative, not absolute. The job fails only when the median warm first frame is above 300 ms or private bytes in any run are above 160,000,000 (2× each target). The owner's work-PC run with `--metrics` is the real reference and goes here when available.
+The GitHub runner renders in software (Microsoft Basic Render Driver), so frame times are relative, not absolute. The job fails only when the median warm first frame is above 300 ms or private bytes in any run are above 160,000,000 (2× each target). The owner's Windows run with `--metrics` is the real reference and goes here when available.
 
 ## Baseline
 
@@ -68,7 +68,7 @@ Same build with `NAVO_GPU=high-performance` (NVIDIA T1200 Laptop GPU), three war
 
 `navo bench` stresses search, indexing and big folders without opening a window. Animation smoothness is measured separately with Record performance.
 
-How to run it on the work PC:
+How to run it on a Windows PC:
 
 1. Open a terminal in the folder with `navo.exe`.
 2. Run `navo.exe bench --root D:\navo-bench --files 3000000`.

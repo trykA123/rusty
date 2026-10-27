@@ -46,14 +46,14 @@ Status: ready (G2 and G6 passed 2026-10-15) · Branch: `p7-browse` · After: G6
 | U8b | `title_bar` | T2 | ui-builder-high | high | U3 | headless tests; screenshots both themes; on Windows CI exe: snap layouts on maximise hover, drag, double-click maximise |
 | U9 | `window_view` | T2 | ui-builder | high | U8, U8b | headless + screenshots at 1100 and 1440 px, both themes |
 | U10 | `app_wiring` | T3 | api-builder | xhigh | U9 | start-up test: first frame from session only |
-| U11 | PoC check on Windows | — | orchestrator | — | U10 | CI `.exe`; owner browses the work PC |
+| U11 | PoC check on Windows | — | orchestrator | — | U10 | CI `.exe`; owner browses a Windows PC |
 | G7 | gate | — | orchestrator + reviewer | high | U1–U11 | gate, CI on both OS, review, **PoC 1 demo** |
 
 U5–U6 and U7 run in parallel after U3; U4 runs in parallel with them.
 
 ## Done when
 
-- The owner opens `rusty.exe` on the work PC, browses with the keyboard, selects with Space and Insert, closes it, and on reopening sees the same layout immediately.
+- The owner opens `rusty.exe` on a Windows PC, browses with the keyboard, selects with Space and Insert, closes it, and on reopening sees the same layout immediately.
 - Gallery screenshots in both themes match design B.
 - `rusty-ui` coverage ≥ 60 %.
 

@@ -281,7 +281,7 @@ The plan has 29 atoms. The orchestrator may save it as `p41a-engine` (A1–A10) 
 - **Stop if:** the P35 quarantine code needs a change.
 
 ### A10, B9, C2 — reviews
-- **Read:** the part's diff and D1–D19. C2 also gets the owner check list, run on the work PC:
+- **Read:** the part's diff and D1–D19. C2 also gets the owner check list, run on a Windows PC:
   - 300 files numbered with `[N]_[C3]`;
   - two names swapped;
   - a case-only rename;
@@ -386,7 +386,7 @@ Parallel lanes:
 - A failure or a cancel leaves the folder exactly as before. A crash in the middle is put back on the next start (A7, B3 tests).
 - Ctrl+Z undoes the last batch and the last F2 rename, also after a restart (B7, B8, C1 tests; owner check).
 - Presets save, load and delete (B6 tests).
-- Speed is logged, with no gate (D63): 1,000 renames on the work PC (log the time), and a 50,000-item preview recomputing in under 300 ms (B2 ignored release test).
+- Speed is logged, with no gate (D63): 1,000 renames on a Windows PC (log the time), and a 50,000-item preview recomputing in under 300 ms (B2 ignored release test).
 - `cargo xtask gate` and Windows CI pass for each part, and each part ships in an alpha build.
 
 ## Open questions for the owner

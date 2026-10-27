@@ -494,7 +494,7 @@ Opus high: kind rules, D8 source order and the outside count, D9 owner order and
 
 ### C11 — review Part C
 
-Opus high on C1–C10: Simple unchanged, drawers over the content, provenance truthful, the free figure absent for clusters, colour pairs, keyboard paths, and no model work in `render`. Then gate, Windows CI, merge, an alpha build and the owner check on the work PC: both real ELF files, the real MAP and `.mdf`, HEX and MOT, at the work monitor's width.
+Opus high on C1–C10: Simple unchanged, drawers over the content, provenance truthful, the free figure absent for clusters, colour pairs, keyboard paths, and no model work in `render`. Then gate, Windows CI, merge, an alpha build and the owner check on a Windows PC: both real ELF files, the real MAP and `.mdf`, HEX and MOT, at the work monitor's width.
 
 ## Questions for the owner (answered 2026-10-20)
 
@@ -511,7 +511,7 @@ The original questions:
 
 ## Done when
 
-- Rich on both real ELF files shows regions with used and free bars, strips and a treemap that adds up to the used bytes; the provenance line names the sources. Checked by C11 on the work PC.
+- Rich on both real ELF files shows regions with used and free bars, strips and a treemap that adds up to the used bytes; the provenance line names the sources. Checked by C11 on a Windows PC.
 - An ELF without a sibling shows clusters with "used" only; a stripped ELF shows the note. Checked by C7 tests.
 - Simple renders as before P38. Checked by the C7 snapshot test.
 - Columns resize in ELF, MAP, trace, CSV and `.mdf` tables. Checked by A3–A6 and B8.
@@ -558,4 +558,4 @@ The original questions:
 - 2026-10-23 — D8 sole-companion fallback is implemented on backend/rename-undo-safety. FileHooks can discover candidates in the background; both lookups share one bounded, cancellable scan. Same stem wins; multiple candidates stay unchosen; body limits and format sniffers still apply; a different-stem ELF is never guessed. The provenance identifies a sole MDF or MAP. Configured module prefixes and native Windows verification remain open.
 - 2026-10-23 — D9 configured prefixes are implemented on the same backend branch. `[automotive] modules` is a typed list, editable through the existing settings control and reloaded live. ELF/MAP model builds, regrouping and block highlights retain the same prefix snapshot; stale results are rejected. Provenance counts matched configured modules. Headless ELF and MAP live-regroup tests and the live file-reload test pass; native Windows checks remain open.
 - 2026-10-26 — Final review fixes: MAP section names keep their kind in the muted prefix (`.text.Com.`; D12 amended), and a short width shortens only the module part. The region panel scrolls the focused strip into view. Duplicate `.mdf` chip names are numbered in linear time. Name cells measure the UI font and end with an ellipsis when they still overflow. The provenance line names both files when the `.map` gives the regions and the `.mdf` the starts. The noise bar counts only the symbols that match the filter. Sums near `u64::MAX` saturate. File bytes and the measured character widths are computed once, outside render. "start estimated" is not shown: no place in the layout shows a region start yet.
-- 2026-10-26 — Final review (Opus medium) for A13 and C11: fix first. Fixed on fix/rich-elf-map-review: MAP names keep their kind, focused strips scroll into view, linear .mdf duplicate naming, name width measured in the UI font with an ellipsis, two-file provenance, saturating sums, no model work in render. A5 and A6 (CSV and CAN trace column resizing) move to the beta. Next: Windows CI, merge, owner check on the work PC.
+- 2026-10-26 — Final review (Opus medium) for A13 and C11: fix first. Fixed on fix/rich-elf-map-review: MAP names keep their kind, focused strips scroll into view, linear .mdf duplicate naming, name width measured in the UI font with an ellipsis, two-file provenance, saturating sums, no model work in render. A5 and A6 (CSV and CAN trace column resizing) move to the beta. Next: Windows CI, merge, owner check on a Windows PC.

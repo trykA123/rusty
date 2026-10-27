@@ -1,12 +1,12 @@
 # GPUI spike results (P2, G2)
 
-Status: **G2 passed (2026-10-15): GO for GPUI (D2)**. Narrator read nothing on the list; it is a follow-up the owner does not need now; the owner found scrolling smooth on the 60 Hz work-PC monitor (2026-10-15); the owner decides go or no-go for D2. Work PC: Intel UHD + NVIDIA T1200 laptop, fat-LTO spike exe from CI run 38677189477, low-power GPU patch.
+Status: **G2 passed (2026-10-15): GO for GPUI (D2)**. Narrator read nothing on the list; it is a follow-up the owner does not need now; the owner found scrolling smooth on the 60 Hz Windows monitor (2026-10-15); the owner decides go or no-go for D2. Windows PC: Intel UHD + NVIDIA T1200 laptop, fat-LTO spike exe from CI run 38677189477, low-power GPU patch.
 
 Spike: `spikes/gpui-b` (design B, variant 1 of D27, three panes of 100,000 rows each, drawer, F-key bar) on `gpui-kit` 0.7.3. Raw numbers: `docs/spike/metrics/`. Plan and log: `plans/2026-10-14-p2-gpui-spike.md`.
 
 ## Targets
 
-| Target | Goal | Linux dev PC (headless cage) | Windows CI (software renderer) | Work PC |
+| Target | Goal | Linux dev PC (headless cage) | Windows CI (software renderer) | Windows PC |
 | --- | --- | --- | --- | --- |
 | Cold start, first frame | ≤ 400 ms | 671 ms (non-LTO, first run after build) | 510–546 ms | **407 ms** (Intel, first run); 561 ms on NVIDIA |
 | Warm start, first frame | ≤ 150 ms | **120 ms** | 220–313 ms | 343–346 ms (Intel) — **misses**; needs a resident process |
@@ -16,7 +16,7 @@ Spike: `spikes/gpui-b` (design B, variant 1 of D27, three panes of 100,000 rows 
 | Fuzzy matching | interactive on 100k names | frizbee: 1.2–2.1 ms per query on 100k basenames; 54–143 ms on 2M paths | — | — |
 | Accessibility | list and rows readable | roles, names, position and selection set (headless test) | — | Narrator check pending |
 
-### Work PC start-up breakdown (ms from `main`)
+### Windows PC start-up breakdown (ms from `main`)
 
 | Run | GPU | application created | run callback | open_window returned | first frame |
 | --- | --- | ---: | ---: | ---: | ---: |
@@ -33,9 +33,9 @@ Spike: `spikes/gpui-b` (design B, variant 1 of D27, three panes of 100,000 rows 
 
 ### Start-up
 
-- On the work PC the first frame is dominated by D3D11 device creation on the NVIDIA GPU (250–310 ms). On the Intel GPU it is ~70 ms, which brought the variants prototype from ~600 ms to 376 ms.
+- On a Windows PC the first frame is dominated by D3D11 device creation on the NVIDIA GPU (250–310 ms). On the Intel GPU it is ~70 ms, which brought the variants prototype from ~600 ms to 376 ms.
 - The spike now prefers the low-power GPU (vendored `gpui-pre-windows`, `EnumAdapterByGpuPreference(MINIMUM_POWER)`); `FERRITE_GPU=default` restores GPUI's order for comparison.
-- The other start-up phases on Windows: platform and DirectWrite ~170 ms, window and first render ~130–145 ms. The warm target (≤ 150 ms) likely needs a resident (tray) process on Windows; to be decided after the work-PC run.
+- The other start-up phases on Windows: platform and DirectWrite ~170 ms, window and first render ~130–145 ms. The warm target (≤ 150 ms) likely needs a resident (tray) process on Windows; to be decided after the Windows run.
 
 ### Memory
 
@@ -63,9 +63,9 @@ Spike: `spikes/gpui-b` (design B, variant 1 of D27, three panes of 100,000 rows 
 
 Proposed: **go for GPUI (D2), with three follow-ups.**
 
-1. Cold start meets the target on the work PC thanks to the low-power GPU patch; offer the patch upstream and keep it vendored until then.
+1. Cold start meets the target on a Windows PC thanks to the low-power GPU patch; offer the patch upstream and keep it vendored until then.
 2. Warm start needs a resident mode: Ferrite stays in the tray after its window closes and shows a pre-built hidden window (a plan item for after PoC 2).
-3. Measure private bytes on Windows (the P5 memory probe in `rusty-app`) and a 60-second scroll on the work PC, to settle the memory target and the Intel frame drops.
+3. Measure private bytes on Windows (the P5 memory probe in `rusty-app`) and a 60-second scroll on a Windows PC, to settle the memory target and the Intel frame drops.
 
 Owner's view of smoothness (2026-10-15): scrolling feels smooth on the 60 Hz monitor.
 

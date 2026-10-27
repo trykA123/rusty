@@ -224,7 +224,7 @@ Mechanical word swaps (A11, A12, A14, A15) may touch more than 3 files; each edi
 A1 → (A2, A3, A6, A7, A9 in parallel) → A4 → A5; A7 → A8; A10 after `ui/navo-themes`; A13 after
 `ui/navo-splash`; A11, A12 → A14 → A15 → gate → review (Opus medium on A4, A5, A8) → owner Windows list → merge.
 
-## Windows verification (owner's work PC, before merge)
+## Windows verification (owner's Windows PC, before merge)
 1. Fresh user: only `%APPDATA%\Navo` and `%LOCALAPPDATA%\Navo` appear.
 2. Ferrite profile with settings, shortcuts, two tabs, rename history and one killed copy job: Navo
    starts with all of it; the job is recovered once; both old folders are renamed to
@@ -249,7 +249,7 @@ A1 → (A2, A3, A6, A7, A9 in parallel) → A4 → A5; A7 → A8; A10 after `ui/
 ## Done when
 - The protocol tests in A4, A8 pass; Windows CI is green; `cargo xtask gate` passes once on the branch.
 - `git grep -i ferrite -- crates` shows only legacy constants, D3 markers, aliases and test fixtures.
-- The Windows list passes on the work PC.
+- The Windows list passes on a Windows PC.
 
 ## Log
 - 2026-10-26 — Plan drafted from the inventory at e077fb5a.

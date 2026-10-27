@@ -11,7 +11,7 @@ Fix the four Windows rename-log failures while preserving append behavior and ba
 
 - D1 — Use a new worktree based on the backend branch; leave existing worktrees intact.
 - D2 — The main agent implements and checks everything. One Sol 6.1 xhigh agent reviews the final changes.
-- D3 — Keep the current alpha scope. Native Explorer/OLE checks and work-PC measurements require Windows.
+- D3 — Keep the current alpha scope. Native Explorer/OLE checks and Windows measurements require Windows.
 - D4 — Open the rename log with read and append access, as required for Windows file locking. Keep the file lock through append and sync; never truncate existing history.
 - D5 — Make no dependency, UI, merge, push or deployment changes.
 
@@ -62,4 +62,4 @@ Fix the four Windows rename-log failures while preserving append behavior and ba
 - 2026-10-23 18:20 EEST — Located the recent backend commits and continuation plan. Latest Windows CI 39945045244 repeats four `Access is denied` rename-log failures. The Rust `File::lock` documentation explicitly disallows append-only handles on Windows: https://doc.rust-lang.org/std/fs/struct.File.html#method.lock.
 - 2026-10-23 18:26 EEST — `CARGO_BUILD_JOBS=8 nice -n 10 cargo nextest run -p rusty-app -E 'test(rename_log::tests)'` passed all eight log tests, including the stronger history and distinct-concurrent-batch assertions. Local system Rust is 1.99.1; the repository and Windows CI pin 1.99.0. No toolchain or dependency files changed. Full gate started.
 - 2026-10-23 18:30 EEST — `CARGO_BUILD_JOBS=8 nice -n 10 cargo xtask gate` passed all 10 steps in 222.0 seconds: 7,060 tests passed, 14 skipped, plus documentation tests. The audit used the repository's existing eight warning allowances; no allowances or lint rules changed. Started the single read-only Sol 6.1 xhigh review. Native Windows verification remains pending.
-- 2026-10-23 18:31 EEST — Sol 6.1 xhigh completed the read-only review with no actionable findings. It confirmed append preservation and the Windows locking requirement; no builds or tests ran in the review agent. Verification logs and JUnit output are retained at a local verification log, a local verification log and a local verification report. Native Windows rerun, Explorer/OLE checks and work-PC measurements remain open. No post-alpha work was started.
+- 2026-10-23 18:31 EEST — Sol 6.1 xhigh completed the read-only review with no actionable findings. It confirmed append preservation and the Windows locking requirement; no builds or tests ran in the review agent. Verification logs and JUnit output are retained at a local verification log, a local verification log and a local verification report. Native Windows rerun, Explorer/OLE checks and Windows measurements remain open. No post-alpha work was started.

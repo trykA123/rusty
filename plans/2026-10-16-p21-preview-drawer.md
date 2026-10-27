@@ -39,7 +39,7 @@ All decided (D52, D43, D45); workers never reopen them.
 
 ## Done when
 
-- The owner opens the preview on the work PC, browses a big folder on the share without freezes, and opens items from it.
+- The owner opens the preview on a Windows PC, browses a big folder on the share without freezes, and opens items from it.
 - The gate and Windows CI are green; the reviewer passes.
 
 ## Log

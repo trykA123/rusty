@@ -384,7 +384,7 @@ Opus high, on the K1–K6 diff. Focus:
 - restore by name across folders;
 - right-drag against the long-press menu.
 
-Then: gate, Windows CI, merge, an alpha build, and the owner checks the key table on the work PC.
+Then: gate, Windows CI, merge, an alpha build, and the owner checks the key table on a Windows PC.
 
 ### D1 — drop operation rule
 

@@ -82,7 +82,7 @@ A modal panel with a preview table, a "Problems only" filter and a footer such a
 - F2 on two or more marks opens this tool.
 - The batch is all or nothing.
 - The tool opens with default rules, not the last ones.
-- Targets, logged and not gated: 1,000 renames on the work PC, and a preview of 50,000 items in under 300 ms (228 ms measured).
+- Targets, logged and not gated: 1,000 renames on a Windows PC, and a preview of 50,000 items in under 300 ms (228 ms measured).
 
 ## Done and coming
 

@@ -14,7 +14,7 @@ A long right-click, the Menu key or Shift+F10 opens the Windows context menu for
 - **D4 — A plain model in between.** The provider returns a `ShellMenu` tree: id, text, access key, icon as RGBA, state (enabled, checked, default), submenu (filled or lazy), group hint. The UI filters and draws only this model, so the component is tested headless with a fake.
 - **D5 — Lazy submenus.** Build the menu with `CMF_SYNCCASCADEMENU` so "Send to" and similar fill during `WM_INITMENUPOPUP` (54–134 ms in M1); without it they fill on a shell thread while messages are pumped. An unfilled submenu is one item with blank text: treat it as Loading. Fill in the background when the menu opens, with a 250 ms budget per submenu; a slow handler is skipped quietly and its items appear when it answers. Extended verbs (Shift set) stay off for the default view.
 - **D6 — Owner-drawn items.** Items that only draw themselves show their text if any; otherwise they are reachable through "Classic menu".
-- **D7 — Windows 11 commands.** Packaged commands already appear in the classic `IContextMenu` (M1: Windows Terminal, with its CLSID as the verb), so there is no separate path. Explorer-only commands are unverified on the CI runner; the owner checks on the work PC.
+- **D7 — Windows 11 commands.** Packaged commands already appear in the classic `IContextMenu` (M1: Windows Terminal, with its CLSID as the verb), so there is no separate path. Explorer-only commands are unverified on the CI runner; the owner checks on a Windows PC.
 - **D9 — Keep the menu object alive.** Item ids work only on the `IContextMenu` that produced them: the STA thread keeps it while Ferrite's menu is open and invokes by canonical verb when there is one, by id otherwise. The STA thread is warmed at start (the first menu in a process takes 58–300 ms, later ones 10–30 ms).
 - **D8 — Linux.** The provider returns only Ferrite's actions (D30).
 
@@ -46,7 +46,7 @@ A long right-click, the Menu key or Shift+F10 opens the Windows context menu for
 - A long right-click on a `.zip` shows 7-Zip's submenu in Ferrite's style; "Extract Here" works.
 - Typing "send" shows the "Send to" targets; Enter on one runs it.
 - "Classic menu" opens the native menu at the same place.
-- The gate and Windows CI are green; the reviewer passes the branch; the owner confirms on the work PC.
+- The gate and Windows CI are green; the reviewer passes the branch; the owner confirms on a Windows PC.
 
 ## D72 — Native-first menu with drill-in (beta, D74)
 
@@ -102,7 +102,7 @@ N1, N4 and N6 run in parallel. N2 → N3 and N4 → N5 are serial. Each atom tou
 
 ### Done when
 
-- The menu of a `.zip`, a folder, three files and empty space matches Explorer's classic menu, item for item, on the work PC.
+- The menu of a `.zip`, a folder, three files and empty space matches Explorer's classic menu, item for item, on a Windows PC.
 - Send to and Open with drill in and back with the keyboard and the mouse; typing "desk" on the root page finds Send to › Desktop.
 - An enumeration failure opens the native menu at the same place; the gate and Windows CI are green; N9 passes.
 
@@ -130,7 +130,7 @@ N1, N4 and N6 run in parallel. N2 → N3 and N4 → N5 are serial. Each atom tou
 - 2026-10-16 — M6 review PASS WITH FIXES; fixes merged (p17-m6-fixes, CI 38937246695 green): the Windows menu refuses names Win32 would rewrite (trailing dot or space, device names) so a shell verb can never hit another file; viewer right-click targets the clicked tree row or table cell; Retry resends a failed submenu; dropped prefetch opens are cancelled before the shell builds them; Linux shows only working Ferrite actions; long-press marks the pressed row; tree Copy value walk is bounded by the cap. Deferred: Find selection and Copy path:line in the paged large-file view.
 - 2026-10-17 — Status closed: M1 (merged 164bd28; decisions D5, D7 came from it) was done but still marked running.
 - 2026-10-19 — Owner: right-click on the empty part of a pane shows no menu, so there is no way to create a file from the mouse. M8 added (background menu and a New file command).
-- 2026-10-21 — Owner checked M8 on the work PC (Windows): right-click on empty space works. M8 done.
+- 2026-10-21 — Owner checked M8 on a Windows PC (Windows): right-click on empty space works. M8 done.
 - 2026-10-21 — D72: owner confirmed the native-first menu, restyled, no Ferrite section, and asked to keep the current filter field. Needs a plan section (atoms) before work starts; it comes after P36 X6 drag-out.
 - 2026-10-26 — D72 section planned (N1–N9): most of the shell side exists from M3 (lazy fill, invoke by verb then id, classic, hung STA replacement), so the work is the drill-in UI, the list without sections, extended verbs, owner-drawn icons and the automatic fallback. Q1 (Ferrite actions) and Q2 (which Explorer menu) asked.
 - 2026-10-26 — Owner answered the D72 questions: Navo's own actions stay out of the list (reachable by typing in the filter and from Ctrl+K; on the background menu Sort by, Refresh and New file sit where Explorer shows them); the menu mirrors the full classic Windows menu, Shift adds the extended verbs.

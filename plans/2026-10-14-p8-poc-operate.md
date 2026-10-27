@@ -41,7 +41,7 @@ Status: running (2026-10-15) · Branch: `p8-operate` · After: G7 (passed)
 | O9 | `recycle` | T3 | api-builder | xhigh | O6 | Windows CI: file lands in the Recycle Bin |
 | O10 | `confirm_dialog`, `job_row` | T2 | ui-builder | high | G7 | headless tests pass |
 | O11 | `op_wiring` | T3 | api-builder | xhigh | O8, O9, O10 | end-to-end tests pass |
-| O12 | PoC check on Windows | — | orchestrator | — | O11 | owner copies, moves and recycles on the work PC |
+| O12 | PoC check on Windows | — | orchestrator | — | O11 | owner copies, moves and recycles on a Windows PC |
 | G8 | gate | — | orchestrator + reviewer | high | O1–O12 | gate, CI on both OS, review, **PoC 2 demo** |
 
 O1–O2, O3–O4 and O10 run in parallel.
@@ -50,7 +50,7 @@ O1–O2, O3–O4 and O10 run in parallel.
 
 - A copy killed halfway leaves no partial file at the target and resumes or rolls back on the next start.
 - Shift+Del shows the warning and nothing is deleted when it is dismissed.
-- The owner copies, moves and recycles files on the work PC with progress and cancel.
+- The owner copies, moves and recycles files on a Windows PC with progress and cancel.
 
 ## Log
 

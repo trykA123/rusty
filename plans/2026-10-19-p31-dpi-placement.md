@@ -24,7 +24,7 @@ Final. Workers never reopen them; a worker that finds one wrong stops and report
 | --- | --- | --- | --- | --- | --- | --- |
 | D1 | D1 manifest and D2 report field and CI test | api-builder (Codex sol high) | high | — | Windows CI: `--diag-report` shows `per-monitor-v2`; Linux build unchanged; gate | done |
 | D2 | D3 placement model in the session with migration, and the pure D4 restore function (setup, placements → bounds and maximized) | api-builder (Codex sol xhigh), then reviewer (Opus) | xhigh | — | session tests: round trip, old session loads, cap 8; restore tests: exact match, moved monitor, smaller monitor, monitor gone, maximized; proptest: the result always lies inside a current work area; gate | done |
-| D3 | Wire D2 into the window: read displays and bounds from GPUI at save, apply at open | ui-builder (Opus medium) | medium | D1, D2 | UI test with a fake display list; owner check on the work PC: two monitors at different scales, sharp text on both, close and reopen in place, undock and redock | done |
+| D3 | Wire D2 into the window: read displays and bounds from GPUI at save, apply at open | ui-builder (Opus medium) | medium | D1, D2 | UI test with a fake display list; owner check on a Windows PC: two monitors at different scales, sharp text on both, close and reopen in place, undock and redock | done |
 | D4 | Review | reviewer (Opus) | medium | all | verdict | ready |
 
 ## Done when

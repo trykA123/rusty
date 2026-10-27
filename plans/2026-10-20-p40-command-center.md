@@ -320,7 +320,7 @@ Roles follow the owner's current rules: Sonnet 5.5 (medium or high) for decided 
 ### A10 — review Part A
 
 - **Read:** the Part A diff, D1–D18 and D29–D32.
-- **Check:** one verdict; `cargo xtask gate`; Windows CI green; the orchestrator runs Ctrl+K on the work-PC build.
+- **Check:** one verdict; `cargo xtask gate`; Windows CI green; the orchestrator runs Ctrl+K on a Windows PC build.
 
 ### B1 — visits and opens
 
@@ -448,7 +448,7 @@ Roles follow the owner's current rules: Sonnet 5.5 (medium or high) for decided 
 
 - **Read:** `rusty-app/src/pdf_helper.rs` (second mode of the exe), `ntfs`, `pipe`, `file`, C0.
 - **Change:** `rusty-app/src/index_service/`: `--index-service run` (service main loop: volumes from settings or all fixed NTFS drives, enumerate, follow, answer queries), `install` and `remove` (create or delete the service, delayed auto start, restart on failure), elevated start from the app through `ShellExecuteExW` with `runas`. Index files under `%ProgramData%\Ferrite\index\` with the D23 ACL.
-- **Check:** `cargo nextest run -p rusty-app index_service` for argument parsing and config; Windows CI build; the owner installs it on the work PC and searches.
+- **Check:** `cargo nextest run -p rusty-app index_service` for argument parsing and config; Windows CI build; the owner installs it on a Windows PC and searches.
 - **Stop if:** the service needs any write access to user files.
 
 ### C8 — index source
@@ -486,7 +486,7 @@ Roles follow the owner's current rules: Sonnet 5.5 (medium or high) for decided 
 - Ctrl+K, the app-menu row and a click on the title-bar field open the box; it lists commands for the focused place with their shortcuts, and Enter runs them through the same path as keys (A8 tests; owner check).
 - Typing a folder name the user visits often puts it first; Enter opens it, Ctrl+Enter opens it in the other pane (B9 tests).
 - "Go to folder…" completes paths and navigates (B8 tests).
-- With the service installed on the work PC, a file anywhere on C: appears within 50 ms of typing, and a file created a second ago is found (owner check).
+- With the service installed on a Windows PC, a file anywhere on C: appears within 50 ms of typing, and a file created a second ago is found (owner check).
 - Without the service, the walk index answers for the chosen roots, and the activity strip shows indexing progress (C3, C10 tests).
 - No query, file name or path appears in logs or the diagnostic report (canary test).
 - `cargo xtask gate` and Windows CI pass for each part; each part is in an alpha build.
@@ -499,7 +499,7 @@ Roles follow the owner's current rules: Sonnet 5.5 (medium or high) for decided 
 The original questions:
 
 
-- **Q1 — Service.** Part C installs a Windows service "Ferrite Index" (one UAC prompt, LocalSystem, starts with Windows, like Everything's service). Is that acceptable on the work PC, or do you prefer a helper that asks for admin at every Ferrite start? Recommendation: the service.
+- **Q1 — Service.** Part C installs a Windows service "Ferrite Index" (one UAC prompt, LocalSystem, starts with Windows, like Everything's service). Is that acceptable on a Windows PC, or do you prefer a helper that asks for admin at every Ferrite start? Recommendation: the service.
 - **Q2 — Default scope without the service.** Should the walk index cover only your user folder by default (light, calm), or every local fixed drive (Everything-like, but a full walk and more memory inside Ferrite after each start)? Recommendation: the user folder; whole drives come with the service.
 - **Q3 — Alt+Enter.** In the box, Alt+Enter opens the result in a new tab. In Explorer, Alt+Enter shows Properties. Keep "new tab", or use Alt+Enter for Properties and Ctrl+T for new tab?
 
