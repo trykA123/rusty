@@ -61,7 +61,7 @@ Merged after that release: six built-in colour themes. They are Open sea (the de
 ### Now in progress
 
 - **Record performance.** A menu command records frame times, CPU, memory and the latency of opening folders and Ctrl+K while you use the app, then saves a `navo-performance-*.zip` to send. It is built and waiting for Windows CI.
-- **Delete safety net (1 to 7 days retention).** The retention engine, recovery, quarantine and crash-safe temporary-file cleanup are built and reviewed. All of it sits behind an experimental launch flag, so normal use does not change. The last review fixes and the move onto the Navo names are being made now. After it merges, still missing for users: turning it on in delete and overwrite jobs, its settings, a "Recently deleted" view, and general undo.
+- **Delete safety net (1 to 7 days retention).** On by default since 28 October 2026: deletes and overwrites are kept 3 days, Ctrl+Z restores them, "Recently deleted" lists them, Settings › Safety net sets the limits, and expired files clean up on their own. Left: Windows checks in CI, a senior review and the user guide.
 - **Fonts.** Space Grotesk for the brand, Inter for the interface, JetBrains Mono for paths and viewers. Decided. Not built yet.
 
 Still open for alpha sign-off:
@@ -83,7 +83,7 @@ Goal: fast search, workspaces and tiled panes, safe deletes.
 The owner reordered the beta on 27 October 2026 (D85). Built in this order:
 
 1. core: search index like Everything: Ctrl+K answers at once from the Navo Index service, even while it updates; no folder walks on NTFS drives; the service starts from its saved index; less memory; a benchmark next to Everything. The busy-answer fix is done.
-2. core: delete safety net (D65): Shift+Del and overwrites keep the old files 1–7 days, a "Recently deleted" view, Ctrl+Z restores. Merged for the next release.
+2. core: delete safety net (D65): Shift+Del and overwrites keep the old files 1–7 days, a "Recently deleted" view, Ctrl+Z restores. On by default since alpha-2026-10-28e; review and docs left.
 3. core: workspaces (Alt+1…9) with the tray: named workspaces, drafts, Save and Discard, rename, move, delete with Ctrl+Z, and a status-bar button. Done.
 4. core: up to four panes, tiled like Hyprland (D80): five layouts and your own on Ctrl+L, split, close, swap and resize from the keyboard, Shift+drag swap, divider drag, a strip in narrow windows. Done.
 5. core: find files by content and attributes in Ctrl+K, with results as a tab you can work in; virtual collections (saved searches, snapshots, files picked by hand). Query, content matcher and collection store done.
