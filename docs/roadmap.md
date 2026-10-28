@@ -84,8 +84,8 @@ The owner reordered the beta on 27 October 2026 (D85). Built in this order:
 
 1. core: search index like Everything: Ctrl+K answers at once from the Navo Index service, even while it updates; no folder walks on NTFS drives; the service starts from its saved index; less memory; a benchmark next to Everything. The busy-answer fix is done.
 2. core: delete safety net (D65): Shift+Del and overwrites keep the old files 1–7 days, a "Recently deleted" view, Ctrl+Z restores. Merged for the next release.
-3. core: workspaces (Alt+1…9) with the tray: named workspaces, drafts, Save and Discard. Model, commands and session file done.
-4. core: more than two panes, tiled like Hyprland (D80): presets on Ctrl+L, split, move, resize, swap and close from the keyboard, own presets. Tile notation, pane operations and applying a layout done.
+3. core: workspaces (Alt+1…9) with the tray: named workspaces, drafts, Save and Discard, rename, move, delete with Ctrl+Z, and a status-bar button. Done.
+4. core: up to four panes, tiled like Hyprland (D80): five layouts and your own on Ctrl+L, split, close, swap and resize from the keyboard, Shift+drag swap, divider drag, a strip in narrow windows. Done.
 5. core: find files by content and attributes in Ctrl+K, with results as a tab you can work in; virtual collections (saved searches, snapshots, files picked by hand). Query, content matcher and collection store done.
 6. module: clipboard history and saved items (snippets, commands, paths, encrypted secrets, folder notes) in a Ctrl+K-style palette, as a module you can switch off (D87); summon hotkey and tray.
 7. core: background work that never waits: job pools with priorities, folder sizes that cancel when you leave, size on disk, hard links counted once.
