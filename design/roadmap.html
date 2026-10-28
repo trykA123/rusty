@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Navo roadmap</title>
+<title>Navo Roadmap</title>
+<meta name="description" content="What Navo can do today, and what comes next.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
@@ -14,14 +15,13 @@
   --surface: oklch(98.5% 0.008 225);
   --raised: oklch(99.8% 0 225);
   --border: oklch(89% 0.014 225);
-  --selected: oklch(90% 0.046 218);
+  --selected: oklch(92% 0.034 218);
   --text: oklch(22% 0.014 225);
   --muted: oklch(48.8% 0.017 225);
   --border-strong: oklch(64.8% 0.017 225);
   --accent: oklch(52% 0.092 218);
   --accent-text: oklch(48.8% 0.086 218);
   --on-accent: oklch(99.8% 0 225);
-  --danger: oklch(36% 0.144 22);
   --ok: oklch(48% 0.108 160);
   --warn: oklch(49.6% 0.102 80);
   --info: oklch(49.6% 0.12 262);
@@ -29,17 +29,16 @@
   --font-body: "Inter", "Segoe UI Variable", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", monospace;
   --t12: 0.75rem; --t13: 0.8125rem; --t14: 0.875rem; --t16: 1rem; --t18: 1.125rem;
-  --t20: 1.25rem; --t24: 1.5rem; --t30: 1.875rem; --t36: 2.25rem; --t48: 3rem;
+  --t20: 1.25rem; --t24: 1.5rem; --t36: 2.25rem; --t48: 3rem;
   --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px; --s7: 48px; --s8: 64px;
   --r1: 6px; --r2: 10px; --r3: 16px; --pill: 999px;
-  --shadow: 0 1px 2px oklch(22% 0.014 225 / 0.06), 0 4px 16px oklch(22% 0.014 225 / 0.06);
-  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
-  --dur-ui: 160ms;
-  --dur-grow: 700ms;
+  --shadow: 0 1px 2px oklch(22% 0.014 225 / 0.06), 0 2px 8px oklch(22% 0.014 225 / 0.05);
+  --dur-ui: 100ms;
   --z-sticky: 20;
   --icon: 1.25rem;
   --gutter: 16px;
-  --max: 70rem;
+  --max: 96rem;
+  --touch: 2.75rem;
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
   color-scheme: dark;
@@ -54,11 +53,10 @@
   --accent: oklch(76% 0.11 218);
   --accent-text: oklch(76% 0.11 218);
   --on-accent: oklch(19% 0.014 225);
-  --danger: oklch(73% 0.166 22);
   --ok: oklch(85% 0.13 160);
   --warn: oklch(82% 0.13 80);
   --info: oklch(76% 0.12 262);
-  --shadow: 0 1px 2px oklch(0% 0 0 / 0.3), 0 4px 16px oklch(0% 0 0 / 0.25);
+  --shadow: 0 1px 2px oklch(0% 0 0 / 0.3), 0 2px 8px oklch(0% 0 0 / 0.2);
 } }
 :root[data-theme="dark"] {
   color-scheme: dark;
@@ -73,296 +71,308 @@
   --accent: oklch(76% 0.11 218);
   --accent-text: oklch(76% 0.11 218);
   --on-accent: oklch(19% 0.014 225);
-  --danger: oklch(73% 0.166 22);
   --ok: oklch(85% 0.13 160);
   --warn: oklch(82% 0.13 80);
   --info: oklch(76% 0.12 262);
-  --shadow: 0 1px 2px oklch(0% 0 0 / 0.3), 0 4px 16px oklch(0% 0 0 / 0.25);
+  --shadow: 0 1px 2px oklch(0% 0 0 / 0.3), 0 2px 8px oklch(0% 0 0 / 0.2);
 }
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; scroll-padding-top: var(--s4); -webkit-text-size-adjust: 100%; }
+html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0; background: var(--bg); color: var(--text);
-  font: 400 var(--t16)/1.55 var(--font-body);
+  font: 400 var(--t16)/1.5 var(--font-body);
   padding-inline: max(var(--gutter), env(safe-area-inset-left)) max(var(--gutter), env(safe-area-inset-right));
-  padding-block-end: var(--s8);
+  padding-block-end: var(--s7);
+  overflow-wrap: anywhere;
 }
-h1, h2, h3, h4, p, ul, ol { margin: 0; padding: 0; }
-ul, ol { list-style: none; }
+h1, h2, h3, h4, p, ul { margin: 0; padding: 0; }
+ul { list-style: none; }
 h2, h3, h4 { font-family: var(--font-display); line-height: 1.2; letter-spacing: -0.01em; }
-h2 { font-size: var(--t24); font-weight: 600; }
-h3 { font-size: var(--t18); font-weight: 600; }
-a { color: var(--accent-text); text-underline-offset: 3px; }
 :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: var(--r1); }
-.wrap { max-width: var(--max); margin-inline: auto; display: grid; gap: var(--s7); padding-block-start: var(--s5); }
+.card[hidden], .grp[hidden], .empty[hidden], .clear[hidden], .col[hidden] { display: none; }
 .ic { width: var(--icon); height: var(--icon); flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.muted { color: var(--muted); }
-.num, .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
-.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r3); box-shadow: var(--shadow); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.wrap { max-width: var(--max); margin-inline: auto; display: grid; gap: var(--s5); padding-block-start: var(--s4); }
+
+.top { display: flex; justify-content: space-between; align-items: center; gap: var(--s3); }
 .eyebrow { font: 600 var(--t12)/1.2 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
-.sec-head { display: grid; gap: var(--s1); margin-block-end: var(--s4); }
-.sec-head p { color: var(--muted); font-size: var(--t14); max-width: 62ch; }
-
-.stack { display: grid; gap: var(--s7); }
-.hero { display: grid; gap: var(--s5); padding-block: var(--s5) 0; }
-.hero-top { display: flex; justify-content: space-between; align-items: center; gap: var(--s3); }
-.theme { white-space: nowrap; padding: var(--s2) var(--s3); min-height: 2.75rem; border: 1px solid var(--border-strong); border-radius: var(--pill); background: var(--surface); color: var(--text); font: 600 var(--t12) var(--font-mono); cursor: pointer; transition: background-color var(--dur-ui); }
+.btn, .theme { display: inline-flex; align-items: center; justify-content: center; gap: var(--s2); min-height: var(--touch); padding-inline: var(--s4); border-radius: var(--pill); font: 600 var(--t14) var(--font-body); text-decoration: none; cursor: pointer; white-space: nowrap; transition: background-color var(--dur-ui); }
+.theme { border: 1px solid var(--border-strong); background: var(--surface); color: var(--text); font: 600 var(--t12) var(--font-mono); }
 .theme:hover { background: var(--raised); }
-.brand { display: grid; gap: var(--s2); }
-.wordmark { font: 700 clamp(3rem, 14vw, 4.5rem)/1 var(--font-display); letter-spacing: -0.04em; color: var(--text); }
-.tagline { font-size: var(--t18); color: var(--muted); max-width: 40ch; }
-.dl { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s3) var(--s5); padding: var(--s4); border-inline-start: 4px solid var(--accent); }
-.dl-info { display: grid; gap: var(--s1); flex: 1 1 16rem; }
-.dl-name { font: 600 var(--t20)/1.2 var(--font-mono); }
-.dl-note { font-size: var(--t14); color: var(--muted); }
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--s2); min-height: 2.75rem; padding-inline: var(--s4); border-radius: var(--r2); background: var(--accent); color: var(--on-accent); font: 600 var(--t14) var(--font-body); text-decoration: none; transition: background-color var(--dur-ui), transform var(--dur-ui) var(--ease-out); }
+.btn { background: var(--accent); color: var(--on-accent); border: 0; }
 .btn:hover { background: color-mix(in oklch, var(--accent) 85%, black); }
-.btn:active { transform: scale(0.98); }
-.glance { display: grid; gap: var(--s3); grid-template-columns: 1fr; }
-.glance li { display: grid; gap: 2px; padding-inline-start: var(--s3); border-inline-start: 3px solid var(--border-strong); }
-.glance li.g-now { border-color: var(--accent); }
-.glance b { font: 600 var(--t18)/1.25 var(--font-display); }
-.glance span { font-size: var(--t14); color: var(--muted); }
+.hero { display: grid; gap: var(--s4); }
+.hero-row { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--s4) var(--s5); }
+.brand { display: grid; gap: var(--s2); }
+.wordmark { font: 700 clamp(3rem, 14vw, 4.5rem)/1 var(--font-display); letter-spacing: -0.04em; }
+.tagline { font: 600 var(--t20)/1.3 var(--font-display); max-width: 36ch; }
+.lead { color: var(--muted); font-size: var(--t16); max-width: 52ch; }
 
-.tl { display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); }
-.ph { position: relative; display: grid; }
-.pa { position: relative; display: grid; align-content: start; gap: 2px; padding: calc(var(--s6) + var(--s3)) var(--s2) var(--s3) 0; color: inherit; text-decoration: none; border-radius: var(--r2); }
-a.pa:hover .nm { color: var(--accent-text); }
-.ph::before { content: ""; position: absolute; top: var(--s4); inset-inline: 0; height: 4px; border-radius: 2px; background: var(--border); }
-.ph.done::before { background: var(--ok); }
-.ph.now::before { background: linear-gradient(to right, var(--ok) 0 calc(var(--pp) * 100%), var(--border) calc(var(--pp) * 100%) 100%); }
-.mk { position: absolute; top: calc(var(--s4) - 10px); inset-inline-start: 0; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: var(--surface); border: 2px solid var(--muted); z-index: 1; }
-.ph.done .mk { background: var(--ok); border-color: var(--ok); color: var(--surface); }
-.ph.done .mk .ic { width: 14px; height: 14px; stroke-width: 3; }
-.ph.now .mk { background: var(--accent); border-color: var(--accent); }
-.ph.now .mk::after { content: ""; position: absolute; inset: -6px; border-radius: 50%; border: 2px solid var(--accent); opacity: 0; animation: ring 3.2s ease-out infinite; }
-@keyframes ring { 0% { transform: scale(0.7); opacity: 0.5; } 70%, 100% { transform: scale(1.25); opacity: 0; } }
-.nm { font: 600 var(--t16)/1.2 var(--font-display); transition: color var(--dur-ui); }
-.vr, .stt { font-size: var(--t13); color: var(--muted); }
-.stt { font-family: var(--font-mono); font-size: var(--t12); }
-.here { justify-self: start; padding: 2px var(--s2); border-radius: var(--pill); background: var(--accent); color: var(--on-accent); font: 600 var(--t12)/1.4 var(--font-mono); margin-block-end: var(--s1); white-space: nowrap; }
-.ph.now .nm { font-size: var(--t18); }
-.ph.now::after { content: ""; position: absolute; inset-block: calc(var(--s4) + var(--s3)) 0; inset-inline: 0 var(--s1); background: var(--selected); border-radius: var(--r2); }
-.ph.now .pa { z-index: 1; padding-inline-start: var(--s3); }
-.ph.now .mk { inset-inline-start: var(--s3); }
+.tools { display: grid; gap: var(--s3); padding: var(--s4); background: var(--surface); border: 1px solid var(--border); border-radius: var(--r3); box-shadow: var(--shadow); }
+.field { display: grid; gap: var(--s1); }
+.field label, .chipset > .lbl { font: 600 var(--t12)/1.2 var(--font-mono); letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+.search { position: relative; }
+.search .ic { position: absolute; inset-inline-start: var(--s3); inset-block-start: 50%; translate: 0 -50%; color: var(--muted); pointer-events: none; }
+.search input { width: 100%; min-height: var(--touch); padding: 0 var(--s7) 0 calc(var(--s3) + var(--icon) + var(--s2)); border: 1px solid var(--border-strong); border-radius: var(--r2); background: var(--raised); color: var(--text); font: 400 var(--t16) var(--font-body); }
+.search input::placeholder { color: var(--muted); opacity: 1; }
+.search input::-webkit-search-cancel-button { display: none; }
+.clear { position: absolute; inset-inline-end: var(--s1); inset-block-start: 50%; translate: 0 -50%; width: calc(var(--touch) - 8px); height: calc(var(--touch) - 8px); display: grid; place-items: center; border: 0; border-radius: var(--r2); background: transparent; color: var(--muted); cursor: pointer; }
+.clear:hover { background: var(--border); color: var(--text); }
+.chipset { display: grid; gap: var(--s2); align-content: start; }
+.chips-wrap { display: flex; flex-wrap: wrap; gap: var(--s3) var(--s6); align-content: start; }
+.chiprow { display: flex; flex-wrap: wrap; gap: var(--s2); }
+.chip { min-height: var(--touch); padding-inline: var(--s3); border: 1px solid var(--border-strong); border-radius: var(--pill); background: var(--raised); color: var(--text); font: 500 var(--t13)/1 var(--font-body); cursor: pointer; transition: background-color var(--dur-ui), border-color var(--dur-ui); }
+.chip:hover { border-color: var(--accent); }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 600; }
+.legend { font-size: var(--t13); color: var(--muted); }
+.status { font-size: var(--t13); color: var(--muted); }
+.status:empty { display: none; }
+.chipfold > summary { list-style: none; display: flex; align-items: center; justify-content: space-between; min-height: var(--touch); padding-inline: var(--s3); border: 1px solid var(--border-strong); border-radius: var(--r2); background: var(--raised); font: 600 var(--t14) var(--font-body); cursor: pointer; }
+.chipfold > summary::-webkit-details-marker { display: none; }
+.chipfold > summary::after { content: "Show"; font: 500 var(--t12) var(--font-mono); color: var(--muted); }
+.chipfold[open] > summary::after { content: "Hide"; }
+.chipfold[open] > summary { margin-block-end: var(--s3); }
+.chipfold .legend { margin-block-start: var(--s3); }
 
-.prog { display: grid; gap: var(--s5); padding: var(--s5); }
-.prog-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--s2) var(--s5); }
-.prog-num { font: 700 var(--t36)/1 var(--font-mono); letter-spacing: -0.03em; }
-.prog-num small { font: 500 var(--t14) var(--font-body); letter-spacing: 0; color: var(--muted); margin-inline-start: var(--s2); }
-.bar { height: 14px; border-radius: var(--pill); background: var(--border); overflow: hidden; }
-.bar i { display: block; height: 100%; width: 100%; background: var(--ok); transform-origin: left; transform: scaleX(var(--p)); animation: grow var(--dur-grow) var(--ease-out) both; }
-@keyframes grow { from { transform: scaleX(0); } }
-.cols { display: grid; gap: var(--s6); grid-template-columns: 1fr; align-items: start; }
-.col h3 { display: flex; align-items: baseline; gap: var(--s2); margin-block-end: var(--s2); }
-.col h3 .cnt { font: 600 var(--t13) var(--font-mono); color: var(--muted); }
-.checks > li { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; gap: var(--s3); padding-block: var(--s3); border-block-start: 1px solid var(--border); }
-.checks.is-done > li { grid-template-columns: auto minmax(0, 1fr); align-items: center; padding-block: var(--s2); font-size: var(--t14); }
-.checks.is-done .ic { color: var(--ok); }
-.box { width: var(--icon); height: var(--icon); border: 2px solid var(--border-strong); border-radius: var(--r1); margin-block-start: 1px; }
-.body { display: grid; gap: 2px; min-width: 0; }
-.title { font-weight: 600; font-size: var(--t16); }
-.detail { font-size: var(--t14); color: var(--muted); }
-.title.row { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--s1) var(--s3); }
-.tag { padding: 2px var(--s2); border-radius: var(--pill); border: 1px solid var(--border-strong); font: 600 var(--t12)/1.4 var(--font-mono); white-space: nowrap; color: var(--muted); }
-.t-merge { border-color: var(--info); color: var(--info); }
-.t-owner { border-color: var(--warn); color: var(--warn); }
-.t-pc { color: var(--text); }
-.exitline { padding: var(--s3) var(--s4); border-radius: var(--r2); background: var(--selected); font-size: var(--t14); }
+.tabs { display: none; }
+.js .tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s1); padding: var(--s1); background: var(--surface); border: 1px solid var(--border); border-radius: var(--r2); position: sticky; inset-block-start: var(--s2); z-index: var(--z-sticky); box-shadow: var(--shadow); }
+.tab { min-height: var(--touch); display: grid; place-content: center; justify-items: center; gap: 0; padding: var(--s1); border: 0; border-radius: var(--r1); background: transparent; color: var(--muted); font: 600 var(--t13)/1.2 var(--font-body); cursor: pointer; transition: background-color var(--dur-ui); }
+.tab b { font: 600 var(--t12) var(--font-mono); }
+.tab[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
 
-.feats { display: grid; gap: var(--s4); grid-template-columns: 1fr; }
-.fc { display: grid; gap: var(--s2); align-content: start; padding: var(--s4); background: var(--surface); border: 1px solid var(--border); border-radius: var(--r3); box-shadow: var(--shadow); }
-.fh { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--s2); }
-.ficon { width: 44px; height: 44px; display: grid; place-items: center; border-radius: var(--r2); background: var(--selected); color: var(--accent-text); }
-.ficon .ic { width: 1.5rem; height: 1.5rem; }
-.chips2 { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--s1); }
-.st { display: inline-flex; align-items: center; gap: var(--s1); padding: 2px var(--s2); border-radius: var(--pill); border: 1px solid currentColor; font: 600 var(--t12)/1.4 var(--font-mono); white-space: nowrap; }
-.st .ic { width: 0.875rem; height: 0.875rem; stroke-width: 3; }
-.st-ok { color: var(--ok); }
-.st-warn { color: var(--warn); }
-.fc p { font-size: var(--t14); }
-.fc p.open { color: var(--muted); font-size: var(--t13); }
+.board { display: grid; gap: var(--s4); grid-template-columns: minmax(0, 1fr); align-items: start; }
+.js .col:not(.is-on) { display: none; }
+.col { display: grid; gap: var(--s3); align-content: start; padding: var(--s3); background: var(--surface); border: 1px solid var(--border); border-radius: var(--r3); animation: fade var(--dur-ui) ease-out; }
+#col-now { border-block-start: 3px solid var(--accent); padding-block-start: calc(var(--s3) - 3px); }
+@keyframes fade { from { opacity: 0; } }
+.col-head { display: flex; align-items: center; gap: var(--s2); padding-inline: var(--s1); min-height: 2rem; }
+.col-ico { display: grid; place-items: center; color: var(--accent-text); }
+#col-shipped .col-ico { color: var(--ok); }
+.col-head h2 { font-size: var(--t18); font-weight: 600; }
+.col-cnt { padding: 1px var(--s2); border-radius: var(--pill); background: var(--border); font: 600 var(--t12)/1.5 var(--font-mono); color: var(--text); font-variant-numeric: tabular-nums; }
+.mini { margin-inline-start: auto; min-height: 2rem; padding-inline: var(--s3); border: 1px solid var(--border-strong); border-radius: var(--pill); background: var(--raised); color: var(--text); font: 500 var(--t12) var(--font-body); cursor: pointer; }
+.mini:hover { border-color: var(--accent); }
+.col-sub { padding-inline: var(--s1); font-size: var(--t13); color: var(--muted); margin-block-start: calc(var(--s2) * -1); }
+.col-body { display: grid; gap: var(--s3); align-content: start; }
+.empty { padding: var(--s3); font-size: var(--t14); color: var(--muted); text-align: center; }
 
-.kinds { display: flex; flex-wrap: wrap; gap: var(--s2) var(--s4); font-size: var(--t13); color: var(--muted); margin-block-end: var(--s4); }
-.kinds b { color: var(--text); font-weight: 600; }
-.folds { display: grid; gap: var(--s3); }
-.fold > summary { cursor: pointer; list-style: none; display: flex; flex-wrap: wrap; align-items: center; gap: var(--s1) var(--s3); padding: var(--s4); min-height: 3.25rem; border-radius: var(--r3); }
-.fold > summary::-webkit-details-marker { display: none; }
-.fold > summary:hover { background: color-mix(in oklch, var(--surface) 92%, var(--accent)); }
-.fold > summary .ic { transition: transform var(--dur-ui) var(--ease-out); color: var(--muted); }
-.fold[open] > summary .ic { transform: rotate(180deg); }
-.try-sum .t { font: 600 var(--t18)/1.25 var(--font-display); flex: 1 1 14rem; }
-.try-sum .count { font: 500 var(--t13) var(--font-mono); }
-.foldbody, .tryList { display: grid; gap: var(--s4); padding: 0 var(--s4) var(--s4); }
-.foldbody .sub { color: var(--muted); font-size: var(--t14); }
-.rows > li { display: grid; grid-template-columns: 5.25rem minmax(0, 1fr); gap: var(--s3); padding-block: var(--s3); border-block-start: 1px solid var(--border); align-items: start; }
+.cards { display: grid; gap: var(--s2); }
+.card { display: grid; gap: var(--s2); padding: var(--s3) var(--s4); background: var(--raised); border: 1px solid var(--border); border-radius: var(--r2); box-shadow: var(--shadow); align-content: start; }
+.card h4 { font-size: var(--t16); font-weight: 600; }
+.card p { font-size: var(--t14); color: var(--muted); line-height: 1.45; }
+.meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s2) var(--s3); margin-block-start: var(--s1); }
 .kind { display: inline-flex; align-items: center; gap: 6px; font: 600 var(--t12)/1.6 var(--font-mono); color: var(--text); }
 .kind i { width: 8px; height: 8px; border-radius: 50%; background: var(--c); flex: none; }
 .k-core { --c: var(--accent); }
 .k-module { --c: var(--info); }
 .k-package { --c: var(--warn); }
 .k-infra { --c: var(--border-strong); }
-.state + .state { margin-inline-start: var(--s1); }
-.state.prio { border-color: var(--accent); color: var(--accent-text); }
-.state { margin-inline-start: var(--s2); padding: 1px var(--s2); border-radius: var(--pill); border: 1px solid var(--border-strong); font: 600 var(--t12)/1.5 var(--font-mono); color: var(--muted); white-space: nowrap; }
-.exit { padding: var(--s3) var(--s4); border-radius: var(--r2); background: var(--selected); font-size: var(--t14); }
-.grp h4 { display: flex; align-items: baseline; gap: var(--s3); font-size: var(--t16); margin-block-end: var(--s1); }
-.ver { font: 600 var(--t12) var(--font-mono); color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; min-width: 4rem; }
-.grp .exit { margin-block-start: var(--s2); }
-.foldbody { gap: var(--s5); }
+.ver { padding: 0 var(--s2); border: 1px solid var(--border-strong); border-radius: var(--pill); font: 600 var(--t12)/1.6 var(--font-mono); color: var(--muted); white-space: nowrap; }
+.hero-card { background: var(--selected); border-color: var(--accent); border-width: 2px; padding: calc(var(--s3) - 1px) calc(var(--s4) - 1px); }
+.hero-card h4 { font-size: var(--t20); }
+.hero-card p { color: var(--text); }
+.badge { justify-self: start; display: inline-flex; align-items: center; gap: var(--s1); padding: 2px var(--s2) 2px var(--s2); border-radius: var(--pill); background: var(--accent); color: var(--on-accent); font: 600 var(--t12)/1.5 var(--font-mono); }
+.badge .ic { width: 0.875rem; height: 0.875rem; }
+.hero-card .ver { border-color: var(--accent-text); color: var(--text); }
 
-.stats { display: grid; gap: var(--s4); grid-template-columns: 1fr; }
-.stat { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s2) var(--s4); padding: var(--s4); background: var(--surface); border: 1px solid var(--border); border-radius: var(--r3); box-shadow: var(--shadow); align-content: start; }
-.sh { grid-column: 1 / -1; display: grid; }
-.sn { font: 600 var(--t18) var(--font-display); }
-.ss { font-size: var(--t13); color: var(--muted); }
-.sv { display: grid; gap: 2px; }
-.num.now { font-size: var(--t30); font-weight: 600; line-height: 1.1; color: var(--danger); }
-.num.goal { font-size: var(--t30); font-weight: 600; line-height: 1.1; color: var(--ok); }
-.vs { font: 500 var(--t12) var(--font-mono); text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
-.meter { grid-column: 1 / -1; position: relative; height: 10px; border-radius: var(--pill); background: var(--border); margin-block-start: var(--s2); overflow: hidden; }
-.meter .fill { position: absolute; inset: 0; background: var(--danger); transform-origin: left; transform: scaleX(var(--p)); animation: grow var(--dur-grow) var(--ease-out) both; }
-.meter .tick { position: absolute; inset-block: 0; inset-inline-start: 20%; width: 3px; background: var(--ok); outline: 2px solid var(--surface); }
-.sf { grid-column: 1 / -1; font-size: var(--t13); color: var(--muted); }
-.stats-note { margin-block-start: var(--s3); font-size: var(--t13); color: var(--muted); max-width: 72ch; }
+.grp { border-radius: var(--r2); }
+.grp > summary { list-style: none; display: flex; align-items: center; gap: var(--s2); min-height: var(--touch); padding: var(--s1) var(--s2); border-radius: var(--r2); cursor: pointer; transition: background-color var(--dur-ui); }
+.grp > summary::-webkit-details-marker { display: none; }
+.grp > summary:hover { background: var(--border); }
+.g-ico { display: grid; place-items: center; color: var(--muted); }
+.g-ico:empty { display: none; }
+.grp h3 { font-size: var(--t14); font-weight: 600; flex: 1; letter-spacing: 0; }
+.g-cnt { font: 600 var(--t12) var(--font-mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.g-chev { display: grid; place-items: center; color: var(--muted); }
+.c-up, .grp[open] .c-down { display: none; }
+.grp[open] .c-up { display: block; }
+.grp[open] > summary { margin-block-end: var(--s1); }
 
-.chips { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--s2); }
-.chips li { padding: 3px var(--s3); border: 1px solid var(--border); border-radius: var(--pill); font-size: var(--t13); color: var(--muted); background: var(--bg); }
-.chips li small { display: block; font-size: var(--t12); }
-.chips li.wide { border-radius: var(--r2); }
-.tryList h4 { margin: 0 0 var(--s2); font: 600 var(--t12) var(--font-mono); letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
-.tryList { gap: var(--s5); }
-.note { font-size: var(--t13); color: var(--muted); max-width: 78ch; }
-.foot { font-size: var(--t13); color: var(--muted); display: flex; flex-wrap: wrap; gap: var(--s1) var(--s4); }
+.foot { font-size: var(--t13); color: var(--muted); padding-block-start: var(--s3); }
 
 @media (min-width: 640px) {
   :root { --gutter: 24px; }
-  .glance { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .feats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .rows > li { grid-template-columns: 5.25rem minmax(0, 1fr); }
+  .tools { grid-template-columns: minmax(16rem, 22rem) 1fr; align-items: start; }
+  .tools .status { grid-column: 1 / -1; }
+  .chipfold > summary { display: none; }
+  .chipfold[open] > summary { margin: 0; }
 }
-@media (min-width: 960px) {
-  .cols { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--s7); }
-  .feats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .foldbody { grid-template-columns: 1fr; }
-}
-@media (max-width: 639px) {
-  .tl { grid-template-columns: 1fr; }
-  .pa { grid-template-columns: auto 1fr; align-items: baseline; column-gap: var(--s2); padding: var(--s3) 0 var(--s3) var(--s7); }
-  .ph::before { top: 0; bottom: 0; inset-inline: auto; inset-inline-start: 11px; width: 4px; height: auto; }
-  .ph:first-child::before { top: var(--s4); }
-  .ph:last-child::before { bottom: auto; height: var(--s4); }
-  .ph.now::before { background: linear-gradient(to bottom, var(--ok) 0 calc(var(--pp) * 100%), var(--border) calc(var(--pp) * 100%) 100%); }
-  .mk { top: var(--s3); }
-  .ph.now .mk { inset-inline-start: 0; top: var(--s4); }
-  .ph.now .pa { padding-inline-start: var(--s7); }
-  .ph.now::after { inset: var(--s1) 0 var(--s1) var(--s6); }
-  .here { grid-column: 1 / -1; margin-block-end: 0; }
-  .nm { grid-column: 1; }
-  .vr { grid-column: 2; }
-  .stt { grid-column: 1 / -1; }
-  .prog { padding: var(--s4); }
-  .rows > li { grid-template-columns: 1fr; gap: var(--s1); }
+@media (min-width: 1100px) {
+  :root { --touch: 2.5rem; }
+  .board { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s3); }
+  .js .tabs { display: none; }
+  .js .col:not(.is-on) { display: grid; }
+  .col { animation: none; }
+  .chip { min-height: 2rem; }
 }
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  .bar i, .meter .fill { animation: none; }
-  .ph.now .mk::after { animation: none; opacity: 0.5; transform: scale(1.1); }
-  .btn, .fold > summary .ic, .nm, .theme { transition: none; }
+  .col { animation: none; }
+  .btn, .theme, .chip, .tab, .grp > summary { transition: none; }
 }
 </style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
-  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
   <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol>
   <symbol id="i-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-chev-up" viewBox="0 0 24 24"><path d="m18 15-6-6-6 6"/></symbol>
   <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></symbol>
   <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></symbol>
-  <symbol id="i-move" viewBox="0 0 24 24"><path d="m5 9-3 3 3 3"/><path d="m9 5 3-3 3 3"/><path d="m15 19-3 3-3-3"/><path d="m19 9 3 3-3 3"/><path d="M2 12h20"/><path d="M12 2v20"/></symbol>
-  <symbol id="i-treemap" viewBox="0 0 24 24"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></symbol>
-  <symbol id="i-command" viewBox="0 0 24 24"><path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3"/></symbol>
-  <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></symbol>
+  <symbol id="i-layout" viewBox="0 0 24 24"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></symbol>
+  <symbol id="i-dot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="1"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"/><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/></symbol>
 </svg>
 <div class="wrap">
 
+<div class="top"><span class="eyebrow">Product roadmap</span><button class="theme" id="theme" type="button" aria-label="Switch theme">Theme: auto</button></div>
+
 <header class="hero">
-  <div class="hero-top"><span class="eyebrow">Roadmap, updated 28 October 2026</span><button class="theme" id="theme" type="button" aria-label="Switch theme">Theme: auto</button></div>
-  <div class="brand">
-    <h1 class="wordmark">navo</h1>
-    <p class="tagline">a keyboard-first file manager for Windows</p>
+  <div class="hero-row">
+    <div class="brand">
+      <h1 class="wordmark">navo</h1>
+      <p class="tagline">What Navo can do today, and what comes next.</p>
+      <p class="lead">A keyboard-first file manager for Windows, built to replace Total Commander.</p>
+    </div>
+    <a class="btn" href="https://github.com/trykA123/rusty/releases"><svg class="ic" aria-hidden="true"><use href="#i-download"/></svg>Download the latest pre-release</a>
   </div>
-  <div class="card dl">
-    <div class="dl-info"><span class="eyebrow">Latest download</span><span class="dl-name">alpha-2026-10-28c</span><span class="dl-note">28 October 2026, pre-release. The Ctrl+L layout switcher with your own layouts, split, close, swap and resize from the keyboard, Ctrl+Shift+1–4 to reach a pane, and safer deletes.</span></div>
-    <a class="btn" href="https://github.com/trykA123/rusty/releases"><svg class="ic" aria-hidden="true"><use href="#i-download"/></svg>Releases on GitHub</a>
-  </div>
-  <ul class="glance" aria-label="At a glance">
-    <li class="g-now"><span class="eyebrow">Now</span><b>Search results tab, then the safety-net review</b><span>All alpha features are built and checked on a Windows PC. Left in the alpha: the heavy benchmark and two weeks of daily use. In the beta, workspaces and tiled panes are done, the delete safety net is on with “Recently deleted” and its settings, and Ctrl+K searches inside files.</span></li>
-    <li><span class="eyebrow">Left in the alpha</span><b>9 steps</b><span>The safety net and the benchmark are finishing; the rest are owner checks and two weeks of use.</span></li>
-    <li><span class="eyebrow">Next</span><b>Results tab and hit lines</b><span>The results tab gets its own label, path text, progress and status; hit lines under each file. Then Windows checks and a senior review of the safety net, and its user guide.</span></li>
-  </ul>
 </header>
 
-<main class="stack">
-
-<section aria-labelledby="h-road">
-  <div class="sec-head"><h2 id="h-road">The road to v2.0</h2><p>The phases, in order. The highlighted one is where Navo is now.</p></div>
-  <ol class="tl" style="--pp:0.5"><li class="ph done"><span class="pa"><span class="mk"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg></span><span class="nm">Design</span><span class="vr"></span><span class="stt">Done</span></span></li><li class="ph done"><span class="pa"><span class="mk"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg></span><span class="nm">Foundation</span><span class="vr">v0.1</span><span class="stt">Done</span></span></li><li class="ph now"><a href="#alpha" aria-current="step" class="pa"><span class="mk"><span class="dotc"></span></span><span class="here">You are here</span><span class="nm">Alpha</span><span class="vr">v0.5</span><span class="stt">17 of 19 steps</span></a></li><li class="ph todo"><a href="#next-beta" class="pa"><span class="mk"><span class="dotc"></span></span><span class="nm">Beta</span><span class="vr">v0.9</span><span class="stt">8 items</span></a></li><li class="ph todo"><a href="#next-v1" class="pa"><span class="mk"><span class="dotc"></span></span><span class="nm">v1.0</span><span class="vr"></span><span class="stt">5 items</span></a></li><li class="ph todo"><a href="#next-v11" class="pa"><span class="mk"><span class="dotc"></span></span><span class="nm">v1.1</span><span class="vr"></span><span class="stt">4 items</span></a></li><li class="ph todo"><a href="#next-v12" class="pa"><span class="mk"><span class="dotc"></span></span><span class="nm">v1.2</span><span class="vr"></span><span class="stt">1 item</span></a></li><li class="ph todo"><a href="#next-v2" class="pa"><span class="mk"><span class="dotc"></span></span><span class="nm">v2.0</span><span class="vr"></span><span class="stt">11 items</span></a></li><li class="ph todo"><a href="#next-later" class="pa"><span class="mk"><span class="dotc"></span></span><span class="nm">Later</span><span class="vr"></span><span class="stt">4 items</span></a></li></ol>
-</section>
-
-<section id="alpha" aria-labelledby="h-alpha">
-  <div class="sec-head"><h2 id="h-alpha">Alpha: what is left</h2><p>The goal: a file manager the owner can use every day on Windows.</p></div>
-  <div class="card prog" style="--p:0.895">
-    <div class="prog-head"><span class="prog-num">17 of 19<small>steps done</small></span><span class="muted">2 still open</span></div>
-    <div class="bar" role="img" aria-label="17 of 19 alpha steps done"><i></i></div>
-    <div class="cols">
-      <div class="col"><h3>Still open <span class="cnt">2</span></h3><ul class="checks"><li><span class="box" aria-hidden="true"></span><span class="body"><span class="title row"><span>Heavy benchmark</span><span class="tag t-pc">Windows</span></span><span class="detail"><code>navo bench</code> is built: it indexes millions of generated files and times Ctrl+K search, huge folders, sorting and filtering. On Linux, 2 million files index in 2.7 s; folders of 500,000 files are slow (0.9 s to list). Next: a fix for its Windows run, then the owner runs it on a Windows PC; animations come from Record performance.</span></span></li><li><span class="box" aria-hidden="true"></span><span class="body"><span class="title row"><span>Two weeks of daily use</span><span class="tag t-owner">Owner</span></span><span class="detail">No lost or damaged files. This is the exit of the alpha.</span></span></li></ul></div>
-      <div class="col"><h3>Done <span class="cnt">17</span></h3><ul class="checks is-done"><li><svg class="ic" aria-hidden="true"><use href="#i-check-circle"/></svg><span>Delete safety net merged, off by default</span></li><li><svg class="ic" aria-hidden="true"><use href="#i-check-circle"/></svg><span>Explorer drag checked on a Windows PC</span></li><li><svg class="ic" aria-hidden="true"><use href="#i-check-circle"/></svg><span>Ctrl+K index service checked on a Windows PC</span></li><li><svg class="ic" aria-hidden="true"><use href="#i-check-circle"/></svg><span>Rich ELF and MAP checked on real files</span></li><li><svg class="ic" aria-hidden="true"><use href="#i-check-circle"/></svg><span>Profile move to Navo checked</span></li><li><svg class="ic" aria-hidden="true"><use href="#i-check-circle"/></svg><span>Splash checked</span></li><li><svg class="ic" aria-hidden="true"><use href="#i-check-circle"/></svg><span>Multi-select and drag and drop built</span></li><li><svg class="ic" aria-hidden="true"><use href="#i-check-circle"/></svg><span>Rich ELF and MAP views built</span></li><li><svg class="ic" aria-hidden="true"><use href="#i-check-circle"/></svg><span>Ctrl+K command center built</span></li><li><svg class="ic" aria-hidden="true"><use href="#i-check-circle"/></svg><span>Multi-rename built</span></li><li><svg class="ic" aria-hidden="true"><use href="#i-check-circle"/></svg><span>Navo name and icon, with your Ferrite profile moved over safely</span></li><li><svg class="ic" aria-hidden="true"><use href="#i-check-circle"/></svg><span>Start-up splash</span></li><li><svg class="ic" aria-hidden="true"><use href="#i-check-circle"/></svg><span>New right-click menu</span></li><li><svg class="ic" aria-hidden="true"><use href="#i-check-circle"/></svg><span>Six colour themes, each light and dark</span></li><li><svg class="ic" aria-hidden="true"><use href="#i-check-circle"/></svg><span>Record performance: frame times, CPU, memory and latency saved to a zip</span></li><li><svg class="ic" aria-hidden="true"><use href="#i-check-circle"/></svg><span>Fixes from the final reviews of the Ctrl+K index service and Rich ELF and MAP</span></li><li><svg class="ic" aria-hidden="true"><use href="#i-check-circle"/></svg><span>Windows tests green (7,118 passed); Linux passed all 10 gate steps</span></li></ul></div>
-    </div>
-    <p class="exitline">Exit: two weeks of daily use on a Windows PC with no lost or damaged files.</p>
+<form class="tools" role="search" aria-label="Filter the roadmap" onsubmit="return false">
+  <div class="field">
+    <label for="q">Filter features</label>
+    <div class="search"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg><input id="q" type="search" placeholder="rename, Git, archive" autocomplete="off" spellcheck="false"><button class="clear" id="clear" type="button" aria-label="Clear filter" hidden><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button></div>
   </div>
-</section>
+  <details class="chipfold" id="chipfold"><summary id="chipsum">Kind and version</summary>
+  <div class="chips-wrap">
+    <div class="chipset"><span class="lbl" id="l-kind">Kind</span><div class="chiprow" role="group" aria-labelledby="l-kind" id="kinds"></div></div>
+    <div class="chipset"><span class="lbl" id="l-ver">Version</span><div class="chiprow" role="group" aria-labelledby="l-ver" id="vers"></div></div>
+  </div>
+  <p class="legend"><b>core</b> is always on. <b>module</b> can be turned off. <b>package</b> is data only: themes and keymaps. <b>infra</b> is build, installer and release work.</p>
+  </details>
+  <p class="status" id="status" role="status" aria-live="polite"></p>
+</form>
 
-<section aria-labelledby="h-feat">
-  <div class="sec-head"><h2 id="h-feat">The four alpha features</h2><p>All four are in every pre-release since alpha-2026-10-26, and you checked them on a Windows PC. Chips show status instead of percentages, because the old percentages mixed building with release checks.</p></div>
-  <ul class="feats"><li class="fc"><div class="fh"><span class="ficon"><svg class="ic" aria-hidden="true"><use href="#i-move"/></svg></span><span class="chips2"><span class="st st-ok"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Built</span><span class="st st-ok"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Checked</span></span></div><h3>Multi-select and drag and drop</h3><p>Mark files, then drag them between panes, folders, tabs, path crumbs, drives and Windows Explorer.</p></li><li class="fc"><div class="fh"><span class="ficon"><svg class="ic" aria-hidden="true"><use href="#i-treemap"/></svg></span><span class="chips2"><span class="st st-ok"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Built</span><span class="st st-ok"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Checked</span></span></div><h3>Rich ELF and MAP</h3><p>See where memory goes in firmware files, with address strips, treemaps and tables.</p></li><li class="fc"><div class="fh"><span class="ficon"><svg class="ic" aria-hidden="true"><use href="#i-command"/></svg></span><span class="chips2"><span class="st st-ok"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Built</span><span class="st st-ok"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Checked</span></span></div><h3>Ctrl+K command center</h3><p>One box for commands, recent files, tabs, folders, typed paths and a disk index, with an optional Windows index service.</p></li><li class="fc"><div class="fh"><span class="ficon"><svg class="ic" aria-hidden="true"><use href="#i-pencil"/></svg></span><span class="chips2"><span class="st st-ok"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Built</span><span class="st st-ok"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Checked</span></span></div><h3>Multi-rename (Ctrl+M)</h3><p>Rename many files at once with safe undo, crash recovery, and optional log.</p></li></ul>
-</section>
+<nav class="tabs" id="tabs" aria-label="Board columns"></nav>
 
-<section aria-labelledby="h-next">
-  <div class="sec-head"><h2 id="h-next">What comes next</h2><p>Open a phase to see its items.</p></div>
-  <p class="kinds"><span><b>core</b> always on</span><span><b>module</b> can be turned off</span><span><b>package</b> data only: themes, keymaps</span><span><b>infra</b> build, CI and release work</span></p>
-  <div class="folds"><details class="card fold" id="next-beta"><summary class="try-sum"><svg class="ic" aria-hidden="true"><use href="#i-chev"/></svg><span class="t">Beta (v0.9): fast search, workspaces, tiled panes, safe deletes</span><span class="count muted">8 items, 4 priority, 6 done earlier</span></summary><div class="foldbody"><p class=sub>The owner reordered the beta on 27 October 2026 (D85). Built in this order.</p><ul class="rows"><li><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="body"><span class="title">Search index like Everything (D83)<span class="state">mostly done</span><span class="state prio">priority</span></span><span class="detail">Ctrl+K answers at once from the Navo Index service, even while it updates. Navo does not walk folders on NTFS drives. The service starts from its saved index in 0.8 s at a million files, and updates never block an answer. <code>navo --bench index</code> times answers and memory. Left: less memory, then a benchmark next to Everything.</span></span></li><li><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="body"><span class="title">Delete safety net (D65)<span class="state">mostly done</span><span class="state prio">priority</span></span><span class="detail">On by default: deletes and overwrites are kept 3 days (1–7 in Settings › Safety net), up to 1 GiB per drive. Ctrl+Z restores them, also after a restart. “Recently deleted” in Ctrl+K lists them by day; Enter restores, Delete removes for good. Drives that cannot keep files say so and delete permanently. Kept files expire on their own every 6 hours. <code>--no-retention</code> turns it off. Released in alpha-2026-10-28e and 28f. Left: Windows checks in CI, a senior review and the user guide.</span></span></li><li><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="body"><span class="title">Workspaces (Alt+1…9) with the tray<span class="state">done</span><span class="state prio">priority</span></span><span class="detail">Named workspaces, drafts, Save and Discard, shown in a tray (D82). The tray shows each workspace as a card with a mini layout; rename, move and delete with Ctrl+Z restore; Alt+N makes a new one; a status-bar button pins the tray. Each workspace keeps its layout and target pane after a restart.</span></span></li><li><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="body"><span class="title">More than two panes, tiled like Hyprland (D80)<span class="state">done</span><span class="state prio">priority</span></span><span class="detail">Panes sit in their layout; drag a divider and a guide line shows where it lands. Each pane has a number badge and the F5/F6 target is outlined. Shift+drag a pane header swaps two panes; Ctrl+Alt+0 evens the split. With one pane, a strip switches between the others. Ctrl+L picks one of five layouts or your own (6–9), and inside it V, S, X, Shift+arrows, Ctrl+arrows and = split, close, swap and resize. Ctrl+S saves a layout. Ctrl+Shift+1–4 reach a pane.</span></span></li><li><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="body"><span class="title">Find files by content and attributes<span class="state">in progress</span><span class="state prio">priority</span></span><span class="detail">Search in Ctrl+K. Results open as a tab you can work in. Virtual collections hold saved searches, snapshots and files you pick by hand. The query, the content matcher and the collection store are done. Results open as a tab of their own; F5/F6 copy from it and keep the folder structure if you want, and moved or deleted files leave the list. Ctrl+K has modes (Names, Content, Commands, Collections) on Tab. Content mode searches inside files: hits show as “line · file:line”, Enter opens the file at that line, Alt+C and Alt+R switch case and regex, Ctrl+Enter opens all hits as a tab. Alt+F7 searches inside the current folder. Next: the results tab’s own look, then hit lines under each file.</span></span></li><li><span class="kind k-module"><i aria-hidden="true"></i>module</span><span class="body"><span class="title">Clipboard history and notes<span class="state">planned</span></span><span class="detail">Also the summon hotkey and tray, which open in 50 ms or less.</span></span></li><li><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="body"><span class="title">Background work that never waits<span class="state">mostly done</span></span><span class="detail">Job pools with priorities. Folder sizes stop when you leave the folder. Size on disk. Hard links are counted once.</span></span></li><li><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="body"><span class="title">Accessibility basics<span class="state">mostly done</span></span><span class="detail">Narrator reads lists, dialogs and Ctrl+K. Focus is visible everywhere. Reduced motion, contrast themes and UI scale.</span></span></li></ul><div class="grp"><h4><span class="ver">Done</span>Earlier in the beta</h4><ul class="rows"><li><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="body"><span class="title">Responsive layout and new fonts (D80)<span class="state">done</span></span><span class="detail">Columns stay under their headers, drop in order on narrow windows, and one pane shows below a set width. Space Grotesk, Inter and JetBrains Mono.</span></span></li><li><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="body"><span class="title">Clone a tab into the other pane<span class="state">done</span></span><span class="detail">Ctrl+Shift+Up opens the current folder as a new tab in the other pane.</span></span></li><li><span class="kind k-module"><i aria-hidden="true"></i>module</span><span class="body"><span class="title">Open a terminal here<span class="state">done</span></span><span class="detail">With Windows Terminal and templates.</span></span></li><li><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="body"><span class="title">Cache sizes in diagnostics<span class="state">done</span></span><span class="detail">How much disk each cache uses, in Settings › Diagnostics and in the report.</span></span></li><li><span class="kind k-module"><i aria-hidden="true"></i>module</span><span class="body"><span class="title">Follow on Windows (Alt+F)<span class="state">done</span></span><span class="detail">Follow reads past the last known end, so new lines show while another program keeps the file open.</span></span></li><li><span class="kind k-module"><i aria-hidden="true"></i>module</span><span class="body"><span class="title">DBC and A2L outline in F3<span class="state">done</span></span><span class="detail">An outline of senders, messages and signals in the viewer. (D75)</span></span></li></ul></div><p class="exit">Exit: no open data-safety bugs; start-up and memory targets met in CI.</p></div></details><details class="card fold" id="next-v1"><summary class="try-sum"><svg class="ic" aria-hidden="true"><use href="#i-chev"/></svg><span class="t">v1.0: replaces Total Commander</span><span class="count muted">5 items</span></summary><div class="foldbody"><p class=sub>For daily work (D39). Features that Total Commander has are built to beat it, not to copy it.</p><ul class="rows"><li><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="body"><span class="title">Compare and sync (D40)</span><span class="detail">Folder compare in the panes. A calm full-window look with a change map on each scroller (chosen). Sync as a plan with undo. Cached BLAKE3 hashes, syntax-aware text diff, paged diff for huge and binary files, and image compare. Engine in the shared compare crate.</span></span></li><li><span class="kind k-infra"><i aria-hidden="true"></i>infra</span><span class="body"><span class="title">Signed portable .exe and installer (D73)</span><span class="detail">The installer’s uninstaller also removes the index service. User guide, soak test and steadier Windows tests.</span></span></li><li><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="body"><span class="title">Default file manager</span><span class="detail">Optional: Win+E opens Navo.</span></span></li><li><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="body"><span class="title">Inspector column and archives as folders</span><span class="detail">Preview and properties, thumbnails, and zip, 7z and tar with gz, xz and zst as folders. File details, owner and hashes are done.</span></span></li><li><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="body"><span class="title">Module registry and settings</span><span class="detail">Turn modules on and off while running, with safe mode. The settings window is generated from module schemas. Notifications for long operations.</span></span></li></ul><p class="exit">Exit: every target is met on a clean Windows 11 machine, and a week of work runs without opening Total Commander.</p></div></details><details class="card fold" id="next-v11"><summary class="try-sum"><svg class="ic" aria-hidden="true"><use href="#i-chev"/></svg><span class="t">v1.1: see and find</span><span class="count muted">4 items</span></summary><div class="foldbody"><ul class="rows"><li><span class="kind k-module"><i aria-hidden="true"></i>module</span><span class="body"><span class="title">Auto switch view</span></span></li><li><span class="kind k-package"><i aria-hidden="true"></i>package</span><span class="body"><span class="title">Language packages for the F3 viewer (D38)</span></span></li><li><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="body"><span class="title">Checksums and images in F3</span><span class="detail">BLAKE3, SHA-256, SHA-1 and MD5 with verify; pictures in the viewer.</span></span></li><li><span class="kind k-package"><i aria-hidden="true"></i>package</span><span class="body"><span class="title">Total Commander keymap</span><span class="detail">Familiar keys.</span></span></li></ul></div></details><details class="card fold" id="next-v12"><summary class="try-sum"><svg class="ic" aria-hidden="true"><use href="#i-chev"/></svg><span class="t">v1.2: Git</span><span class="count muted">1 item</span></summary><div class="foldbody"><ul class="rows"><li><span class="kind k-module"><i aria-hidden="true"></i>module</span><span class="body"><span class="title">Git</span><span class="detail">Status in the file list, history, diff and the usual commands.</span></span></li></ul></div></details><details class="card fold" id="next-v2"><summary class="try-sum"><svg class="ic" aria-hidden="true"><use href="#i-chev"/></svg><span class="t">v2.0: open platform</span><span class="count muted">11 items</span></summary><div class="foldbody"><ul class="rows"><li><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="body"><span class="title">WASM plugins and Lua scripting</span><span class="detail">Versioned WIT API, permissions, sandbox.</span></span></li><li><span class="kind k-infra"><i aria-hidden="true"></i>infra</span><span class="body"><span class="title">Plugin SDK, template, dev mode</span><span class="detail">Dev mode with hot reload.</span></span></li><li><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="body"><span class="title">New slots and module packs (D24)</span><span class="detail">Metadata providers, view modes, transforms, automation rules and status badges.</span></span></li><li><span class="kind k-module"><i aria-hidden="true"></i>module</span><span class="body"><span class="title">Remote locations</span><span class="detail">SFTP. S3 and rclone are still open.</span></span></li><li><span class="kind k-package"><i aria-hidden="true"></i>package</span><span class="body"><span class="title">Language packs</span><span class="detail">Romanian first.</span></span></li><li><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="body"><span class="title">Undo for every job</span><span class="detail">From a history list, with per-case confirmations.</span></span></li><li><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="body"><span class="title">Network and copy settings</span><span class="detail">Refresh mode per network location, ignore list, Parallel and Large files copy modes, copy options, profiles and rules by destination, date and size formats.</span></span></li><li><span class="kind k-package"><i aria-hidden="true"></i>package</span><span class="body"><span class="title">Custom colour themes and icon themes (D16)</span><span class="detail">Every shortcut changeable.</span></span></li><li><span class="kind k-module"><i aria-hidden="true"></i>module</span><span class="body"><span class="title">More in F3</span><span class="detail">Raw/Pretty for JSON, XML and YAML; spreadsheets; colouring for m4, OIL and DCM files; CSV and CAN trace column resize.</span></span></li><li><span class="kind k-module"><i aria-hidden="true"></i>module</span><span class="body"><span class="title">Jenkins links, web view and workflows</span><span class="detail">Jenkins links to network folders, an optional built-in web view, workflows and automations, and a visual workflow builder.</span></span></li><li><span class="kind k-module"><i aria-hidden="true"></i>module</span><span class="body"><span class="title">Everything (optional) and embedded terminal</span><span class="detail">ConPTY terminal.</span></span></li></ul><p class="exit">Exit: a third-party plugin is built, installed and updated without touching Navo’s code.</p></div></details><details class="card fold" id="next-later"><summary class="try-sum"><svg class="ic" aria-hidden="true"><use href="#i-chev"/></svg><span class="t">Later</span><span class="count muted">4 items</span></summary><div class="foldbody"><ul class="rows"><li><span class="kind k-module"><i aria-hidden="true"></i>module</span><span class="body"><span class="title">Duplicates and disk usage</span></span></li><li><span class="kind k-package"><i aria-hidden="true"></i>package</span><span class="body"><span class="title">Import of Zed and VS Code colour themes</span></span></li><li><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="body"><span class="title">Native editing for each kind</span><span class="detail">A table edits like a spreadsheet. A tree edits keys and values in place.</span></span></li><li><span class="kind k-module"><i aria-hidden="true"></i>module</span><span class="body"><span class="title">DBC and A2L in F3, the rest</span><span class="detail">Find in the outline, the DBC and A2L inspectors, problems, the narrow layout and bookmarks.</span></span></li></ul></div></details></div>
-</section>
-
-<section aria-labelledby="h-targets">
-  <div class="sec-head"><h2 id="h-targets">v1.0 targets</h2><p>Measured on a Windows laptop (Intel UHD Graphics), build alpha-2026-10-21b, 21 October 2026. All three miss today. The thin marker on each bar is the target.</p></div>
-  <ul class="stats"><li class="stat"><div class="sh"><span class="sn">Cold start</span><span class="ss">to first usable frame</span></div><div class="sv"><span class="num now">1,745 ms</span><span class="vs">today</span></div><div class="sv"><span class="num goal">≤ 400 ms</span><span class="vs">target</span></div><div class="meter" role="img" aria-label="Today is 4.4 times the target"><i class="fill" style="--p:0.872"></i><i class="tick"></i></div><p class="sf">First launch after a restart · 4.4× the target</p></li><li class="stat"><div class="sh"><span class="sn">Warm start</span><span class="ss">to first usable frame</span></div><div class="sv"><span class="num now">563 ms</span><span class="vs">today</span></div><div class="sv"><span class="num goal">≤ 150 ms</span><span class="vs">target</span></div><div class="meter" role="img" aria-label="Today is 3.8 times the target"><i class="fill" style="--p:0.751"></i><i class="tick"></i></div><p class="sf">Median of three warm runs · 3.8× the target</p></li><li class="stat"><div class="sh"><span class="sn">RAM, idle</span><span class="ss">two panes</span></div><div class="sv"><span class="num now">137 MB</span><span class="vs">today</span></div><div class="sv"><span class="num goal">< 80 MB</span><span class="vs">target</span></div><div class="meter" role="img" aria-label="Today is 1.7 times the target"><i class="fill" style="--p:0.344"></i><i class="tick"></i></div><p class="sf">Private bytes after start · 1.7× the target</p></li></ul>
-  <p class="stats-note">Also targeted: summon from the tray in 50 ms or less (beta). The portable .exe has no size limit (D44); the CI guard is 160 MiB. On the CI runner, which draws in software, warm start to first frame is about 180 ms and idle memory about 67 MB, so most of the gap is on real hardware: the time before the program starts and GPUI&rsquo;s start-up on a real GPU.</p>
-</section>
-
-<section aria-labelledby="h-today">
-  <div class="sec-head"><h2 id="h-today">What works today</h2><p>Everything you can try in the alpha build, grouped.</p></div>
-  <details class="card fold" id="today"><summary class="try-sum"><svg class="ic" aria-hidden="true"><use href="#i-chev"/></svg><span class="t">Show the full list</span><span class="count muted">96 features, in 8 groups</span></summary><div class="tryList"><div><h4>Browse and navigate · 11</h4><ul class="chips"><li>Two panes with tabs</li><li>Fast file list</li><li>Drive bar and network drives</li><li>Tab shortcuts</li><li>Panes back to the middle</li><li>Folders refresh by themselves</li><li>Faster folders</li><li>Folder prefetch</li><li>Instant panes at start</li><li>Offline state for network shares</li><li>File-type icons</li></ul></div><div><h4>Select and move · 7</h4><ul class="chips"><li>Total Commander style selection</li><li>Multi-select</li><li>Drag and drop between the panes</li><li>Drop onto tabs, path crumbs and drive pills</li><li>Alt-drop shortcuts</li><li>Alt+M opens the context menu</li><li>Explorer clipboard</li></ul></div><div><h4>Files and safety · 14</h4><ul class="chips"><li>File operations</li><li>Background jobs</li><li>Copy card</li><li>Pause and resume</li><li>Auto copy</li><li>Copy mode setting</li><li>Copy benchmark tool</li><li>Undo of an overwrite</li><li>Move onto an existing file</li><li>Files in use</li><li>Safer session and database store</li><li>Keyboard focus in dialogs</li><li>Delete and Recycle dialogs</li><li>Multi-rename (Ctrl+M)</li></ul></div><div><h4>Menus and commands · 11</h4><ul class="chips"><li>Context menu</li><li>Right-click on empty space</li><li>Context menu in the viewer</li><li>Safer context menus</li><li>Windows “Send to” menu</li><li>App menu on F10</li><li>Ctrl+K ranks your commands</li><li>Ctrl+K remembers recent folders and files</li><li>Ctrl+K finds files in the current folder</li><li>Ctrl+K path mode</li><li>Shortcut search</li></ul></div><div><h4>Text and documents (F3, F4) · 15</h4><ul class="chips"><li class="wide">F3 viewer for text<small>Opens any file: text as text, anything else in the hex view.</small></li><li>F4 editor</li><li>Search and marks</li><li>Live search count</li><li>Markdown in F3</li><li>Markdown live preview while editing</li><li>JSON, YAML and XML as a tree</li><li>Encoding picker</li><li>Oxidised iron syntax colours</li><li>PDF viewer</li><li>PDF links and outline (waits for your check)</li><li>Archives in F3</li><li>Fonts in F3</li><li>Images in F3</li><li>Stepping through files</li></ul></div><div><h4>Automotive files · 13</h4><ul class="chips"><li>Intel HEX and S-record memory view</li><li>HEX and S-record rows</li><li>ELF symbol view</li><li>Compiler symbols hidden in ELF</li><li>ELF symbols table</li><li>CAN trace view for Vector ASC</li><li>CAN traces: TRC and Vector BLF</li><li>TASKING linker map view</li><li>TASKING map files: wrapped rows</li><li>Memory regions from .mdf files</li><li>Rich ELF view</li><li>Rich MAP view</li><li>DBC and A2L tables in Rich view</li></ul></div><div><h4>Look and layout · 12</h4><ul class="chips"><li>Light and dark themes</li><li>The new look, first part</li><li>Compact F-key bar</li><li>F-key bar off by default</li><li>Shortcut drawer</li><li>Window background</li><li>Choose what the main window shows</li><li>View menu (Alt+V) in the viewers</li><li>Markdown split and preview sheet as view parts</li><li>Folder preview side sheet</li><li>Browse folders in the preview</li><li>Activity strip</li></ul></div><div><h4>Settings and diagnostics · 13</h4><ul class="chips"><li>Settings side sheet (Ctrl+,)</li><li>Default or Changed on every setting</li><li>Defaults notice and “Find a setting”</li><li>Settings file is safe to edit</li><li>Diagnostics log</li><li>Crash report</li><li>Crash reports with file and line</li><li>Start-up options</li><li>Start-up time and memory are measured</li><li>One Navo at a time</li><li>Window opens where it was</li><li>Sharp at any display scale</li><li>Drive kind</li></ul></div><p class="note">Owner checks and two weeks of daily use still block alpha sign-off.</p></div></details>
-</section>
-
-<footer class="foot"><span>Source: docs/roadmap.md and docs/perf.md</span><span>Scope rules: D13, D14</span><span>Plain-language specs: docs/features/</span></footer>
-
+<main class="board" id="board">
+<section class="col" id="col-shipped" data-col="shipped" aria-labelledby="h-shipped"><header class="col-head"><span class="col-ico"><svg class="ic" aria-hidden="true"><use href="#i-check-circle"/></svg></span><h2 id="h-shipped">Shipped</h2><span class="col-cnt" data-colcount></span><button class="mini" type="button" id="toggle-shipped" aria-expanded="false">Expand all</button></header><p class="col-sub">What you can use today.</p><div class="col-body"><details class="grp" id="g-find" open><summary><span class="g-ico"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></span><h3>Find &amp; navigate</h3><span class="g-cnt" data-count></span><span class="g-chev"><svg class="ic c-down" aria-hidden="true"><use href="#i-chev"/></svg><svg class="ic c-up" aria-hidden="true"><use href="#i-chev-up"/></svg></span></summary><ul class="cards"><li class="card" data-kind="core" data-ver="Alpha"><h4>Ctrl+K command center</h4><p>One box for commands, recent files and folders, open tabs and paths. It ranks the commands you use most. Tab switches between Names, Content, Commands and Collections.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">Alpha</span></div></li><li class="card" data-kind="core" data-ver="Alpha"><h4>Disk index</h4><p>Finds files anywhere on your drives at once, even while the index updates. The optional Navo Index service watches NTFS drives, so new files show up within a second.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">Alpha</span></div></li><li class="card" data-kind="core" data-ver="Beta"><h4>Search inside files</h4><p>Content mode in Ctrl+K reads the text of your files. Hits show as “line · file:line” and Enter opens the file at that line. Alt+C and Alt+R switch case and regex.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">Beta</span></div></li><li class="card" data-kind="core" data-ver="Beta"><h4>Results tab</h4><p>Search results open as a tab you can work in. Copy or move from it with F5 and F6, and keep the folder structure if you want. Your query is the tab name, with progress while it searches and hit counts in the status bar. Files you move or delete leave the list, and dragging files out works.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">Beta</span></div></li><li class="card" data-kind="core" data-ver="Alpha"><h4>Two panes with tabs</h4><p>Tabs, history and session restore take you back to where you were. A drive bar covers network drives, with an offline state for shares that go away.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">Alpha</span></div></li><li class="card" data-kind="core" data-ver="Alpha"><h4>Fast folders</h4><p>Smooth lists for large folders. Folders refresh by themselves and the next folder is prefetched.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">Alpha</span></div></li></ul></details><details class="grp" id="g-files"><summary><span class="g-ico"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg></span><h3>Files &amp; safety</h3><span class="g-cnt" data-count></span><span class="g-chev"><svg class="ic c-down" aria-hidden="true"><use href="#i-chev"/></svg><svg class="ic c-up" aria-hidden="true"><use href="#i-chev-up"/></svg></span></summary><ul class="cards"><li class="card" data-kind="core" data-ver="Beta"><h4>Delete safety net</h4><p>Deletes and overwrites keep the old files for 3 days. Ctrl+Z puts them back, also after a restart. On by default; drives that cannot keep files say so first.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">Beta</span></div></li><li class="card" data-kind="core" data-ver="Beta"><h4>Recently deleted</h4><p>A list in Ctrl+K, grouped by day. Enter restores a file and Delete removes it for good. Kept files clean up on their own.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">Beta</span></div></li><li class="card" data-kind="core" data-ver="Beta"><h4>Safety net settings</h4><p>Settings › Safety net sets how long files are kept (1 to 7 days), the space per drive and the free-space floor.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">Beta</span></div></li><li class="card" data-kind="core" data-ver="Alpha"><h4>Multi-select</h4><p>Mark files the Total Commander way, with keys or the mouse, then act on all of them at once.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">Alpha</span></div></li><li class="card" data-kind="core" data-ver="Alpha"><h4>Drag and drop</h4><p>Drag marked files between panes, folders, tabs, path crumbs and drives, and to and from Windows Explorer. Drop with the right button to choose copy, move or shortcut.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">Alpha</span></div></li><li class="card" data-kind="core" data-ver="Alpha"><h4>Multi-rename (Ctrl+M)</h4><p>Rename many files with a live preview. Edit, paste or load names, sort, and number with counters. Undo is safe, even after a crash. Works on FAT and exFAT drives.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">Alpha</span></div></li><li class="card" data-kind="core" data-ver="Alpha"><h4>File operations</h4><p>Copy and move in the background with a progress card, pause and resume, and automatic copy mode. Files in use are reported.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">Alpha</span></div></li><li class="card" data-kind="module" data-ver="Beta"><h4>Open a terminal here</h4><p>Opens Windows Terminal in the current folder, with templates.</p><div class="meta"><span class="kind k-module"><i aria-hidden="true"></i>module</span><span class="ver">Beta</span></div></li><li class="card" data-kind="core" data-ver="Alpha"><h4>Safer storage</h4><p>Session and settings are stored more safely. The settings file can be edited by hand.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">Alpha</span></div></li></ul></details><details class="grp" id="g-layout"><summary><span class="g-ico"><svg class="ic" aria-hidden="true"><use href="#i-layout"/></svg></span><h3>Layout</h3><span class="g-cnt" data-count></span><span class="g-chev"><svg class="ic c-down" aria-hidden="true"><use href="#i-chev"/></svg><svg class="ic c-up" aria-hidden="true"><use href="#i-chev-up"/></svg></span></summary><ul class="cards"><li class="card" data-kind="core" data-ver="Beta"><h4>Tiled panes with layouts</h4><p>Up to four panes, tiled like a window manager. Ctrl+L picks one of five layouts or your own. V and S split, X closes, Shift+arrows swap and Ctrl+arrows resize.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">Beta</span></div></li><li class="card" data-kind="core" data-ver="Beta"><h4>Pane controls</h4><p>Drag a divider and a guide line shows where it lands. Shift+drag a pane header to swap panes. Ctrl+Shift+1–4 jumps to a pane, and the F5/F6 target is outlined.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">Beta</span></div></li><li class="card" data-kind="core" data-ver="Beta"><h4>Workspaces</h4><p>Alt+1 to Alt+9 switch between named workspaces, each with its own layout, tabs and target pane. A tray shows them as cards. Unsaved changes stay as a draft.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">Beta</span></div></li><li class="card" data-kind="core" data-ver="Beta"><h4>Narrow windows</h4><p>In a narrow window one pane shows, and a strip of buttons switches between the others.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">Beta</span></div></li><li class="card" data-kind="core" data-ver="Beta"><h4>Clone a tab</h4><p>Ctrl+Shift+Up opens the current folder as a new tab in the other pane.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">Beta</span></div></li><li class="card" data-kind="core" data-ver="Alpha"><h4>Calm window</h4><p>Choose what the main window shows: the shortcut drawer, a compact F-key bar, the folder preview side sheet and the activity strip.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">Alpha</span></div></li></ul></details><details class="grp" id="g-viewers"><summary><span class="g-ico"><svg class="ic" aria-hidden="true"><use href="#i-eye"/></svg></span><h3>Viewers</h3><span class="g-cnt" data-count></span><span class="g-chev"><svg class="ic c-down" aria-hidden="true"><use href="#i-chev"/></svg><svg class="ic c-up" aria-hidden="true"><use href="#i-chev-up"/></svg></span></summary><ul class="cards"><li class="card" data-kind="module" data-ver="Alpha"><h4>F3 viewer and F4 editor</h4><p>Opens any file: text as text, anything else in hex. Search with a live count, marks and an encoding picker.</p><div class="meta"><span class="kind k-module"><i aria-hidden="true"></i>module</span><span class="ver">Alpha</span></div></li><li class="card" data-kind="module" data-ver="Alpha"><h4>Markdown, JSON, YAML and XML</h4><p>Markdown renders in F3, with a live preview while you edit. JSON, YAML and XML open as a tree.</p><div class="meta"><span class="kind k-module"><i aria-hidden="true"></i>module</span><span class="ver">Alpha</span></div></li><li class="card" data-kind="module" data-ver="Alpha"><h4>PDF, images, fonts and archives</h4><p>View PDFs, pictures, fonts and archive contents in F3, and step through the files of a folder.</p><div class="meta"><span class="kind k-module"><i aria-hidden="true"></i>module</span><span class="ver">Alpha</span></div></li><li class="card" data-kind="module" data-ver="Alpha"><h4>Rich ELF and MAP views</h4><p>ELF symbols and TASKING linker maps as rich tables, with memory models, companion file discovery and module prefixes.</p><div class="meta"><span class="kind k-module"><i aria-hidden="true"></i>module</span><span class="ver">Alpha</span></div></li><li class="card" data-kind="module" data-ver="Alpha"><h4>Memory and trace files</h4><p>Intel HEX and S-record memory views, and CAN traces in Vector ASC, TRC and BLF formats.</p><div class="meta"><span class="kind k-module"><i aria-hidden="true"></i>module</span><span class="ver">Alpha</span></div></li><li class="card" data-kind="module" data-ver="Beta"><h4>DBC and A2L outline</h4><p>An outline of senders, messages and signals in F3, and tables in the rich view.</p><div class="meta"><span class="kind k-module"><i aria-hidden="true"></i>module</span><span class="ver">Beta</span></div></li><li class="card" data-kind="module" data-ver="Beta"><h4>Follow (Alt+F)</h4><p>Watch a growing log. New lines show even while another program keeps the file open.</p><div class="meta"><span class="kind k-module"><i aria-hidden="true"></i>module</span><span class="ver">Beta</span></div></li></ul></details><details class="grp" id="g-look"><summary><span class="g-ico"><svg class="ic" aria-hidden="true"><use href="#i-palette"/></svg></span><h3>Look &amp; feel</h3><span class="g-cnt" data-count></span><span class="g-chev"><svg class="ic c-down" aria-hidden="true"><use href="#i-chev"/></svg><svg class="ic c-up" aria-hidden="true"><use href="#i-chev-up"/></svg></span></summary><ul class="cards"><li class="card" data-kind="package" data-ver="Alpha"><h4>Colour themes</h4><p>Six built-in themes, each in light and dark: Open sea (the default), Red bill, Black cap, Fine mesh, Grain, and Ink and amber. Applies at once.</p><div class="meta"><span class="kind k-package"><i aria-hidden="true"></i>package</span><span class="ver">Alpha</span></div></li><li class="card" data-kind="core" data-ver="Alpha"><h4>Right-click menu</h4><p>The real Windows shell menu in Navo’s style, with a filter at the top. Submenus open in place and Shift adds the extended items.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">Alpha</span></div></li><li class="card" data-kind="core" data-ver="Alpha"><h4>New name and splash</h4><p>Navo has a new name, the n_ icon and a quiet start-up splash that only shows when start-up is slow. Settings, tabs and history move over from Ferrite.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">Alpha</span></div></li><li class="card" data-kind="core" data-ver="Beta"><h4>Modern look</h4><p>Space Grotesk for the brand, Inter for the interface and JetBrains Mono for paths and viewers.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">Beta</span></div></li><li class="card" data-kind="core" data-ver="Alpha"><h4>Settings (Ctrl+,)</h4><p>A side sheet that marks every setting as Default or Changed, with a Find a setting box.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">Alpha</span></div></li><li class="card" data-kind="core" data-ver="Alpha"><h4>Diagnostics</h4><p>A log with private data removed, crash reports with file and line, cache sizes, and a report you can save by hand.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">Alpha</span></div></li><li class="card" data-kind="core" data-ver="Alpha"><h4>Window and display</h4><p>The window opens where it was, stays sharp at any display scale, and only one Navo runs at a time.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">Alpha</span></div></li></ul></details><p class="empty" hidden>Nothing here matches the filter.</p></div></section><section class="col" id="col-now" data-col="now" aria-labelledby="h-now"><header class="col-head"><span class="col-ico"><svg class="ic" aria-hidden="true"><use href="#i-dot"/></svg></span><h2 id="h-now">Now</h2><span class="col-cnt" data-colcount></span></header><p class="col-sub">In progress.</p><div class="col-body"><ul class="cards"><li class="card" data-kind="core" data-ver="Beta"><h4>Matching lines in results</h4><p>The matching lines show under each file in the results tab, so you see why it matched without opening it.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">Beta</span></div></li><li class="card" data-kind="infra" data-ver="Beta"><h4>Delete safety net guide</h4><p>A short user guide for Recently deleted, Ctrl+Z restore and the safety net settings.</p><div class="meta"><span class="kind k-infra"><i aria-hidden="true"></i>infra</span><span class="ver">Beta</span></div></li></ul><p class="empty" hidden>Nothing here matches the filter.</p></div></section><section class="col" id="col-next" data-col="next" aria-labelledby="h-next"><header class="col-head"><span class="col-ico"><svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span><h2 id="h-next">Next</h2><span class="col-cnt" data-colcount></span></header><p class="col-sub">Coming up, in order.</p><div class="col-body"><ul class="cards"><li class="card hero-card" data-kind="core" data-ver="v1.0"><span class="badge"><svg class="ic" aria-hidden="true"><use href="#i-zap"/></svg>Next phase</span><h4>Speed</h4><p>Blazing-fast start, input, scrolling, big folders and low memory. The goal: a usable window in under 0.4 seconds and under 80 MB with two panes open.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">v1.0</span></div></li></ul><details class="grp" id="g-beta" open><summary><span class="g-ico"></span><h3>Finishing the beta</h3><span class="g-cnt" data-count></span><span class="g-chev"><svg class="ic c-down" aria-hidden="true"><use href="#i-chev"/></svg><svg class="ic c-up" aria-hidden="true"><use href="#i-chev-up"/></svg></span></summary><ul class="cards"><li class="card" data-kind="module" data-ver="Beta"><h4>Clipboard history and notes</h4><p>Keep what you copied, plus snippets, commands, paths, encrypted secrets and folder notes, in a Ctrl+K-style palette. Opens from a hotkey or the tray in 50 ms or less.</p><div class="meta"><span class="kind k-module"><i aria-hidden="true"></i>module</span><span class="ver">Beta</span></div></li><li class="card" data-kind="core" data-ver="Beta"><h4>Collections</h4><p>Saved searches, snapshots and hand-picked files, kept as virtual folders you can open and work in.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">Beta</span></div></li><li class="card" data-kind="core" data-ver="Beta"><h4>Background work that never waits</h4><p>Folder sizes stop when you leave the folder. Size on disk, and hard links counted once.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">Beta</span></div></li><li class="card" data-kind="core" data-ver="Beta"><h4>Accessibility basics</h4><p>Narrator reads lists, dialogs and Ctrl+K. Focus is visible everywhere. Reduced motion, contrast themes and UI scale.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">Beta</span></div></li></ul></details><details class="grp" id="g-v10" open><summary><span class="g-ico"></span><h3>Replaces Total Commander</h3><span class="g-cnt" data-count></span><span class="g-chev"><svg class="ic c-down" aria-hidden="true"><use href="#i-chev"/></svg><svg class="ic c-up" aria-hidden="true"><use href="#i-chev-up"/></svg></span></summary><ul class="cards"><li class="card" data-kind="core" data-ver="v1.0"><h4>Compare and sync</h4><p>Compare folders in the panes, with a calm full-window view and a change map on each scrollbar. Sync as a plan you can undo. Text diff that knows syntax, paged diff for huge files, and image compare.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">v1.0</span></div></li><li class="card" data-kind="core" data-ver="v1.0"><h4>Inspector and preview</h4><p>A side column with preview, properties and thumbnails. File details, owner and hashes are already there.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">v1.0</span></div></li><li class="card" data-kind="core" data-ver="v1.0"><h4>Archives as folders</h4><p>Open zip, 7z and tar (gz, xz, zst) archives like folders.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">v1.0</span></div></li><li class="card" data-kind="infra" data-ver="v1.0"><h4>Installer</h4><p>A signed portable .exe and a Windows installer. The uninstaller also removes the index service.</p><div class="meta"><span class="kind k-infra"><i aria-hidden="true"></i>infra</span><span class="ver">v1.0</span></div></li><li class="card" data-kind="core" data-ver="v1.0"><h4>Default file manager</h4><p>Optional: Win+E opens Navo.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">v1.0</span></div></li><li class="card" data-kind="core" data-ver="v1.0"><h4>Modules and notifications</h4><p>Turn modules on and off while running, with a safe mode. The settings window builds itself from each module. Notifications for long operations.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">v1.0</span></div></li></ul></details><p class="empty" hidden>Nothing here matches the filter.</p></div></section><section class="col" id="col-later" data-col="later" aria-labelledby="h-later"><header class="col-head"><span class="col-ico"><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg></span><h2 id="h-later">Later</h2><span class="col-cnt" data-colcount></span></header><p class="col-sub">Planned, not started.</p><div class="col-body"><details class="grp" id="g-v11" open><summary><span class="g-ico"></span><h3>v1.1 · See and find</h3><span class="g-cnt" data-count></span><span class="g-chev"><svg class="ic c-down" aria-hidden="true"><use href="#i-chev"/></svg><svg class="ic c-up" aria-hidden="true"><use href="#i-chev-up"/></svg></span></summary><ul class="cards"><li class="card" data-kind="core" data-ver="v1.1"><h4>Checksums</h4><p>BLAKE3, SHA-256, SHA-1 and MD5, with verify.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">v1.1</span></div></li><li class="card" data-kind="module" data-ver="v1.1"><h4>Auto switch view</h4><p>Picks the best view for each file by itself.</p><div class="meta"><span class="kind k-module"><i aria-hidden="true"></i>module</span><span class="ver">v1.1</span></div></li><li class="card" data-kind="package" data-ver="v1.1"><h4>Viewer language packages</h4><p>Syntax and structure for more languages in the F3 viewer.</p><div class="meta"><span class="kind k-package"><i aria-hidden="true"></i>package</span><span class="ver">v1.1</span></div></li><li class="card" data-kind="package" data-ver="v1.1"><h4>Total Commander keymap</h4><p>Familiar keys, ready to switch on.</p><div class="meta"><span class="kind k-package"><i aria-hidden="true"></i>package</span><span class="ver">v1.1</span></div></li></ul></details><details class="grp" id="g-v12" open><summary><span class="g-ico"></span><h3>v1.2 · Git</h3><span class="g-cnt" data-count></span><span class="g-chev"><svg class="ic c-down" aria-hidden="true"><use href="#i-chev"/></svg><svg class="ic c-up" aria-hidden="true"><use href="#i-chev-up"/></svg></span></summary><ul class="cards"><li class="card" data-kind="module" data-ver="v1.2"><h4>Git</h4><p>Status in the file list, history, diff and the usual commands.</p><div class="meta"><span class="kind k-module"><i aria-hidden="true"></i>module</span><span class="ver">v1.2</span></div></li></ul></details><details class="grp" id="g-v20"><summary><span class="g-ico"></span><h3>v2.0 · Open platform</h3><span class="g-cnt" data-count></span><span class="g-chev"><svg class="ic c-down" aria-hidden="true"><use href="#i-chev"/></svg><svg class="ic c-up" aria-hidden="true"><use href="#i-chev-up"/></svg></span></summary><ul class="cards"><li class="card" data-kind="core" data-ver="v2.0"><h4>Plugins and scripting</h4><p>Sandboxed plugins with permissions, and Lua scripting.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">v2.0</span></div></li><li class="card" data-kind="infra" data-ver="v2.0"><h4>Plugin SDK</h4><p>A template and a dev mode with hot reload.</p><div class="meta"><span class="kind k-infra"><i aria-hidden="true"></i>infra</span><span class="ver">v2.0</span></div></li><li class="card" data-kind="core" data-ver="v2.0"><h4>More extension points</h4><p>Plugins can add metadata, view modes, transforms, automation rules and status badges. Module packs bundle them.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">v2.0</span></div></li><li class="card" data-kind="module" data-ver="v2.0"><h4>Remote locations</h4><p>SFTP first. S3 and rclone are still open.</p><div class="meta"><span class="kind k-module"><i aria-hidden="true"></i>module</span><span class="ver">v2.0</span></div></li><li class="card" data-kind="package" data-ver="v2.0"><h4>Language packs</h4><p>Navo in more languages, Romanian first.</p><div class="meta"><span class="kind k-package"><i aria-hidden="true"></i>package</span><span class="ver">v2.0</span></div></li><li class="card" data-kind="core" data-ver="v2.0"><h4>Undo for every job</h4><p>A history list of jobs, each one undoable, with per-case confirmations.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">v2.0</span></div></li><li class="card" data-kind="core" data-ver="v2.0"><h4>Network and copy settings</h4><p>Refresh mode per network location, an ignore list, Parallel and Large-files copy modes, copy profiles and rules by destination, and date and size formats.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">v2.0</span></div></li><li class="card" data-kind="package" data-ver="v2.0"><h4>Custom themes and shortcuts</h4><p>Your own colour and icon themes, and every shortcut changeable.</p><div class="meta"><span class="kind k-package"><i aria-hidden="true"></i>package</span><span class="ver">v2.0</span></div></li><li class="card" data-kind="module" data-ver="v2.0"><h4>More in F3</h4><p>Raw and Pretty views for JSON, XML and YAML, spreadsheets, colouring for m4, OIL and DCM files, and column resize in CSV and CAN traces.</p><div class="meta"><span class="kind k-module"><i aria-hidden="true"></i>module</span><span class="ver">v2.0</span></div></li><li class="card" data-kind="module" data-ver="v2.0"><h4>Jenkins, web view and workflows</h4><p>Jenkins links to network folders, an optional built-in web view, and workflows and automations with a visual builder.</p><div class="meta"><span class="kind k-module"><i aria-hidden="true"></i>module</span><span class="ver">v2.0</span></div></li><li class="card" data-kind="module" data-ver="v2.0"><h4>Everything and a built-in terminal</h4><p>Optional Everything search, and an embedded terminal.</p><div class="meta"><span class="kind k-module"><i aria-hidden="true"></i>module</span><span class="ver">v2.0</span></div></li></ul></details><details class="grp" id="g-later" open><summary><span class="g-ico"></span><h3>Later</h3><span class="g-cnt" data-count></span><span class="g-chev"><svg class="ic c-down" aria-hidden="true"><use href="#i-chev"/></svg><svg class="ic c-up" aria-hidden="true"><use href="#i-chev-up"/></svg></span></summary><ul class="cards"><li class="card" data-kind="module" data-ver="Later"><h4>Duplicates and disk usage</h4><p>Find duplicate files and see what takes the space.</p><div class="meta"><span class="kind k-module"><i aria-hidden="true"></i>module</span><span class="ver">Later</span></div></li><li class="card" data-kind="package" data-ver="Later"><h4>Zed and VS Code themes</h4><p>Import the colour themes you already use.</p><div class="meta"><span class="kind k-package"><i aria-hidden="true"></i>package</span><span class="ver">Later</span></div></li><li class="card" data-kind="core" data-ver="Later"><h4>Native editing</h4><p>A table edits like a spreadsheet. A tree edits keys and values in place.</p><div class="meta"><span class="kind k-core"><i aria-hidden="true"></i>core</span><span class="ver">Later</span></div></li><li class="card" data-kind="module" data-ver="Later"><h4>DBC and A2L, the rest</h4><p>Find in the outline, the DBC and A2L inspectors, problems, a narrow layout and bookmarks.</p><div class="meta"><span class="kind k-module"><i aria-hidden="true"></i>module</span><span class="ver">Later</span></div></li></ul></details><p class="empty" hidden>Nothing here matches the filter.</p></div></section>
 </main>
+
+<footer class="foot">Navo is in pre-release for Windows. Plans can change.</footer>
 </div>
 <script>
-document.querySelectorAll('a[href^="#next-"]').forEach(a => a.addEventListener("click", () => {
-  const d = document.querySelector(a.getAttribute("href"));
-  if (d && d.tagName === "DETAILS") d.open = true;
-}));
+document.documentElement.classList.add("js");
+const root = document.documentElement;
 const btn = document.getElementById("theme");
 const modes = ["auto", "light", "dark"];
 let mode = 0;
 btn.addEventListener("click", () => {
   mode = (mode + 1) % 3;
-  if (mode) document.documentElement.setAttribute("data-theme", modes[mode]); else document.documentElement.removeAttribute("data-theme");
+  if (mode) root.setAttribute("data-theme", modes[mode]); else root.removeAttribute("data-theme");
   btn.textContent = "Theme: " + modes[mode];
 });
+
+const cards = [...document.querySelectorAll(".card")];
+const cols = [...document.querySelectorAll(".col")];
+const groups = [...document.querySelectorAll(".grp")];
+const q = document.getElementById("q");
+const clear = document.getElementById("clear");
+const status = document.getElementById("status");
+const state = { kind: "all", ver: "all" };
+const norm = s => s.toLowerCase();
+cards.forEach(c => { c.dataset.text = norm(c.textContent); });
+
+function makeChips(host, key, values) {
+  ["All", ...values].forEach(v => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "chip"; b.textContent = v;
+    b.dataset.v = v === "All" ? "all" : v;
+    b.setAttribute("aria-pressed", v === "All" ? "true" : "false");
+    b.addEventListener("click", () => {
+      state[key] = b.dataset.v;
+      host.querySelectorAll(".chip").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+      apply();
+    });
+    host.appendChild(b);
+  });
+}
+makeChips(document.getElementById("kinds"), "kind", ["core", "module", "package", "infra"]);
+makeChips(document.getElementById("vers"), "ver", ["Alpha", "Beta", "v1.0", "v1.1", "v1.2", "v2.0", "Later"]);
+
+const tabs = document.getElementById("tabs");
+cols.forEach(col => {
+  const b = document.createElement("button");
+  b.type = "button"; b.className = "tab"; b.dataset.col = col.dataset.col;
+  b.innerHTML = '<span>' + col.querySelector("h2").textContent + '</span><b data-n></b>';
+  b.addEventListener("click", () => showCol(col.dataset.col));
+  tabs.appendChild(b);
+});
+function showCol(id) {
+  cols.forEach(c => c.classList.toggle("is-on", c.dataset.col === id));
+  tabs.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-pressed", String(t.dataset.col === id)));
+}
+showCol("now");
+
+const toggle = document.getElementById("toggle-shipped");
+const shippedGroups = [...document.querySelectorAll("#col-shipped .grp")];
+toggle.addEventListener("click", () => {
+  const open = toggle.getAttribute("aria-expanded") !== "true";
+  shippedGroups.forEach(g => { g.open = open; });
+  syncToggle();
+});
+function syncToggle() {
+  const all = shippedGroups.every(g => g.open);
+  toggle.setAttribute("aria-expanded", String(all));
+  toggle.textContent = all ? "Collapse all" : "Expand all";
+}
+shippedGroups.forEach(g => g.addEventListener("toggle", syncToggle));
+syncToggle();
+
+function apply() {
+  const words = norm(q.value).split(/\s+/).filter(Boolean);
+  const filtering = words.length > 0 || state.kind !== "all" || state.ver !== "all";
+  let shown = 0;
+  cards.forEach(c => {
+    const ok = (state.kind === "all" || c.dataset.kind === state.kind)
+      && (state.ver === "all" || c.dataset.ver === state.ver)
+      && words.every(w => c.dataset.text.includes(w));
+    c.hidden = !ok;
+    if (ok) shown++;
+  });
+  groups.forEach(g => {
+    const n = g.querySelectorAll(".card:not([hidden])").length;
+    g.hidden = n === 0;
+    g.querySelector("[data-count]").textContent = n;
+    if (filtering && n > 0 && g.dataset.wasOpen === undefined) { g.dataset.wasOpen = g.open ? "1" : "0"; }
+    if (filtering) { if (n > 0) g.open = true; }
+    else if (g.dataset.wasOpen !== undefined) { g.open = g.dataset.wasOpen === "1"; delete g.dataset.wasOpen; }
+  });
+  cols.forEach(c => {
+    const n = c.querySelectorAll(".card:not([hidden])").length;
+    c.querySelector("[data-colcount]").textContent = n;
+    c.querySelector(".empty").hidden = n > 0;
+    tabs.querySelector('[data-col="' + c.dataset.col + '"] [data-n]').textContent = n;
+  });
+  clear.hidden = q.value === "";
+  const act = [state.kind, state.ver].filter(v => v !== "all");
+  document.getElementById("chipsum").firstChild.textContent = act.length ? "Kind and version: " + act.join(", ") : "Kind and version";
+  status.textContent = filtering ? "Showing " + shown + " of " + cards.length + " features." : "";
+}
+q.addEventListener("input", apply);
+clear.addEventListener("click", () => { q.value = ""; apply(); q.focus(); });
+q.addEventListener("keydown", e => { if (e.key === "Escape" && q.value) { q.value = ""; apply(); } });
+const fold = document.getElementById("chipfold");
+const wide = matchMedia("(min-width: 640px)");
+const syncFold = () => { if (wide.matches) fold.open = true; };
+wide.addEventListener("change", syncFold);
+syncFold();
+apply();
 </script>
 </body>
 </html>
