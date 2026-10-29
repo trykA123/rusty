@@ -85,6 +85,7 @@ From `code-quality.md`, counted as non-blank, non-comment lines and enforced by 
 
 - Every tool and dependency starts at its **latest stable release** when it is added: Rust 1.99.0 (current stable), `gpui-kit` 0.7.3, and the latest release of every crate in the architecture's library table. Exact versions are pinned in `Cargo.lock` and `rust-toolchain.toml` and recorded in `docs/dev-tools.md`.
 - Every dependency comes from its official source and passes `cargo deny` (licences, advisories, sources) before it lands.
+- **Libraries enter with their feature (D88, 2026-10-29).** A library from the map in [the speed plan](2026-10-28-speed.md) comes in only when its feature is built, pinned, and only after a short test or measurement shows it helps. GPL, AGPL and LGPL crates never enter.
 - A monthly update atom (T1) runs `cargo update`, bumps the toolchain if a new stable is out, runs the gate and logs what changed. Major version bumps get their own atom.
 
 ## Repository layout

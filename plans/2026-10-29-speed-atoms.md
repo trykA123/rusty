@@ -83,7 +83,7 @@ Every cargo command runs exactly as `flock /tmp/rusty-cargo.lock nice -n 10 env 
 
 ## Atoms
 
-Roles: `patcher` and `api-builder`/`ui-builder` run on Sonnet 5.5 medium. `senior` runs on Opus 5.5 medium. Atoms in one wave touch disjoint files and at most one of them changes `Cargo.lock`.
+Roles: `patcher` and `api-builder`/`ui-builder` run on Sonnet 5.5 medium. `senior` runs on Opus 5.5 medium. Pure-backend atoms (SP0f, SP7e, SP8d, SP9a, SP12a, SP12c) may run on DeepSeek V4.1 Flash (dshw) or Codex Sol 6.1 high instead; DeepSeek never runs an atom that touches `rusty-ui` or the gallery. Windows CI is the real gate; a Linux run is a quick filter. Atoms in one wave touch disjoint files and at most one of them changes `Cargo.lock`.
 
 | Atom | Goal | Role | Effort | Wave | After | Check | Owner check (SD1) | Status |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -378,25 +378,26 @@ Roles: `patcher` and `api-builder`/`ui-builder` run on Sonnet 5.5 medium. `senio
 
 ## Not in this plan
 
-Research libraries that serve later features, each with its milestone:
+Research libraries that serve later features, each with its milestone (D88: each comes in only with its feature, pinned, after a short test or measurement):
 
 | Library | Milestone |
 | --- | --- |
-| `grep-searcher`, `grep-regex`, `encoding_rs_io` | Find content search (B7 rest) |
-| `nucleo` 0.5 / `frizbee` 0.13 | Find ranking |
+| `grep-searcher`, `grep-regex`, `encoding_rs_io` | Find content search, end of the beta (beta G17) |
+| `nucleo-matcher` (have) / `frizbee` 0.13 | Find ranking, after a benchmark (beta G18); `nucleo` never as a hard dependency without a fallback |
 | `imara-diff` 0.2 | Compare and sync, v1.0 |
 | `blake3` 1.8 | Checksums, duplicates, v1.1 |
-| `CopyFile2`, `reflink-copy` | Copy engine, v1.0 |
-| `zip`, `sevenz-rust2`, `zstd`, `liblzma`, `bzip2`, `backhand` | Archives as folders, v1.0 |
+| `CopyFile2` | Copy engine (done in P30); `reflink-copy` is not in the D88 map |
+| `zip`, `sevenz-rust2`, `tar`; trial of `zstd`, `liblzma` for writing | Archives as folders, v1.0; no RAR (D88) |
 | `calamine`, `rust_xlsxwriter` | Spreadsheets in F3, v2.0 |
-| `IShellItemImageFactory` helper, `fast_image_resize`, `turbojpeg`, `jxl-oxide` | Thumbnails and viewers, v1.0 / v2.0 |
+| `IShellItemImageFactory` in a separate process, `fast_image_resize` | Thumbnails, v1.0 (beta I10, I11a, I11b) |
+| `bzip2`, `backhand`, `turbojpeg`, `jxl-oxide` | Not in the D88 map; each needs an owner decision first |
 | `autosar-data`, `mf4-rs` | Automotive formats |
 | `gix` | Git, v1.2 |
 | `russh` + `russh-sftp`, `opendal` | Remote locations, v2.0 |
 | `mlua`, `wasmtime` | Plugins and scripting, v2.0 |
 | `alacritty_terminal` | Embedded terminal, v2.0 |
 | Velopack | Installer and updates, v1.0 |
-| `crash-handler` + `minidumper` | Crash reports, v1.0 |
+| `crash-handler` + `minidumper` | Crash reports (P29 C4, C5) |
 | `ntfs-reader`, `usn-journal-rs` | Index cross-checks, later |
 | `notify` + `notify-debouncer-full` | Not needed: own watcher, no measured problem |
 | `interprocess` | Not needed: SP1a's own overlapped pipe is done |
@@ -418,3 +419,4 @@ Research libraries that serve later features, each with its milestone:
 ## Log
 
 - 2026-10-29 — Plan written (architect, Opus 5.5). L1 hits counted on Linux at `b6394a34`: rusty-ui 147 (window_view/viewer 50, rest of window_view 59, outside 38), rusty-app 39, rusty-cache 19, rusty-ui-gallery 9, xtask 8, rusty-store 7, rusty-index 1, rusty-pdf 1. Versions checked with `cargo search`/`cargo info`: tracy-client 0.19.0, tracing-tracy 0.12.0, gungraun 0.20.0, mimalloc 0.1.52, dua-core 5.0.1, ignore 0.4.34, tray-icon 0.26.1 (windows-sys 0.61), global-hotkey 0.9.0 (windows-sys 0.59, rejected).
+- 2026-10-29 — Amended from the 2026-10-28 research (D88). DeepSeek V4.1 Flash or Sol 6.1 high may run the pure-backend atoms (never UI); Windows CI is the real gate. "Not in this plan" follows the D88 library map: ranking stays on `nucleo-matcher` unless `frizbee` wins, archives without RAR, thumbnails in a separate process; `bzip2`, `backhand`, `turbojpeg`, `jxl-oxide` and `reflink-copy` are not adopted. No atom changed: SP0c, SP1a, SP9a, SP10c and SP12a/c already match D88.
