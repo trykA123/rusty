@@ -104,14 +104,14 @@ Roles: `patcher` and `api-builder`/`ui-builder` run on Sonnet 5.5 medium. `senio
 | SP7k | `Arc<Selection>` | api-builder | medium | 3 | SP7c, SP7j | check -p rusty-core -p rusty-ui -p rusty-ui-gallery | — | blocked |
 | SP8f | L1: rusty-ui `window_view/viewer` | api-builder | medium | 3 | — | module-scoped L1 = 0 | — | ready |
 | SP10b | Hide on close, show on arrival | senior | medium | 3 | SP10a | check -p rusty-ui -p rusty-app + Windows CI | close hides, relaunch shows | blocked |
-| SP7g | Fresh listing sorted on the worker | api-builder | medium | 4 | SP7f | check -p rusty-ui | open 500k folder: no UI stall | blocked |
+| SP7g | Fresh listing sorted on the worker | api-builder | medium | 4 | SP7f | check -p rusty-ui | open 500k folder: no UI stall | done |
 | SP8g | L1: rest of `window_view` | api-builder | medium | 4 | SP7j, SP10b | module-scoped L1 = 0 | — | blocked |
 | SP9a | mimalloc feature + A/B exe | api-builder | medium | 4 | — | check -p rusty-app | A/B `--metrics` and `navo bench` | ready |
-| SP7h | Big cached folder sorted on the worker | api-builder | medium | 5 | SP7g | check -p rusty-ui | re-enter 500k folder: no stall | blocked |
-| SP8h | L1: rusty-ui outside window_view/browser/file_list | api-builder | medium | 5 | SP10a | module-scoped L1 = 0 | — | blocked |
-| SP10c | Resident thread: tray + hotkey | senior | medium | 5 | SP10b | Windows CI | tray icon, Win+Alt+N registers | blocked |
+| SP7h | Big cached folder sorted on the worker | api-builder | medium | 5 | SP7g | check -p rusty-ui | re-enter 500k folder: no stall | done |
+| SP8h | L1: rusty-ui outside window_view/browser/file_list | api-builder | medium | 5 | SP10a | module-scoped L1 = 0 | — | done |
+| SP10c | Resident thread: tray + hotkey | senior | medium | 5 | SP10b | Windows CI | tray icon, Win+Alt+N registers | done |
 | SP7i | Async sort/filter above 20k rows | senior | medium | 6 | SP7h | check -p rusty-ui | type filter in 500k folder | blocked |
-| SP10d | Summon and Quit wiring, summon timing | senior | medium | 6 | SP10c | check -p rusty-ui -p rusty-app + Windows CI | summon ≤ 50 ms in log | blocked |
+| SP10d | Summon and Quit wiring, summon timing | senior | medium | 6 | SP10c | check -p rusty-ui -p rusty-app + Windows CI | summon ≤ 50 ms in log | done |
 | SP12c | Adopt the faster walker (only if D17 holds) | api-builder | medium | 6 | SP12a + owner numbers | check -p rusty-index | index build time | blocked |
 | SP7l | Row text cache (only if measured) | ui-builder | medium | 7 | SP7i, SP7k | check -p rusty-ui | pane render p95 | blocked |
 | SP8i | Deny L1 workspace-wide + leftovers | api-builder | medium | 8 | all SP7, SP8, SP10 | `cargo clippy --workspace --all-targets -- -D warnings` + clippy-windows | — | blocked |
