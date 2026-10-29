@@ -106,6 +106,10 @@ Linux result, 26 October 2026, release build of 6873ea0 with the bench added, 14
 
 The path fragment is the slowest query, because it builds the full path of every candidate. Sorting and filtering the 500,000-file folder take a visible 0.1–0.6 s per step.
 
+## Profiling with Tracy
+
+Build with `cargo build --release -p rusty-app --features tracy`. The build marks every frame and sends spans at `debug` level to Tracy. Open it with the Tracy viewer that matches `tracy-client-sys` 0.30.1 (Tracy v0.14.1 per the version table in that crate's README). For sampling without a viewer, run `samply record navo.exe`.
+
 ## History
 
 | Date | Commit | Median warm first frame | Max private bytes |
