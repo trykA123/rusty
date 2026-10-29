@@ -235,11 +235,11 @@ Roles: `patcher` and `api-builder`/`ui-builder` run on Sonnet 5.5 medium. `senio
 
 - **Role:** api-builder · **Wave:** 2 · **After:** — · Changes `Cargo.lock` (only one in wave 2).
 - **Read:** `xtask/src/bench_walk/mod.rs:1-80`, `bench_walk/index.rs:1-63`, `bench_walk/options.rs`, `xtask/Cargo.toml`.
-- **Change:** D17. `xtask/Cargo.toml`: `dua-core = "=5.0.1"`, `ignore = "=0.4.34"`. `options.rs`: targets `walk-dua`, `walk-ignore`, `find` (our find walker through the public `rusty_fs::find` API, name query `*`). New `bench_walk/walkers.rs` with one measure function per target on the same `size-tree` fixture as `walk`; each counts entries and fails if the count differs from our `walk`. Report adds a "files/s" column. `ci.yml` `build-windows`: `cargo build --release -p xtask` and upload `target/release/xtask.exe` as artifact `navo-bench-tools-windows`.
+- **Change:** D17. `xtask/Cargo.toml`: `dua-core = "=5.0.1"`, `ignore = "=0.4.34"`. `options.rs`: targets `walk-dua`, `walk-ignore`, compared against the existing `walk` (no `find`: it is content search). New `bench_walk/walkers.rs` with one measure function per target on the same `size-tree` fixture as `walk`; each counts entries and fails if the count differs from our `walk`. Report adds a "files/s" column. `ci.yml` `build-windows`: `cargo build --release -p xtask` and upload `target/release/xtask.exe` as artifact `navo-bench-tools-windows`.
 - **Do not touch:** `rusty-index`, `rusty-fs`.
 - **Tests:** the tiny-fixture test in `bench_walk/index.rs` extended to the new targets (counts equal).
 - **Check:** `flock /tmp/rusty-cargo.lock nice -n 10 env CARGO_BUILD_JOBS=8 cargo xtask check -p xtask`; `cargo deny check`.
-- **Owner check:** `xtask.exe bench-walk D:\navo-walk --targets walk,walk-dua,walk-ignore,find --runs 5` on the internal NVMe and on the second drive type; send both tables.
+- **Owner check:** `xtask.exe bench-walk D:\navo-walk --targets walk,walk-dua,walk-ignore --runs 5` on the internal NVMe and on the second drive type; send both tables.
 
 ### SP0f — gungraun benches for listing hot paths, bench workflow
 
