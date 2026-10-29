@@ -59,7 +59,8 @@ A key bar at the foot lists these keys.
 - Hold Shift and drag a pane header to another pane to swap them. Esc or a drop outside cancels.
 - Drag a divider to resize. A guide line shows the new place. The panes resize when you let go. Sizes stay between 10 and 90 percent.
 - Double-click a divider to make that split even.
-- Ctrl+Alt+0 resets the split. Ctrl+Shift+0 also works where Windows does not take it for the keyboard language.
+- Ctrl+Alt+0 makes every divider even. Ctrl+Shift+0 also works where Windows does not take it for the keyboard language.
+- In Two by two, each row has its own vertical divider. Ctrl+Left and Right move only the focused pane's row.
 - Alt+D edits the path of the active pane. Ctrl+L no longer does this.
 
 ## Narrow windows
