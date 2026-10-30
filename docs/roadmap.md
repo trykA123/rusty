@@ -1,6 +1,6 @@
 # Rusty roadmap
 
-Updated 27 October 2026. The visual version is [`design/roadmap.html`](../design/roadmap.html). Scope rules are in [decisions.md](decisions.md) (D13, D14). Plain-language specs for the bigger features are in [features/](features/).
+Updated 30 October 2026. The visual version is [`design/roadmap.html`](../design/roadmap.html). Scope rules are in [decisions.md](decisions.md) (D13, D14). Plain-language specs for the bigger features are in [features/](features/).
 
 Kinds: **core** is always on; **module** can be turned off; **package** is data only (themes, keymaps); **infra** is build, CI and release work.
 
@@ -60,9 +60,11 @@ Merged after that release: six built-in colour themes. They are Open sea (the de
 
 ### Now in progress
 
-- **Record performance.** A menu command records frame times, CPU, memory and the latency of opening folders and Ctrl+K while you use the app, then saves a `navo-performance-*.zip` to send. It is built and waiting for Windows CI.
-- **Delete safety net (1 to 7 days retention).** On by default since 28 October 2026: deletes and overwrites are kept 3 days, Ctrl+Z restores them, "Recently deleted" lists them, Settings › Safety net sets the limits, and expired files clean up on their own. Left: Windows checks in CI, a senior review and the user guide.
-- **Fonts.** Space Grotesk for the brand, Inter for the interface, JetBrains Mono for paths and viewers. Decided. Not built yet.
+- **Compare and sync (v1.0).** The engine is about a third done: big files are read once with steady memory, changes are found down to the word, content checks use every core, and Git repositories can be read at any revision. Next: the compare screen, then sync.
+- **Installer.** Setup.exe ships with the next pre-release, next to the portable zip. Updates from inside the app follow.
+- **Safer undo for moves.** Ctrl+Z after a move checks that each file is still the same one before it moves it back.
+
+Done since 27 October: the fixes from the owner's testing (pane keys, self-saving workspaces, tab drag between panes, system defaults, settings badges), the user guide (Shift+F1), Navo in the tray, faster start, PDFs ready sooner, quiet when idle, and colours from the theme everywhere. Release builds no longer carry performance or trace tooling; that lives in a separate tester build.
 
 Still open for alpha sign-off:
 
