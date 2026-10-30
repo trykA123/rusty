@@ -98,7 +98,7 @@ rusty/
 ├── deny.toml               licences, advisories, sources
 ├── size-exceptions.toml    files allowed above 400 lines, with reasons
 ├── .config/nextest.toml
-├── .github/workflows/      ci.yml (every push), nightly.yml
+├── .github/workflows/      release.yml (manual: Windows gate, build, pre-release), checks.yml and bench.yml (manual)
 ├── crates/
 │   ├── rusty-core/         pure model: command/, layout/, state/, selection/, location/, error/, replay/
 │   ├── rusty-store/        atomic_write, settings/, session/, db/
