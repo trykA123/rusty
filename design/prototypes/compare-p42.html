@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Ferrite · Compare directions</title>
+<title>Navo compare design</title>
 <style>
 
 :root {
@@ -78,7 +78,7 @@
   --fs-12: 0.75rem; --fs-13: 0.8125rem; --fs-14: 0.875rem; --fs-16: 1rem; --fs-18: 1.125rem; --fs-24: 1.5rem;
   --s-hair: 2px; --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-6: 24px; --s-8: 32px; --s-12: 48px;
   --r-sm: 4px; --r-md: 8px; --r-lg: 12px; --r-full: 999px;
-  --row-h: 20px; --list-h: 26px; --ln-w: 48px; --mid-w: 36px; --map-w: 22px; --nav-w: 232px; --drawer-w: 340px; --bar-h: 3px;
+  --row-h: 20px; --list-h: 26px; --ln-w: 60px; --mid-w: 36px; --map-w: 22px; --nav-w: 232px; --drawer-w: 340px; --bar-h: 3px;
   --fast: 120ms; --base: 180ms; --slow: 260ms;
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1); --ease-in: cubic-bezier(0.4, 0, 1, 1);
   --z-sticky: 5; --z-overlay: 10; --z-pop: 20; --z-toast: 30;
@@ -429,6 +429,28 @@ mark.il-add { background: var(--c-add-fill); color: inherit; border-radius: 2px;
 .pv-f { padding: var(--s-2) 0 0; }
 .map[data-numbers="all"] .map-n { top: 2px; }
 
+.ln[data-act="lsel"] { cursor: pointer; }
+.ln[data-act="lsel"]:hover { color: var(--accent-text); }
+.ln.lsel, .tx.lsel { background: var(--selection) !important; }
+.tx.lsel { box-shadow: inset var(--bar-h) 0 0 var(--accent) !important; }
+.ln .cb { display: inline-block; width: 11px; height: 11px; margin-inline-end: 6px; vertical-align: -1px; border: 1.5px solid var(--text-faint); border-radius: 3px; opacity: 0; transition: opacity 80ms; }
+.r:hover .ln .cb, .r.hov .ln .cb, .has-sel .ln .cb { opacity: 1; }
+.ln.lsel .cb { opacity: 1; border-color: var(--accent); background: var(--accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / 9px no-repeat; }
+.hbar { display: none; position: absolute; z-index: 3; top: -26px; left: 50%; transform: translateX(-50%); gap: 2px; padding: 2px; border-radius: var(--r-md); background: var(--card); box-shadow: var(--shadow-menu); font-family: var(--font-ui); font-size: var(--fs-12); white-space: nowrap; }
+.r.inline .hbar { left: auto; right: var(--s-3); transform: none; }
+.r.hov .hbar { display: flex; animation: fade-in 80ms var(--ease-out); }
+.hbar button { display: inline-flex; align-items: center; gap: 4px; height: 24px; padding: 0 8px; border: 0; border-radius: var(--r-sm); background: none; cursor: pointer; }
+.hbar button:hover { background: var(--selection); color: var(--accent-text); }
+.hbar .sep { width: 1px; background: var(--border); margin-block: 4px; }
+.r.hov .tx { outline: 1px solid color-mix(in oklch, var(--accent) 35%, transparent); outline-offset: -1px; }
+.cmenu { position: fixed; z-index: 40; min-width: 260px; max-width: calc(100vw - 16px); background: var(--card); border-radius: var(--r-lg); box-shadow: var(--shadow-menu); padding: var(--s-1); animation: fade-in 80ms var(--ease-out); font-family: var(--font-ui); }
+.cmenu button { display: flex; align-items: center; gap: var(--s-2); width: 100%; min-height: 30px; padding-inline: var(--s-2); border: 0; background: none; border-radius: var(--r-md); text-align: start; cursor: pointer; color: var(--text); }
+.cmenu button:hover, .cmenu button:focus-visible { background: var(--hover); }
+.cmenu button[disabled] { color: var(--text-faint); cursor: default; background: none; }
+.cmenu .t { flex: 1; }
+.cmenu hr { border: 0; border-top: 1px solid var(--border); margin: var(--s-1) 0; }
+.selbar { position: absolute; z-index: var(--z-toast); inset-inline-start: 50%; bottom: 40px; transform: translateX(-50%); display: flex; align-items: center; gap: var(--s-2); flex-wrap: wrap; justify-content: center; max-width: calc(100% - 24px); padding: var(--s-1) var(--s-1) var(--s-1) var(--s-3); background: var(--card); border-radius: var(--r-md); box-shadow: var(--shadow-menu); animation: fade-in 80ms var(--ease-out); }
+.selbar b { font-variant-numeric: tabular-nums; }
 .proto-picker { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 2147483647; display: flex; align-items: center; gap: 2px; padding: 4px; border-radius: 999px; background: rgba(10, 10, 10, 0.82); -webkit-backdrop-filter: blur(12px) saturate(1.4); backdrop-filter: blur(12px) saturate(1.4); box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08) inset, 0 8px 24px rgba(0, 0, 0, 0.24), 0 2px 6px rgba(0, 0, 0, 0.12); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 13px; line-height: 1; -webkit-font-smoothing: antialiased; user-select: none; -webkit-user-select: none; }
 .proto-picker-highlight { position: absolute; top: 4px; left: 0; height: 28px; border-radius: 999px; background: rgba(255, 255, 255, 0.12); will-change: transform; }
 .proto-picker[data-ready] .proto-picker-highlight { transition: transform 250ms cubic-bezier(0.23, 1, 0.32, 1), width 250ms cubic-bezier(0.23, 1, 0.32, 1); }
@@ -673,6 +695,7 @@ function freshState(dir, scn) {
     undo: [], dirty: { L: false, R: false }, drawer: null, menu: null, toast: null, enter: new Set(), prog: 0.22, largeTab: 'text',
     region: 1, hashP: { 'tests/fixtures/big_trace.asc': 0.34, 'tests/fixtures/flash_dump.hex': 0.71 }, cur: -1, side: 'L', navFolder: null,
     expanded: new Set(['crates/rusty-fs/src/job/copy.rs']), narrow: false, saved: false,
+    lsel: null, lastSel: null,
   };
 }
 
@@ -773,7 +796,7 @@ function diffModel() {
     const hk = { h, bi, kind, sym: symAt(seen) || 'top of file', l1: ln, r1: rn, nl: L.length, nr: R.length };
     for (let i = 0; i < n; i++) {
       const lt = L[i], rt = R[i];
-      const row = { k: kind, h, bi, lt, rt, l: lt !== undefined ? ln++ : null, r: rt !== undefined ? rn++ : null, first: i === 0 };
+      const row = { k: kind, h, bi, ix: i, lt, rt, l: lt !== undefined ? ln++ : null, r: rt !== undefined ? rn++ : null, first: i === 0 };
       if (kind === 'chg' && lt !== undefined && rt !== undefined) row.il = intra(lt, rt);
       rows.push(row);
     }
@@ -796,6 +819,108 @@ function copyBtns(r, side) {
   const toL = `<button class="cp" data-act="copy" data-v="L" data-b="${r.bi}" title="Copy block to the left (Ctrl+Alt+←)" aria-label="Copy change ${r.h + 1} to the left">${ic('al', 'sm')}</button>`;
   return side === 'both' ? toL + toR : side === 'L' ? toR : toL;
 }
+const selKey = (r) => `${r.bi}:${r.ix}`;
+const isSel = (r, side) => !!(S.lsel && S.lsel.side === side && r.ix !== undefined && S.lsel.keys.has(selKey(r)));
+function lnOpen(r, side) {
+  const has = side === 'L' ? r.lt !== undefined : r.rt !== undefined;
+  if (!r.k || r.k === 'done' || r.ix === undefined || !has) return '<span class="ln">';
+  return `<span class="ln${isSel(r, side) ? ' lsel' : ''}" data-act="lsel" data-b="${r.bi}" data-i="${r.ix}" data-side="${side}" title="Tick to pick this line (Shift+click picks a range)"><span class="cb" aria-hidden="true"></span>`;
+}
+function hunkBar(r) {
+  if (!r.first || !r.k || r.k === 'done') return '';
+  return `<span class="hbar" role="toolbar" aria-label="Change ${r.h + 1}"><button data-act="copy" data-v="L" data-b="${r.bi}">${ic('al', 'sm')}Copy to left</button><span class="sep"></span><button data-act="copy" data-v="R" data-b="${r.bi}">Copy to right${ic('ar', 'sm')}</button></span>`;
+}
+function selectableRows(side) {
+  return diffModel().rows.filter((r) => r.k && r.k !== 'done' && r.ix !== undefined && (side === 'L' ? r.lt !== undefined : r.rt !== undefined));
+}
+function toggleLine(bi, ix, side, range) {
+  const key = `${bi}:${ix}`;
+  if (!S.lsel || S.lsel.side !== side) S.lsel = { side, keys: new Set() };
+  if (range && S.lastSel && S.lastSel.side === side) {
+    const rows = selectableRows(side).map(selKey);
+    const a = rows.indexOf(S.lastSel.key), b = rows.indexOf(key);
+    if (a >= 0 && b >= 0) for (let i = Math.min(a, b); i <= Math.max(a, b); i++) S.lsel.keys.add(rows[i]);
+  } else if (S.lsel.keys.has(key)) S.lsel.keys.delete(key);
+  else S.lsel.keys.add(key);
+  S.lastSel = { side, key };
+  if (!S.lsel.keys.size) S.lsel = null;
+}
+function regroup(pairs) {
+  const out = [];
+  for (const p of pairs) {
+    const t = p.copied ? 'done' : p.l === p.r ? 's' : p.l === undefined ? 'a' : p.r === undefined ? 'd' : 'c';
+    const last = out[out.length - 1];
+    if (last && last.t === t) { if (p.l !== undefined) last.l.push(p.l); if (p.r !== undefined) last.r.push(p.r); continue; }
+    out.push({ t, l: p.l !== undefined ? [p.l] : [], r: p.r !== undefined ? [p.r] : [] });
+  }
+  return out.map((b) => (b.t === 's' ? { t: 's', l: b.l } : b.t === 'a' ? { t: 'a', r: b.r } : b.t === 'd' ? { t: 'd', l: b.l } : b));
+}
+function copySelected(dir, removeOnly) {
+  const src = S.lsel.side, n0 = S.lsel.keys.size;
+  if (!removeOnly && src === dir) { toast(`The selected lines are on the ${src === 'L' ? 'left' : 'right'}. Copy them to the ${src === 'L' ? 'right' : 'left'} with Ctrl+Alt+${src === 'L' ? '→' : '←'}.`); return; }
+  S.undo.push({ type: 'blocks', blocks: clone(S.blocks), dirty: { ...S.dirty } });
+  let changed = 0;
+  S.blocks = S.blocks.flatMap((b, bi) => {
+    if (b.t === 's' || b.t === 'done') return [b];
+    const L = b.l || [], R = b.r || [], n = Math.max(L.length, R.length);
+    const pairs = Array.from({ length: n }, (_, i) => ({ l: L[i], r: R[i] }));
+    let touched = false;
+    pairs.forEach((p, i) => {
+      if (!S.lsel.keys.has(`${bi}:${i}`)) return;
+      const mine = src === 'L' ? p.l : p.r, other = src === 'L' ? p.r : p.l;
+      if (removeOnly) { if (other === undefined) { if (src === 'L') p.l = undefined; else p.r = undefined; p.gone = true; touched = true; changed++; } return; }
+      if (src === 'L') p.r = mine; else p.l = mine;
+      p.copied = true; touched = true; changed++;
+      void other;
+    });
+    if (!touched) return [b];
+    return regroup(pairs.filter((p) => !(p.gone && p.l === undefined && p.r === undefined)));
+  });
+  S.dirty[removeOnly ? src : dir] = true;
+  S.lsel = null; S.lastSel = null;
+  if (!changed) { S.undo.pop(); toast(removeOnly ? 'Only lines that exist on this side alone can be removed' : 'Nothing to copy'); return; }
+  toast(removeOnly ? `Removed ${changed} line${changed > 1 ? 's' : ''} from the ${src === 'L' ? 'left' : 'right'}` : `Copied ${changed} of ${n0} selected line${n0 > 1 ? 's' : ''} to the ${dir === 'L' ? 'left' : 'right'} · the rest of the change stays`, true);
+}
+function cmenuHTML() {
+  const m = S.cmenu;
+  if (!m || S.scn !== 'file') return '';
+  const other = m.side === 'L' ? 'R' : 'L', word = (s) => (s === 'L' ? 'left' : 'right'), arrow = (s) => (s === 'L' ? '←' : '→');
+  const item = (op, label, key = '', dis = false) => `<button data-act="cm" data-v="${op}" ${dis ? 'disabled' : ''}><span class="t">${label}</span>${key ? kb(key) : ''}</button>`;
+  const n = S.lsel ? S.lsel.keys.size : 0, ss = S.lsel ? S.lsel.side : null;
+  const lineHere = m.ix !== undefined && m.changed;
+  let h = '';
+  if (n) h += item('copy-sel', `Copy ${n} picked line${n > 1 ? 's' : ''} to the ${word(ss === 'L' ? 'R' : 'L')} ${arrow(ss === 'L' ? 'R' : 'L')}`, `Ctrl+Alt+${arrow(ss === 'L' ? 'R' : 'L')}`) + item('remove-sel', `Remove ${n} picked line${n > 1 ? 's' : ''}`, 'Ctrl+Shift+Del') + item('clear-sel', 'Clear the picked lines', 'Esc') + '<hr>';
+  if (m.changed) {
+    h += item('line', `Copy this line to the ${word(other)} ${arrow(other)}`, '', !lineHere);
+    h += item('hunk-L', 'Copy this change to the left ←', 'Ctrl+Alt+←') + item('hunk-R', 'Copy this change to the right →', 'Ctrl+Alt+→');
+    h += '<hr>' + item('pick-line', 'Pick this line', 'Shift+click', !lineHere) + item('pick-hunk', 'Pick the whole change') + '<hr>';
+  }
+  h += item('next', 'Next difference', 'Alt+↓') + item('prev', 'Previous difference', 'Alt+↑') + '<hr>';
+  h += item('copytext', 'Copy text', 'Ctrl+C') + item('ignws', `${S.ignWs ? '✓ ' : ''}Ignore whitespace`, 'Alt+W');
+  const x = Math.min(m.x, innerWidth - 290), y = Math.min(m.y, innerHeight - 380);
+  return `<div class="cmenu" role="menu" style="left:${Math.max(8, x)}px;top:${Math.max(8, y)}px">${h}</div>`;
+}
+function runCmenu(op) {
+  const m = S.cmenu; S.cmenu = null;
+  if (!m) return;
+  const other = m.side === 'L' ? 'R' : 'L';
+  if (op === 'copy-sel') copySelected(S.lsel.side === 'L' ? 'R' : 'L', false);
+  else if (op === 'remove-sel') copySelected(null, true);
+  else if (op === 'clear-sel') { S.lsel = null; S.lastSel = null; }
+  else if (op === 'line') { S.lsel = { side: m.side, keys: new Set([`${m.bi}:${m.ix}`]) }; copySelected(other, false); }
+  else if (op === 'hunk-L' || op === 'hunk-R') copyBlock(m.bi, op.slice(-1));
+  else if (op === 'pick-line') toggleLine(m.bi, m.ix, m.side, false);
+  else if (op === 'pick-hunk') { const b = S.blocks[m.bi], arr = (m.side === 'L' ? b.l : b.r) || []; S.lsel = { side: m.side, keys: new Set(arr.map((_, i) => `${m.bi}:${i}`)) }; S.lastSel = { side: m.side, key: `${m.bi}:${arr.length - 1}` }; }
+  else if (op === 'next' || op === 'prev') { render(); nav(op === 'next' ? 1 : -1); return; }
+  else if (op === 'copytext') toast('Copied the line text');
+  else if (op === 'ignws') { S.ignWs = !S.ignWs; S.preset = 'custom'; }
+  render();
+}
+function selBarHTML() {
+  if (S.scn !== 'file' || !S.lsel) return '';
+  const n = S.lsel.keys.size, side = S.lsel.side, to = side === 'L' ? 'R' : 'L';
+  return `<div class="selbar" role="status"><span><b>${n}</b> line${n > 1 ? 's' : ''} selected on the ${side === 'L' ? 'left' : 'right'}</span><button class="btn pri" data-act="copy-sel" data-v="${to}">${ic(to === 'R' ? 'ar' : 'al', 'sm')}Copy to ${to === 'R' ? 'right' : 'left'}${kb(to === 'R' ? 'Ctrl+Alt+→' : 'Ctrl+Alt+←')}</button><button class="btn" data-act="remove-sel">Remove${kb('Ctrl+Shift+Del')}</button><button class="ib" data-act="clear-sel" aria-label="Clear selection (Esc)">${ic('x', 'sm')}</button></div>`;
+}
 function diffRows(opts = {}) {
   const { rows, hunks } = diffModel();
   const layout = S.narrow ? 'inline' : (opts.layout || S.layout);
@@ -810,7 +935,7 @@ function diffRows(opts = {}) {
     const inner = r.il ? hlMark(t, r.il[side === 'L' ? 0 : 1], markCls, S.intra) : hl(txt);
     const note = r.first && r.k === 'mov' ? `<span class="note">${side === 'L' ? '↷ moved up' : '↷ moved from L64'}</span>` : r.first && r.k === 'ws' ? '<span class="ws-badge">whitespace only</span>' : '';
     const kcls = r.k ? (r.k === 'chg' || r.k === 'ws' || r.k === 'mov' || r.k === 'done' ? `k-${r.k}` : side === 'L' ? 'k-del' : 'k-add') : '';
-    return `<span class="tx ${kcls}" data-side="${side}" data-b="${r.bi}">${inner}${note}</span>`;
+    return `<span class="tx ${kcls}${isSel(r, side) ? ' lsel' : ''}" data-side="${side}" data-b="${r.bi}">${inner}${note}</span>`;
   };
   const glyph = (r, side) => (r.k && (side === 'L' ? r.lt : r.rt) !== undefined ? `<span class="g-${r.k === 'chg' || r.k === 'mov' || r.k === 'ws' ? r.k : side === 'L' ? 'del' : 'add'}">${r.k === 'chg' || r.k === 'mov' || r.k === 'ws' || r.k === 'done' ? GL[r.k] : side === 'L' ? '−' : '+'}</span>` : '');
   const foldRun = (start, end) => `<button class="fold" data-act="unfold">${ic('fold', 'sm')}${end - start} unchanged lines · ${hunks.length ? 'click to show' : ''}</button>`;
@@ -824,9 +949,9 @@ function diffRows(opts = {}) {
     if (!visible[i]) { let j = i; while (j < rows.length && !visible[j]) j++; html += foldRun(i, j); i = j; continue; }
     const r = rows[i];
     if (layout === 'split') {
-      const lnL = cpIn === 'ln' && r.first && r.k && r.k !== 'done' ? `<span class="ln">${copyBtns(r, 'L')}</span>` : `<span class="ln">${r.l ?? ''} ${glyph(r, 'L')}</span>`;
-      const lnR = cpIn === 'ln' && r.first && r.k && r.k !== 'done' ? `<span class="ln">${copyBtns(r, 'R')}</span>` : `<span class="ln">${r.r ?? ''} ${glyph(r, 'R')}</span>`;
-      html += `<div class="r split"${tipOf(r)}>${lnL}${cell(r.lt, 'L', r)}<span class="mid">${cpIn === 'mid' ? copyBtns(r, 'both') : ''}</span>${lnR}${cell(r.rt, 'R', r)}</div>`;
+      const lnL = cpIn === 'ln' && r.first && r.k && r.k !== 'done' ? `<span class="ln">${copyBtns(r, 'L')}</span>` : `${lnOpen(r, 'L')}${r.l ?? ''} ${glyph(r, 'L')}</span>`;
+      const lnR = cpIn === 'ln' && r.first && r.k && r.k !== 'done' ? `<span class="ln">${copyBtns(r, 'R')}</span>` : `${lnOpen(r, 'R')}${r.r ?? ''} ${glyph(r, 'R')}</span>`;
+      html += `<div class="r split"${tipOf(r)}>${lnL}${cell(r.lt, 'L', r)}<span class="mid">${cpIn === 'mid' ? copyBtns(r, 'both') : ''}</span>${lnR}${cell(r.rt, 'R', r)}${cpIn === 'bar' ? hunkBar(r) : ''}</div>`;
     } else {
       if (!r.k) {
         html += `<div class="r inline"${tipOf(r)}><span class="ln">${r.l}</span><span class="ln">${r.r}</span><span class="gl"></span><span class="tx">${hl(r.rt)}</span></div>`;
@@ -835,26 +960,26 @@ function diffRows(opts = {}) {
         while (j < rows.length && rows[j].h === r.h && rows[j].k) grp.push(rows[j++]);
         const lefts = grp.filter((g) => g.lt !== undefined), rights = grp.filter((g) => g.rt !== undefined);
         const k = r.k;
-        const cp = k === 'done' ? '' : `<span class="pick" style="position:absolute;inset-inline-end:8px;top:0">${copyBtns(r, 'both')}</span>`;
-        lefts.forEach((g, x) => {
+        const cp = k === 'done' ? '' : cpIn === 'bar' ? hunkBar({ ...r, first: true }) : `<span class="pick" style="position:absolute;inset-inline-end:8px;top:0">${copyBtns(r, 'both')}</span>`;
+        (k === 'done' ? [] : lefts).forEach((g, x) => {
           const t = k === 'ws' ? showWs(g.lt) : g.lt;
           const inner = g.il ? hlMark(g.lt, g.il[0], 'il-del', S.intra) : hl(t);
           const kc = k === 'chg' || k === 'del' ? 'k-del' : `k-${k}`;
           const note = x === 0 && k === 'mov' ? '<span class="note">↷ moved up to line 18</span>' : x === 0 && k === 'ws' ? '<span class="ws-badge">whitespace only</span>' : '';
-          html += `<div class="r inline"${x === 0 ? tipOf(g) : ` data-k="${k}"`}><span class="ln">${g.l}</span><span class="ln"></span><span class="gl ${k === 'mov' ? 'g-mov' : 'g-del'}">${k === 'mov' ? '↷' : '−'}</span><span class="tx ${kc}" data-side="L" data-b="${g.bi}">${inner}${note}</span>${x === 0 ? cp : ''}</div>`;
+          html += `<div class="r inline"${x === 0 ? tipOf(g) : ` data-k="${k}"`}>${lnOpen(g, 'L')}${g.l}</span><span class="ln"></span><span class="gl ${k === 'mov' ? 'g-mov' : 'g-del'}">${k === 'mov' ? '↷' : '−'}</span><span class="tx ${kc}${isSel(g, 'L') ? ' lsel' : ''}" data-side="L" data-b="${g.bi}">${inner}${note}</span>${x === 0 ? cp : ''}</div>`;
         });
         rights.forEach((g, x) => {
           const inner = g.il ? hlMark(g.rt, g.il[1], 'il-add', S.intra) : hl(g.rt);
           const kc = k === 'chg' || k === 'add' || k === 'ws' ? 'k-add' : `k-${k}`;
           const note = x === 0 && k === 'mov' && !lefts.length ? '<span class="note">↷ moved from line 64</span>' : '';
-          html += `<div class="r inline"${x === 0 && !lefts.length ? tipOf(g) : ` data-k="${k}" data-h="${g.h}"`}><span class="ln"></span><span class="ln">${g.r}</span><span class="gl ${k === 'mov' ? 'g-mov' : 'g-add'}">${k === 'mov' ? '↷' : '+'}</span><span class="tx ${kc}" data-side="R" data-b="${g.bi}">${inner}${note}</span>${x === 0 && !lefts.length ? cp : ''}</div>`;
+          html += `<div class="r inline"${x === 0 && !lefts.length ? tipOf(g) : ` data-k="${k}" data-h="${g.h}"`}><span class="ln"></span>${lnOpen(g, 'R')}${g.r}</span><span class="gl ${k === 'mov' ? 'g-mov' : 'g-add'}">${k === 'mov' ? '↷' : k === 'done' ? '✓' : '+'}</span><span class="tx ${kc}${isSel(g, 'R') ? ' lsel' : ''}" data-side="R" data-b="${g.bi}">${inner}${note}</span>${x === 0 && !lefts.length ? cp : ''}</div>`;
         });
         i = j; continue;
       }
     }
     i++;
   }
-  return { html: `<div class="code ${opts.wash ? 'wash' : ''}">${html}</div>`, hunks, layout };
+  return { html: `<div class="code ${opts.wash ? 'wash' : ''}${S.lsel ? ' has-sel' : ''}">${html}</div>`, hunks, layout };
 }
 function copyBlock(bi, dir) {
   const b = S.blocks[bi];
@@ -1201,7 +1326,7 @@ function folderSummary() {
   return out;
 }
 function titleBar() {
-  return `<header class="tb"><span class="logo"><b>fe_</b><span class="hide-n">Ferrite</span>${ic('down', 'sm')}</span>
+  return `<header class="tb"><span class="logo"><b>N</b><span class="hide-n">Navo</span>${ic('down', 'sm')}</span>
   <button class="search" data-act="noop" aria-label="Find anywhere (Ctrl+K)">${ic('search', 'sm')}<span>Find anywhere: files, folders, commands</span>${kb('Ctrl+K')}</button>
   <button class="ib" data-act="theme" aria-label="Switch theme">${ic(document.documentElement.dataset.theme === 'dark' ? 'sun' : 'moon')}</button>
   <span class="winctl" style="display:flex"><button class="ib" data-act="noop" aria-label="Minimise">${ic('min', 'sm')}</button><button class="ib" data-act="noop" aria-label="Maximise">${ic('sq', 'sm')}</button><button class="ib" data-act="noop" aria-label="Close window">${ic('x', 'sm')}</button></span></header>`;
@@ -1363,8 +1488,8 @@ const DIRS = [
       return `${narrowBar}<div class="body">${panes}</div><footer class="st">${filterSeg()}<span class="num hide-n">${legendCounts()}</span>${hashingNote()}<span class="grow"></span>${keys([['Alt+↓', 'Next'], ['Ctrl+B', 'Folders', 1], ['Ctrl+I', 'Rules', 1], ['Alt+V', 'View', 1]])}</footer>`;
     },
     file() {
-      const d = diffRows({ wash: true });
-      return `<div class="vh">${ic('code', 'sm ic-file')}<span class="vh-name">copy.rs</span><span class="vh-meta hide-n">ferrite ↔ ferrite-p42 · Rust · UTF-8</span><span class="grow"></span>${navBtns()}${viewBtn()}${saveFileBtn()}</div><div class="body"><div class="scroller" id="sc" data-nav>${d.html}</div>${mapEl('sc')}</div>${statusLine(`<span>${dirtyMark('L') || dirtyMark('R') || 'Calm view: drawers closed'}</span>`, keys([['Alt+↓', 'Next'], ['Ctrl+B', 'Changes', 1], ['Ctrl+I', 'Details', 1], ['Alt+V', 'View']]))}`;
+      const d = diffRows({ wash: true, cpIn: 'bar' });
+      return `<div class="vh">${ic('code', 'sm ic-file')}<span class="vh-name">copy.rs</span><span class="vh-meta hide-n">navo ↔ navo-p42 · Rust · UTF-8</span><span class="grow"></span>${navBtns()}${viewBtn()}${saveFileBtn()}</div><div class="body"><div class="scroller" id="sc" data-nav>${d.html}</div>${mapEl('sc')}</div>${statusLine(`<span>${dirtyMark('L') || dirtyMark('R') || 'Hover a change to copy it · tick the box next to a line to pick lines · right-click for every action'}</span>`, keys([['Shift+↓', 'Pick lines'], ['Ctrl+Alt+→', 'Copy', 1], ['Ctrl+B', 'Changes', 1], ['Alt+V', 'View']]))}`;
     },
     merge() {
       if (S.narrow) return `${mergeHead()}<div class="body"><div class="scroller" id="sc" data-nav>${mergeResult()}</div>${mapEl('sc', { lanes: 'one' })}</div>${statusLine('', mergeKeys())}`;
@@ -1389,7 +1514,7 @@ root.dataset.theme = new URLSearchParams(location.search).get('theme') || (match
 
 function harness() {
   const scn = new URLSearchParams(location.search).get('s') || (S && S.scn) || 'folders';
-  document.getElementById('hx').innerHTML = `<span class="hx-title">Ferrite · Compare</span><div class="hx-scn" role="group" aria-label="Scenario">${SCN.map(([k, l, key]) => `<button data-scn="${k}" aria-pressed="${scn === k}" title="${l} (${key})">${l} <kbd>${key}</kbd></button>`).join('')}</div><span class="hx-desc">${esc(DIRS[S ? S.dir : 0].axis)}</span><button class="ib hx-theme" data-act="theme" aria-label="Switch theme (T)">${ic(root.dataset.theme === 'dark' ? 'sun' : 'moon')}</button>`;
+  document.getElementById('hx').innerHTML = `<span class="hx-title">Navo · Compare</span><div class="hx-scn" role="group" aria-label="Scenario">${SCN.map(([k, l, key]) => `<button data-scn="${k}" aria-pressed="${scn === k}" title="${l} (${key})">${l} <kbd>${key}</kbd></button>`).join('')}</div><span class="hx-desc">${esc(DIRS[S ? S.dir : 0].axis)}</span><button class="ib hx-theme" data-act="theme" aria-label="Switch theme (T)">${ic(root.dataset.theme === 'dark' ? 'sun' : 'moon')}</button>`;
 }
 function setScn(s) {
   S.scn = s; S.cur = -1; S.drawer = null; S.menu = null;
@@ -1399,7 +1524,7 @@ function setScn(s) {
 }
 function appHTML() {
   const D = DIRS[S.dir];
-  return `<div class="app" id="app">${titleBar()}${D[S.scn]()}${drawerHTML()}${viewMenuWrap()}${toastHTML()}</div>`;
+  return `<div class="app" id="app">${titleBar()}${D[S.scn]()}${drawerHTML()}${viewMenuWrap()}${selBarHTML()}${toastHTML()}${cmenuHTML()}</div>`;
 }
 const viewMenuWrap = () => (S.menu ? `<div style="position:absolute;inset-inline-end:0;top:84px;width:100%;pointer-events:none"><div style="pointer-events:auto">${viewMenuHTML()}</div></div>` : '');
 function render(keep = true) {
@@ -1416,6 +1541,13 @@ function afterRender() {
   document.querySelectorAll('.fr.enter').forEach((r, i) => r.style.setProperty('--d', Math.min(i, 12)));
   document.querySelectorAll('.map').forEach((m) => { wireMap(m); buildMap(m); });
   if (S.cur !== -1 && S.scn !== 'folders') goHunk(S.cur, false);
+  const hsc = document.getElementById('sc');
+  if (hsc && S.scn === 'file') {
+    let t = null;
+    const set = (h) => { if (h === hsc._hov) return; hsc._hov = h; hsc.querySelectorAll('.r.hov').forEach((x) => x.classList.remove('hov')); if (h != null) hsc.querySelectorAll(`.r[data-h="${h}"]`).forEach((x) => x.classList.add('hov')); };
+    hsc.addEventListener('mouseover', (e) => { const r = e.target.closest('.r[data-h]'); clearTimeout(t); if (r) set(r.dataset.h); else t = setTimeout(() => set(null), 300); });
+    hsc.addEventListener('mouseleave', () => { clearTimeout(t); t = setTimeout(() => set(null), 300); });
+  }
   document.querySelectorAll('[data-follow]').forEach((f) => {
     const sc = document.getElementById('sc');
     if (!sc) return;
@@ -1477,6 +1609,7 @@ function undo() {
   const u = S.undo.pop();
   if (!u) { toast('Nothing to undo'); render(); return; }
   if (u.type === 'copy') { S.blocks[u.bi] = u.prev; S.dirty = u.dirty; toast('Copy undone'); }
+  if (u.type === 'blocks') { S.blocks = u.blocks; S.dirty = u.dirty; toast('Line copy undone'); }
   if (u.type === 'pick') { S.regions[u.ri].pick = u.prev; S.regions[u.ri].edited = u.edited; toast('Choice undone'); }
   if (u.type === 'save') { toast('Restored the previous version of copy.rs'); }
   if (u.type === 'row') { toast(`Restored ${esc(u.name)} on the left`); }
@@ -1516,6 +1649,7 @@ function save() {
 }
 function copyKey(dir) {
   if (S.scn === 'file') {
+    if (S.lsel) { copySelected(dir, false); render(); return; }
     const { hunks } = diffModel();
     const h = hunks.find((x) => x.h === S.cur) || hunks.find((x) => x.kind !== 'done');
     if (h) { copyBlock(h.bi, dir); render(); }
@@ -1533,13 +1667,30 @@ function copyKey(dir) {
   }
 }
 
+stage.addEventListener('contextmenu', (e) => {
+  if (S.scn !== 'file') return;
+  const row = e.target.closest('.r');
+  if (!row) return;
+  e.preventDefault();
+  const el = e.target.closest('[data-side]') || row.querySelector('[data-side]');
+  const lnEl = e.target.closest('.ln[data-act="lsel"]') || (el && row.querySelector(`.ln[data-act="lsel"][data-side="${el.dataset.side}"]`));
+  const side = (lnEl || el)?.dataset.side || 'L';
+  S.cmenu = { x: e.clientX, y: e.clientY, side, bi: lnEl ? +lnEl.dataset.b : el ? +el.dataset.b : undefined, ix: lnEl ? +lnEl.dataset.i : undefined, changed: !!row.dataset.k && row.dataset.k !== 'done' };
+  render();
+});
 stage.addEventListener('click', (e) => {
+  if (S.cmenu && !e.target.closest('.cmenu')) { S.cmenu = null; render(); return; }
   const a = e.target.closest('[data-act]');
   const row = e.target.closest('.fr');
   if (!a && row) { S.sel = row.dataset.p; stage.querySelectorAll('.fr').forEach((r) => { r.setAttribute('aria-selected', r.dataset.p === S.sel); r.tabIndex = r.dataset.p === S.sel ? 0 : -1; }); row.focus({ preventScroll: true }); if (S.drawer === 'R') render(); return; }
   if (!a) { if (S.menu && !e.target.closest('.menu')) { S.menu = null; render(); } return; }
   const v = a.dataset.v;
   switch (a.dataset.act) {
+    case 'cm': runCmenu(v); break;
+    case 'lsel': toggleLine(+a.dataset.b, +a.dataset.i, a.dataset.side, e.shiftKey); render(); break;
+    case 'copy-sel': copySelected(v, false); render(); break;
+    case 'remove-sel': copySelected(null, true); render(); break;
+    case 'clear-sel': S.lsel = null; S.lastSel = null; render(); break;
     case 'twist': openRow(a.dataset.p); break;
     case 'expand': S.expanded.has(a.dataset.p) ? S.expanded.delete(a.dataset.p) : S.expanded.add(a.dataset.p); render(); break;
     case 'open': openRow(a.dataset.p); break;
@@ -1605,6 +1756,18 @@ document.addEventListener('keydown', (e) => {
   if (alt && !ctrl && (k === 'ArrowDown' || k === 'ArrowUp')) return hit(() => nav(k === 'ArrowDown' ? 1 : -1));
   if (k === 'F7' && S.scn !== 'folders') return hit(() => nav(shift ? -1 : 1));
   if (ctrl && alt && (k === 'ArrowLeft' || k === 'ArrowRight')) return hit(() => copyKey(k === 'ArrowLeft' ? 'L' : 'R'));
+  if (ctrl && shift && k === 'Delete' && S.scn === 'file' && S.lsel) return hit(() => { copySelected(null, true); render(); });
+  if (shift && !ctrl && !alt && (k === 'ArrowDown' || k === 'ArrowUp') && S.scn === 'file') return hit(() => {
+    const side = S.lsel ? S.lsel.side : 'R', rows = selectableRows(side);
+    if (!rows.length) return;
+    const keysAll = rows.map(selKey), at = S.lastSel ? keysAll.indexOf(S.lastSel.key) : -1;
+    const next = rows[at < 0 ? 0 : Math.max(0, Math.min(rows.length - 1, at + (k === 'ArrowDown' ? 1 : -1)))];
+    if (!S.lsel || S.lsel.side !== side) S.lsel = { side, keys: new Set() };
+    S.lsel.keys.add(selKey(next)); S.lastSel = { side, key: selKey(next) };
+    render();
+  });
+  if (k === 'Escape' && S.cmenu) return hit(() => { S.cmenu = null; render(); });
+  if (k === 'Escape' && S.lsel) return hit(() => { S.lsel = null; S.lastSel = null; render(); });
   if (ctrl && !alt && (k === 'z' || k === 'Z')) return hit(undo);
   if (ctrl && !alt && (k === 's' || k === 'S')) return hit(save);
   if (ctrl && !alt && (k === 'b' || k === 'B')) return hit(() => { S.drawer = S.drawer === 'L' ? null : 'L'; S.enter.add('drawer'); render(); });
@@ -1679,7 +1842,7 @@ document.addEventListener('keydown', (e) => {
   else if (e.key === 'ArrowLeft') setActive((current - 1 + variants.length) % variants.length);
   else if (e.key === 'r' || e.key === 'R') mount(current);
 });
-setActive((parseInt(new URLSearchParams(location.search).get('v'), 10) || 1) - 1);
+setActive((parseInt(new URLSearchParams(location.search).get("v"), 10) || 4) - 1);
 requestAnimationFrame(() => requestAnimationFrame(() => picker.setAttribute('data-ready', '')));
 
 </script>
