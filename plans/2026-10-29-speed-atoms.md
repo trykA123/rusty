@@ -87,26 +87,26 @@ Roles: `patcher` and `api-builder`/`ui-builder` run on Sonnet 5.5 medium. `senio
 
 | Atom | Goal | Role | Effort | Wave | After | Check | Owner check (SD1) | Status |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| SP0c | Tracy feature + frame marks | api-builder | medium | 1 | — | check -p rusty-diag -p rusty-app -p rusty-ui | trace one session in Tracy | ready |
-| SP0d | Windows perf guards fail builds; vendor tests in CI | patcher | medium | 1 | — | CI green on branch | — | ready |
-| SP1d | VSync parks while hidden/minimised | senior | medium | 1 | — | Windows CI | VSyncProvider idle while minimised | ready |
-| SP7c | Shown rows `Rc` → `Arc` | patcher | medium | 1 | — | check -p rusty-ui -p rusty-ui-gallery | — | ready |
-| SP7d | Move `SortBy`/`SortKey`/`Needle` to `rusty-fs::view` | patcher | medium | 1 | — | check -p rusty-fs -p rusty-ui | — | ready |
-| SP8d | L1: rusty-store, rusty-cache | api-builder | medium | 1 | — | clippy L1 on both | — | ready |
-| SP10a | Tray settings fields | ui-builder | medium | 1 | — | check -p rusty-ui -p rusty-app | — | ready |
-| SP1e | VSync parks when idle | senior | medium | 2 | SP1d | Windows CI | VSyncProvider idle with Navo visible, unfocused | blocked |
-| SP7e | `rusty-fs::view` sort and filter orders | api-builder | medium | 2 | SP7d | check -p rusty-fs | — | blocked |
-| SP7j | Status totals cached | api-builder | medium | 2 | — | check -p rusty-core -p rusty-ui | trace Down×50 in 500k folder | ready |
-| SP8e | L1: rusty-app | api-builder | medium | 2 | SP0c | clippy L1 rusty-app | — | blocked |
-| SP12a | bench-walk: dua-core, ignore; ship xtask.exe | api-builder | medium | 2 | — | check -p xtask | run bench-walk on both drives | ready |
-| SP0f | gungraun listing benches + bench.yml | api-builder | medium | 3 | SP7e | `cargo bench -p rusty-fs --no-run` | — | blocked |
-| SP7f | Browser sorts and filters through `rusty-fs::view` | api-builder | medium | 3 | SP7c, SP7e | check -p rusty-ui | `navo bench` folder rows | blocked |
-| SP7k | `Arc<Selection>` | api-builder | medium | 3 | SP7c, SP7j | check -p rusty-core -p rusty-ui -p rusty-ui-gallery | — | blocked |
-| SP8f | L1: rusty-ui `window_view/viewer` | api-builder | medium | 3 | — | module-scoped L1 = 0 | — | ready |
-| SP10b | Hide on close, show on arrival | senior | medium | 3 | SP10a | check -p rusty-ui -p rusty-app + Windows CI | close hides, relaunch shows | blocked |
+| SP0c | Tracy feature + frame marks | api-builder | medium | 1 | — | check -p rusty-diag -p rusty-app -p rusty-ui | trace one session in Tracy | done |
+| SP0d | Windows perf guards fail builds; vendor tests in CI | patcher | medium | 1 | — | CI green on branch | — | done |
+| SP1d | VSync parks while hidden/minimised | senior | medium | 1 | — | Windows CI | VSyncProvider idle while minimised | done |
+| SP7c | Shown rows `Rc` → `Arc` | patcher | medium | 1 | — | check -p rusty-ui -p rusty-ui-gallery | — | done |
+| SP7d | Move `SortBy`/`SortKey`/`Needle` to `rusty-fs::view` | patcher | medium | 1 | — | check -p rusty-fs -p rusty-ui | — | done |
+| SP8d | L1: rusty-store, rusty-cache | api-builder | medium | 1 | — | clippy L1 on both | — | done |
+| SP10a | Tray settings fields | ui-builder | medium | 1 | — | check -p rusty-ui -p rusty-app | — | done |
+| SP1e | VSync parks when idle | senior | medium | 2 | SP1d | Windows CI | VSyncProvider idle with Navo visible, unfocused | done |
+| SP7e | `rusty-fs::view` sort and filter orders | api-builder | medium | 2 | SP7d | check -p rusty-fs | — | done |
+| SP7j | Status totals cached | api-builder | medium | 2 | — | check -p rusty-core -p rusty-ui | trace Down×50 in 500k folder | done |
+| SP8e | L1: rusty-app | api-builder | medium | 2 | SP0c | clippy L1 rusty-app | — | done |
+| SP12a | bench-walk: dua-core, ignore; ship xtask.exe | api-builder | medium | 2 | — | check -p xtask | run bench-walk on both drives | done |
+| SP0f | gungraun listing benches + bench.yml | api-builder | medium | 3 | SP7e | `cargo bench -p rusty-fs --no-run` | — | done |
+| SP7f | Browser sorts and filters through `rusty-fs::view` | api-builder | medium | 3 | SP7c, SP7e | check -p rusty-ui | `navo bench` folder rows | done |
+| SP7k | `Arc<Selection>` | api-builder | medium | 3 | SP7c, SP7j | check -p rusty-core -p rusty-ui -p rusty-ui-gallery | — | done |
+| SP8f | L1: rusty-ui `window_view/viewer` | api-builder | medium | 3 | — | module-scoped L1 = 0 | — | done |
+| SP10b | Hide on close, show on arrival | senior | medium | 3 | SP10a | check -p rusty-ui -p rusty-app + Windows CI | close hides, relaunch shows | done |
 | SP7g | Fresh listing sorted on the worker | api-builder | medium | 4 | SP7f | check -p rusty-ui | open 500k folder: no UI stall | done |
 | SP8g | L1: rest of `window_view` | api-builder | medium | 4 | SP7j, SP10b | module-scoped L1 = 0 | — | blocked |
-| SP9a | mimalloc feature + A/B exe | api-builder | medium | 4 | — | check -p rusty-app | A/B `--metrics` and `navo bench` | ready |
+| SP9a | mimalloc feature + A/B exe | api-builder | medium | 4 | — | check -p rusty-app | A/B `--metrics` and `navo bench` | done |
 | SP7h | Big cached folder sorted on the worker | api-builder | medium | 5 | SP7g | check -p rusty-ui | re-enter 500k folder: no stall | done |
 | SP8h | L1: rusty-ui outside window_view/browser/file_list | api-builder | medium | 5 | SP10a | module-scoped L1 = 0 | — | done |
 | SP10c | Resident thread: tray + hotkey | senior | medium | 5 | SP10b | Windows CI | tray icon, Win+Alt+N registers | done |
@@ -420,3 +420,4 @@ Research libraries that serve later features, each with its milestone (D88: each
 
 - 2026-10-29 — Plan written (architect, Opus 5.5). L1 hits counted on Linux at `b6394a34`: rusty-ui 147 (window_view/viewer 50, rest of window_view 59, outside 38), rusty-app 39, rusty-cache 19, rusty-ui-gallery 9, xtask 8, rusty-store 7, rusty-index 1, rusty-pdf 1. Versions checked with `cargo search`/`cargo info`: tracy-client 0.19.0, tracing-tracy 0.12.0, gungraun 0.20.0, mimalloc 0.1.52, dua-core 5.0.1, ignore 0.4.34, tray-icon 0.26.1 (windows-sys 0.61), global-hotkey 0.9.0 (windows-sys 0.59, rejected).
 - 2026-10-29 — Amended from the 2026-10-28 research (D88). DeepSeek V4.1 Flash or Sol 6.1 high may run the pure-backend atoms (never UI); Windows CI is the real gate. "Not in this plan" follows the D88 library map: ranking stays on `nucleo-matcher` unless `frizbee` wins, archives without RAR, thumbnails in a separate process; `bzip2`, `backhand`, `turbojpeg`, `jxl-oxide` and `reflink-copy` are not adopted. No atom changed: SP0c, SP1a, SP9a, SP10c and SP12a/c already match D88.
+- 2026-10-30 — Table statuses brought up to date from main: waves 1–5 done except SP8g; left: SP8g, SP7i, SP7l, SP8i, and SP12c (needs owner numbers).
